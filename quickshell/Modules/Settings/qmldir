@@ -1,0 +1,20 @@
+module qs.Modules.Settings
+AboutTab 1.0 AboutTab.qml
+DesktopWidgetsTab 1.0 DesktopWidgetsTab.qml
+DisplaysTab 1.0 DisplaysTab.qml
+DockTab 1.0 DockTab.qml
+LauncherTab 1.0 LauncherTab.qml
+PersonalizationTab 1.0 PersonalizationTab.qml
+SettingsSection 1.0 SettingsSection.qml
+ThemeColorsTab 1.0 ThemeColorsTab.qml
+TimeTab 1.0 TimeTab.qml
+TopBarTab 1.0 TopBarTab.qml
+WeatherTab 1.0 WeatherTab.qml
+WidgetSelectionPopup 1.0 WidgetSelectionPopup.qml
+WidgetsTabSection 1.0 WidgetsTabSection.qml
+WidgetTweaksTab 1.0 WidgetTweaksTab.qml
+
+
+
+
+

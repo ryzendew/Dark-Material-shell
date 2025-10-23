@@ -1,0 +1,13 @@
+module qs.Modules.Desktop
+DesktopClock 1.0 DesktopClock.qml
+DesktopCpuTemp 1.0 DesktopCpuTemp.qml
+DesktopGpuTemp 1.0 DesktopGpuTemp.qml
+DesktopSystemMonitor 1.0 DesktopSystemMonitor.qml
+DesktopWidgets 1.0 DesktopWidgets.qml
+DesktopPositioning 1.0 DesktopPositioning.qml
+DesktopWidgetPositioned 1.0 DesktopWidgetPositioned.qml
+DesktopCpuTempWidget 1.0 DesktopCpuTempWidget.qml
+DesktopGpuTempWidget 1.0 DesktopGpuTempWidget.qml
+DesktopSystemMonitorWidget 1.0 DesktopSystemMonitorWidget.qml
+DesktopClockWidget 1.0 DesktopClockWidget.qml
+
