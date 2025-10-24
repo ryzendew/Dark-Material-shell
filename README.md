@@ -4,6 +4,9 @@ This is my personal dotfiles repository. These configurations are built specific
 
 You're welcome to use any part of this configuration, but **no support will be provided**. Use at your own risk.
 
+<img width="1921" height="1081" alt="image" src="https://github.com/user-attachments/assets/729793f1-97df-4cea-94c4-4be41349961c" />
+
+
 # QuickShell Dotfiles Installation Guide
 
 This guide provides step-by-step instructions to install the necessary dependencies for the QuickShell dotfiles on Arch Linux.
