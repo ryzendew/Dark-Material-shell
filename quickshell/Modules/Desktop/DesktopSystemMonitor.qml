@@ -250,9 +250,9 @@ DankOSD {
                         try {
                             if (typeof PerformanceService !== 'undefined') {
                                 switch(PerformanceService.currentMode) {
-                                    case "performance": return "#8BC34A"; // Bright Green
-                                    case "balanced": return "#FFC107"; // Bright Yellow
-                                    case "power-saver": return "#00BCD4"; // Bright Cyan
+                                    case "performance": return "#F44336"; // Red
+                                    case "balanced": return "#FF9800"; // Orange
+                                    case "power-saver": return "#4CAF50"; // Green
                                     default: return Theme.surfaceTextMedium;
                                 }
                             }
