@@ -57,7 +57,7 @@ DankPopout {
     AppLauncher {
         id: appLauncher
 
-        viewMode: "grid"
+        viewMode: "list"
         gridColumns: 4
         onAppLaunched: appDrawerPopout.close()
         onViewModeSelected: function (mode) {
@@ -165,7 +165,7 @@ DankPopout {
 
                     // Left Panel - Pinned Apps & Power Controls
                     Rectangle {
-                        width: parent.width * 0.4
+                        width: parent.width * 0.4 + 2
                         height: parent.height
                         color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.05)
                         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
@@ -309,6 +309,7 @@ DankPopout {
                                 id: powerControlsColumn
                                 width: parent.width
                                 spacing: Theme.spacingM
+                                clip: true // Ensure content is clipped to section bounds
 
                                 // User Profile and System Controls
                     Row {
@@ -735,6 +736,7 @@ DankPopout {
                                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.05)
                                 border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
                                 border.width: 1
+                                clip: true // Ensure content is clipped to container bounds
 
                                 DankListView {
                                     id: appList
@@ -764,6 +766,7 @@ DankPopout {
 
                                     anchors.fill: parent
                                     anchors.margins: Theme.spacingS
+                                    clip: true // Ensure list content is clipped to bounds
                                     model: appLauncher.model
                                     currentIndex: appLauncher.selectedIndex
                                     spacing: itemSpacing
