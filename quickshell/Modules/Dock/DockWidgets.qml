@@ -39,19 +39,42 @@ Row {
         const dockGap = -16 // Dock bottom gap
         const availableHeight = screenHeight - dockHeight - dockGap - 20 // Extra margin
         
+        // Check if dock is in expand mode
+        const isExpandMode = SettingsData.dockExpandToScreen
+        
         switch (position) {
             case "top-left":
                 return { x: 20, y: 20, section: "left" }
             case "top-right":
                 return { x: screenWidth - triggerWidth, y: 20, section: "right" }
             case "bottom-left":
-                return { x: 20, y: availableHeight - triggerHeight, section: "left" }
+                if (isExpandMode) {
+                    // When in expand mode, position at far left of screen
+                    return { x: 8, y: availableHeight - triggerHeight, section: "left" }
+                } else {
+                    return { x: 20, y: availableHeight - triggerHeight, section: "left" }
+                }
             case "bottom-right":
-                return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
+                if (isExpandMode) {
+                    // When in expand mode, position at far right of screen
+                    return { x: screenWidth - triggerWidth - 8, y: availableHeight - triggerHeight, section: "right" }
+                } else {
+                    return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
+                }
             case "center":
-                return { x: (screenWidth - triggerWidth) / 2, y: (availableHeight - triggerHeight) / 2, section: "center" }
+                if (isExpandMode) {
+                    // When in expand mode, position at far left of screen for start menu
+                    return { x: 8, y: (availableHeight - triggerHeight) / 2, section: "left" }
+                } else {
+                    return { x: (screenWidth - triggerWidth) / 2, y: (availableHeight - triggerHeight) / 2, section: "center" }
+                }
             default:
-                return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
+                if (isExpandMode) {
+                    // When in expand mode, position at far right of screen
+                    return { x: screenWidth - triggerWidth - 8, y: availableHeight - triggerHeight, section: "right" }
+                } else {
+                    return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
+                }
         }
     }
 
@@ -284,7 +307,16 @@ Row {
     Component { id: memUsageComponent; RamMonitor { } }
     Component { id: cpuTempComponent; CpuTemperature { } }
     Component { id: gpuTempComponent; GpuTemperature { } }
-    Component { id: systemTrayComponent; SystemTrayBar { } }
+    Component { 
+        id: systemTrayComponent
+        SystemTrayBar { 
+            parentScreen: root.screen
+            parentWindow: root.Window.window
+            isAtBottom: true
+            isVertical: false
+            axis: null
+        }
+    }
     Component { id: privacyIndicatorComponent; PrivacyIndicator { } }
     Component { 
         id: controlCenterButtonComponent
