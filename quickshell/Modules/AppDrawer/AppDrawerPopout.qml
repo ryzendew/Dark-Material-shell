@@ -67,11 +67,15 @@ DankPopout {
 
     // Function to get app data from app ID
     function getAppDataFromId(appId) {
-        if (!appId) return null
+        if (!appId) {
+            console.log("getAppDataFromId: appId is null/undefined")
+            return null
+        }
         
         // Use the same approach as the dock - DesktopEntries.heuristicLookup
         const desktopEntry = DesktopEntries.heuristicLookup(appId)
         if (desktopEntry) {
+            console.log("getAppDataFromId: Found app", appId, "->", desktopEntry.name)
             return {
                 name: desktopEntry.name || "",
                 exec: desktopEntry.execString || desktopEntry.exec || "",
@@ -81,6 +85,7 @@ DankPopout {
                 desktopEntry: desktopEntry
             }
         }
+        console.log("getAppDataFromId: No desktop entry found for", appId)
         return null
     }
 
@@ -271,9 +276,14 @@ DankPopout {
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 cursorShape: Qt.PointingHandCursor
+                                                acceptedButtons: Qt.LeftButton | Qt.RightButton
                                                 onClicked: {
-                                                    if (parent.appData) {
-                                                        appLauncher.launchApp(parent.appData)
+                                                    if (mouse.button === Qt.LeftButton) {
+                                                        if (parent.appData) {
+                                                            appLauncher.launchApp(parent.appData)
+                                                        }
+                                                    } else if (mouse.button === Qt.RightButton) {
+                                                        pinnedContextMenu.show(mouse.x, mouse.y, parent.appData)
                                                     }
                                                 }
                                             }
@@ -1165,6 +1175,196 @@ DankPopout {
             height: contextMenu.height
             onClicked: {
 
+                // Prevent closing when clicking on the menu itself
+            }
+        }
+    }
+
+    // Context menu for pinned apps
+    Rectangle {
+        id: pinnedContextMenu
+
+        property var currentApp: null
+        property bool menuVisible: false
+
+        readonly property string appId: (currentApp && currentApp.desktopEntry) ? (currentApp.desktopEntry.id || currentApp.desktopEntry.execString || "") : ""
+
+        function show(x, y, app) {
+            currentApp = app
+
+            const menuWidth = 180
+            const menuHeight = pinnedMenuColumn.implicitHeight + Theme.spacingS * 2
+
+            let finalX = x + 8
+            let finalY = y + 8
+
+            if (finalX + menuWidth > appDrawerPopout.popupWidth) {
+                finalX = x - menuWidth - 8
+            }
+
+            if (finalY + menuHeight > appDrawerPopout.popupHeight) {
+                finalY = y - menuHeight - 8
+            }
+
+            finalX = Math.max(8, Math.min(finalX, appDrawerPopout.popupWidth - menuWidth - 8))
+            finalY = Math.max(8, Math.min(finalY, appDrawerPopout.popupHeight - menuHeight - 8))
+
+            pinnedContextMenu.x = finalX
+            pinnedContextMenu.y = finalY
+            pinnedContextMenu.visible = true
+            pinnedContextMenu.menuVisible = true
+        }
+
+        function close() {
+            pinnedContextMenu.menuVisible = false
+            Qt.callLater(() => {
+                             pinnedContextMenu.visible = false
+                         })
+        }
+
+        visible: false
+        width: 180
+        height: pinnedMenuColumn.implicitHeight + Theme.spacingS * 2
+        radius: Theme.cornerRadius
+        color: Theme.popupBackground()
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
+        border.width: 1
+        z: 1000
+        opacity: menuVisible ? 1 : 0
+        scale: menuVisible ? 1 : 0.85
+
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: Theme.popupBackground()
+            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
+            border.width: 1
+        }
+
+        Column {
+            id: pinnedMenuColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingS
+            spacing: 2
+
+            Rectangle {
+                width: parent.width
+                height: 32
+                radius: Theme.cornerRadius
+                color: launchPinnedMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
+
+                Row {
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingS
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: Theme.spacingS
+
+                    DankIcon {
+                        name: "launch"
+                        size: Theme.iconSize - 2
+                        color: Theme.surfaceText
+                        opacity: 0.7
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    StyledText {
+                        text: "Launch"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceText
+                        font.weight: Font.Normal
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                MouseArea {
+                    id: launchPinnedMouseArea
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        if (pinnedContextMenu.currentApp)
+                            appLauncher.launchApp(pinnedContextMenu.currentApp)
+
+                        pinnedContextMenu.close()
+                    }
+                }
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 32
+                radius: Theme.cornerRadius
+                color: unpinMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
+
+                Row {
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingS
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: Theme.spacingS
+
+                    DankIcon {
+                        name: "keep_off"
+                        size: Theme.iconSize - 2
+                        color: Theme.surfaceText
+                        opacity: 0.7
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    StyledText {
+                        text: "Unpin from Start Menu"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceText
+                        font.weight: Font.Normal
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                MouseArea {
+                    id: unpinMouseArea
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        if (pinnedContextMenu.currentApp && pinnedContextMenu.appId) {
+                            SessionData.removeStartMenuPinnedApp(pinnedContextMenu.appId)
+                        }
+                        pinnedContextMenu.close()
+                    }
+                }
+            }
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.mediumDuration
+                easing.type: Theme.emphasizedEasing
+            }
+        }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.mediumDuration
+                easing.type: Theme.emphasizedEasing
+            }
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        visible: pinnedContextMenu.visible
+        z: 999
+        onClicked: {
+            pinnedContextMenu.close()
+        }
+
+        MouseArea {
+            x: pinnedContextMenu.x
+            y: pinnedContextMenu.y
+            width: pinnedContextMenu.width
+            height: pinnedContextMenu.height
+            onClicked: {
                 // Prevent closing when clicking on the menu itself
             }
         }
