@@ -88,40 +88,40 @@ Item {
         }
         
         // Debug ColorPaletteService availability
-        console.log("ThemeColorsTab: ColorPaletteService available:", typeof ColorPaletteService !== 'undefined')
+        // // console.log("ThemeColorsTab: ColorPaletteService available:", typeof ColorPaletteService !== 'undefined')
         if (typeof ColorPaletteService !== 'undefined') {
-            console.log("ThemeColorsTab: Initial extracted colors:", ColorPaletteService.extractedColors.length)
+            // // console.log("ThemeColorsTab: Initial extracted colors:", ColorPaletteService.extractedColors.length)
             
             // Connect to custom theme signal
             ColorPaletteService.customThemeCreated.connect(function(themeData) {
-                console.log("ThemeColorsTab: Custom theme created, applying directly...")
+                // // console.log("ThemeColorsTab: Custom theme created, applying directly...")
                 if (typeof Theme !== 'undefined') {
                     // Set the custom theme data directly
                     Theme.customThemeData = themeData
-                    console.log("ThemeColorsTab: Custom theme data set directly")
+                    // // console.log("ThemeColorsTab: Custom theme data set directly")
                     
                     // Switch to custom theme mode and save preference
                     Theme.switchTheme("custom", true, false) // Save prefs, no transition
-                    console.log("ThemeColorsTab: Switched to custom theme mode")
+                    // // console.log("ThemeColorsTab: Switched to custom theme mode")
                     
                     // Force theme regeneration
                     Theme.generateSystemThemesFromCurrentTheme()
-                    console.log("ThemeColorsTab: System themes regenerated")
+                    // // console.log("ThemeColorsTab: System themes regenerated")
                 } else {
-                    console.log("ThemeColorsTab: Theme is undefined, cannot apply")
+                    // // console.log("ThemeColorsTab: Theme is undefined, cannot apply")
                 }
             })
             
             // Connect to colors extracted signal to refresh UI
             ColorPaletteService.colorsExtracted.connect(function() {
-                console.log("ThemeColorsTab: Colors extracted, refreshing UI...")
+                // // console.log("ThemeColorsTab: Colors extracted, refreshing UI...")
                 // Force UI refresh by triggering a property change
                 themeColorsTab.forceUpdate = !themeColorsTab.forceUpdate
             })
             
             // Connect to themes updated signal
             ColorPaletteService.themesUpdated.connect(function() {
-                console.log("ThemeColorsTab: Available themes updated:", ColorPaletteService.availableThemes.length)
+                // // console.log("ThemeColorsTab: Available themes updated:", ColorPaletteService.availableThemes.length)
                 themeColorsTab.forceUpdate = !themeColorsTab.forceUpdate
             })
         }
@@ -285,7 +285,7 @@ Item {
                                     enabled: !ColorPaletteService.isExtracting && Theme.wallpaperPath
                                     cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                     onClicked: {
-                                        console.log("ThemeColorsTab: Extract colors clicked")
+                                        // // console.log("ThemeColorsTab: Extract colors clicked")
                                         if (Theme.wallpaperPath && typeof ColorPaletteService !== 'undefined') {
                                             ColorPaletteService.extractColorsFromWallpaper(Theme.wallpaperPath)
                                         }
@@ -455,8 +455,8 @@ Item {
                                 Repeater {
                                     model: {
                                         forceUpdate // Trigger update when this changes
-                                        console.log("ThemeColorsTab: Extracted colors length:", ColorPaletteService.extractedColors.length)
-                                        console.log("ThemeColorsTab: Extracted colors:", ColorPaletteService.extractedColors)
+                                        // // console.log("ThemeColorsTab: Extracted colors length:", ColorPaletteService.extractedColors.length)
+                                        // // console.log("ThemeColorsTab: Extracted colors:", ColorPaletteService.extractedColors)
                                         return ColorPaletteService.extractedColors.length > 0 ? 
                                                ColorPaletteService.extractedColors.slice(0, 8) : // Show first 8 extracted colors
                                                ["blue", "purple", "green", "orange", "red"] // Fallback to original colors
@@ -502,14 +502,14 @@ Item {
                                             onClicked: {
                                                 if (isExtractedColor) {
                                                     // Handle extracted color selection - replace all with just this color
-                                                    console.log("ThemeColorsTab: Extracted color clicked:", colorValue)
+                                                    // // console.log("ThemeColorsTab: Extracted color clicked:", colorValue)
                                                     
                                                     // Clear all selections and select only this color
                                                     ColorPaletteService.clearSelection()
                                                     ColorPaletteService.selectColor(colorValue, true)
                                                     
                                                     // Auto-apply theme with just this color
-                                                    console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
+                                                    // // console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
                                                     ColorPaletteService.applySelectedColors()
                                                 } else {
                                                     // Handle original theme switching
@@ -542,7 +542,7 @@ Item {
                                 Repeater {
                                     model: {
                                         forceUpdate // Trigger update when this changes
-                                        console.log("ThemeColorsTab: Second row - Extracted colors length:", ColorPaletteService.extractedColors.length)
+                                        // // console.log("ThemeColorsTab: Second row - Extracted colors length:", ColorPaletteService.extractedColors.length)
                                         return ColorPaletteService.extractedColors.length > 8 ? 
                                                ColorPaletteService.extractedColors.slice(8, 16) : // Show next 8 extracted colors
                                                ["cyan", "pink", "amber", "coral", "monochrome"] // Fallback to original colors
@@ -588,14 +588,14 @@ Item {
                                             onClicked: {
                                                 if (isExtractedColor) {
                                                     // Handle extracted color selection - replace all with just this color
-                                                    console.log("ThemeColorsTab: Extracted color clicked (row 2):", colorValue)
+                                                    // // console.log("ThemeColorsTab: Extracted color clicked (row 2):", colorValue)
                                                     
                                                     // Clear all selections and select only this color
                                                     ColorPaletteService.clearSelection()
                                                     ColorPaletteService.selectColor(colorValue, true)
                                                     
                                                     // Auto-apply theme with just this color
-                                                    console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
+                                                    // // console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
                                                     ColorPaletteService.applySelectedColors()
                                                 } else {
                                                     // Handle original theme switching

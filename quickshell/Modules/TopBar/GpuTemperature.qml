@@ -78,13 +78,13 @@ Rectangle {
     }
     Component.onCompleted: {
         DgopService.addRef(["gpu"]);
-        console.log("GpuTemperature widget - pciId:", widgetData ? widgetData.pciId : "no widgetData", "selectedGpuIndex:", widgetData ? widgetData.selectedGpuIndex : "no widgetData");
+        // console.log("GpuTemperature widget - pciId:", widgetData ? widgetData.pciId : "no widgetData", "selectedGpuIndex:", widgetData ? widgetData.selectedGpuIndex : "no widgetData");
         // Add this widget's PCI ID to the service
         if (widgetData && widgetData.pciId) {
-            console.log("Adding GPU PCI ID to service:", widgetData.pciId);
+            // console.log("Adding GPU PCI ID to service:", widgetData.pciId);
             DgopService.addGpuPciId(widgetData.pciId);
         } else {
-            console.log("No PCI ID in widget data, starting auto-detection");
+            // console.log("No PCI ID in widget data, starting auto-detection");
             // No PCI ID saved, auto-detect and save the first GPU
             autoSaveTimer.running = true;
         }

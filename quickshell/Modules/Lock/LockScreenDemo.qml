@@ -24,12 +24,12 @@ PanelWindow {
     color: "transparent"
 
     function showDemo(): void {
-        console.log("Showing lock screen demo")
+        // console.log("Showing lock screen demo")
         demoActive = true
     }
 
     function hideDemo(): void {
-        console.log("Hiding lock screen demo")
+        // console.log("Hiding lock screen demo")
         demoActive = false
     }
 

@@ -96,7 +96,7 @@ Singleton {
                 // Increment reference count for this module
                 const currentCount = moduleRefCounts[module] || 0
                 moduleRefCounts[module] = currentCount + 1
-                console.log("Adding ref for module:", module, "count:", moduleRefCounts[module])
+                // // console.log("Adding ref for module:", module, "count:", moduleRefCounts[module])
 
                 // Add to enabled modules if not already there
                 if (enabledModules.indexOf(module) === -1) {
@@ -128,7 +128,7 @@ Singleton {
                 if (currentCount > 1) {
                     // Decrement reference count
                     moduleRefCounts[module] = currentCount - 1
-                    console.log("Removing ref for module:", module, "count:", moduleRefCounts[module])
+                    // // console.log("Removing ref for module:", module, "count:", moduleRefCounts[module])
                 } else if (currentCount === 1) {
                     // Remove completely when count reaches 0
                     delete moduleRefCounts[module]
@@ -136,7 +136,7 @@ Singleton {
                     if (index > -1) {
                         enabledModules.splice(index, 1)
                         modulesChanged = true
-                        console.log("Disabling module:", module, "(no more refs)")
+                        // // console.log("Disabling module:", module, "(no more refs)")
                     }
                 }
             }
@@ -171,7 +171,7 @@ Singleton {
             gpuPciIds = gpuPciIds.concat([pciId])
         }
 
-        console.log("Adding GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
+        // // console.log("Adding GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
         // Force property change notification
         gpuPciIdRefCounts = Object.assign({}, gpuPciIdRefCounts)
     }
@@ -181,7 +181,7 @@ Singleton {
         if (currentCount > 1) {
             // Decrement reference count
             gpuPciIdRefCounts[pciId] = currentCount - 1
-            console.log("Removing GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
+            // // console.log("Removing GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
         } else if (currentCount === 1) {
             // Remove completely when count reaches 0
             delete gpuPciIdRefCounts[pciId]
@@ -204,7 +204,7 @@ Singleton {
                 availableGpus = updatedGpus
             }
 
-            console.log("Removing GPU PCI ID completely:", pciId)
+            // // console.log("Removing GPU PCI ID completely:", pciId)
         }
 
         // Force property change notification
@@ -603,7 +603,7 @@ Singleton {
         running: false
         onCommandChanged: {
 
-            //console.log("DgopService command:", JSON.stringify(command))
+            //// // console.log("DgopService command:", JSON.stringify(command))
         }
         onExited: exitCode => {
             if (exitCode !== 0) {
@@ -676,12 +676,12 @@ Singleton {
 
     Process {
         id: nvmlCheckProcess
-        command: [Qt.resolvedUrl("nvml_env/bin/python").toString(), "-c", "import pynvml; print('NVML available')"]
+        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "-c", "import pynvml; print('NVML available')"]
         running: false
         onExited: exitCode => {
             nvmlAvailable = (exitCode === 0)
             if (nvmlAvailable) {
-                console.log("NVML is available for GPU temperature monitoring")
+                // // console.log("NVML is available for GPU temperature monitoring")
                 // Initialize GPU metadata using NVML if dgop is not available
                 if (!dgopAvailable) {
                     initializeGpuMetadataWithNVML()
@@ -694,7 +694,7 @@ Singleton {
 
     Process {
         id: nvmlGpuProcess
-        command: [Qt.resolvedUrl("nvml_env/bin/python").toString(), Qt.resolvedUrl("scripts/nvidia_gpu_temp.py").toString()]
+        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "/home/matt/.config/quickshell/scripts/nvidia_gpu_temp.py"]
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {
@@ -783,7 +783,7 @@ Singleton {
                         // Prefer PRETTY_NAME, fallback to NAME
                         const distroName = prettyName || name || "Linux"
                         distribution = distroName
-                        console.log("Detected distribution:", distroName)
+                        // // console.log("Detected distribution:", distroName)
                     } catch (e) {
                         console.warn("Failed to parse /etc/os-release:", e)
                         distribution = "Linux"

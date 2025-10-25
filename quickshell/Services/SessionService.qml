@@ -40,7 +40,7 @@ Singleton {
         command: ["sh", "-c", "ps -eo comm= | grep -E '^(elogind|elogind-daemon)$'"]
 
         onExited: function (exitCode) {
-            console.log("SessionService: Elogind detection exited with code", exitCode)
+            // // console.log("SessionService: Elogind detection exited with code", exitCode)
             isElogind = (exitCode === 0)
         }
     }

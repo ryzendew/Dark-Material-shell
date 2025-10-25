@@ -220,6 +220,9 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
+                    // Add data property to prevent warnings
+                    property var data: null
+
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_fade.frag.qsb")
                 }
 
@@ -241,6 +244,9 @@ LazyLoader {
                     property real imageHeight2: Math.max(1, source2.sourceSize.height)
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
+
+                    // Add data property to prevent warnings
+                    property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_wipe.frag.qsb")
                 }
@@ -266,6 +272,9 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
+                    // Add data property to prevent warnings
+                    property var data: null
+
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_disc.frag.qsb")
                 }
 
@@ -289,6 +298,9 @@ LazyLoader {
                     property real imageHeight2: Math.max(1, source2.sourceSize.height)
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
+
+                    // Add data property to prevent warnings
+                    property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_stripes.frag.qsb")
                 }
@@ -314,6 +326,9 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
+                    // Add data property to prevent warnings
+                    property var data: null
+
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_iris_bloom.frag.qsb")
                 }
 
@@ -338,6 +353,9 @@ LazyLoader {
                     property real centerY: root.discCenterY
                     property real aspectRatio: root.width / root.height
 
+                    // Add data property to prevent warnings
+                    property var data: null
+
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_pixelate.frag.qsb")
                 }
 
@@ -361,6 +379,9 @@ LazyLoader {
                     property real imageHeight2: Math.max(1, source2.sourceSize.height)
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
+
+                    // Add data property to prevent warnings
+                    property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_portal.frag.qsb")
                 }

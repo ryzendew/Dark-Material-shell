@@ -11,7 +11,7 @@ Item {
 
     Component.onCompleted: {
         // Ensure settings are properly loaded when the tab is created
-        console.log("DockTab loaded, dockGroupApps:", SettingsData.dockGroupApps)
+        // console.log("DockTab loaded, dockGroupApps:", SettingsData.dockGroupApps)
     }
 
     DankFlickable {
@@ -388,6 +388,152 @@ Item {
                             checked: SettingsData.dockAutoHide
                             onToggled: checked => {
                                            SettingsData.setDockAutoHide(checked)
+                                       }
+                        }
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
+            }
+
+            // Expand to Screen Section
+            StyledRect {
+                width: parent.width
+                height: expandToScreenSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+                visible: SettingsData.showDock
+                opacity: visible ? 1 : 0
+
+                Column {
+                    id: expandToScreenSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "fullscreen"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingM
+                                   - expandToScreenToggle.width - Theme.spacingM
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            StyledText {
+                                text: "Expand to Screen"
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                            }
+
+                            StyledText {
+                                text: "Expand the dock to full screen width, hiding the left and right widget areas"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+                        }
+
+                        DankToggle {
+                            id: expandToScreenToggle
+
+                            anchors.verticalCenter: parent.verticalCenter
+                            checked: SettingsData.dockExpandToScreen
+                            onToggled: checked => {
+                                           SettingsData.setDockExpandToScreen(checked)
+                                       }
+                        }
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
+            }
+
+            // Center Apps Section
+            StyledRect {
+                width: parent.width
+                height: centerAppsSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+                visible: SettingsData.showDock
+                opacity: visible ? 1 : 0
+
+                Column {
+                    id: centerAppsSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "center_focus_strong"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingM
+                                   - centerAppsToggle.width - Theme.spacingM
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            StyledText {
+                                text: "Center Apps"
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                            }
+
+                            StyledText {
+                                text: "Center the pinned and running apps in the middle of the screen"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+                        }
+
+                        DankToggle {
+                            id: centerAppsToggle
+
+                            anchors.verticalCenter: parent.verticalCenter
+                            checked: SettingsData.dockCenterApps
+                            onToggled: checked => {
+                                           SettingsData.setDockCenterApps(checked)
                                        }
                         }
                     }
@@ -1399,6 +1545,12 @@ Item {
             "description": "Check for system updates",
             "icon": "update",
             "enabled": SystemUpdateService.distributionSupported
+        }, {
+            "id": "settingsButton",
+            "text": "Settings Button",
+            "description": "Quick access to settings modal",
+            "icon": "settings",
+            "enabled": true
         }]
 
     function addWidgetToSection(widgetId, targetSection) {

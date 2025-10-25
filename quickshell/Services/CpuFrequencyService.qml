@@ -36,11 +36,11 @@ Singleton {
                 if (newFreq !== currentFrequency && newFreq > 0) {
                     currentFrequency = newFreq
                     frequencyChanged()
-                    console.log("CpuFrequencyService: Updated frequency to", newFreq, "GHz")
+                    // console.log("CpuFrequencyService: Updated frequency to", newFreq, "GHz")
                 }
             }
         } catch (e) {
-            console.log("CpuFrequencyService: Could not read CPU frequency file:", e)
+            // console.log("CpuFrequencyService: Could not read CPU frequency file:", e)
         }
 
         // Try to read CPU governor
@@ -50,11 +50,11 @@ Singleton {
                 const newGov = govFile.trim()
                 if (newGov !== governor) {
                     governor = newGov
-                    console.log("CpuFrequencyService: Updated governor to", newGov)
+                    // console.log("CpuFrequencyService: Updated governor to", newGov)
                 }
             }
         } catch (e) {
-            console.log("CpuFrequencyService: Could not read CPU governor file:", e)
+            // console.log("CpuFrequencyService: Could not read CPU governor file:", e)
         }
 
         // Try to read max frequency
@@ -65,16 +65,16 @@ Singleton {
                 const newMaxFreq = freq / 1000.0 // Convert from kHz to GHz
                 if (newMaxFreq !== maxFrequency && newMaxFreq > 0) {
                     maxFrequency = newMaxFreq
-                    console.log("CpuFrequencyService: Updated max frequency to", newMaxFreq, "GHz")
+                    // console.log("CpuFrequencyService: Updated max frequency to", newMaxFreq, "GHz")
                 }
             }
         } catch (e) {
-            console.log("CpuFrequencyService: Could not read max CPU frequency file:", e)
+            // console.log("CpuFrequencyService: Could not read max CPU frequency file:", e)
         }
     }
 
     Component.onCompleted: {
-        console.log("CpuFrequencyService: Component completed, starting frequency monitoring")
+        // console.log("CpuFrequencyService: Component completed, starting frequency monitoring")
         // Get initial values
         updateCpuInfo()
     }

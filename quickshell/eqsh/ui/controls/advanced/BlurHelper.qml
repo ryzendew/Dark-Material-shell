@@ -17,6 +17,10 @@ Item {
         visible: false
         layer.enabled: true
         layer.smooth: true
+        
+        // Add data property to prevent warnings
+        property var data: null
+        
         vertexShader: "bluritems.vert.qsb"
         fragmentShader: "bluritems.frag.qsb"
     }

@@ -46,11 +46,11 @@ Item {
         }
         
         if (!draggingButton) {
-            console.log("No dragging button found")
+            // console.log("No dragging button found")
             return
         }
         
-        console.log("Dragging button found, targetIndex:", draggingButton.targetIndex, "originalIndex:", draggingButton.originalIndex)
+        // console.log("Dragging button found, targetIndex:", draggingButton.targetIndex, "originalIndex:", draggingButton.originalIndex)
         
         // Clear all drop targets first
         for (var i = 0; i < repeater.count; i++) {
@@ -64,19 +64,19 @@ Item {
         var targetIndex = draggingButton.targetIndex
         var originalIndex = draggingButton.originalIndex
         
-        console.log("Target index:", targetIndex, "original index:", originalIndex)
+        // console.log("Target index:", targetIndex, "original index:", originalIndex)
         
         if (targetIndex >= 0 && targetIndex < repeater.count && targetIndex !== originalIndex) {
             // Show green glow on the icon that will be replaced
             var targetItem = repeater.itemAt(targetIndex)
             if (targetItem) {
                 targetItem.isDropTarget = true
-                console.log("Set drop target at index:", targetIndex)
+                // console.log("Set drop target at index:", targetIndex)
             } else {
-                console.log("No target item found at index:", targetIndex)
+                // console.log("No target item found at index:", targetIndex)
             }
         } else {
-            console.log("Invalid target index or same as original:", targetIndex)
+            // console.log("Invalid target index or same as original:", targetIndex)
         }
     }
     
@@ -244,7 +244,7 @@ Item {
                             const title = toplevel.title || "(Unnamed)"
                             const truncatedTitle = title.length > 50 ? title.substring(0, 47) + "..." : title
                             const uniqueId = toplevel.title + "|" + (toplevel.appId || "") + "|" + index
-                            const isMinimized = globalMinimizedWindowManager.isMinimized(toplevel)
+                            const isMinimized = false
 
                             items.push({
                                 "type": "window",
@@ -383,10 +383,4 @@ Item {
         }
     }
     
-    Connections {
-        target: globalMinimizedWindowManager
-        function onMinimizedWindowsListChanged() {
-            dockModel.updateModel()
-        }
-    }
 }

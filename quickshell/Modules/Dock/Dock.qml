@@ -34,6 +34,10 @@ PanelWindow {
     }
     property bool reveal: (!autoHide || dockMouseArea.containsMouse || dockApps.requestDockShow || contextMenuOpen) && !windowIsFullscreen
 
+    Component.onCompleted: {
+        // Dock component completed
+    }
+
     Connections {
         target: SettingsData
         function onDockTransparencyChanged() {
@@ -45,9 +49,7 @@ PanelWindow {
     Connections {
         target: Theme
         function onColorUpdateTriggerChanged() {
-            console.log("Dock: Theme color update triggered")
-            console.log("Dock: Current theme:", Theme.currentTheme)
-            console.log("Dock: Surface container color:", Theme.surfaceContainer)
+            // Theme color update triggered
         }
     }
 
@@ -81,12 +83,24 @@ PanelWindow {
         property real maxDockWidth: Math.min(screenWidth * 0.8, 1200)
 
         height: dock.reveal ? (65 + SettingsData.dockTopPadding + SettingsData.dockBottomPadding) : 20
-        width: dock.reveal ? Math.min(dockBackground.width + 32, maxDockWidth) : Math.min(Math.max(dockBackground.width + 64, 200), screenWidth * 0.5)
         anchors {
             bottom: parent.bottom
-            horizontalCenter: parent.horizontalCenter
+            left: parent.left
+            right: parent.right
         }
+        
+        // Exclude the left widget area from mouse events (unless expanding to screen)
+        x: SettingsData.dockExpandToScreen ? 0 : leftWidgetArea.width + 8
+        width: SettingsData.dockExpandToScreen ? parent.width : parent.width - leftWidgetArea.width - 8
         hoverEnabled: true
+        acceptedButtons: Qt.NoButton // Don't intercept any button clicks
+        propagateComposedEvents: true // Allow events to propagate to child components
+        preventStealing: false // Allow child MouseAreas to steal events
+        
+        // Override mouse event handlers to ensure they don't block
+        onPressed: mouse.accepted = false
+        onReleased: mouse.accepted = false
+        onClicked: mouse.accepted = false
 
         Behavior on height {
             NumberAnimation {
@@ -121,15 +135,19 @@ PanelWindow {
                 }
 
                 width: {
-                    const appsWidth = dockApps.implicitWidth || 0
-                    const leftWidth = leftWidgets.implicitWidth || 0
-                    const rightWidth = rightWidgets.implicitWidth || 0
-                    const settingsWidth = 40
-                    const separatorWidth = 1
-                    const spacing = 8 + 8 // Left margin for separator + right margin for settings
-                    const padding = 12
-                    const totalPadding = SettingsData.dockLeftPadding * 2 // Left + Right padding (both use same value)
-                    return appsWidth + leftWidth + rightWidth + settingsWidth + separatorWidth + spacing + padding + totalPadding
+                    if (SettingsData.dockExpandToScreen) {
+                        // When expanding to screen, use full width minus margins
+                        return parent.width - 16 // 8px margin on each side
+                    } else {
+                        // Normal dock width calculation
+                        const appsWidth = dockApps.implicitWidth || 0
+                        const leftWidgetAreaWidth = leftWidgetArea.width || 0
+                        const rightWidgetAreaWidth = rightWidgetArea.width || 0
+                        const spacing = 8 + 8 + 8 + 8 // Left widget area margin + main container margins + right widget area margin
+                        const padding = 12
+                        const totalPadding = SettingsData.dockLeftPadding * 2 // Left + Right padding (both use same value)
+                        return appsWidth + leftWidgetAreaWidth + rightWidgetAreaWidth + spacing + padding + totalPadding
+                    }
                 }
 
                 height: parent.height - 8 + (SettingsData.dockTopPadding * 2)
@@ -155,77 +173,212 @@ PanelWindow {
                     radius: parent.radius
                 }
 
-                Row {
-                    anchors.fill: parent
-                    anchors.leftMargin: 8 + SettingsData.dockLeftPadding
-                    anchors.rightMargin: 4 + SettingsData.dockLeftPadding
-                    anchors.topMargin: 4 + SettingsData.dockTopPadding
-                    anchors.bottomMargin: 4 + SettingsData.dockTopPadding
-                    spacing: 8
+                // Left Widget Area (Expandable)
+                Rectangle {
+                    id: leftWidgetArea
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height - 8
+                    width: Math.max(60, leftWidgets.implicitWidth + 16) // Increased minimum width for launcher button
+                    radius: Theme.cornerRadius
+                    color: {
+                        const baseColor = Theme.surfaceContainer
+                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, 0.3)
+                    }
+                    border.width: 1
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
+                    z: 10 // Ensure it's on top
+                    visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
+                    
+                    // Smooth width animation
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    
+                    // Add refresh mechanism like top bar
+                    Connections {
+                        target: SettingsData
+                        function onWidgetDataChanged() {
+                            Qt.callLater(() => {
+                                leftWidgets.visible = false
+                                Qt.callLater(() => {
+                                    leftWidgets.visible = true
+                                })
+                            })
+                        }
+                    }
 
-                    // Left Widgets
                     DockWidgets {
                         id: leftWidgets
-                        width: Math.max(0, implicitWidth)
-                        height: parent.height
-                        widgetList: SettingsData.dockLeftWidgets
+                        anchors.centerIn: parent
+                        height: parent.height - 8
+                        widgetList: SettingsData.dockLeftWidgetsModel
                         side: "left"
-                    }
-
-                    // Dock Apps (Center)
-                    DockApps {
-                        id: dockApps
-                        width: implicitWidth
-                        height: parent.height
-                        contextMenu: dock.contextMenu
-                    }
-
-                    // Right Widgets
-                    DockWidgets {
-                        id: rightWidgets
-                        width: Math.max(0, implicitWidth)
-                        height: parent.height
-                        widgetList: SettingsData.dockRightWidgets
-                        side: "right"
-                    }
-
-                    // Separator with spacing
-                    Rectangle {
-                        width: 1
-                        height: parent.height * 0.6
-                        color: Theme.outline
-                        opacity: 0.3
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin: 8
-                    }
-
-                    // Settings Button with spacing
-                    Rectangle {
-                        width: 40
-                        height: parent.height
-                        radius: Theme.cornerRadius
-                        color: settingsArea.containsMouse ? Theme.widgetBaseHoverColor : "transparent"
-                        anchors.rightMargin: 8
+                        z: 11 // Ensure widgets are on top
                         
-                        MouseArea {
-                            id: settingsArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                // Open settings modal
-                                settingsModal.show()
-                            }
-                        }
-
-                        DankIcon {
-                            anchors.centerIn: parent
-                            name: "settings"
-                            size: Theme.iconSize
-                            color: Theme.surfaceText
+                        Component.onCompleted: {
+                            // Left widgets created
                         }
                     }
                 }
+
+                // Separator between settings and right widgets
+                Rectangle {
+                    anchors.right: settingsButton.left
+                    anchors.rightMargin: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 1
+                    height: parent.height * 0.6
+                    color: Theme.outline
+                    opacity: 0.3
+                    visible: !SettingsData.dockExpandToScreen
+                }
+
+                // Right Widget Area (Expandable)
+                Rectangle {
+                    id: rightWidgetArea
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height - 8
+                    width: Math.max(40, rightWidgets.implicitWidth + 16) // Minimum width, expands with content
+                    radius: Theme.cornerRadius
+                    color: {
+                        const baseColor = Theme.surfaceContainer
+                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, 0.3)
+                    }
+                    border.width: 1
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
+                    visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
+                    
+                    // Smooth width animation
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    
+                    // Add refresh mechanism like left widgets
+                    Connections {
+                        target: SettingsData
+                        function onWidgetDataChanged() {
+                            Qt.callLater(() => {
+                                rightWidgets.visible = false
+                                Qt.callLater(() => {
+                                    rightWidgets.visible = true
+                                })
+                            })
+                        }
+                    }
+
+                    // Widgets centered in the background
+                    DockWidgets {
+                        id: rightWidgets
+                        anchors.centerIn: parent
+                        height: parent.height - 8
+                        widgetList: SettingsData.dockRightWidgetsModel
+                        side: "right"
+                        
+                        Component.onCompleted: {
+                            // Right widgets created
+                        }
+                    }
+                }
+
+                // Main dock content container (centered, with margins for widget areas)
+                Item {
+                    id: mainDockContainer
+                    anchors.left: SettingsData.dockExpandToScreen ? parent.left : leftWidgetArea.right
+                    anchors.leftMargin: SettingsData.dockExpandToScreen ? 8 : 8
+                    anchors.right: SettingsData.dockExpandToScreen ? parent.right : parent.right
+                    anchors.rightMargin: SettingsData.dockExpandToScreen ? 8 : 8
+                    anchors.top: parent.top
+                    anchors.topMargin: 4 + SettingsData.dockTopPadding
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 4 + SettingsData.dockTopPadding
+                    
+                    // Ensure this container doesn't extend into left widget area
+                    clip: true
+                    z: 5 // Lower than left widget area (z: 10)
+
+                    Item {
+                        anchors.fill: parent
+
+                        // Dock Apps (Left side)
+                        DockApps {
+                            id: dockApps
+                            anchors.left: SettingsData.dockCenterApps ? undefined : (SettingsData.dockExpandToScreen ? expandedLeftWidgets.right : parent.left)
+                            anchors.leftMargin: SettingsData.dockExpandToScreen ? 8 : 0
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: SettingsData.dockCenterApps ? parent.horizontalCenter : undefined
+                            height: parent.height
+                            contextMenu: dock.contextMenu
+                            
+                            // Ensure dock apps don't extend beyond their container
+                            clip: true
+                            z: 1 // Lower than left widget area
+                        }
+
+                        // Separator between dock apps and settings/right widgets
+                        Rectangle {
+                            anchors.left: dockApps.right
+                            anchors.leftMargin: 8
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 1
+                            height: parent.height * 0.6
+                            color: Theme.outline
+                            opacity: 0.3
+                            visible: !SettingsData.dockCenterApps
+                        }
+
+
+
+                        // Left Widgets (when expanding to screen)
+                        DockWidgets {
+                            id: expandedLeftWidgets
+                            anchors.left: parent.left
+                            anchors.leftMargin: 8
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: parent.height - 8
+                            widgetList: SettingsData.dockLeftWidgetsModel
+                            side: "left"
+                            visible: SettingsData.dockExpandToScreen
+                            z: 2
+                        }
+
+                        // Separator between left widgets and dock apps
+                        Rectangle {
+                            anchors.left: expandedLeftWidgets.right
+                            anchors.leftMargin: 4
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 1
+                            height: parent.height * 0.6
+                            color: Theme.outline
+                            opacity: 0.3
+                            visible: SettingsData.dockExpandToScreen
+                        }
+
+                        // Right Widgets (when expanding to screen)
+                        DockWidgets {
+                            id: expandedRightWidgets
+                            anchors.right: parent.right
+                            anchors.rightMargin: 8
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: parent.height - 8
+                            widgetList: SettingsData.dockRightWidgetsModel
+                            side: "right"
+                            visible: SettingsData.dockExpandToScreen
+                            z: 2
+                        }
+
+                    }
+                }
+
             }
 
             Rectangle {
@@ -308,7 +461,7 @@ PanelWindow {
                     return null
                 }
                 
-                minimizedWindow: hoveredButton ? globalMinimizedWindowManager.getMinimizedWindow(hoveredButton.getToplevelObject()) : null
+                minimizedWindow: null
                 visible: minimizedWindow !== null
                 
                 y: -height - 16

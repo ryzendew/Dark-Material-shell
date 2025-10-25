@@ -42,7 +42,7 @@ Singleton {
         isChanging = true
         currentMode = modeId
         
-        console.log("PerformanceService: Setting mode to", modeId)
+        // console.log("PerformanceService: Setting mode to", modeId)
         
         // Apply power management settings based on mode
         switch(modeId) {
@@ -66,7 +66,7 @@ Singleton {
     }
 
     function applyPowerSaverSettings() {
-        console.log("PerformanceService: Applying power saver settings")
+        // console.log("PerformanceService: Applying power saver settings")
         
         // CPU governor to powersave
         Quickshell.execDetached(["sudo", "cpupower", "frequency-set", "-g", "powersave"])
@@ -85,7 +85,7 @@ Singleton {
     }
 
     function applyBalancedSettings() {
-        console.log("PerformanceService: Applying balanced settings")
+        // console.log("PerformanceService: Applying balanced settings")
         
         // CPU governor to ondemand
         Quickshell.execDetached(["sudo", "cpupower", "frequency-set", "-g", "ondemand"])
@@ -104,7 +104,7 @@ Singleton {
     }
 
     function applyPerformanceSettings() {
-        console.log("PerformanceService: Applying performance settings")
+        // console.log("PerformanceService: Applying performance settings")
         
         // CPU governor to performance
         Quickshell.execDetached(["sudo", "cpupower", "frequency-set", "-g", "performance"])

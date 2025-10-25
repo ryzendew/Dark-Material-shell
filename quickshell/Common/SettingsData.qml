@@ -176,8 +176,15 @@ Singleton {
     property alias topBarRightWidgetsModel: rightWidgetsModel
     
     // Dock widgets
-    property var dockLeftWidgets: []
-    property var dockRightWidgets: []
+    property var dockLeftWidgets: ["launcherButton", "music", "clock"]
+    property var dockRightWidgets: ["systemTray", "controlCenterButton", "settingsButton"]
+    
+    // Widget positioning settings
+    property string controlCenterPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
+    property string notificationCenterPosition: "top-right" // "top-right", "bottom-right", "top-left", "bottom-left", "center"
+    property string appDrawerPosition: "center" // "center", "top-left", "top-right", "bottom-left", "bottom-right"
+    property string clipboardPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
+    
     property alias dockLeftWidgetsModel: dockLeftWidgetsModel
     property alias dockRightWidgetsModel: dockRightWidgetsModel
     property string appLauncherViewMode: "list"
@@ -196,6 +203,7 @@ Singleton {
     property bool useCustomLauncherImage: false
     property string customLauncherImagePath: ""
     property real launcherLogoSize: 24
+    property string launcherPosition: "bottom-center" // "bottom-center", "bottom-left", "bottom-right"
     property bool wallpaperDynamicTheming: true
     property bool weatherEnabled: true
     property string fontFamily: "Inter Variable"
@@ -222,10 +230,12 @@ Singleton {
     onNotepadLastCustomTransparencyChanged: saveSettings()
     property bool gtkThemingEnabled: false
     property bool qtThemingEnabled: false
-    property bool showDock: false
+    property bool showDock: true
     property bool dockAutoHide: false
     property bool dockGroupApps: false
     property bool dockHideOnGames: true
+    property bool dockExpandToScreen: false
+    property bool dockCenterApps: false
     property real dockBottomGap: 16
     property real dockExclusiveZone: 65
     property real dockLeftPadding: 0
@@ -319,7 +329,7 @@ Singleton {
                     } else if (settings.themeIndex >= 0 && settings.themeIndex < themeNames.length) {
                         currentThemeName = themeNames[settings.themeIndex]
                     }
-                    console.log("Auto-migrated theme from index", settings.themeIndex, "to", currentThemeName)
+                    // console.log("Auto-migrated theme from index", settings.themeIndex, "to", currentThemeName)
                 } else {
                     currentThemeName = settings.currentThemeName !== undefined ? settings.currentThemeName : "blue"
                 }
@@ -457,6 +467,7 @@ Singleton {
                 showWorkspacePadding = settings.showWorkspacePadding !== undefined ? settings.showWorkspacePadding : false
                 showWorkspaceApps = settings.showWorkspaceApps !== undefined ? settings.showWorkspaceApps : false
                 maxWorkspaceIcons = settings.maxWorkspaceIcons !== undefined ? settings.maxWorkspaceIcons : 3
+                maxWorkspaces = settings.maxWorkspaces !== undefined ? settings.maxWorkspaces : 10
                 workspaceNameIcons = settings.workspaceNameIcons !== undefined ? settings.workspaceNameIcons : ({})
                 workspacesPerMonitor = settings.workspacesPerMonitor !== undefined ? settings.workspacesPerMonitor : true
                 waveProgressEnabled = settings.waveProgressEnabled !== undefined ? settings.waveProgressEnabled : true
@@ -490,10 +501,16 @@ Singleton {
                 }
                 
                 // Load dock widgets
-                dockLeftWidgets = settings.dockLeftWidgets !== undefined ? settings.dockLeftWidgets : []
-                dockRightWidgets = settings.dockRightWidgets !== undefined ? settings.dockRightWidgets : []
+                dockLeftWidgets = settings.dockLeftWidgets !== undefined ? settings.dockLeftWidgets : ["launcherButton", "music", "clock"]
+                dockRightWidgets = settings.dockRightWidgets !== undefined ? settings.dockRightWidgets : ["systemTray", "controlCenterButton"]
                 updateListModel(dockLeftWidgetsModel, dockLeftWidgets)
                 updateListModel(dockRightWidgetsModel, dockRightWidgets)
+                
+                // Load widget positioning settings
+                controlCenterPosition = settings.controlCenterPosition !== undefined ? settings.controlCenterPosition : "bottom-right"
+                notificationCenterPosition = settings.notificationCenterPosition !== undefined ? settings.notificationCenterPosition : "top-right"
+                appDrawerPosition = settings.appDrawerPosition !== undefined ? settings.appDrawerPosition : "center"
+                clipboardPosition = settings.clipboardPosition !== undefined ? settings.clipboardPosition : "bottom-right"
                 
                 appLauncherViewMode = settings.appLauncherViewMode !== undefined ? settings.appLauncherViewMode : "list"
                 spotlightModalViewMode = settings.spotlightModalViewMode !== undefined ? settings.spotlightModalViewMode : "list"
@@ -506,6 +523,7 @@ Singleton {
                 useCustomLauncherImage = settings.useCustomLauncherImage !== undefined ? settings.useCustomLauncherImage : false
                 customLauncherImagePath = settings.customLauncherImagePath !== undefined ? settings.customLauncherImagePath : ""
                 launcherLogoSize = settings.launcherLogoSize !== undefined ? settings.launcherLogoSize : 24
+                launcherPosition = settings.launcherPosition !== undefined ? settings.launcherPosition : "bottom-center"
                 wallpaperDynamicTheming = settings.wallpaperDynamicTheming !== undefined ? settings.wallpaperDynamicTheming : true
                 fontFamily = settings.fontFamily !== undefined ? settings.fontFamily : defaultFontFamily
                 monoFontFamily = settings.monoFontFamily !== undefined ? settings.monoFontFamily : defaultMonoFontFamily
@@ -519,10 +537,12 @@ Singleton {
                 notepadLastCustomTransparency = settings.notepadLastCustomTransparency !== undefined ? settings.notepadLastCustomTransparency : 0.95
                 gtkThemingEnabled = settings.gtkThemingEnabled !== undefined ? settings.gtkThemingEnabled : false
                 qtThemingEnabled = settings.qtThemingEnabled !== undefined ? settings.qtThemingEnabled : false
-                showDock = settings.showDock !== undefined ? settings.showDock : false
+                showDock = settings.showDock !== undefined ? settings.showDock : true
                 dockAutoHide = settings.dockAutoHide !== undefined ? settings.dockAutoHide : false
                 dockGroupApps = settings.dockGroupApps !== undefined ? settings.dockGroupApps : false
                 dockHideOnGames = settings.dockHideOnGames !== undefined ? settings.dockHideOnGames : true
+                dockExpandToScreen = settings.dockExpandToScreen !== undefined ? settings.dockExpandToScreen : false
+                dockCenterApps = settings.dockCenterApps !== undefined ? settings.dockCenterApps : false
                 dockBottomGap = settings.dockBottomGap !== undefined ? settings.dockBottomGap : 16
                 dockExclusiveZone = settings.dockExclusiveZone !== undefined ? settings.dockExclusiveZone : 65
                 dockLeftPadding = settings.dockLeftPadding !== undefined ? settings.dockLeftPadding : 0
@@ -567,11 +587,11 @@ Singleton {
 
     function saveSettings() {
         if (_loading) {
-            console.log("SettingsData: saveSettings called but _loading is true, skipping")
+            // console.log("SettingsData: saveSettings called but _loading is true, skipping")
             return
         }
-        console.log("SettingsData: saveSettings called, saving color themes:", savedColorThemes)
-        console.log("SettingsData: currentColorTheme:", currentColorTheme)
+        // console.log("SettingsData: saveSettings called, saving color themes:", savedColorThemes)
+        // console.log("SettingsData: currentColorTheme:", currentColorTheme)
         settingsFile.setText(JSON.stringify({
                                                 "currentThemeName": currentThemeName,
                                                 "customThemeFile": customThemeFile,
@@ -692,6 +712,7 @@ Singleton {
                                                 "showWorkspacePadding": showWorkspacePadding,
                                                 "showWorkspaceApps": showWorkspaceApps,
                                                 "maxWorkspaceIcons": maxWorkspaceIcons,
+                                                "maxWorkspaces": maxWorkspaces,
                                                 "workspacesPerMonitor": workspacesPerMonitor,
                                                 "workspaceNameIcons": workspaceNameIcons,
                                                 "waveProgressEnabled": waveProgressEnabled,
@@ -707,6 +728,10 @@ Singleton {
                                                 "topBarRightWidgets": topBarRightWidgets,
                                                 "dockLeftWidgets": dockLeftWidgets,
                                                 "dockRightWidgets": dockRightWidgets,
+                                                "controlCenterPosition": controlCenterPosition,
+                                                "notificationCenterPosition": notificationCenterPosition,
+                                                "appDrawerPosition": appDrawerPosition,
+                                                "clipboardPosition": clipboardPosition,
                                                 "appLauncherViewMode": appLauncherViewMode,
                                                 "spotlightModalViewMode": spotlightModalViewMode,
                                                 "networkPreference": networkPreference,
@@ -718,6 +743,7 @@ Singleton {
                                                 "useCustomLauncherImage": useCustomLauncherImage,
                                                 "customLauncherImagePath": customLauncherImagePath,
                                                 "launcherLogoSize": launcherLogoSize,
+                                                "launcherPosition": launcherPosition,
                                                 "wallpaperDynamicTheming": wallpaperDynamicTheming,
                                                 "fontFamily": fontFamily,
                                                 "monoFontFamily": monoFontFamily,
@@ -735,6 +761,8 @@ Singleton {
                                                 "dockAutoHide": dockAutoHide,
                                                 "dockGroupApps": dockGroupApps,
                                                 "dockHideOnGames": dockHideOnGames,
+                                                "dockExpandToScreen": dockExpandToScreen,
+                                                "dockCenterApps": dockCenterApps,
                                                 "dockBottomGap": dockBottomGap,
                                                 "dockIconSize": dockIconSize,
                                                 "dockIconSpacing": dockIconSpacing,
@@ -895,19 +923,19 @@ Singleton {
     }
 
     function setSavedColorThemes(themes) {
-        console.log("SettingsData: setSavedColorThemes called with:", themes)
+        // console.log("SettingsData: setSavedColorThemes called with:", themes)
         savedColorThemes = themes
-        console.log("SettingsData: savedColorThemes set to:", savedColorThemes)
+        // console.log("SettingsData: savedColorThemes set to:", savedColorThemes)
         saveSettings()
-        console.log("SettingsData: saveSettings called after setSavedColorThemes")
+        // console.log("SettingsData: saveSettings called after setSavedColorThemes")
     }
 
     function setCurrentColorTheme(themeName) {
-        console.log("SettingsData: setCurrentColorTheme called with:", themeName)
+        // console.log("SettingsData: setCurrentColorTheme called with:", themeName)
         currentColorTheme = themeName
-        console.log("SettingsData: currentColorTheme set to:", currentColorTheme)
+        // console.log("SettingsData: currentColorTheme set to:", currentColorTheme)
         saveSettings()
-        console.log("SettingsData: saveSettings called after setCurrentColorTheme")
+        // console.log("SettingsData: saveSettings called after setCurrentColorTheme")
     }
 
     function setTopBarTransparency(transparency) {
@@ -1746,6 +1774,16 @@ Singleton {
         saveSettings()
     }
 
+    function setDockExpandToScreen(enabled) {
+        dockExpandToScreen = enabled
+        saveSettings()
+    }
+
+    function setDockCenterApps(enabled) {
+        dockCenterApps = enabled
+        saveSettings()
+    }
+
     function setDockBottomGap(gap) {
         dockBottomGap = gap
         saveSettings()
@@ -1912,7 +1950,7 @@ Singleton {
         
         // Set desktop widgets to DP-2 if not already configured
         if (!screenPreferences || !screenPreferences["desktopWidgets"]) {
-            console.log("SettingsData: Setting desktop widgets to DP-2");
+            // console.log("SettingsData: Setting desktop widgets to DP-2");
             setDesktopWidgetsScreen("DP-2");
         }
     }
@@ -2050,7 +2088,7 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {
-                console.log("Copied default-settings.json to settings.json")
+                // console.log("Copied default-settings.json to settings.json")
                 settingsFile.reload()
             } else {
                 // No default settings file found, just apply stored theme

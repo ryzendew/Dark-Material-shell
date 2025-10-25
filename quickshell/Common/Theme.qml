@@ -531,7 +531,7 @@ Singleton {
         Quickshell.execDetached(["sh", "-c", `mkdir -p '${stateDir}' && cat > '${desiredPath}' << 'EOF'\n${json}\nEOF`])
         workerRunning = true
         if (rawWallpaperPath.startsWith("we:")) {
-            console.log("calling matugen worker")
+            // console.log("calling matugen worker")
             systemThemeGenerator.command = [
                 "sh", "-c",
                 `sleep 1 && ${shellDir}/scripts/matugen-worker.sh '${stateDir}' '${shellDir}' --run`
@@ -756,7 +756,7 @@ Singleton {
                         ToastService.wallpaperErrorStatus = "error"
                         ToastService.showError("Wallpaper Processing Failed: Invalid JSON extracted from matugen output.")
                     }
-                    console.log("Raw matugen output:", matugenCollector.text)
+                    // console.log("Raw matugen output:", matugenCollector.text)
                     return
                 }
                 try {
@@ -804,7 +804,7 @@ Singleton {
                         ToastService.wallpaperErrorStatus = "error"
                         ToastService.showError("Color Processing Failed: Invalid JSON extracted from matugen output.")
                     }
-                    console.log("Raw matugen output:", colorMatugenCollector.text)
+                    // console.log("Raw matugen output:", colorMatugenCollector.text)
                     return
                 }
                 try {
@@ -845,7 +845,7 @@ Singleton {
 
             if (exitCode === 2) {
                 // Exit code 2 means wallpaper/color not found - this is expected on first run
-                console.log("Theme worker: wallpaper/color not found, skipping theme generation")
+                // console.log("Theme worker: wallpaper/color not found, skipping theme generation")
             } else if (exitCode !== 0) {
                 if (typeof ToastService !== "undefined") {
                     ToastService.showError("Theme worker failed (" + exitCode + ")")

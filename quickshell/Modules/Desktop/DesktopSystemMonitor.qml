@@ -35,14 +35,14 @@ DankOSD {
 
     Component.onCompleted: {
         DgopService.addRef(["cpu", "memory", "gpu"]);
-        console.log("DesktopSystemMonitor: Component completed")
-        console.log("DesktopSystemMonitor: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
-        console.log("DesktopSystemMonitor: PerformanceService available:", typeof PerformanceService !== 'undefined')
+        // console.log("DesktopSystemMonitor: Component completed")
+        // console.log("DesktopSystemMonitor: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
+        // console.log("DesktopSystemMonitor: PerformanceService available:", typeof PerformanceService !== 'undefined')
         if (typeof CpuFrequencyService !== 'undefined') {
-            console.log("DesktopSystemMonitor: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
+            // console.log("DesktopSystemMonitor: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
         }
         if (typeof PerformanceService !== 'undefined') {
-            console.log("DesktopSystemMonitor: Initial performance mode:", PerformanceService.currentMode)
+            // console.log("DesktopSystemMonitor: Initial performance mode:", PerformanceService.currentMode)
         }
         show();
     }
@@ -196,7 +196,7 @@ DankOSD {
                                         return CpuFrequencyService.currentFrequency.toFixed(1) + "GHz";
                                     }
                                 } catch (e) {
-                                    console.log("DesktopSystemMonitor: Error accessing CpuFrequencyService:", e)
+                                    // console.log("DesktopSystemMonitor: Error accessing CpuFrequencyService:", e)
                                 }
                                 return "--GHz";
                             }
@@ -213,7 +213,7 @@ DankOSD {
                                         }
                                     }
                                 } catch (e) {
-                                    console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
+                                    // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                                 }
                                 return Theme.surfaceTextMedium;
                             }
@@ -240,7 +240,7 @@ DankOSD {
                                 return PerformanceService.getCurrentModeInfo().name;
                             }
                         } catch (e) {
-                            console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
+                            // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                         }
                         return "Unknown";
                     }
@@ -257,7 +257,7 @@ DankOSD {
                                 }
                             }
                         } catch (e) {
-                            console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
+                            // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }

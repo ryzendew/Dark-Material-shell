@@ -45,12 +45,8 @@ ShellRoot {
     Connections {
         target: ColorPaletteService
         function onCustomThemeCreated(themeData) {
-            console.log("Shell: Custom theme created, forcing complete refresh...")
-            console.log("Shell: Theme data:", themeData)
-            
             // Force refresh all UI components
             Qt.callLater(() => {
-                console.log("Shell: Refreshing all UI components...")
                 // The visibility toggles in TopBar and Dock should handle the refresh
             })
         }
@@ -58,8 +54,6 @@ ShellRoot {
 
     WallpaperBackground {}
 
-    // Global Minimized Window Manager
-    GlobalMinimizedWindowManager {}
 
     // Desktop Widgets
     Variants {
@@ -179,6 +173,10 @@ ShellRoot {
 
     Variants {
         model: SettingsData.getFilteredScreens("dock")
+        
+        Component.onCompleted: {
+            // Dock variants completed
+        }
 
         delegate: Dock {
             modelData: item

@@ -149,9 +149,7 @@ PanelWindow {
     Connections {
         target: Theme
         function onColorUpdateTriggerChanged() {
-            console.log("TopBar: Theme color update triggered")
-            console.log("TopBar: Current theme:", Theme.currentTheme)
-            console.log("TopBar: Surface container color:", Theme.surfaceContainer)
+            // Theme color update triggered
         }
     }
 

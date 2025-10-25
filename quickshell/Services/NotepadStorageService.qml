@@ -101,6 +101,23 @@ Singleton {
             })
             return
         }
+        
+        // Check if file exists before loading
+        var fileInfo = Qt.createQmlObject('import QtCore; QtObject { }', root)
+        try {
+            var file = Qt.openUrlExternally(fullPath)
+            if (!file) {
+                console.warn("NotepadStorageService: File does not exist:", fullPath)
+                callback("")
+                return
+            }
+            file.close()
+        } catch (e) {
+            console.warn("NotepadStorageService: File does not exist:", fullPath)
+            callback("")
+            return
+        }
+        
         var loader = tabFileLoaderComponent.createObject(root, {
             path: fullPath,
             callback: callback

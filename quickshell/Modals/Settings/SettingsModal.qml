@@ -39,8 +39,20 @@ DankModal {
     }
 
     objectName: "settingsModal"
-    width: 1920
-    height: 1080
+    width: {
+        const screenWidth = Screen.width
+        if (screenWidth >= 3840) return 2560 // 4K -> 1440p
+        if (screenWidth >= 2560) return 1920 // 1440p -> 1080p  
+        if (screenWidth >= 1920) return 1280 // 1080p -> 720p
+        return 800 // 720p or lower -> 800x600
+    }
+    height: {
+        const screenHeight = Screen.height
+        if (screenHeight >= 2160) return 1800 // 4K -> 1800px
+        if (screenHeight >= 1440) return 1400 // 1440p -> 1400px
+        if (screenHeight >= 1080) return 1000 // 1080p -> 1000px
+        return 800 // 720p or lower -> 800px
+    }
     visible: false
     onBackgroundClicked: () => {
         return hide();
@@ -68,14 +80,14 @@ DankModal {
 
     IpcHandler {
         function browse(type: string) {
-            console.log("SettingsModal: IPC browse called with type:", type)
+            // console.log("SettingsModal: IPC browse called with type:", type)
             if (type === "wallpaper") {
-                console.log("SettingsModal: Opening wallpaper browser...")
+                // console.log("SettingsModal: Opening wallpaper browser...")
                 wallpaperBrowser.allowStacking = false;
                 wallpaperBrowser.open();
-                console.log("SettingsModal: Wallpaper browser open() called")
+                // console.log("SettingsModal: Wallpaper browser open() called")
             } else if (type === "profile") {
-                console.log("SettingsModal: Opening profile browser...")
+                // console.log("SettingsModal: Opening profile browser...")
                 profileBrowser.allowStacking = false;
                 profileBrowser.open();
             }
@@ -117,17 +129,17 @@ DankModal {
         fileExtensions: ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.gif", "*.webp"]
         
         onOpened: {
-            console.log("SettingsModal: Wallpaper browser opened successfully")
+            // console.log("SettingsModal: Wallpaper browser opened successfully")
         }
         
         onFileSelected: (path) => {
-            console.log("SettingsModal: Wallpaper selected:", path)
+            // console.log("SettingsModal: Wallpaper selected:", path)
             SessionData.setWallpaper(path);
             close();
         }
         
         onDialogClosed: () => {
-            console.log("SettingsModal: Wallpaper browser closed")
+            // console.log("SettingsModal: Wallpaper browser closed")
             allowStacking = true;
         }
     }

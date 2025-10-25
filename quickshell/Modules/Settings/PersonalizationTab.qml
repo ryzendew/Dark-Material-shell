@@ -1051,7 +1051,7 @@ Item {
                                 }
 
                                 onTabClicked: index => {
-                                                  console.log("Tab clicked:", index, "Setting mode to:", index === 1 ? "location" : "time")
+                                                  // console.log("Tab clicked:", index, "Setting mode to:", index === 1 ? "location" : "time")
                                                   DisplayService.setNightModeAutomationMode(index === 1 ? "location" : "time")
                                                   currentIndex = index
                                               }

@@ -15,7 +15,7 @@ Singleton {
     // Get all application audio output streams
     readonly property var applicationStreams: {
         if (!Pipewire.ready || !Pipewire.nodes?.values) {
-            console.log("ApplicationAudioService: Pipewire not ready or no nodes")
+            // console.log("ApplicationAudioService: Pipewire not ready or no nodes")
             return []
         }
 
@@ -37,19 +37,19 @@ Singleton {
             const isOutputStream = isStream && isSink && (hasAppName || isAudioStream)
             
             if (isOutputStream) {
-                console.log("ApplicationAudioService: Found output stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
+                // console.log("ApplicationAudioService: Found output stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
             }
             return isOutputStream
         })
         
-        console.log("ApplicationAudioService: Found", streams.length, "output streams")
+        // console.log("ApplicationAudioService: Found", streams.length, "output streams")
         return streams
     }
 
     // Get all application audio input streams
     readonly property var applicationInputStreams: {
         if (!Pipewire.ready || !Pipewire.nodes?.values) {
-            console.log("ApplicationAudioService: Pipewire not ready or no nodes")
+            // console.log("ApplicationAudioService: Pipewire not ready or no nodes")
             return []
         }
 
@@ -70,12 +70,12 @@ Singleton {
             const isInputStream = isStream && !isSink && (hasAppName || isAudioStream)
             
             if (isInputStream) {
-                console.log("ApplicationAudioService: Found input stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
+                // console.log("ApplicationAudioService: Found input stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
             }
             return isInputStream
         })
         
-        console.log("ApplicationAudioService: Found", streams.length, "input streams")
+        // console.log("ApplicationAudioService: Found", streams.length, "input streams")
         return streams
     }
 
@@ -190,26 +190,26 @@ Singleton {
     // Debug function to log all available nodes
     function debugAllNodes() {
         if (!Pipewire.ready || !Pipewire.nodes?.values) {
-            console.log("ApplicationAudioService: Pipewire not ready for debugging")
+            // console.log("ApplicationAudioService: Pipewire not ready for debugging")
             return
         }
         
-        console.log("ApplicationAudioService: Debugging all nodes...")
-        console.log("Total nodes:", Pipewire.nodes.values.length)
+        // console.log("ApplicationAudioService: Debugging all nodes...")
+        // console.log("Total nodes:", Pipewire.nodes.values.length)
         
         for (let i = 0; i < Pipewire.nodes.values.length; i++) {
             const node = Pipewire.nodes.values[i]
             if (!node) continue
             
-            console.log("Node", i, ":", {
-                name: node.name,
-                ready: node.ready,
-                hasAudio: !!node.audio,
-                isSink: node.isSink,
-                isStream: node.isStream,
-                type: node.type,
-                properties: node.properties
-            })
+            // console.log("Node", i, ":", {
+            //     name: node.name,
+            //     ready: node.ready,
+            //     hasAudio: !!node.audio,
+            //     isSink: node.isSink,
+            //     isStream: node.isStream,
+            //     type: node.type,
+            //     properties: node.properties
+            // })
         }
     }
 }

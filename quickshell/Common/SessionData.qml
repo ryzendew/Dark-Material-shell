@@ -209,7 +209,7 @@ Singleton {
     }
 
     function setNightModeAutoEnabled(enabled) {
-        console.log("SessionData: Setting nightModeAutoEnabled to", enabled)
+        // console.log("SessionData: Setting nightModeAutoEnabled to", enabled)
         nightModeAutoEnabled = enabled
         saveSettings()
     }
@@ -240,13 +240,13 @@ Singleton {
     }
 
     function setLatitude(lat) {
-        console.log("SessionData: Setting latitude to", lat)
+        // console.log("SessionData: Setting latitude to", lat)
         latitude = lat
         saveSettings()
     }
 
     function setLongitude(lng) {
-        console.log("SessionData: Setting longitude to", lng)
+        // console.log("SessionData: Setting longitude to", lng)
         longitude = lng
         saveSettings()
     }
@@ -579,7 +579,7 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {
-                console.log("Copied default-session.json to session.json")
+                // console.log("Copied default-session.json to session.json")
                 settingsFile.reload()
             }
         }

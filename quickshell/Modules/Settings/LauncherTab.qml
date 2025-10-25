@@ -78,6 +78,101 @@ Item {
             }
 
 
+            // Launcher Position Settings
+            StyledRect {
+                width: parent.width
+                height: launcherPositionSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: launcherPositionSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "open_in_full"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Launcher Position"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    StyledText {
+                        text: "Choose where the app launcher menu appears when clicked"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Row {
+                        spacing: Theme.spacingM
+
+                        Repeater {
+                            model: [
+                                { "value": "bottom-center", "text": "Bottom Center", "icon": "center_focus_strong" },
+                                { "value": "bottom-left", "text": "Bottom Left", "icon": "west" },
+                                { "value": "bottom-right", "text": "Bottom Right", "icon": "east" }
+                            ]
+
+                            Rectangle {
+                                width: 120
+                                height: 80
+                                radius: Theme.cornerRadius
+                                color: SettingsData.launcherPosition === modelData.value ? Theme.primary : Theme.surfaceContainerHigh
+                                border.color: SettingsData.launcherPosition === modelData.value ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
+                                border.width: 1
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        SettingsData.launcherPosition = modelData.value
+                                    }
+                                }
+
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: Theme.spacingXS
+
+                                    DankIcon {
+                                        name: modelData.icon
+                                        size: Theme.iconSize
+                                        color: SettingsData.launcherPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+
+                                    StyledText {
+                                        text: modelData.text
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        color: SettingsData.launcherPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // Launcher Button Settings
             StyledRect {
                 width: parent.width

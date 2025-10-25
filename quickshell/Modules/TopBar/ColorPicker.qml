@@ -36,7 +36,7 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onPressed: {
-            console.log("Color picker button clicked!")
+            // console.log("Color picker button clicked!")
             root.colorPickerRequested();
         }
     }

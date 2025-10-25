@@ -384,10 +384,15 @@ DankPopout {
                                         }
                                     }
 
+                                    // Spacer to push system controls to the right
+                                    Item {
+                                        width: parent.width - 200 // Adjust as needed
+                                        height: 1
+                                    }
+
                                     // System Controls
                                     Row {
                                         spacing: Theme.spacingS
-                                        anchors.right: parent.right
 
                                         // Folder, Settings buttons
                                         Repeater {

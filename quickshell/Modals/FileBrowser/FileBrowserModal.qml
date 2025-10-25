@@ -206,10 +206,10 @@ DankModal {
         folder: currentPath ? "file://" + currentPath : "file://" + homeDir
         
         onStatusChanged: {
-            console.log("FileBrowserModal: FolderListModel status changed to:", status)
+            // console.log("FileBrowserModal: FolderListModel status changed to:", status)
             if (status === FolderListModel.Ready) {
-                console.log("FileBrowserModal: Folder loaded, count:", count)
-                console.log("FileBrowserModal: Current folder:", folder)
+                // console.log("FileBrowserModal: Folder loaded, count:", count)
+                // console.log("FileBrowserModal: Current folder:", folder)
             }
         }
     }

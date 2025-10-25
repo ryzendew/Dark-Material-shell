@@ -22,10 +22,14 @@ MouseArea {
     onClicked: (event) => {
         switch (event.button) {
         case Qt.LeftButton:
-            item.activate();
+            if (item) {
+                item.activate();
+            }
             break;
         case Qt.RightButton:
-            if (item.hasMenu) menu.showAt(root, width / 2, height);
+            if (item && item.hasMenu && menu) {
+                menu.showAt(root, width / 2, height);
+            }
             break;
         }
         event.accepted = true;
@@ -38,6 +42,11 @@ MouseArea {
     }
 
     function setupIcon(icon_path) {
+        // Add null/undefined check to prevent crashes
+        if (!icon_path || typeof icon_path !== 'string') {
+            return "";
+        }
+
         if (icon_path.indexOf("=") !== -1) {
             icon_path = icon_path.split("=")[1];
         }
@@ -51,7 +60,9 @@ MouseArea {
 
         if (!isImage && !icon_path.startsWith("image://")) {
             findImageRecursiveAsync(icon_path, function(found) {
-                trayIcon.source = "file://" + found;
+                if (trayIcon) {
+                    trayIcon.source = "file://" + found;
+                }
             });
         }
 

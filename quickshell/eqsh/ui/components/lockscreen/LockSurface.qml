@@ -109,6 +109,10 @@ Rectangle {
 			property vector2d resolution: Qt.vector2d(width, height)
 			property real time: 0
 			property variant source: backgroundImage
+			
+			// Add data property to prevent warnings
+			property var data: null
+			
 			FrameAnimation {
 				running: true
 				onTriggered: {

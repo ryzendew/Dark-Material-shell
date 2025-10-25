@@ -18,20 +18,27 @@ Singleton {
     property string customThemeFilePath: ""
     property bool customThemeReady: false
     property var availableThemes: [] // List of available custom themes
-    property string currentThemeName: SettingsData.currentColorTheme || "" // Currently selected theme name
+    property string currentThemeName: {
+        if (typeof SettingsData !== 'undefined') {
+            return SettingsData.currentColorTheme || ""
+        }
+        return ""
+    } // Currently selected theme name
     
     // Force initialization when accessed
-    property bool _initialized: {
+    property bool _initialized: false
+    
+    function initializeIfNeeded() {
         if (!_initialized) {
+            _initialized = true
             Qt.callLater(function() {
                 if (typeof SettingsData !== 'undefined' && SettingsData.savedColorThemes !== undefined) {
-                    console.log("ColorPaletteService: Force initializing from property access...")
+                    // // // console.log("ColorPaletteService: Force initializing from property access...")
                     loadCustomThemeFromSettings()
                     updateAvailableThemes()
                 }
             })
         }
-        return true
     }
 
     signal colorsExtracted()
@@ -40,15 +47,15 @@ Singleton {
     signal themesUpdated()
 
     function extractColorsFromWallpaper(wallpaperPath) {
-        console.log("ColorPaletteService: extractColorsFromWallpaper called with:", wallpaperPath)
+        // // console.log("ColorPaletteService: extractColorsFromWallpaper called with:", wallpaperPath)
         if (!wallpaperPath || wallpaperPath === currentWallpaper) {
-            console.log("ColorPaletteService: Skipping extraction - no path or same wallpaper")
+            // // console.log("ColorPaletteService: Skipping extraction - no path or same wallpaper")
             return
         }
         
         currentWallpaper = wallpaperPath
         isExtracting = true
-        console.log("ColorPaletteService: Starting color extraction...")
+        // // console.log("ColorPaletteService: Starting color extraction...")
         
         // Use matugen to extract colors from wallpaper
         matugenProcess.command = ["matugen", "image", wallpaperPath, "--json", "hex"]
@@ -56,20 +63,20 @@ Singleton {
     }
 
     function selectColor(color, selected) {
-        console.log("ColorPaletteService: selectColor called with:", color, selected)
+        // // console.log("ColorPaletteService: selectColor called with:", color, selected)
         if (selected) {
             if (!selectedColors.includes(color)) {
                 selectedColors.push(color)
-                console.log("ColorPaletteService: Added color to selection")
+                // // console.log("ColorPaletteService: Added color to selection")
             }
         } else {
             const index = selectedColors.indexOf(color)
             if (index > -1) {
                 selectedColors.splice(index, 1)
-                console.log("ColorPaletteService: Removed color from selection")
+                // // console.log("ColorPaletteService: Removed color from selection")
             }
         }
-        console.log("ColorPaletteService: Selected colors:", selectedColors)
+        // // console.log("ColorPaletteService: Selected colors:", selectedColors)
         colorsChanged()
     }
 
@@ -79,12 +86,12 @@ Singleton {
     }
 
     function applySelectedColors() {
-        console.log("ColorPaletteService: applySelectedColors called")
-        console.log("ColorPaletteService: Selected colors count:", selectedColors.length)
-        console.log("ColorPaletteService: Selected colors:", selectedColors)
+        // // console.log("ColorPaletteService: applySelectedColors called")
+        // // console.log("ColorPaletteService: Selected colors count:", selectedColors.length)
+        // // console.log("ColorPaletteService: Selected colors:", selectedColors)
         
         if (selectedColors.length === 0) {
-            console.log("ColorPaletteService: No colors selected, returning")
+            // // console.log("ColorPaletteService: No colors selected, returning")
             return
         }
         
@@ -138,7 +145,7 @@ Singleton {
         
         // Determine current mode from SessionData
         const isLightMode = typeof SessionData !== 'undefined' ? SessionData.isLightMode : false
-        console.log("ColorPaletteService: Creating theme for mode:", isLightMode ? "light" : "dark")
+        // // console.log("ColorPaletteService: Creating theme for mode:", isLightMode ? "light" : "dark")
         
         // Create a comprehensive theme based on the selected color and current mode
         // This will affect the entire UI like dynamic theming does
@@ -239,11 +246,11 @@ Singleton {
             "shadowStrong": "rgba(0,0,0,0.3)"
         }
         
-        console.log("ColorPaletteService: Created custom theme:", customTheme)
-        console.log("ColorPaletteService: Primary color:", customTheme.primary)
-        console.log("ColorPaletteService: Background color:", customTheme.background)
-        console.log("ColorPaletteService: Surface color:", customTheme.surface)
-        console.log("ColorPaletteService: Theme available:", typeof Theme !== 'undefined')
+        // // console.log("ColorPaletteService: Created custom theme:", customTheme)
+        // // console.log("ColorPaletteService: Primary color:", customTheme.primary)
+        // // console.log("ColorPaletteService: Background color:", customTheme.background)
+        // // console.log("ColorPaletteService: Surface color:", customTheme.surface)
+        // // console.log("ColorPaletteService: Theme available:", typeof Theme !== 'undefined')
 
         // Update logo color to match the primary color
         if (typeof SettingsData !== 'undefined') {
@@ -261,41 +268,41 @@ Singleton {
             // Save the settings
             SettingsData.saveSettings()
             
-            console.log("ColorPaletteService: Updated logo color to:", primaryColor, "RGB:", r, g, b)
+            // // console.log("ColorPaletteService: Updated logo color to:", primaryColor, "RGB:", r, g, b)
         }
 
         // Store the custom theme data and emit signal
-        console.log("ColorPaletteService: Storing custom theme data...")
+        // // console.log("ColorPaletteService: Storing custom theme data...")
         root.customThemeData = customTheme
         root.customThemeReady = true
-        console.log("ColorPaletteService: Custom theme data stored")
+        // // console.log("ColorPaletteService: Custom theme data stored")
 
         // Apply the custom theme to the Theme system
-        console.log("ColorPaletteService: Applying custom theme to Theme system...")
+        // // console.log("ColorPaletteService: Applying custom theme to Theme system...")
         if (typeof Theme !== 'undefined') {
-            console.log("ColorPaletteService: Current theme before switch:", Theme.currentTheme)
-            console.log("ColorPaletteService: Custom theme data before load:", Theme.customThemeData)
+            // // console.log("ColorPaletteService: Current theme before switch:", Theme.currentTheme)
+            // // console.log("ColorPaletteService: Custom theme data before load:", Theme.customThemeData)
             
-            console.log("ColorPaletteService: Switching to custom theme...")
+            // // console.log("ColorPaletteService: Switching to custom theme...")
             Theme.switchTheme("custom", true, false)
-            console.log("ColorPaletteService: Current theme after switch:", Theme.currentTheme)
+            // // console.log("ColorPaletteService: Current theme after switch:", Theme.currentTheme)
             
-            console.log("ColorPaletteService: Loading custom theme data...")
+            // // console.log("ColorPaletteService: Loading custom theme data...")
             Theme.loadCustomTheme(customTheme)
-            console.log("ColorPaletteService: Custom theme data after load:", Theme.customThemeData)
-            console.log("ColorPaletteService: Current theme data after load:", Theme.currentThemeData)
+            // // console.log("ColorPaletteService: Custom theme data after load:", Theme.customThemeData)
+            // // console.log("ColorPaletteService: Current theme data after load:", Theme.currentThemeData)
             
-            console.log("ColorPaletteService: Generating system themes...")
+            // // console.log("ColorPaletteService: Generating system themes...")
             Theme.generateSystemThemesFromCurrentTheme()
-            console.log("ColorPaletteService: Custom theme applied successfully!")
+            // // console.log("ColorPaletteService: Custom theme applied successfully!")
             
             // Force a color update trigger to refresh UI
-            console.log("ColorPaletteService: Triggering color update...")
-            console.log("ColorPaletteService: Theme.colorUpdateTrigger before:", Theme.colorUpdateTrigger)
+            // // console.log("ColorPaletteService: Triggering color update...")
+            // // console.log("ColorPaletteService: Theme.colorUpdateTrigger before:", Theme.colorUpdateTrigger)
             Theme.colorUpdateTrigger++
-            console.log("ColorPaletteService: Theme.colorUpdateTrigger after:", Theme.colorUpdateTrigger)
+            // // console.log("ColorPaletteService: Theme.colorUpdateTrigger after:", Theme.colorUpdateTrigger)
         } else {
-            console.log("ColorPaletteService: Theme system not available!")
+            // // console.log("ColorPaletteService: Theme system not available!")
         }
 
         // Save the custom theme to file
@@ -318,7 +325,7 @@ Singleton {
                         extractedColors = colors
                         colorsExtracted()
                     } catch (e) {
-                        console.log("ColorPaletteService: Failed to parse matugen output:", e)
+                        // // console.log("ColorPaletteService: Failed to parse matugen output:", e)
                         extractedColors = []
                     }
                 }
@@ -333,7 +340,7 @@ Singleton {
         const isLightMode = typeof SessionData !== 'undefined' ? SessionData.isLightMode : false
         const currentMode = isLightMode ? 'light' : 'dark'
         
-        console.log("ColorPaletteService: Extracting colors for mode:", currentMode)
+        // // console.log("ColorPaletteService: Extracting colors for mode:", currentMode)
         
         // Extract colors from current mode only
         if (jsonData.colors && jsonData.colors[currentMode]) {
@@ -355,9 +362,9 @@ Singleton {
             ].filter(color => color && color.startsWith('#'))
             
             colors.push(...keyColors)
-            console.log("ColorPaletteService: Extracted", keyColors.length, "colors for", currentMode, "mode")
+            // // console.log("ColorPaletteService: Extracted", keyColors.length, "colors for", currentMode, "mode")
         } else {
-            console.log("ColorPaletteService: No colors found for mode:", currentMode)
+            // // console.log("ColorPaletteService: No colors found for mode:", currentMode)
         }
         
         // Remove duplicates and limit to 16 colors
@@ -368,9 +375,9 @@ Singleton {
 
     function saveCustomThemeToFile(themeData) {
         try {
-            console.log("ColorPaletteService: saveCustomThemeToFile called with:", themeData)
+            // // console.log("ColorPaletteService: saveCustomThemeToFile called with:", themeData)
             const colorName = themeData.primary.replace('#', '').toLowerCase()
-            console.log("ColorPaletteService: Color name:", colorName)
+            // // console.log("ColorPaletteService: Color name:", colorName)
             
             const themeInfo = {
                 name: colorName,
@@ -379,83 +386,83 @@ Singleton {
                 themeData: themeData
             }
             
-            console.log("ColorPaletteService: Theme info created:", themeInfo)
+            // // console.log("ColorPaletteService: Theme info created:", themeInfo)
             
             // Add or update theme in SettingsData
             if (typeof SettingsData !== 'undefined') {
-                console.log("ColorPaletteService: SettingsData available, current themes:", SettingsData.savedColorThemes)
+                // // console.log("ColorPaletteService: SettingsData available, current themes:", SettingsData.savedColorThemes)
                 let themes = SettingsData.savedColorThemes || []
                 
                 // Remove existing theme with same name if it exists
                 themes = themes.filter(t => t.name !== colorName)
-                console.log("ColorPaletteService: Themes after filter:", themes.length)
+                // // console.log("ColorPaletteService: Themes after filter:", themes.length)
                 
                 // Add new theme
                 themes.push(themeInfo)
-                console.log("ColorPaletteService: Themes after push:", themes.length)
+                // // console.log("ColorPaletteService: Themes after push:", themes.length)
                 
                 // Save to SettingsData
-                console.log("ColorPaletteService: About to save themes to SettingsData...")
+                // // console.log("ColorPaletteService: About to save themes to SettingsData...")
                 SettingsData.setSavedColorThemes(themes)
-                console.log("ColorPaletteService: Themes saved, calling setCurrentColorTheme...")
+                // // console.log("ColorPaletteService: Themes saved, calling setCurrentColorTheme...")
                 SettingsData.setCurrentColorTheme(colorName)
-                console.log("ColorPaletteService: Current theme set, checking SettingsData values...")
+                // // console.log("ColorPaletteService: Current theme set, checking SettingsData values...")
                 
-                console.log("ColorPaletteService: Custom theme saved to settings:", colorName)
-                console.log("ColorPaletteService: SettingsData.savedColorThemes after save:", SettingsData.savedColorThemes)
-                console.log("ColorPaletteService: SettingsData.currentColorTheme after save:", SettingsData.currentColorTheme)
+                // // console.log("ColorPaletteService: Custom theme saved to settings:", colorName)
+                // // console.log("ColorPaletteService: SettingsData.savedColorThemes after save:", SettingsData.savedColorThemes)
+                // // console.log("ColorPaletteService: SettingsData.currentColorTheme after save:", SettingsData.currentColorTheme)
                 
                 // Update the list of available themes
                 updateAvailableThemes()
             } else {
-                console.log("ColorPaletteService: SettingsData not available, retrying in 100ms...")
+                // // console.log("ColorPaletteService: SettingsData not available, retrying in 100ms...")
                 // Retry after a short delay
                 Qt.callLater(function() {
                     if (typeof SettingsData !== 'undefined') {
-                        console.log("ColorPaletteService: SettingsData now available on retry, saving...")
+                        // // console.log("ColorPaletteService: SettingsData now available on retry, saving...")
                         saveCustomThemeToFile(themeData)
                     } else {
-                        console.log("ColorPaletteService: SettingsData still not available on retry")
+                        // // console.log("ColorPaletteService: SettingsData still not available on retry")
                     }
                 })
             }
         } catch (e) {
-            console.log("ColorPaletteService: Error saving custom theme:", e)
+            // // console.log("ColorPaletteService: Error saving custom theme:", e)
         }
     }
 
     function loadCustomThemeFromSettings() {
         try {
-            console.log("ColorPaletteService: Loading custom theme from SettingsData")
-            console.log("ColorPaletteService: SettingsData available:", typeof SettingsData !== 'undefined')
+            // // console.log("ColorPaletteService: Loading custom theme from SettingsData")
+            // // console.log("ColorPaletteService: SettingsData available:", typeof SettingsData !== 'undefined')
             
             if (typeof SettingsData !== 'undefined') {
-                console.log("ColorPaletteService: SettingsData.savedColorThemes:", SettingsData.savedColorThemes)
-                console.log("ColorPaletteService: SettingsData.currentColorTheme:", SettingsData.currentColorTheme)
+                // // console.log("ColorPaletteService: SettingsData.savedColorThemes:", SettingsData.savedColorThemes)
+                // // console.log("ColorPaletteService: SettingsData.currentColorTheme:", SettingsData.currentColorTheme)
                 
                 if (SettingsData.currentColorTheme) {
                     const currentTheme = SettingsData.currentColorTheme
-                    console.log("ColorPaletteService: Current color theme from settings:", currentTheme)
+                    // // console.log("ColorPaletteService: Current color theme from settings:", currentTheme)
                     
                     // Find the theme in saved themes
                     const themes = SettingsData.savedColorThemes || []
-                    console.log("ColorPaletteService: Available themes count:", themes.length)
+                    // // console.log("ColorPaletteService: Available themes count:", themes.length)
                     
                     const theme = themes.find(t => t.name === currentTheme)
                     
                     if (theme) {
-                        console.log("ColorPaletteService: Found theme in settings:", theme.name)
-                        console.log("ColorPaletteService: Theme data:", theme.themeData)
+                        // // console.log("ColorPaletteService: Found theme in settings:", theme.name)
+                        // // console.log("ColorPaletteService: Theme data:", theme.themeData)
                         
                         // Apply the loaded theme
                         if (typeof Theme !== 'undefined') {
-                            console.log("ColorPaletteService: Setting customThemeData...")
+                            // // console.log("ColorPaletteService: Setting customThemeData...")
                             Theme.customThemeData = theme.themeData
-                            console.log("ColorPaletteService: Switching to custom theme...")
+                            // // console.log("ColorPaletteService: Switching to custom theme...")
                             Theme.switchTheme("custom", true, false) // Save prefs, no transition
-                            console.log("ColorPaletteService: Generating system themes...")
+                            // // console.log("ColorPaletteService: Generating system themes...")
                             Theme.generateSystemThemesFromCurrentTheme()
-                            console.log("ColorPaletteService: Applied loaded custom theme successfully")
+                            // // console.log("ColorPaletteService: Applied loaded custom theme successfully")
                             
                             // Also update logo color
                             if (typeof SettingsData !== 'undefined') {
@@ -469,47 +476,47 @@ Singleton {
                                 SettingsData.launcherLogoGreen = g
                                 SettingsData.launcherLogoBlue = b
                                 SettingsData.osLogoColorOverride = primaryColor
-                                console.log("ColorPaletteService: Updated logo color to:", primaryColor)
+                                // // console.log("ColorPaletteService: Updated logo color to:", primaryColor)
                             }
                         } else {
-                            console.log("ColorPaletteService: Theme system not available, cannot apply custom theme")
+                            // // console.log("ColorPaletteService: Theme system not available, cannot apply custom theme")
                         }
                         
                         return theme.themeData
                     } else {
-                        console.log("ColorPaletteService: Theme not found in saved themes")
-                        console.log("ColorPaletteService: Available theme names:", themes.map(t => t.name))
+                        // // console.log("ColorPaletteService: Theme not found in saved themes")
+                        // // console.log("ColorPaletteService: Available theme names:", themes.map(t => t.name))
                     }
                 } else {
-                    console.log("ColorPaletteService: No current color theme in settings")
+                    // // console.log("ColorPaletteService: No current color theme in settings")
                 }
             } else {
-                console.log("ColorPaletteService: SettingsData not available")
+                // // console.log("ColorPaletteService: SettingsData not available")
             }
         } catch (e) {
-            console.log("ColorPaletteService: Error loading custom theme from settings:", e)
+            // // console.log("ColorPaletteService: Error loading custom theme from settings:", e)
         }
         return null
     }
 
     function updateAvailableThemes() {
         try {
-            console.log("ColorPaletteService: updateAvailableThemes called")
+            // // console.log("ColorPaletteService: updateAvailableThemes called")
             if (typeof SettingsData !== 'undefined') {
-                console.log("ColorPaletteService: SettingsData available")
+                // // console.log("ColorPaletteService: SettingsData available")
                 const themes = SettingsData.savedColorThemes || []
-                console.log("ColorPaletteService: Themes from SettingsData:", themes)
+                // // console.log("ColorPaletteService: Themes from SettingsData:", themes)
                 availableThemes = themes
                 themesUpdated()
-                console.log("ColorPaletteService: Updated available themes from settings:", themes.length)
-                console.log("ColorPaletteService: availableThemes after update:", availableThemes)
+                // // console.log("ColorPaletteService: Updated available themes from settings:", themes.length)
+                // // console.log("ColorPaletteService: availableThemes after update:", availableThemes)
             } else {
-                console.log("ColorPaletteService: SettingsData not available")
+                // // console.log("ColorPaletteService: SettingsData not available")
                 availableThemes = []
                 themesUpdated()
             }
         } catch (e) {
-            console.log("ColorPaletteService: Error updating available themes:", e)
+            // // console.log("ColorPaletteService: Error updating available themes:", e)
             availableThemes = []
             themesUpdated()
         }
@@ -518,7 +525,7 @@ Singleton {
     function loadThemeByName(themeName) {
         const theme = availableThemes.find(t => t.name === themeName)
         if (theme) {
-            console.log("ColorPaletteService: Loading theme:", themeName)
+            // // console.log("ColorPaletteService: Loading theme:", themeName)
             
             // Update current theme in SettingsData
             if (typeof SettingsData !== 'undefined') {
@@ -531,7 +538,7 @@ Singleton {
                 Theme.customThemeData = theme.themeData
                 Theme.switchTheme("custom", true, false)
                 Theme.generateSystemThemesFromCurrentTheme()
-                console.log("ColorPaletteService: Applied theme:", themeName)
+                // // console.log("ColorPaletteService: Applied theme:", themeName)
             }
             
             // Update logo color
@@ -567,10 +574,10 @@ Singleton {
                 }
                 
                 updateAvailableThemes()
-                console.log("ColorPaletteService: Deleted theme:", themeName)
+                // // console.log("ColorPaletteService: Deleted theme:", themeName)
                 return true
             } catch (e) {
-                console.log("ColorPaletteService: Error deleting theme:", e)
+                // // console.log("ColorPaletteService: Error deleting theme:", e)
             }
         }
         return false
@@ -583,23 +590,23 @@ Singleton {
         running: true
         onTriggered: {
             if (typeof SettingsData !== 'undefined' && SettingsData.savedColorThemes !== undefined) {
-                console.log("ColorPaletteService: SettingsData now available, initializing...")
+                // // console.log("ColorPaletteService: SettingsData now available, initializing...")
                 running = false
                 loadCustomThemeFromSettings()
                 updateAvailableThemes()
             } else {
-                console.log("ColorPaletteService: Waiting for SettingsData to be fully loaded...")
+                // // console.log("ColorPaletteService: Waiting for SettingsData to be fully loaded...")
             }
         }
     }
 
     Component.onCompleted: {
-        console.log("ColorPaletteService: Component completed")
-        console.log("ColorPaletteService: SettingsData available:", typeof SettingsData !== 'undefined')
+        // // console.log("ColorPaletteService: Component completed")
+        // // console.log("ColorPaletteService: SettingsData available:", typeof SettingsData !== 'undefined')
         
         // Try to initialize immediately if SettingsData is available
         if (typeof SettingsData !== 'undefined' && SettingsData.savedColorThemes !== undefined) {
-            console.log("ColorPaletteService: SettingsData available immediately, initializing...")
+            // // console.log("ColorPaletteService: SettingsData available immediately, initializing...")
             loadCustomThemeFromSettings()
             updateAvailableThemes()
         }
@@ -612,7 +619,7 @@ Singleton {
         // Listen for mode changes to re-extract colors
         if (typeof SessionData !== 'undefined') {
             SessionData.lightModeChanged.connect(function() {
-                console.log("ColorPaletteService: Mode changed, re-extracting colors...")
+                // // console.log("ColorPaletteService: Mode changed, re-extracting colors...")
                 if (typeof Theme !== 'undefined' && Theme.wallpaperPath) {
                     extractColorsFromWallpaper(Theme.wallpaperPath)
                 }

@@ -347,7 +347,7 @@ Column {
             }
             enabled: (widgetDef?.enabled ?? true)
             onToggled: {
-                console.log("Widget toggled:", widgetData.id)
+                // console.log("Widget toggled:", widgetData.id)
                 if (root.editMode) return
                 switch (widgetData.id || "") {
                 case "wifi": {
@@ -381,7 +381,7 @@ Column {
                 }
                 case "hdrToggle": {
                     // Use the HDR service to toggle
-                    console.log("HDR Toggle clicked - toggling via service")
+                    // console.log("HDR Toggle clicked - toggling via service")
                     HdrService.toggleHdr()
                     break
                 }

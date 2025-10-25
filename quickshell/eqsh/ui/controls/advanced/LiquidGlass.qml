@@ -44,6 +44,9 @@ Item {
         readonly property alias innerShadowColor: rootItem.innerShadowColor
         readonly property alias innerShadowSpread: rootItem.innerShadowSpread
 
+        // Add data property to prevent warnings
+        property var data: null
+
         vertexShader: 'liquidGlass.vert.qsb'
         fragmentShader: 'liquidGlass.frag.qsb'
         anchors.fill: parent

@@ -476,10 +476,10 @@ Singleton {
                     const parts = root.splitNmcliFields(rest)
                     if (parts.length >= 2) {
                         const signal = parseInt(parts[1])
-                        console.log("Current WiFi signal strength:", signal)
+                        // // console.log("Current WiFi signal strength:", signal)
                         root.wifiSignalStrength = isNaN(signal) ? 0 : signal
                         root.currentWifiSSID = parts.slice(1).join(":")
-                        console.log("Current WiFi SSID:", root.currentWifiSSID)
+                        // // console.log("Current WiFi SSID:", root.currentWifiSSID)
                     }
                     return
                 }
@@ -874,7 +874,7 @@ Singleton {
         running: false
 
         onExited: exitCode => {
-            console.log("Set route metrics process exited with code:", exitCode)
+            // // console.log("Set route metrics process exited with code:", exitCode)
             if (exitCode === 0) {
                 restartConnections.running = true
             }

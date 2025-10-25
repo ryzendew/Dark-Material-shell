@@ -50,10 +50,10 @@ PanelWindow {
     }
 
     Component.onCompleted: {
-        console.log("DesktopCpuTempNew: Component.onCompleted");
-        console.log("DesktopCpuTempNew: position =", position);
-        console.log("DesktopCpuTempNew: positionAnchors =", positionAnchors);
-        console.log("DesktopCpuTempNew: WlrLayershell.anchors =", WlrLayershell.anchors);
+        // console.log("DesktopCpuTempNew: Component.onCompleted");
+        // console.log("DesktopCpuTempNew: position =", position);
+        // console.log("DesktopCpuTempNew: positionAnchors =", positionAnchors);
+        // console.log("DesktopCpuTempNew: WlrLayershell.anchors =", WlrLayershell.anchors);
         DgopService.addRef(["cpu"]);
     }
     

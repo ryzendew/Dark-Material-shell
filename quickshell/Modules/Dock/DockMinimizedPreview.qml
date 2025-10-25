@@ -142,7 +142,7 @@ Item {
                         
                         onClicked: {
                             if (root.minimizedWindow && root.minimizedWindow.toplevel) {
-                                globalMinimizedWindowManager.restoreWindow(root.minimizedWindow.toplevel)
+                                // Minimize functionality removed
                             }
                         }
                     }
@@ -176,7 +176,7 @@ Item {
                         onClicked: {
                             if (root.minimizedWindow && root.minimizedWindow.toplevel) {
                                 root.minimizedWindow.toplevel.close()
-                                globalMinimizedWindowManager.restoreWindow(root.minimizedWindow.toplevel)
+                                // Minimize functionality removed
                             }
                         }
                     }

@@ -53,7 +53,7 @@ Singleton {
                 try {
                     const outputsData = JSON.parse(text)
                     outputs = outputsData
-                    console.log("NiriService: Loaded", Object.keys(outputsData).length, "outputs")
+                    // console.log("NiriService: Loaded", Object.keys(outputsData).length, "outputs")
                     if (windows.length > 0) {
                         windows = sortWindowsByLayout(windows)
                     }

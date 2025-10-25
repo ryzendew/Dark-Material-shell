@@ -148,7 +148,7 @@ Singleton {
             isHyprland = true
             isNiri = false
             compositor = "hyprland"
-            console.log("CompositorService: Detected Hyprland")
+            // console.log("CompositorService: Detected Hyprland")
             return
         }
 
@@ -191,7 +191,7 @@ Singleton {
                 root.isNiri = true
                 root.isHyprland = false
                 root.compositor = "niri"
-                console.log("CompositorService: Detected Niri with socket:", root.niriSocket)
+                // console.log("CompositorService: Detected Niri with socket:", root.niriSocket)
             } else {
                 root.isHyprland = false
                 root.isNiri = true

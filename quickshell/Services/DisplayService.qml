@@ -424,7 +424,7 @@ Singleton {
             if (ddcAvailable) {
                 ddcDisplayDetectionProcess.running = true
             } else {
-                console.log("DisplayService: ddcutil not available")
+                // // console.log("DisplayService: ddcutil not available")
             }
         }
     }
@@ -460,7 +460,7 @@ Singleton {
                     }
 
                     ddcDevices = newDdcDevices
-                    console.log("DisplayService: Found", ddcDevices.length, "DDC displays")
+                    // // console.log("DisplayService: Found", ddcDevices.length, "DDC displays")
 
                     // Queue initial brightness readings for DDC devices
                     ddcInitQueue = []
@@ -597,7 +597,7 @@ Singleton {
                         delete newPending[deviceName]
                         ddcPendingInit = newPending
 
-                        console.log("DisplayService: Initial DDC Device", deviceName, "brightness:", brightness + "%")
+                        // // console.log("DisplayService: Initial DDC Device", deviceName, "brightness:", brightness + "%")
                     }
                 }
             }
@@ -634,7 +634,7 @@ Singleton {
                     }
 
                     brightnessInitialized = true
-                    console.log("DisplayService: Device", currentDevice, "brightness:", brightness + "%")
+                    // // console.log("DisplayService: Device", currentDevice, "brightness:", brightness + "%")
                     brightnessChanged()
                 }
             }
@@ -672,7 +672,7 @@ Singleton {
                     }
 
                     brightnessInitialized = true
-                    console.log("DisplayService: DDC Device", currentDevice, "brightness:", brightness + "%")
+                    // // console.log("DisplayService: DDC Device", currentDevice, "brightness:", brightness + "%")
                     brightnessChanged()
                 }
             }
@@ -696,7 +696,7 @@ Singleton {
                     applyNightModeDirectly()
                 }
             } else {
-                console.log("DisplayService: gammastep not available")
+                // // console.log("DisplayService: gammastep not available")
             }
         }
     }
@@ -708,7 +708,7 @@ Singleton {
 
         onExited: function (exitCode) {
             geoclueAvailable = (exitCode === 0)
-            console.log("DisplayService: geoclue available:", geoclueAvailable)
+            // // console.log("DisplayService: geoclue available:", geoclueAvailable)
         }
     }
 

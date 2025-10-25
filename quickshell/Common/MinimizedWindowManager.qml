@@ -36,7 +36,7 @@ QtObject {
         // Actually minimize the window
         toplevel.minimized = true
         
-        console.log("Minimized window:", minimizedWindow.title, "Total minimized:", minimizedWindows.length)
+        // console.log("Minimized window:", minimizedWindow.title, "Total minimized:", minimizedWindows.length)
         minimizedWindowsListChanged()
     }
     
@@ -55,7 +55,7 @@ QtObject {
         toplevel.minimized = false
         toplevel.activate()
         
-        console.log("Restored window:", toplevel.title, "Remaining minimized:", minimizedWindows.length)
+        // console.log("Restored window:", toplevel.title, "Remaining minimized:", minimizedWindows.length)
         minimizedWindowsListChanged()
     }
     

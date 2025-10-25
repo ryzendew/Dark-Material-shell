@@ -36,14 +36,14 @@ DankOSD {
 
     Component.onCompleted: {
         DgopService.addRef(["cpu"]);
-        console.log("DesktopCpuTemp: Component completed")
-        console.log("DesktopCpuTemp: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
-        console.log("DesktopCpuTemp: PerformanceService available:", typeof PerformanceService !== 'undefined')
+        // console.log("DesktopCpuTemp: Component completed")
+        // console.log("DesktopCpuTemp: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
+        // console.log("DesktopCpuTemp: PerformanceService available:", typeof PerformanceService !== 'undefined')
         if (typeof CpuFrequencyService !== 'undefined') {
-            console.log("DesktopCpuTemp: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
+            // console.log("DesktopCpuTemp: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
         }
         if (typeof PerformanceService !== 'undefined') {
-            console.log("DesktopCpuTemp: Initial performance mode:", PerformanceService.currentMode)
+            // console.log("DesktopCpuTemp: Initial performance mode:", PerformanceService.currentMode)
         }
         show();
     }
@@ -61,11 +61,11 @@ DankOSD {
         border.width: 1
 
         Component.onCompleted: {
-            console.log("DesktopCpuTemp content: Component.onCompleted");
-            console.log("DesktopCpuTemp content: width =", width);
-            console.log("DesktopCpuTemp content: height =", height);
-            console.log("DesktopCpuTemp content: x =", x);
-            console.log("DesktopCpuTemp content: y =", y);
+            // console.log("DesktopCpuTemp content: Component.onCompleted");
+            // console.log("DesktopCpuTemp content: width =", width);
+            // console.log("DesktopCpuTemp content: height =", height);
+            // console.log("DesktopCpuTemp content: x =", x);
+            // console.log("DesktopCpuTemp content: y =", y);
         }
 
         // Position at top-left for testing
@@ -162,7 +162,7 @@ DankOSD {
                                 return CpuFrequencyService.currentFrequency.toFixed(1) + "GHz";
                             }
                         } catch (e) {
-                            console.log("DesktopCpuTemp: Error accessing CpuFrequencyService:", e)
+                            // console.log("DesktopCpuTemp: Error accessing CpuFrequencyService:", e)
                         }
                         return "--GHz";
                     }
@@ -179,7 +179,7 @@ DankOSD {
                                 }
                             }
                         } catch (e) {
-                            console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
+                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }
@@ -203,7 +203,7 @@ DankOSD {
                                 return PerformanceService.getCurrentModeInfo().name;
                             }
                         } catch (e) {
-                            console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
+                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return "Unknown";
                     }
@@ -220,7 +220,7 @@ DankOSD {
                                 }
                             }
                         } catch (e) {
-                            console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
+                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }

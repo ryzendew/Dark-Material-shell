@@ -380,7 +380,7 @@ Column {
                             iconSize: 18
                             iconColor: Theme.outline
                             onClicked: {
-                                console.log("Control Center three-dot button clicked for widget:", modelData.id)
+                                // console.log("Control Center three-dot button clicked for widget:", modelData.id)
                                 controlCenterContextMenu.widgetData = modelData
                                 controlCenterContextMenu.sectionId = root.sectionId
                                 controlCenterContextMenu.widgetIndex = index
@@ -574,11 +574,11 @@ Column {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         
         onOpened: {
-            console.log("Control Center context menu opened")
+            // console.log("Control Center context menu opened")
         }
         
         onClosed: {
-            console.log("Control Center context menu closed")
+            // console.log("Control Center context menu closed")
         }
 
         background: Rectangle {

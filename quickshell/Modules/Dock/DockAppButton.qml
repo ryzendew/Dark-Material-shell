@@ -25,16 +25,7 @@ Item {
     property string windowTitle: ""
     property bool isHovered: mouseArea.containsMouse && !dragging
     property bool showTooltip: mouseArea.containsMouse && !dragging
-    property bool isMinimized: {
-        if (!appData || appData.type !== "window") {
-            return false
-        }
-        const toplevel = getToplevelObject()
-        if (!toplevel) {
-            return false
-        }
-        return globalMinimizedWindowManager.isMinimized(toplevel)
-    }
+    property bool isMinimized: false
     property bool isWindowFocused: {
         if (!appData || appData.type !== "window") {
             return false
@@ -246,7 +237,7 @@ Item {
         onTriggered: {
             if (appData && appData.isPinned) {
                 longPressing = true
-                console.log("Long press triggered for pinned app")
+                // console.log("Long press triggered for pinned app")
             }
         }
     }
@@ -286,7 +277,7 @@ Item {
                                        dragging = true
                                        targetIndex = index
                                        originalIndex = index
-                                       console.log("Started dragging, index:", index, "targetIndex:", targetIndex)
+                                       // console.log("Started dragging, index:", index, "targetIndex:", targetIndex)
                                    }
                                }
                                if (dragging) {
@@ -305,7 +296,7 @@ Item {
                                        if (newTargetIndex !== targetIndex) {
                                            targetIndex = newTargetIndex
                                            dragStartPos = Qt.point(mouse.x, mouse.y)
-                                           console.log("Target index changed to:", targetIndex, "dragOffset.x:", dragOffset.x)
+                                           // console.log("Target index changed to:", targetIndex, "dragOffset.x:", dragOffset.x)
                                        }
                                    }
                                }
@@ -321,12 +312,7 @@ Item {
                                    // Pinned app with running windows - activate the focused or first window
                                    const toplevel = getToplevelObject()
                                    if (toplevel) {
-                                       if (isMinimized) {
-                                           // Restore if minimized
-                                           globalMinimizedWindowManager.restoreWindow(toplevel)
-                                       } else {
-                                           toplevel.activate()
-                                       }
+                                       toplevel.activate()
                                    }
                                } else {
                                    // Pinned app without running windows - launch new instance
@@ -347,23 +333,13 @@ Item {
                            } else if (appData.type === "window") {
                                const toplevel = getToplevelObject()
                                if (toplevel) {
-                                   if (isMinimized) {
-                                       // Restore if minimized
-                                       globalMinimizedWindowManager.restoreWindow(toplevel)
-                                   } else {
-                                       toplevel.activate()
-                                   }
+                                   toplevel.activate()
                                }
                            } else if (appData.type === "grouped") {
                                // For grouped apps, cycle through windows or activate the focused one
                                const toplevel = getToplevelObject()
                                if (toplevel) {
-                                   if (isMinimized) {
-                                       // Restore if minimized
-                                       globalMinimizedWindowManager.restoreWindow(toplevel)
-                                   } else {
-                                       toplevel.activate()
-                                   }
+                                   toplevel.activate()
                                }
                            }
                        } else if (mouse.button === Qt.MiddleButton) {
@@ -389,11 +365,7 @@ Item {
                            if (appData.type === "window" || appData.type === "grouped") {
                                const toplevel = getToplevelObject()
                                if (toplevel) {
-                                   if (isMinimized) {
-                                       globalMinimizedWindowManager.restoreWindow(toplevel)
-                                   } else {
-                                       globalMinimizedWindowManager.minimizeWindow(toplevel)
-                                   }
+                                   toplevel.activate()
                                }
                            }
                        }

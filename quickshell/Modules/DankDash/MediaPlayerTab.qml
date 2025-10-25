@@ -471,7 +471,7 @@ Item {
                                     onClicked: {
                                         if (modelData) {
                                             Pipewire.preferredDefaultAudioSink = modelData
-                                            console.log("Current default sink after change:", AudioService.sink ? AudioService.sink.name : "null")
+                                            // console.log("Current default sink after change:", AudioService.sink ? AudioService.sink.name : "null")
                                         }
                                         audioDevicesButton.devicesExpanded = false
                                     }

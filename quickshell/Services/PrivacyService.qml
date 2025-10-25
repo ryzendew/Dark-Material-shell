@@ -23,7 +23,7 @@ Singleton {
 
             if ((node.type & PwNodeType.AudioInStream) === PwNodeType.AudioInStream) {
                 if (!looksLikeSystemVirtualMic(node)) {
-                    console.log(node.audio)
+                    // console.log(node.audio)
                     if (node.audio && node.audio.muted) {
                         return false
                     }

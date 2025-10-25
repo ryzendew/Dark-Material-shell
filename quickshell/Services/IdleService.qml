@@ -55,7 +55,7 @@ Singleton {
 
     function createIdleMonitors() {
         if (!idleMonitorAvailable) {
-            console.log("IdleService: IdleMonitor not available, skipping creation")
+            // console.log("IdleService: IdleMonitor not available, skipping creation")
             return
         }
 
@@ -148,7 +148,7 @@ Singleton {
         if (!idleMonitorAvailable) {
             console.warn("IdleService: IdleMonitor not available - power management disabled. This requires a newer version of Quickshell.")
         } else {
-            console.log("IdleService: Initialized with idle monitoring support")
+            // console.log("IdleService: Initialized with idle monitoring support")
             createIdleMonitors()
         }
     }
