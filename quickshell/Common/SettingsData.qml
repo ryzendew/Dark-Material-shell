@@ -17,6 +17,7 @@ Singleton {
     property string customThemeFile: ""
     property var savedColorThemes: [] // Array of saved color themes
     property string currentColorTheme: "" // Currently selected color theme name
+    property real colorVibrance: 1.0
     property real topBarTransparency: 0.75
     property real topBarWidgetTransparency: 0.85
     property real popupTransparency: 0.92
@@ -35,6 +36,10 @@ Singleton {
     property real launcherLogoDropShadowOpacity: 0.15
     property real dockIconDropShadowOpacity: 0.15
     property real topBarDropShadowOpacity: 0.15
+    property int settingsWindowWidth: 0 // 0 means auto sizing
+    property int settingsWindowHeight: 0 // 0 means auto sizing
+    property int settingsWindowX: -1 // -1 means auto centering
+    property int settingsWindowY: -1 // -1 means auto centering
     property bool desktopWidgetsEnabled: true
     property bool desktopCpuTempEnabled: true
     property bool desktopGpuTempEnabled: true
@@ -185,6 +190,12 @@ Singleton {
     property string appDrawerPosition: "center" // "center", "top-left", "top-right", "bottom-left", "bottom-right"
     property string clipboardPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
     
+    // Start Menu and Control Center positioning
+    property real startMenuXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
+    property real startMenuYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
+    property real controlCenterXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
+    property real controlCenterYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
+    
     property alias dockLeftWidgetsModel: dockLeftWidgetsModel
     property alias dockRightWidgetsModel: dockRightWidgetsModel
     property string appLauncherViewMode: "list"
@@ -247,6 +258,10 @@ Singleton {
     property real dockIconSpacing: 2
     property real cornerRadius: 12
     property bool notificationOverlayEnabled: false
+    
+    // Hyprland blur settings
+    property real hyprlandBlurSize: 2
+    property int hyprlandBlurPasses: 2
     property bool topBarAutoHide: false
     property bool topBarOpenOnOverview: false
     property bool topBarVisible: true
@@ -336,6 +351,7 @@ Singleton {
                 customThemeFile = settings.customThemeFile !== undefined ? settings.customThemeFile : ""
                 savedColorThemes = settings.savedColorThemes !== undefined ? settings.savedColorThemes : []
                 currentColorTheme = settings.currentColorTheme !== undefined ? settings.currentColorTheme : ""
+                colorVibrance = settings.colorVibrance !== undefined ? settings.colorVibrance : 1.0
                 topBarTransparency = settings.topBarTransparency !== undefined ? (settings.topBarTransparency > 1 ? settings.topBarTransparency / 100 : settings.topBarTransparency) : 0.75
                 topBarWidgetTransparency = settings.topBarWidgetTransparency !== undefined ? (settings.topBarWidgetTransparency > 1 ? settings.topBarWidgetTransparency / 100 : settings.topBarWidgetTransparency) : 0.85
                 popupTransparency = settings.popupTransparency !== undefined ? (settings.popupTransparency > 1 ? settings.popupTransparency / 100 : settings.popupTransparency) : 0.92
@@ -354,6 +370,10 @@ Singleton {
                 launcherLogoDropShadowOpacity = settings.launcherLogoDropShadowOpacity !== undefined ? (settings.launcherLogoDropShadowOpacity > 1 ? settings.launcherLogoDropShadowOpacity / 100 : settings.launcherLogoDropShadowOpacity) : 0.15
                 dockIconDropShadowOpacity = settings.dockIconDropShadowOpacity !== undefined ? (settings.dockIconDropShadowOpacity > 1 ? settings.dockIconDropShadowOpacity / 100 : settings.dockIconDropShadowOpacity) : 0.15
                 topBarDropShadowOpacity = settings.topBarDropShadowOpacity !== undefined ? (settings.topBarDropShadowOpacity > 1 ? settings.topBarDropShadowOpacity / 100 : settings.topBarDropShadowOpacity) : 0.15
+                settingsWindowWidth = settings.settingsWindowWidth !== undefined ? settings.settingsWindowWidth : 0
+                settingsWindowHeight = settings.settingsWindowHeight !== undefined ? settings.settingsWindowHeight : 0
+                settingsWindowX = settings.settingsWindowX !== undefined ? settings.settingsWindowX : -1
+                settingsWindowY = settings.settingsWindowY !== undefined ? settings.settingsWindowY : -1
                 desktopWidgetsEnabled = settings.desktopWidgetsEnabled !== undefined ? settings.desktopWidgetsEnabled : true
                 desktopCpuTempEnabled = settings.desktopCpuTempEnabled !== undefined ? settings.desktopCpuTempEnabled : true
                 desktopGpuTempEnabled = settings.desktopGpuTempEnabled !== undefined ? settings.desktopGpuTempEnabled : true
@@ -512,6 +532,12 @@ Singleton {
                 appDrawerPosition = settings.appDrawerPosition !== undefined ? settings.appDrawerPosition : "center"
                 clipboardPosition = settings.clipboardPosition !== undefined ? settings.clipboardPosition : "bottom-right"
                 
+                // Load Start Menu and Control Center positioning
+                startMenuXOffset = settings.startMenuXOffset !== undefined ? settings.startMenuXOffset : 0.0
+                startMenuYOffset = settings.startMenuYOffset !== undefined ? settings.startMenuYOffset : 0.0
+                controlCenterXOffset = settings.controlCenterXOffset !== undefined ? settings.controlCenterXOffset : 0.0
+                controlCenterYOffset = settings.controlCenterYOffset !== undefined ? settings.controlCenterYOffset : 0.0
+                
                 appLauncherViewMode = settings.appLauncherViewMode !== undefined ? settings.appLauncherViewMode : "list"
                 spotlightModalViewMode = settings.spotlightModalViewMode !== undefined ? settings.spotlightModalViewMode : "list"
                 networkPreference = settings.networkPreference !== undefined ? settings.networkPreference : "auto"
@@ -554,6 +580,8 @@ Singleton {
                 dockIconSpacing = settings.dockIconSpacing !== undefined ? settings.dockIconSpacing : 2
                 cornerRadius = settings.cornerRadius !== undefined ? settings.cornerRadius : 12
                 notificationOverlayEnabled = settings.notificationOverlayEnabled !== undefined ? settings.notificationOverlayEnabled : false
+                hyprlandBlurSize = settings.hyprlandBlurSize !== undefined ? settings.hyprlandBlurSize : 2
+                hyprlandBlurPasses = settings.hyprlandBlurPasses !== undefined ? settings.hyprlandBlurPasses : 2
                 topBarAutoHide = settings.topBarAutoHide !== undefined ? settings.topBarAutoHide : false
                 topBarOpenOnOverview = settings.topBarOpenOnOverview !== undefined ? settings.topBarOpenOnOverview : false
                 topBarVisible = settings.topBarVisible !== undefined ? settings.topBarVisible : true
@@ -597,6 +625,7 @@ Singleton {
                                                 "customThemeFile": customThemeFile,
                                                 "savedColorThemes": savedColorThemes,
                                                 "currentColorTheme": currentColorTheme,
+                                                "colorVibrance": colorVibrance,
                                                 "topBarTransparency": topBarTransparency,
                                                 "topBarWidgetTransparency": topBarWidgetTransparency,
                                                 "popupTransparency": popupTransparency,
@@ -615,6 +644,10 @@ Singleton {
                                                 "launcherLogoDropShadowOpacity": launcherLogoDropShadowOpacity,
                                                 "dockIconDropShadowOpacity": dockIconDropShadowOpacity,
                                                 "topBarDropShadowOpacity": topBarDropShadowOpacity,
+                                                "settingsWindowWidth": settingsWindowWidth,
+                                                "settingsWindowHeight": settingsWindowHeight,
+                                                "settingsWindowX": settingsWindowX,
+                                                "settingsWindowY": settingsWindowY,
                                                 "desktopWidgetsEnabled": desktopWidgetsEnabled,
                                                 "desktopCpuTempEnabled": desktopCpuTempEnabled,
                                                 "desktopGpuTempEnabled": desktopGpuTempEnabled,
@@ -732,6 +765,10 @@ Singleton {
                                                 "notificationCenterPosition": notificationCenterPosition,
                                                 "appDrawerPosition": appDrawerPosition,
                                                 "clipboardPosition": clipboardPosition,
+                                                "startMenuXOffset": startMenuXOffset,
+                                                "startMenuYOffset": startMenuYOffset,
+                                                "controlCenterXOffset": controlCenterXOffset,
+                                                "controlCenterYOffset": controlCenterYOffset,
                                                 "appLauncherViewMode": appLauncherViewMode,
                                                 "spotlightModalViewMode": spotlightModalViewMode,
                                                 "networkPreference": networkPreference,
@@ -768,6 +805,8 @@ Singleton {
                                                 "dockIconSpacing": dockIconSpacing,
                                                 "cornerRadius": cornerRadius,
                                                 "notificationOverlayEnabled": notificationOverlayEnabled,
+                                                "hyprlandBlurSize": hyprlandBlurSize,
+                                                "hyprlandBlurPasses": hyprlandBlurPasses,
                                                 "topBarAutoHide": topBarAutoHide,
                                                 "topBarOpenOnOverview": topBarOpenOnOverview,
                                                 "topBarVisible": topBarVisible,
@@ -922,6 +961,11 @@ Singleton {
         saveSettings()
     }
 
+    function setColorVibrance(vibrance) {
+        colorVibrance = vibrance
+        saveSettings()
+    }
+
     function setSavedColorThemes(themes) {
         // console.log("SettingsData: setSavedColorThemes called with:", themes)
         savedColorThemes = themes
@@ -1026,6 +1070,22 @@ Singleton {
         topBarDropShadowOpacity = opacity
         saveSettings()
     }
+    function setSettingsWindowWidth(width) {
+        settingsWindowWidth = width
+        saveSettings()
+    }
+    function setSettingsWindowHeight(height) {
+        settingsWindowHeight = height
+        saveSettings()
+    }
+    function setSettingsWindowX(x) {
+        settingsWindowX = x
+        saveSettings()
+    }
+    function setSettingsWindowY(y) {
+        settingsWindowY = y
+        saveSettings()
+    }
     function setDesktopWidgetsEnabled(enabled) {
         desktopWidgetsEnabled = enabled
         saveSettings()
@@ -1103,6 +1163,26 @@ Singleton {
     
     function setDesktopWeatherPosition(position) {
         desktopWeatherPosition = position
+        saveSettings()
+    }
+    
+    function setStartMenuXOffset(offset) {
+        startMenuXOffset = Math.max(-1.0, Math.min(1.0, offset))
+        saveSettings()
+    }
+    
+    function setStartMenuYOffset(offset) {
+        startMenuYOffset = Math.max(-1.0, Math.min(1.0, offset))
+        saveSettings()
+    }
+    
+    function setControlCenterXOffset(offset) {
+        controlCenterXOffset = Math.max(-1.0, Math.min(1.0, offset))
+        saveSettings()
+    }
+    
+    function setControlCenterYOffset(offset) {
+        controlCenterYOffset = Math.max(-1.0, Math.min(1.0, offset))
         saveSettings()
     }
     
@@ -1834,6 +1914,24 @@ Singleton {
         saveSettings()
     }
 
+    function setHyprlandBlurSize(size) {
+        hyprlandBlurSize = size
+        saveSettings()
+        // Apply blur settings to Hyprland if available
+        if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
+            CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
+        }
+    }
+
+    function setHyprlandBlurPasses(passes) {
+        hyprlandBlurPasses = passes
+        saveSettings()
+        // Apply blur settings to Hyprland if available
+        if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
+            CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
+        }
+    }
+
     function setNotificationOverlayEnabled(enabled) {
         notificationOverlayEnabled = enabled
         saveSettings()
@@ -1953,6 +2051,13 @@ Singleton {
             // console.log("SettingsData: Setting desktop widgets to DP-2");
             setDesktopWidgetsScreen("DP-2");
         }
+        
+        // Apply Hyprland blur settings on startup
+        Qt.callLater(function() {
+            if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
+                CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
+            }
+        })
     }
 
     ListModel {

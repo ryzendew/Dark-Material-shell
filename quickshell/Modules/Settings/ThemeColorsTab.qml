@@ -925,7 +925,7 @@ Item {
             }
 
 
-            // Transparency Settings
+            // Transparency & Opacity Settings
             StyledRect {
                 width: parent.width
                 height: transparencySection.implicitHeight + Theme.spacingL * 2
@@ -954,15 +954,25 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        StyledText {
-                            text: "Widget Styling"
-                            font.pixelSize: Theme.fontSizeLarge
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
+                    StyledText {
+                        text: "Transparency & Opacity"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                        anchors.verticalCenter: parent.verticalCenter
                     }
+                }
 
+                StyledText {
+                    text: "Control the transparency levels of various UI elements"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingL
+                }
 
                     Column {
                         width: parent.width
@@ -1171,6 +1181,57 @@ Item {
                                                   }
                         }
                     }
+                }
+            }
+
+            // Borders & Shadows Settings
+            StyledRect {
+                width: parent.width
+                height: bordersShadowsSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: bordersShadowsSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "border_style"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                    StyledText {
+                        text: "Borders & Shadows"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                StyledText {
+                    text: "Customize border styles and shadow effects for UI components"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingL
+                }
 
                     Column {
                         width: parent.width
@@ -1337,12 +1398,83 @@ Item {
                                                   }
                         }
                     }
+                }
+            }
 
-                    Rectangle {
+            // Visual Effects Settings
+            StyledRect {
+                width: parent.width
+                height: visualEffectsSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: visualEffectsSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
                         width: parent.width
-                        height: 1
-                        color: Theme.outline
-                        opacity: 0.2
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "auto_fix_high"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                    StyledText {
+                        text: "Visual Effects"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                StyledText {
+                    text: "Adjust color intensity, corner rounding, and blur effects"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingL
+                }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Color Vibrance"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DankSlider {
+                            width: parent.width
+                            height: 24
+                            value: SettingsData.colorVibrance * 100
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setColorVibrance(
+                                                          newValue / 100)
+                                                  }
+                        }
                     }
 
                     Column {
@@ -1367,6 +1499,60 @@ Item {
                             wheelEnabled: false
                             onSliderValueChanged: newValue => {
                                                       SettingsData.setCornerRadius(
+                                                          newValue)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Hyprland Blur Size"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DankSlider {
+                            width: parent.width
+                            height: 24
+                            value: SettingsData.hyprlandBlurSize
+                            minimum: 0
+                            maximum: 20
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setHyprlandBlurSize(
+                                                          newValue)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Hyprland Blur Passes"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DankSlider {
+                            width: parent.width
+                            height: 24
+                            value: SettingsData.hyprlandBlurPasses
+                            minimum: 1
+                            maximum: 10
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setHyprlandBlurPasses(
                                                           newValue)
                                                   }
                         }

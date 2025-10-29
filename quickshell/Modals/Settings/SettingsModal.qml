@@ -13,6 +13,8 @@ DankModal {
 
     property Component settingsContent
     property alias profileBrowser: profileBrowser
+    
+    showBackground: true
 
     signal closingModal()
 
@@ -39,7 +41,12 @@ DankModal {
     }
 
     objectName: "settingsModal"
+    positioning: "custom"
     width: {
+        // Check if custom width is set, otherwise use auto sizing
+        if (SettingsData.settingsWindowWidth && SettingsData.settingsWindowWidth > 0) {
+            return SettingsData.settingsWindowWidth
+        }
         const screenWidth = Screen.width
         if (screenWidth >= 3840) return 2560 // 4K -> 1440p
         if (screenWidth >= 2560) return 1920 // 1440p -> 1080p  
@@ -47,11 +54,15 @@ DankModal {
         return 800 // 720p or lower -> 800x600
     }
     height: {
+        // Check if custom height is set, otherwise use auto sizing
+        if (SettingsData.settingsWindowHeight && SettingsData.settingsWindowHeight > 0) {
+            return SettingsData.settingsWindowHeight
+        }
         const screenHeight = Screen.height
-        if (screenHeight >= 2160) return 1800 // 4K -> 1800px
-        if (screenHeight >= 1440) return 1400 // 1440p -> 1400px
-        if (screenHeight >= 1080) return 1000 // 1080p -> 1000px
-        return 800 // 720p or lower -> 800px
+        if (screenHeight >= 2160) return 1710 // 4K -> 1710px
+        if (screenHeight >= 1440) return 1325 // 1440p -> 1325px
+        if (screenHeight >= 1080) return 950 // 1080p -> 950px
+        return 760 // 720p or lower -> 760px
     }
     visible: false
     onBackgroundClicked: () => {
@@ -76,6 +87,22 @@ DankModal {
         }
 
         target: "settings"
+    }
+
+    function getDefaultWidth() {
+        const screenWidth = Screen.width
+        if (screenWidth >= 3840) return 2560 // 4K -> 1440p
+        if (screenWidth >= 2560) return 1920 // 1440p -> 1080p  
+        if (screenWidth >= 1920) return 1280 // 1080p -> 720p
+        return 800 // 720p or lower -> 800x600
+    }
+
+    function getDefaultHeight() {
+        const screenHeight = Screen.height
+        if (screenHeight >= 2160) return 1710 // 4K -> 1710px
+        if (screenHeight >= 1440) return 1325 // 1440p -> 1325px
+        if (screenHeight >= 1080) return 950 // 1080p -> 950px
+        return 760 // 720p or lower -> 760px
     }
 
     IpcHandler {

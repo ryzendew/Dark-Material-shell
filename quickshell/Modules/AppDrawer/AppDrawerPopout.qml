@@ -6,11 +6,13 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Common
 import qs.Modules.AppDrawer
+import qs.Modals
 import qs.Services
 import qs.Widgets
 
 DankPopout {
     id: appDrawerPopout
+    objectName: "appDrawerPopout"
 
     property string triggerSection: "left"
     property var triggerScreen: null
@@ -62,6 +64,29 @@ DankPopout {
         onAppLaunched: appDrawerPopout.close()
         onViewModeSelected: function (mode) {
             SettingsData.setAppLauncherViewMode(mode)
+        }
+    }
+
+    // Power Confirmation Modal
+    PowerConfirmationModal {
+        id: powerConfirmationModal
+        
+        onConfirmed: function(action) {
+            switch(action) {
+                case "logout":
+                    Quickshell.execDetached(["hyprctl", "dispatch", "exit"])
+                    break
+                case "reboot":
+                    Quickshell.execDetached(["systemctl", "reboot"])
+                    break
+                case "poweroff":
+                    Quickshell.execDetached(["systemctl", "poweroff"])
+                    break
+            }
+        }
+        
+        onCancelled: {
+            // User cancelled, do nothing
         }
     }
 
@@ -582,9 +607,9 @@ DankPopout {
                                         model: [
                                             {icon: "refresh", tooltip: "Reload", command: ["pkill", "-f", "quickshell"], action: "reload"},
                                             {icon: "lock", tooltip: "Lock", command: ["hyprlock"]},
-                                            {icon: "logout", tooltip: "Logout", command: ["hyprctl", "dispatch", "exit"]},
-                                            {icon: "restart_alt", tooltip: "Restart", command: ["systemctl", "reboot"]},
-                                            {icon: "power_settings_new", tooltip: "Shutdown", command: ["systemctl", "poweroff"]}
+                                            {icon: "logout", tooltip: "Logout", action: "logout", needsConfirmation: true},
+                                            {icon: "restart_alt", tooltip: "Restart", action: "reboot", needsConfirmation: true},
+                                            {icon: "power_settings_new", tooltip: "Shutdown", action: "poweroff", needsConfirmation: true}
                                         ]
 
                                         Rectangle {
@@ -617,10 +642,32 @@ DankPopout {
                                                 onClicked: {
                                                     if (modelData.action === "reload") {
                                                         Quickshell.reload(true)
+                                                        appDrawerPopout.close()
+                                                    } else if (modelData.needsConfirmation) {
+                                                        // Show confirmation modal for power actions
+                                                        const actions = {
+                                                            "logout": {
+                                                                "title": "Log Out",
+                                                                "message": "Are you sure you want to log out?"
+                                                            },
+                                                            "reboot": {
+                                                                "title": "Restart",
+                                                                "message": "Are you sure you want to restart the system?"
+                                                            },
+                                                            "poweroff": {
+                                                                "title": "Shutdown",
+                                                                "message": "Are you sure you want to shut down the system?"
+                                                            }
+                                                        }
+                                                        const selected = actions[modelData.action]
+                                                        if (selected) {
+                                                            powerConfirmationModal.showConfirmation(modelData.action, selected.title, selected.message)
+                                                        }
+                                                        appDrawerPopout.close()
                                                     } else {
                                                         Quickshell.execDetached(modelData.command)
+                                                        appDrawerPopout.close()
                                                     }
-                                                    appDrawerPopout.close()
                                                 }
                                             }
                                         }

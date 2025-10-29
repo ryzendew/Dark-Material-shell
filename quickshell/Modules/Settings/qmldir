@@ -5,6 +5,7 @@ DisplaysTab 1.0 DisplaysTab.qml
 DockTab 1.0 DockTab.qml
 LauncherTab 1.0 LauncherTab.qml
 PersonalizationTab 1.0 PersonalizationTab.qml
+PositioningTab 1.0 PositioningTab.qml
 SettingsSection 1.0 SettingsSection.qml
 ThemeColorsTab 1.0 ThemeColorsTab.qml
 TimeTab 1.0 TimeTab.qml
@@ -13,6 +14,7 @@ WeatherTab 1.0 WeatherTab.qml
 WidgetSelectionPopup 1.0 WidgetSelectionPopup.qml
 WidgetsTabSection 1.0 WidgetsTabSection.qml
 WidgetTweaksTab 1.0 WidgetTweaksTab.qml
+WindowSizingTab 1.0 WindowSizingTab.qml
 
 
 

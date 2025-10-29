@@ -19,6 +19,7 @@ import "./utils/state.js" as StateUtils
 
 DankPopout {
     id: root
+    objectName: "controlCenterPopout"
 
     WlrLayershell.namespace: "quickshell:controlCenter:blur"
 

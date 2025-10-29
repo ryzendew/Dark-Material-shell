@@ -93,17 +93,40 @@ PanelWindow {
         readonly property real screenWidth: root.screen ? root.screen.width : 1920
         readonly property real screenHeight: root.screen ? root.screen.height : 1080
         readonly property real calculatedX: {
+            var baseX
             if (positioning === "center") {
-                var centerX = triggerX + (triggerWidth / 2) - (popupWidth / 2)
-                return Math.max(Theme.spacingM, Math.min(screenWidth - popupWidth - Theme.spacingM, centerX))
+                baseX = triggerX + (triggerWidth / 2) - (popupWidth / 2)
             } else if (positioning === "left") {
-                return Math.max(Theme.spacingM, triggerX)
+                baseX = triggerX
             } else if (positioning === "right") {
-                return Math.min(screenWidth - popupWidth - Theme.spacingM, triggerX + triggerWidth - popupWidth)
+                baseX = triggerX + triggerWidth - popupWidth
+            } else {
+                baseX = triggerX
             }
-            return triggerX
+            
+            // Apply offset based on popout type
+            var xOffset = 0
+            if (root.objectName === "appDrawerPopout") {
+                xOffset = SettingsData.startMenuXOffset * (screenWidth - popupWidth) / 2
+            } else if (root.objectName === "controlCenterPopout") {
+                xOffset = SettingsData.controlCenterXOffset * (screenWidth - popupWidth) / 2
+            }
+            
+            return Math.max(Theme.spacingM, Math.min(screenWidth - popupWidth - Theme.spacingM, baseX + xOffset))
         }
-        readonly property real calculatedY: triggerY
+        readonly property real calculatedY: {
+            var baseY = triggerY
+            
+            // Apply offset based on popout type
+            var yOffset = 0
+            if (root.objectName === "appDrawerPopout") {
+                yOffset = SettingsData.startMenuYOffset * (screenHeight - popupHeight) / 2
+            } else if (root.objectName === "controlCenterPopout") {
+                yOffset = SettingsData.controlCenterYOffset * (screenHeight - popupHeight) / 2
+            }
+            
+            return Math.max(Theme.spacingM, Math.min(screenHeight - popupHeight - Theme.spacingM, baseY + yOffset))
+        }
 
         width: popupWidth
         height: popupHeight

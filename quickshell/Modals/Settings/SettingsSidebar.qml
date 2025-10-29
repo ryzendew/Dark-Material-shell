@@ -33,8 +33,14 @@ Rectangle {
         "text": "Launcher",
         "icon": "apps"
     }, {
+        "text": "Positioning",
+        "icon": "open_with"
+    }, {
         "text": "Theme & Colors",
         "icon": "palette"
+    }, {
+        "text": "Window Size",
+        "icon": "aspect_ratio"
     }, {
         "text": "Power",
         "icon": "power_settings_new"

@@ -72,6 +72,7 @@ Singleton {
     property var matugenColors: ({})
     property bool extractionRequested: false
     property int colorUpdateTrigger: 0
+    readonly property real vibranceTrigger: typeof SettingsData !== "undefined" ? SettingsData.colorVibrance : 1.0
     property var customThemeData: null
 
     readonly property string stateDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.CacheLocation).toString()) + "/dankshell"
@@ -128,21 +129,41 @@ Singleton {
         }
     }
 
-    property color primary: currentThemeData.primary
+    property color primary: {
+        vibranceTrigger; applyVibrance(currentThemeData.primary)
+    }
     property color primaryText: currentThemeData.primaryText
-    property color primaryContainer: currentThemeData.primaryContainer
-    property color secondary: currentThemeData.secondary
-    property color surface: currentThemeData.surface
+    property color primaryContainer: {
+        vibranceTrigger; applyVibrance(currentThemeData.primaryContainer)
+    }
+    property color secondary: {
+        vibranceTrigger; applyVibrance(currentThemeData.secondary)
+    }
+    property color surface: {
+        vibranceTrigger; applyVibrance(currentThemeData.surface)
+    }
     property color surfaceText: currentThemeData.surfaceText
-    property color surfaceVariant: currentThemeData.surfaceVariant
+    property color surfaceVariant: {
+        vibranceTrigger; applyVibrance(currentThemeData.surfaceVariant)
+    }
     property color surfaceVariantText: currentThemeData.surfaceVariantText
-    property color surfaceTint: currentThemeData.surfaceTint
-    property color background: currentThemeData.background
+    property color surfaceTint: {
+        vibranceTrigger; applyVibrance(currentThemeData.surfaceTint)
+    }
+    property color background: {
+        vibranceTrigger; applyVibrance(currentThemeData.background)
+    }
     property color backgroundText: currentThemeData.backgroundText
-    property color outline: currentThemeData.outline
-    property color outlineVariant: currentThemeData.outlineVariant || Qt.rgba(outline.r, outline.g, outline.b, 0.6)
-    property color surfaceContainer: currentThemeData.surfaceContainer
-    property color surfaceContainerHigh: currentThemeData.surfaceContainerHigh
+    property color outline: {
+        vibranceTrigger; applyVibrance(currentThemeData.outline)
+    }
+    property color outlineVariant: currentThemeData.outlineVariant ? (function() { vibranceTrigger; return applyVibrance(currentThemeData.outlineVariant) })() : Qt.rgba(outline.r, outline.g, outline.b, 0.6)
+    property color surfaceContainer: {
+        vibranceTrigger; applyVibrance(currentThemeData.surfaceContainer)
+    }
+    property color surfaceContainerHigh: {
+        vibranceTrigger; applyVibrance(currentThemeData.surfaceContainerHigh)
+    }
 
     property color onSurface: surfaceText
     property color onSurfaceVariant: surfaceVariantText
@@ -151,12 +172,24 @@ Singleton {
     property color onSurface_38: Qt.rgba(onSurface.r, onSurface.g, onSurface.b, 0.38)
     property color onSurfaceVariant_30: Qt.rgba(onSurfaceVariant.r, onSurfaceVariant.g, onSurfaceVariant.b, 0.30)
 
-    property color error: currentThemeData.error || "#F2B8B5"
-    property color warning: currentThemeData.warning || "#FF9800"
-    property color info: currentThemeData.info || "#2196F3"
-    property color tempWarning: "#ff9933"
-    property color tempDanger: "#ff5555"
-    property color success: currentThemeData.success || "#4CAF50"
+    property color error: {
+        vibranceTrigger; applyVibrance(currentThemeData.error || "#F2B8B5")
+    }
+    property color warning: {
+        vibranceTrigger; applyVibrance(currentThemeData.warning || "#FF9800")
+    }
+    property color info: {
+        vibranceTrigger; applyVibrance(currentThemeData.info || "#2196F3")
+    }
+    property color tempWarning: {
+        vibranceTrigger; applyVibrance("#ff9933")
+    }
+    property color tempDanger: {
+        vibranceTrigger; applyVibrance("#ff5555")
+    }
+    property color success: {
+        vibranceTrigger; applyVibrance(currentThemeData.success || "#4CAF50")
+    }
 
     property color primaryHover: Qt.rgba(primary.r, primary.g, primary.b, 0.12)
     property color primaryHoverLight: Qt.rgba(primary.r, primary.g, primary.b, 0.08)
@@ -393,6 +426,31 @@ Singleton {
 
     function isColorDark(c) {
         return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) < 0.5
+    }
+
+    function applyVibrance(color) {
+        // Apply vibrance adjustment to colors
+        // Vibrance ranges from 0 (grayscale) to 1 (full saturation)
+        if (typeof color === 'string') {
+            return color
+        }
+        
+        const vibrance = typeof SettingsData !== "undefined" ? SettingsData.colorVibrance : 1.0
+        
+        if (vibrance >= 0.999) {
+            return color
+        }
+        
+        // Convert RGB to grayscale using luminance formula
+        const gray = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
+        
+        // Interpolate between grayscale and original color
+        return Qt.rgba(
+            gray + (color.r - gray) * vibrance,
+            gray + (color.g - gray) * vibrance,
+            gray + (color.b - gray) * vibrance,
+            color.a
+        )
     }
 
     function getBatteryIcon(level, isCharging, batteryAvailable) {

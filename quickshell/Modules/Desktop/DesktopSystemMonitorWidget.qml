@@ -346,16 +346,16 @@ PanelWindow {
     Rectangle {
         width: widgetWidth
         height: contentHeight
-        radius: 12 * scaleFactor
-        color: Qt.rgba(0.08, 0.08, 0.12, 0.95)
-        border.color: Qt.rgba(0.2, 0.2, 0.3, 0.6)
+        radius: Theme.cornerRadius
+        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, widgetOpacity)
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
         opacity: widgetOpacity
 
         // Professional gradient background
         gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.rgba(0.12, 0.12, 0.18, 0.9) }
-            GradientStop { position: 1.0; color: Qt.rgba(0.05, 0.05, 0.08, 0.95) }
+            GradientStop { position: 0.0; color: Qt.rgba(Theme.surfaceContainerHigh.r, Theme.surfaceContainerHigh.g, Theme.surfaceContainerHigh.b, widgetOpacity - 0.05) }
+            GradientStop { position: 1.0; color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, widgetOpacity) }
         }
 
         // Enhanced drop shadow
@@ -389,14 +389,14 @@ PanelWindow {
                         width: 4 * scaleFactor
                         height: 20 * scaleFactor
                         radius: 2 * scaleFactor
-                        color: "#00D4FF"
+                        color: Theme.primary
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 
                 StyledText {
                         text: "SYSTEM MONITOR"
                         font.pixelSize: 14 * scaleFactor
-                        color: "#FFFFFF"
+                        color: Theme.surfaceText
                     font.weight: Font.Bold
                         font.letterSpacing: 1.2
                     anchors.verticalCenter: parent.verticalCenter
@@ -417,8 +417,8 @@ PanelWindow {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
                     radius: 8 * scaleFactor
-                    color: Qt.rgba(0.15, 0.15, 0.22, 0.8)
-                    border.color: Qt.rgba(0.3, 0.3, 0.4, 0.4)
+                    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
                     // Subtle inner glow
@@ -427,7 +427,7 @@ PanelWindow {
                         anchors.margins: 1
                         radius: parent.radius - 1
                         color: "transparent"
-                        border.color: Qt.rgba(0.4, 0.4, 0.5, 0.2)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1) 
                         border.width: 1
                     }
                     
@@ -441,7 +441,7 @@ PanelWindow {
                         StyledText {
                             text: getShortCpuName()
                             font.pixelSize: 16 * scaleFactor
-                            color: "#B0B0B0"
+                            color: Theme.surfaceTextMedium
                             font.weight: Font.Bold
                             anchors.horizontalCenter: parent.horizontalCenter
                             elide: Text.ElideRight
@@ -453,8 +453,8 @@ PanelWindow {
                             width: parent.width
                             height: 100 * scaleFactor
                             radius: 4 * scaleFactor
-                            color: Qt.rgba(0.1, 0.1, 0.15, 0.8)
-                            border.color: Qt.rgba(0.3, 0.3, 0.4, 0.3)
+                            color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
+                            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
                             anchors.horizontalCenter: parent.horizontalCenter
                             
@@ -469,7 +469,7 @@ PanelWindow {
                                     
                                     if (cpuUsageHistory.length < 2) return;
                                     
-                                    ctx.strokeStyle = currentCpuUsage > 90 ? "#FF4757" : (currentCpuUsage > 70 ? "#FFA502" : "#00D4FF");
+                                    ctx.strokeStyle = currentCpuUsage > 90 ? Theme.tempDanger : (currentCpuUsage > 70 ? Theme.tempWarning : Theme.primary);
                                     ctx.lineWidth = 2;
                                     ctx.beginPath();
                                     
@@ -521,7 +521,7 @@ PanelWindow {
                                 StyledText {
                                     text: "TEMP"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                 }
@@ -531,9 +531,9 @@ PanelWindow {
                                     font.pixelSize: 24 * scaleFactor
                                     font.weight: Font.Bold
                                     color: {
-                                        if (currentCpuTemperature > 80) return "#FF4757"
-                                        if (currentCpuTemperature > 65) return "#FFA502"
-                                        return "#FFFFFF"
+                                        if (currentCpuTemperature > 80) return Theme.tempDanger
+                                        if (currentCpuTemperature > 65) return Theme.tempWarning
+                                        return Theme.surfaceText
                                     }
                                 }
                             }
@@ -548,7 +548,7 @@ PanelWindow {
                                 StyledText {
                                     text: "USAGE"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                     anchors.right: parent.right
@@ -558,7 +558,7 @@ PanelWindow {
                                     text: Math.round(currentCpuUsage) + "%"
                                     font.pixelSize: 24 * scaleFactor
                                     font.weight: Font.Bold
-                                    color: "#FFFFFF"
+                                    color: Theme.surfaceText
                                     anchors.right: parent.right
                                 }
                             }
@@ -571,8 +571,8 @@ PanelWindow {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
                     radius: 8 * scaleFactor
-                    color: Qt.rgba(0.15, 0.15, 0.22, 0.8)
-                    border.color: Qt.rgba(0.3, 0.3, 0.4, 0.4)
+                    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     visible: getShortGpuName() !== ""
                     
@@ -582,7 +582,7 @@ PanelWindow {
                         anchors.margins: 1
                         radius: parent.radius - 1
                         color: "transparent"
-                        border.color: Qt.rgba(0.4, 0.4, 0.5, 0.2)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
                         border.width: 1
                     }
                     
@@ -596,7 +596,7 @@ PanelWindow {
                         StyledText {
                             text: getShortGpuName()
                             font.pixelSize: 16 * scaleFactor
-                            color: "#B0B0B0"
+                            color: Theme.surfaceTextMedium
                             font.weight: Font.Bold
                             anchors.horizontalCenter: parent.horizontalCenter
                             elide: Text.ElideRight
@@ -608,8 +608,8 @@ PanelWindow {
                             width: parent.width
                             height: 100 * scaleFactor
                             radius: 4 * scaleFactor
-                            color: Qt.rgba(0.1, 0.1, 0.15, 0.8)
-                            border.color: Qt.rgba(0.3, 0.3, 0.4, 0.3)
+                            color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
+                            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
                             anchors.horizontalCenter: parent.horizontalCenter
                             
@@ -624,7 +624,7 @@ PanelWindow {
                                     
                                     if (gpuMemoryHistory.length < 2) return;
                                     
-                                    ctx.strokeStyle = "#9C88FF";
+                                    ctx.strokeStyle = Theme.secondary;
                                     ctx.lineWidth = 2;
                                     ctx.beginPath();
                                     
@@ -676,7 +676,7 @@ PanelWindow {
                                 StyledText {
                                     text: "TEMP"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                 }
@@ -686,9 +686,9 @@ PanelWindow {
                                     font.pixelSize: 20 * scaleFactor
                                     font.weight: Font.Bold
                                     color: {
-                                        if (currentGpuTemperature > 85) return "#FF4757"
-                                        if (currentGpuTemperature > 70) return "#FFA502"
-                                        return "#FFFFFF"
+                                        if (currentGpuTemperature > 85) return Theme.tempDanger
+                                        if (currentGpuTemperature > 70) return Theme.tempWarning
+                                        return Theme.surfaceText
                                     }
                                 }
                             }
@@ -703,7 +703,7 @@ PanelWindow {
                                 StyledText {
                                     text: "VRAM"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                     anchors.right: parent.right
@@ -719,7 +719,7 @@ PanelWindow {
                                     }
                                     font.pixelSize: 20 * scaleFactor
                                     font.weight: Font.Bold
-                                    color: currentGpuTemperature > 0 ? "#FFFFFF" : "#808080"
+                                    color: currentGpuTemperature > 0 ? Theme.surfaceText : Theme.surfaceTextMedium
                                     anchors.right: parent.right
                                 }
                             }
@@ -732,8 +732,8 @@ PanelWindow {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
                     radius: 8 * scaleFactor
-                    color: Qt.rgba(0.15, 0.15, 0.22, 0.8)
-                    border.color: Qt.rgba(0.3, 0.3, 0.4, 0.4)
+                    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
                     // Subtle inner glow
@@ -742,7 +742,7 @@ PanelWindow {
                         anchors.margins: 1
                         radius: parent.radius - 1
                         color: "transparent"
-                        border.color: Qt.rgba(0.4, 0.4, 0.5, 0.2)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
                         border.width: 1
                     }
                     
@@ -756,7 +756,7 @@ PanelWindow {
                         StyledText {
                             text: "RAM"
                             font.pixelSize: 16 * scaleFactor
-                            color: "#B0B0B0"
+                            color: Theme.surfaceTextMedium
                             font.weight: Font.Bold
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
@@ -766,8 +766,8 @@ PanelWindow {
                             width: parent.width
                             height: 100 * scaleFactor
                             radius: 4 * scaleFactor
-                            color: Qt.rgba(0.1, 0.1, 0.15, 0.8)
-                            border.color: Qt.rgba(0.3, 0.3, 0.4, 0.3)
+                            color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
+                            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
                             anchors.horizontalCenter: parent.horizontalCenter
                             
@@ -782,7 +782,7 @@ PanelWindow {
                                     
                                     if (memoryUsageHistory.length < 2) return;
                                     
-                                    ctx.strokeStyle = currentMemoryUsage > 90 ? "#FF4757" : (currentMemoryUsage > 75 ? "#FFA502" : "#00D4FF");
+                                    ctx.strokeStyle = currentMemoryUsage > 90 ? Theme.tempDanger : (currentMemoryUsage > 75 ? Theme.tempWarning : Theme.primary);
                                     ctx.lineWidth = 2;
                                     ctx.beginPath();
                                     
@@ -834,7 +834,7 @@ PanelWindow {
                                 StyledText {
                                     text: "USAGE"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                 }
@@ -844,9 +844,9 @@ PanelWindow {
                                     font.pixelSize: 24 * scaleFactor
                                     font.weight: Font.Bold
                                     color: {
-                                        if (currentMemoryUsage > 90) return "#FF4757"
-                                        if (currentMemoryUsage > 75) return "#FFA502"
-                                        return "#FFFFFF"
+                                        if (currentMemoryUsage > 90) return Theme.tempDanger
+                                        if (currentMemoryUsage > 75) return Theme.tempWarning
+                                        return Theme.surfaceText
                                     }
                                 }
                             }
@@ -861,7 +861,7 @@ PanelWindow {
                                 StyledText {
                                     text: "TOTAL"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                     anchors.right: parent.right
@@ -874,7 +874,7 @@ PanelWindow {
                                     }
                                     font.pixelSize: 20 * scaleFactor
                                     font.weight: Font.Bold
-                                    color: "#FFFFFF"
+                                    color: Theme.surfaceText
                                     anchors.right: parent.right
                                 }
                             }
@@ -887,8 +887,8 @@ PanelWindow {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
                     radius: 8 * scaleFactor
-                    color: Qt.rgba(0.15, 0.15, 0.22, 0.8)
-                    border.color: Qt.rgba(0.3, 0.3, 0.4, 0.4)
+                    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
                     // Subtle inner glow
@@ -897,7 +897,7 @@ PanelWindow {
                         anchors.margins: 1
                         radius: parent.radius - 1
                         color: "transparent"
-                        border.color: Qt.rgba(0.4, 0.4, 0.5, 0.2)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
                         border.width: 1
                     }
                     
@@ -911,7 +911,7 @@ PanelWindow {
                         StyledText {
                             text: "NETWORK"
                             font.pixelSize: 16 * scaleFactor
-                            color: "#B0B0B0"
+                            color: Theme.surfaceTextMedium
                             font.weight: Font.Bold
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
@@ -921,8 +921,8 @@ PanelWindow {
                             width: parent.width
                             height: 100 * scaleFactor
                             radius: 4 * scaleFactor
-                            color: Qt.rgba(0.1, 0.1, 0.15, 0.8)
-                            border.color: Qt.rgba(0.3, 0.3, 0.4, 0.3)
+                            color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
+                            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
                             anchors.horizontalCenter: parent.horizontalCenter
                             
@@ -937,7 +937,7 @@ PanelWindow {
                                     
                                     if (networkHistory.length < 2) return;
                                     
-                                    ctx.strokeStyle = "#00D4FF";
+                                    ctx.strokeStyle = Theme.primary;
                                     ctx.lineWidth = 2;
                                     ctx.beginPath();
                                     
@@ -989,7 +989,7 @@ PanelWindow {
                                 StyledText {
                                     text: "DOWN"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                 }
@@ -1010,7 +1010,7 @@ PanelWindow {
                                         }
                                         font.pixelSize: 20 * scaleFactor
                                         font.weight: Font.Bold
-                                        color: "#FFFFFF"
+                                        color: Theme.surfaceText
                                     }
                                     
                                     StyledText {
@@ -1024,7 +1024,7 @@ PanelWindow {
                                         }
                                         font.pixelSize: 12 * scaleFactor
                                         font.weight: Font.Bold
-                                        color: "#FFFFFF"
+                                        color: Theme.surfaceText
                                         anchors.verticalCenter: parent.verticalCenter
                                     }
                                 }
@@ -1040,7 +1040,7 @@ PanelWindow {
                                 StyledText {
                                     text: "UP"
                                     font.pixelSize: 8 * scaleFactor
-                                    color: "#808080"
+                                    color: Theme.surfaceTextMedium
                                     font.weight: Font.Bold
                                     font.letterSpacing: 0.5
                                     anchors.right: parent.right
@@ -1063,7 +1063,7 @@ PanelWindow {
                                         }
                                         font.pixelSize: 20 * scaleFactor
                                         font.weight: Font.Bold
-                                        color: "#FFFFFF"
+                                        color: Theme.surfaceText
                                     }
                                     
                                     StyledText {
@@ -1077,7 +1077,7 @@ PanelWindow {
                                         }
                                         font.pixelSize: 12 * scaleFactor
                                         font.weight: Font.Bold
-                                        color: "#FFFFFF"
+                                        color: Theme.surfaceText
                                         anchors.verticalCenter: parent.verticalCenter
                                     }
                                 }

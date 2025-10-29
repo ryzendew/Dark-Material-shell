@@ -226,17 +226,6 @@ PanelWindow {
                     }
                 }
 
-                // Separator between settings and right widgets
-                Rectangle {
-                    anchors.right: settingsButton.left
-                    anchors.rightMargin: 4
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 1
-                    height: parent.height * 0.6
-                    color: Theme.outline
-                    opacity: 0.3
-                    visible: !SettingsData.dockExpandToScreen
-                }
 
                 // Right Widget Area (Expandable)
                 Rectangle {

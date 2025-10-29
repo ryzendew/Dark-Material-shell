@@ -75,53 +75,6 @@ Item {
         anchors.topMargin: 0
         color: "transparent"
 
-        // Refresh button in top right corner
-        Rectangle {
-            id: refreshButton
-            width: 40
-            height: 40
-            radius: 20
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: Theme.spacingS
-            anchors.rightMargin: Theme.spacingS
-            color: refreshMouseArea.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
-            border.color: Theme.outline
-            border.width: 1
-
-            Text {
-                text: "↻"
-                font.pixelSize: 20
-                color: Theme.surfaceText
-                anchors.centerIn: parent
-                rotation: refreshButton.rotation
-                font.family: "Arial, sans-serif"
-            }
-
-            MouseArea {
-                id: refreshMouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    // // console.log("SettingsContent: Refresh button clicked")
-                    root.forceInitialize()
-                    
-                    // Add a brief rotation animation
-                    refreshButton.rotation = 0
-                    refreshButton.rotation = 360
-                }
-            }
-
-            Behavior on color {
-                ColorAnimation { duration: 200 }
-            }
-
-            Behavior on rotation {
-                NumberAnimation { duration: 500; easing.type: Easing.OutCubic }
-            }
-        }
-
         Loader {
             id: personalizationLoader
 
@@ -238,10 +191,23 @@ Item {
         }
 
         Loader {
-            id: themeColorsLoader
+            id: positioningLoader
 
             anchors.fill: parent
             active: root.currentIndex === 8
+            visible: active
+            asynchronous: true
+
+            sourceComponent: PositioningTab {
+            }
+
+        }
+
+        Loader {
+            id: themeColorsLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 9
             visible: active
             asynchronous: true
 
@@ -251,10 +217,24 @@ Item {
         }
 
         Loader {
+            id: windowSizingLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 10
+            visible: active
+            asynchronous: true
+
+            sourceComponent: WindowSizingTab {
+                parentModal: root.parentModal
+            }
+
+        }
+
+        Loader {
             id: powerLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 9
+            active: root.currentIndex === 11
             visible: active
             asynchronous: true
 
@@ -267,7 +247,7 @@ Item {
             id: aboutLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 10
+            active: root.currentIndex === 12
             visible: active
             asynchronous: true
 

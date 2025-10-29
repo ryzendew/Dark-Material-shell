@@ -182,6 +182,41 @@ Singleton {
         console.warn("CompositorService: Cannot power on monitors, unknown compositor")
     }
 
+    function applyBlurSettings(blurSize, blurPasses) {
+        if (!isHyprland) {
+            console.warn("CompositorService: Cannot apply blur settings, not running on Hyprland")
+            return false
+        }
+
+        try {
+            // Apply blur size
+            Hyprland.dispatch("keyword", "blur:size", blurSize)
+            // Apply blur passes
+            Hyprland.dispatch("keyword", "blur:passes", blurPasses)
+            console.log("CompositorService: Applied blur settings - size:", blurSize, "passes:", blurPasses)
+            return true
+        } catch (error) {
+            console.error("CompositorService: Failed to apply blur settings:", error)
+            return false
+        }
+    }
+
+    function reloadHyprlandConfig() {
+        if (!isHyprland) {
+            console.warn("CompositorService: Cannot reload config, not running on Hyprland")
+            return false
+        }
+
+        try {
+            Hyprland.dispatch("reload")
+            console.log("CompositorService: Reloaded Hyprland configuration")
+            return true
+        } catch (error) {
+            console.error("CompositorService: Failed to reload Hyprland config:", error)
+            return false
+        }
+    }
+
     Process {
         id: niriSocketCheck
         command: ["test", "-S", root.niriSocket]

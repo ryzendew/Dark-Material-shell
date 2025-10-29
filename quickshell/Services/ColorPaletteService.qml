@@ -617,7 +617,7 @@ Singleton {
         }
         
         // Listen for mode changes to re-extract colors
-        if (typeof SessionData !== 'undefined') {
+        if (typeof SessionData !== 'undefined' && typeof SessionData.lightModeChanged !== 'undefined') {
             SessionData.lightModeChanged.connect(function() {
                 // // console.log("ColorPaletteService: Mode changed, re-extracting colors...")
                 if (typeof Theme !== 'undefined' && Theme.wallpaperPath) {
