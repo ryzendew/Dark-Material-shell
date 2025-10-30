@@ -13,6 +13,9 @@ Singleton {
     id: root
 
     // Theme settings
+    // Audio routing persistence
+    property var audioRoutesOutput: ({}) // map appKey -> deviceId
+    property var audioRoutesInput: ({})  // map appKey -> deviceId
     property string currentThemeName: "blue"
     property string customThemeFile: ""
     property var savedColorThemes: [] // Array of saved color themes
@@ -367,6 +370,8 @@ Singleton {
                 notificationTransparency = settings.notificationTransparency !== undefined ? (settings.notificationTransparency > 1 ? settings.notificationTransparency / 100 : settings.notificationTransparency) : 0.9
                 controlCenterTransparency = settings.controlCenterTransparency !== undefined ? (settings.controlCenterTransparency > 1 ? settings.controlCenterTransparency / 100 : settings.controlCenterTransparency) : 0.85
                 controlCenterWidgetBackgroundOpacity = settings.controlCenterWidgetBackgroundOpacity !== undefined ? (settings.controlCenterWidgetBackgroundOpacity > 1 ? settings.controlCenterWidgetBackgroundOpacity / 100 : settings.controlCenterWidgetBackgroundOpacity) : 0.60
+                audioRoutesOutput = settings.audioRoutesOutput !== undefined ? settings.audioRoutesOutput : ({})
+                audioRoutesInput = settings.audioRoutesInput !== undefined ? settings.audioRoutesInput : ({})
                 controlCenterDropShadowOpacity = settings.controlCenterDropShadowOpacity !== undefined ? (settings.controlCenterDropShadowOpacity > 1 ? settings.controlCenterDropShadowOpacity / 100 : settings.controlCenterDropShadowOpacity) : 0.15
                 controlCenterBorderOpacity = settings.controlCenterBorderOpacity !== undefined ? (settings.controlCenterBorderOpacity > 1 ? settings.controlCenterBorderOpacity / 100 : settings.controlCenterBorderOpacity) : 0.30
                 controlCenterBorderThickness = settings.controlCenterBorderThickness !== undefined ? settings.controlCenterBorderThickness : 1
@@ -653,6 +658,8 @@ Singleton {
                                                 "controlCenterBorderThickness": controlCenterBorderThickness,
                                                 "settingsBorderOpacity": settingsBorderOpacity,
                                                 "settingsBorderThickness": settingsBorderThickness,
+                                                "audioRoutesOutput": audioRoutesOutput,
+                                                "audioRoutesInput": audioRoutesInput,
                                                 "launcherLogoRed": launcherLogoRed,
                                                 "launcherLogoGreen": launcherLogoGreen,
                                                 "launcherLogoBlue": launcherLogoBlue,
@@ -1638,6 +1645,23 @@ Singleton {
         dockRightWidgets = order
         updateListModel(dockRightWidgetsModel, order)
         saveSettings()
+    }
+
+    // Audio routing helpers
+    function setAudioRoute(appKey, deviceId, isInput) {
+        if (!appKey || !deviceId)
+            return
+        if (isInput) {
+            audioRoutesInput[appKey] = deviceId
+        } else {
+            audioRoutesOutput[appKey] = deviceId
+        }
+        saveSettings()
+    }
+    function getAudioRoute(appKey, isInput) {
+        if (!appKey)
+            return ""
+        return isInput ? (audioRoutesInput[appKey] || "") : (audioRoutesOutput[appKey] || "")
     }
 
     function updateListModel(listModel, order) {

@@ -90,6 +90,13 @@ Rectangle {
                     isActive: false
                     onClicked: ApplicationAudioService.debugAllNodes()
                 }
+
+                // Tiny live counters to confirm PipeWire visibility
+                StyledText {
+                    text: `${ApplicationAudioService.totalNodeCount} nodes | ${(ApplicationAudioService.applicationStreams||[]).length} out | ${(ApplicationAudioService.applicationInputStreams||[]).length} in`
+                    font.pixelSize: Theme.fontSizeS
+                    color: Theme.onSurfaceVariant
+                }
             }
         }
 
@@ -277,15 +284,8 @@ Rectangle {
                 id: mouseArea
                 anchors.fill: parent
                 hoverEnabled: true
-                onClicked: {
-                    if (node && node.audio) {
-                        if (isInput) {
-                            ApplicationAudioService.toggleApplicationInputMute(node)
-                        } else {
-                            ApplicationAudioService.toggleApplicationMute(node)
-                        }
-                    }
-                }
+                // avoid toggling mute on entire row click to prevent event storms
+                onClicked: { /* no-op */ }
             }
 
             Row {
@@ -347,11 +347,7 @@ Rectangle {
 
                         onSliderValueChanged: function(newValue) {
                             if (node && node.audio) {
-                                if (isInput) {
-                                    ApplicationAudioService.setApplicationInputVolume(node, newValue)
-                                } else {
-                                    ApplicationAudioService.setApplicationVolume(node, newValue)
-                                }
+                                node.audio.volume = Math.max(0, Math.min(100, newValue)) / 100
                             }
                         }
                     }
@@ -361,10 +357,16 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: Theme.spacingXS
 
-                        DankIcon {
-                            name: node && node.audio && node.audio.muted ? "volume_off" : (isInput ? "mic" : "volume_up")
-                            size: Theme.iconSizeS
-                            color: node && node.audio && node.audio.muted ? Theme.error : Theme.onSurfaceVariant
+                        DankActionButton {
+                            buttonSize: 28
+                            iconName: node && node.audio && node.audio.muted ? "volume_off" : (isInput ? "mic" : "volume_up")
+                            iconSize: 16
+                            iconColor: node && node.audio && node.audio.muted ? Theme.error : Theme.onSurfaceVariant
+                            onClicked: {
+                                if (node && node.audio) {
+                                    node.audio.muted = !node.audio.muted
+                                }
+                            }
                         }
 
                         StyledText {

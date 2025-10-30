@@ -8,136 +8,58 @@ import Quickshell.Services.Pipewire
 
 Singleton {
     id: root
+    // Expose counts for debugging/visibility (bind directly to reactive list)
+    readonly property int totalNodeCount: (Pipewire.nodes?.values || []).length
 
     signal applicationVolumeChanged
     signal applicationMuteChanged
 
-    // Get all application audio output streams
-    readonly property var applicationStreams: {
-        if (!Pipewire.ready || !Pipewire.nodes?.values) {
-            // console.log("ApplicationAudioService: Pipewire not ready or no nodes")
-            return []
-        }
+    // Get all application audio output streams (Playback)
+    readonly property var applicationStreams: (Pipewire.nodes?.values || []).filter(node => {
+        if (!node || !node.ready || !node.audio) return false
+        // Match reference behavior: stream + sink = playback (outputs)
+        return node.isStream && node.isSink
+    })
 
-        const streams = Pipewire.nodes.values.filter(node => {
-            if (!node || !node.ready || !node.audio) {
-                return false
-            }
-            
-            // Try different approaches to detect application streams
-            // Check if it's a stream (not a device) and has application properties
-            const hasAppName = node.properties && node.properties["application.name"]
-            const isStream = node.isStream
-            const isSink = node.isSink
-            
-            // Also check for media class properties
-            const mediaClass = node.properties && node.properties["media.class"]
-            const isAudioStream = mediaClass && (mediaClass.includes("Audio") || mediaClass.includes("Stream"))
-            
-            const isOutputStream = isStream && isSink && (hasAppName || isAudioStream)
-            
-            if (isOutputStream) {
-                // console.log("ApplicationAudioService: Found output stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
-            }
-            return isOutputStream
-        })
-        
-        // console.log("ApplicationAudioService: Found", streams.length, "output streams")
-        return streams
-    }
+    // Get all application audio input streams (Capture)
+    readonly property var applicationInputStreams: (Pipewire.nodes?.values || []).filter(node => {
+        if (!node || !node.ready || !node.audio) return false
+        // Match reference behavior: stream + !sink = capture (inputs)
+        return node.isStream && !node.isSink
+    })
 
-    // Get all application audio input streams
-    readonly property var applicationInputStreams: {
-        if (!Pipewire.ready || !Pipewire.nodes?.values) {
-            // console.log("ApplicationAudioService: Pipewire not ready or no nodes")
-            return []
-        }
+    // Get output devices (sinks) that are not streams
+    readonly property var outputDevices: (Pipewire.nodes?.values || []).filter(node => {
+        if (!node || !node.ready || !node.audio) return false
+        return !node.isStream && node.isSink
+    })
 
-        const streams = Pipewire.nodes.values.filter(node => {
-            if (!node || !node.ready || !node.audio) {
-                return false
-            }
-            
-            // Try different approaches to detect application input streams
-            const hasAppName = node.properties && node.properties["application.name"]
-            const isStream = node.isStream
-            const isSink = node.isSink
-            
-            // Also check for media class properties
-            const mediaClass = node.properties && node.properties["media.class"]
-            const isAudioStream = mediaClass && (mediaClass.includes("Audio") || mediaClass.includes("Stream"))
-            
-            const isInputStream = isStream && !isSink && (hasAppName || isAudioStream)
-            
-            if (isInputStream) {
-                // console.log("ApplicationAudioService: Found input stream:", node.name, "app:", node.properties["application.name"], "media:", mediaClass)
-            }
-            return isInputStream
-        })
-        
-        // console.log("ApplicationAudioService: Found", streams.length, "input streams")
-        return streams
-    }
+    // Get input devices (sources) that are not streams
+    readonly property var inputDevices: (Pipewire.nodes?.values || []).filter(node => {
+        if (!node || !node.ready || !node.audio) return false
+        return !node.isStream && !node.isSink
+    })
 
     function getApplicationName(node) {
-        if (!node || !node.properties) {
-            return "Unknown Application"
-        }
-
-        // Try to get application name from properties
-        const appName = node.properties["application.name"]
-        if (appName && appName !== "") {
-            return appName
-        }
-
-        // Try to get from media name
-        const mediaName = node.properties["media.name"]
-        if (mediaName && mediaName !== "") {
-            return mediaName
-        }
-
-        // Fallback to node name
-        if (node.name && node.name !== "") {
-            return node.name
-        }
-
-        return "Unknown Application"
+        if (!node) return "Unknown Application"
+        const props = node.properties || {}
+        // application.name -> description -> name
+        const base = props["application.name"] || (node.description && node.description !== "" ? node.description : node.name)
+        const media = props["media.name"]
+        return media !== undefined && media !== "" ? `${base} - ${media}` : base || "Unknown Application"
     }
 
-    function getApplicationIcon(node) {
-        if (!node || !node.properties) {
-            return "apps"
-        }
-
-        const appName = (node.properties["application.name"] || "").toLowerCase()
-        
-        // Common application icons
-        if (appName.includes("firefox") || appName.includes("mozilla")) return "firefox"
-        if (appName.includes("chrome") || appName.includes("chromium")) return "chrome"
-        if (appName.includes("discord")) return "discord"
-        if (appName.includes("spotify")) return "spotify"
-        if (appName.includes("vlc")) return "vlc"
-        if (appName.includes("obs")) return "obs"
-        if (appName.includes("steam")) return "steam"
-        if (appName.includes("telegram")) return "telegram"
-        if (appName.includes("signal")) return "signal"
-        if (appName.includes("whatsapp")) return "whatsapp"
-        if (appName.includes("zoom")) return "zoom"
-        if (appName.includes("teams")) return "teams"
-        if (appName.includes("skype")) return "skype"
-        if (appName.includes("slack")) return "slack"
-        if (appName.includes("code") || appName.includes("vscode")) return "code"
-        if (appName.includes("terminal") || appName.includes("gnome-terminal")) return "terminal"
-        if (appName.includes("gedit")) return "text-editor"
-        if (appName.includes("libreoffice")) return "libreoffice"
-        if (appName.includes("gimp")) return "gimp"
-        if (appName.includes("inkscape")) return "inkscape"
-        if (appName.includes("blender")) return "blender"
-        if (appName.includes("audacity")) return "audacity"
-        if (appName.includes("pavucontrol")) return "pavucontrol"
-        if (appName.includes("pulseaudio")) return "pulseaudio"
-        
-        return "apps"
+    function getApplicationIconName(node) {
+        if (!node) return ""
+        const props = node.properties || {}
+        // Prefer the real icon name provided by the app/node
+        let preferred = props["application.icon-name"] || props["node.name"] || props["application.name"] || ""
+        // Avoid known non-themable/dummy names that trigger icon resolver warnings
+        const blacklist = [
+            "speech-dispatcher-dummy",
+        ]
+        if (blacklist.indexOf(preferred) !== -1) return ""
+        return preferred
     }
 
     function setApplicationVolume(node, percentage) {
@@ -182,10 +104,8 @@ Singleton {
         return node.audio.muted ? "Application input muted" : "Application input unmuted"
     }
 
-    // Track changes to application streams
-    PwObjectTracker {
-        objects: root.applicationStreams.concat(root.applicationInputStreams)
-    }
+    // Track changes to application streams; bind directly to the reactive list
+    PwObjectTracker { objects: Pipewire.nodes?.values || [] }
 
     // Debug function to log all available nodes
     function debugAllNodes() {

@@ -102,6 +102,7 @@ Item {
                             spacing: Theme.spacingM
 
                             StyledText {
+                                id: leftText
                                 text: "Left"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
@@ -152,6 +153,7 @@ Item {
                             spacing: Theme.spacingM
 
                             StyledText {
+                                id: topText
                                 text: "Top"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
@@ -250,6 +252,7 @@ Item {
                             spacing: Theme.spacingM
 
                             StyledText {
+                                id: leftText2
                                 text: "Left"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
@@ -300,6 +303,7 @@ Item {
                             spacing: Theme.spacingM
 
                             StyledText {
+                                id: topText2
                                 text: "Top"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText

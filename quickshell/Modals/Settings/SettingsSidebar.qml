@@ -47,6 +47,12 @@ Rectangle {
     }, {
         "text": "About",
         "icon": "info"
+    }, {
+        "text": "Sound",
+        "icon": "volume_up"
+    }, {
+        "text": "Default Apps",
+        "icon": "apps"
     }]
 
     width: 270

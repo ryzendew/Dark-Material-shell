@@ -16,11 +16,13 @@ Rectangle {
     property bool enableFuzzySearch: false
     property int popupWidthOffset: 0
     property int maxPopupHeight: 400
+    // Height of the clickable box on the right (the one in your screenshot)
+    property int controlHeight: 42
 
     signal valueChanged(string value)
 
     width: parent.width
-    height: 60
+    height: Math.max(60, controlHeight + Theme.spacingL * 2)
     radius: Theme.cornerRadius
     color: "transparent"
     Component.onCompleted: forceRecreateTimer.start()
@@ -76,7 +78,7 @@ Rectangle {
         id: dropdown
 
         width: root.width <= 60 ? root.width : 180
-        height: 36
+        height: root.controlHeight
         anchors.right: parent.right
         anchors.rightMargin: Theme.spacingM
         anchors.verticalCenter: parent.verticalCenter
@@ -130,6 +132,8 @@ Rectangle {
             StyledText {
                 text: root.currentValue
                 font.pixelSize: Theme.fontSizeMedium
+                font.family: SettingsData.defaultFontFamily
+                font.weight: Font.Normal
                 color: Theme.surfaceText
                 width: root.width <= 60 ? dropdown.width - expandIcon.width - Theme.spacingS * 2 : dropdown.width - contentRow.x - expandIcon.width - Theme.spacingM - Theme.spacingS
                 elide: root.width <= 60 ? Text.ElideNone : Text.ElideRight
@@ -319,6 +323,7 @@ Rectangle {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: modelData
                                         font.pixelSize: Theme.fontSizeMedium
+                                        font.family: SettingsData.defaultFontFamily
                                         color: isCurrentValue ? Theme.primary : Theme.surfaceText
                                         font.weight: isCurrentValue ? Font.Medium : Font.Normal
                                         width: parent.parent.width - parent.x - Theme.spacingS

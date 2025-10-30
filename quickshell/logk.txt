@@ -1,0 +1,25 @@
+[32m  INFO[0m: Launching config: "/home/matt/.config/quickshell/shell.qml"
+[32m  INFO[0m: Shell ID: "0a0891c93b66ea478911a5fa18d6b684" Path ID "0a0891c93b66ea478911a5fa18d6b684"
+[32m  INFO[0m: Saving logs to "/run/user/1000/quickshell/by-id/1n72u8tx4t/log.qslog"
+[33m  WARN[97m quickshell.desktopentry[0m: Encountered invalid line in desktop entry (no =) "[Desktop Entry]\r"
+[33m  WARN[97m quickshell.service.notifications[0m: Could not register notification server at org.freedesktop.Notifications, presumably because one is already registered.
+[33m  WARN[97m quickshell.service.notifications[0m: Registration will be attempted again if the active service is unregistered.
+[32m  INFO[0m: Configuration Loaded
+[34m DEBUG[97m qml[0m: CompositorService: Applied blur settings - size: 1 passes: 2
+[31m ERROR[97m quickshell.service.pipewire.node[0m: PwNode(0x7f6790401620, id=56/bound) has attached device PwDevice(0x7f676eb90000, id=54/bound) but no card.profile.device property.
+[31m ERROR[97m quickshell.service.pipewire.node[0m: PwNode(0x7f67904011c0, id=73/bound) has attached device PwDevice(0x7f676ef8fd80, id=43/bound) but no card.profile.device property.
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[34:21]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[45:25]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[52:25]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/ControlCenter/Widgets/ToggleButton.qml[97:21]: Unable to assign [undefined] to QColor
+[33m  WARN[97m scene[0m: @Modules/ControlCenter/Widgets/ToggleButton.qml[107:21]: Unable to assign [undefined] to QColor
+[33m  WARN[97m scene[0m: @Modules/ControlCenter/Widgets/ToggleButton.qml[97:21]: Unable to assign [undefined] to QColor
+[33m  WARN[97m scene[0m: @Modules/ControlCenter/Widgets/ToggleButton.qml[107:21]: Unable to assign [undefined] to QColor
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[77:59]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[100:21]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[113:58]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[135:21]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[145:17]: Unable to assign [undefined] to int
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[162:13]: Required property compact was not initialized
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[161:13]: Required property isInput was not initialized
+[33m  WARN[97m scene[0m: @Modules/Settings/SoundTab.qml[160:13]: Required property node was not initialized

@@ -256,6 +256,32 @@ Item {
 
         }
 
+        Loader {
+            id: soundLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 13
+            visible: active
+            asynchronous: true
+
+            sourceComponent: SoundTab {
+            }
+
+        }
+
+        Loader {
+            id: defaultAppsLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 14
+            visible: active
+            asynchronous: true
+
+            sourceComponent: DefaultAppsTab {
+            }
+
+        }
+
     }
 
 }

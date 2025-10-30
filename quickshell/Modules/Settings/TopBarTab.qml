@@ -1381,7 +1381,7 @@ Item {
                             text: "Border Sides"
                             font.pixelSize: Theme.fontSizeSmall
                             color: Theme.surfaceText
-                            font.weight: Font.Small
+                            font.weight: Font.Medium
                         }
 
                         Row {
