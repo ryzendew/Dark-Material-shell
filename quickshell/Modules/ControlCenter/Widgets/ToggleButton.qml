@@ -26,7 +26,7 @@ Rectangle {
     readonly property color _tileBgActive: Theme.primary
     readonly property color _tileBgInactive:
         Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b,
-                Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity)
+                (Theme.getContentBackgroundAlpha ? Theme.getContentBackgroundAlpha() : 1) * SettingsData.controlCenterWidgetBackgroundOpacity)
     readonly property color _tileRingActive:
         Qt.rgba(Theme.primaryText.r, Theme.primaryText.g, Theme.primaryText.b, 0.22)
 
@@ -53,7 +53,7 @@ Rectangle {
 
     readonly property color _containerBg:
         Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b,
-                Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity)
+                (Theme.getContentBackgroundAlpha ? Theme.getContentBackgroundAlpha() : 1) * SettingsData.controlCenterWidgetBackgroundOpacity)
 
     Rectangle {
         anchors.fill: parent
@@ -74,14 +74,14 @@ Rectangle {
 
         DankIcon {
             name: root.iconName
-            size: Theme.iconSize
-            color: isActive ? Theme.primaryContainer : Theme.primary
+            size: (Theme.iconSize || 24)
+            color: isActive ? (Theme.primaryContainer || Theme.primary) : (Theme.primary || "#888888")
             anchors.verticalCenter: parent.verticalCenter
             rotation: root.iconRotation
         }
 
         Item {
-            width: parent.width - Theme.iconSize - parent.spacing
+            width: parent.width - (Theme.iconSize || 24) - parent.spacing
             height: parent.height
 
             Column {
@@ -93,8 +93,8 @@ Rectangle {
                 StyledText {
                     width: parent.width
                     text: root.text
-                    font.pixelSize: Theme.fontSizeMedium
-                    color: isActive ? Theme.primaryContainerText : Theme.surfaceText
+                    font.pixelSize: (Theme.fontSizeMedium || 16)
+                    color: isActive ? "#000000" : "#ffffff"
                     font.weight: Font.Medium
                     elide: Text.ElideRight
                     wrapMode: Text.NoWrap
@@ -103,8 +103,8 @@ Rectangle {
                 StyledText {
                     width: parent.width
                     text: root.secondaryText
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: isActive ? Theme.primaryContainerText : Theme.surfaceVariantText
+                    font.pixelSize: (Theme.fontSizeSmall || 12)
+                    color: isActive ? "#000000" : "#ffffff"
                     visible: text.length > 0
                     elide: Text.ElideRight
                     wrapMode: Text.NoWrap
