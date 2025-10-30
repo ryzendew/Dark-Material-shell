@@ -256,6 +256,14 @@ Singleton {
     property bool dockTooltipsEnabled: true
     property real dockIconSize: 40
     property real dockIconSpacing: 2
+    // Dock advanced customization
+    property real dockWidgetAreaOpacity: 0.30
+    property real dockBackgroundTintOpacity: 0.04
+    property real dockCollapsedHeight: 20
+    property real dockSlideDistance: 60
+    property int dockAnimationDuration: 200
+    property real dockLeftWidgetAreaMinWidth: 60
+    property real dockRightWidgetAreaMinWidth: 40
     property real cornerRadius: 12
     property bool notificationOverlayEnabled: false
     
@@ -578,6 +586,13 @@ Singleton {
                 dockTooltipsEnabled = settings.dockTooltipsEnabled !== undefined ? settings.dockTooltipsEnabled : true
                 dockIconSize = settings.dockIconSize !== undefined ? settings.dockIconSize : 40
                 dockIconSpacing = settings.dockIconSpacing !== undefined ? settings.dockIconSpacing : 2
+                dockWidgetAreaOpacity = settings.dockWidgetAreaOpacity !== undefined ? (settings.dockWidgetAreaOpacity > 1 ? settings.dockWidgetAreaOpacity / 100 : settings.dockWidgetAreaOpacity) : 0.30
+                dockBackgroundTintOpacity = settings.dockBackgroundTintOpacity !== undefined ? (settings.dockBackgroundTintOpacity > 1 ? settings.dockBackgroundTintOpacity / 100 : settings.dockBackgroundTintOpacity) : 0.04
+                dockCollapsedHeight = settings.dockCollapsedHeight !== undefined ? settings.dockCollapsedHeight : 20
+                dockSlideDistance = settings.dockSlideDistance !== undefined ? settings.dockSlideDistance : 60
+                dockAnimationDuration = settings.dockAnimationDuration !== undefined ? settings.dockAnimationDuration : 200
+                dockLeftWidgetAreaMinWidth = settings.dockLeftWidgetAreaMinWidth !== undefined ? settings.dockLeftWidgetAreaMinWidth : 60
+                dockRightWidgetAreaMinWidth = settings.dockRightWidgetAreaMinWidth !== undefined ? settings.dockRightWidgetAreaMinWidth : 40
                 cornerRadius = settings.cornerRadius !== undefined ? settings.cornerRadius : 12
                 notificationOverlayEnabled = settings.notificationOverlayEnabled !== undefined ? settings.notificationOverlayEnabled : false
                 hyprlandBlurSize = settings.hyprlandBlurSize !== undefined ? settings.hyprlandBlurSize : 2
@@ -686,6 +701,13 @@ Singleton {
             "desktopWeatherForecastSize": desktopWeatherForecastSize,
             "desktopGpuSelection": desktopGpuSelection,
                                                 "dockTransparency": dockTransparency,
+                                                "dockWidgetAreaOpacity": dockWidgetAreaOpacity,
+                                                "dockBackgroundTintOpacity": dockBackgroundTintOpacity,
+                                                "dockCollapsedHeight": dockCollapsedHeight,
+                                                "dockSlideDistance": dockSlideDistance,
+                                                "dockAnimationDuration": dockAnimationDuration,
+                                                "dockLeftWidgetAreaMinWidth": dockLeftWidgetAreaMinWidth,
+                                                "dockRightWidgetAreaMinWidth": dockRightWidgetAreaMinWidth,
                                                 "dockBorderEnabled": dockBorderEnabled,
                                                 "dockBorderWidth": dockBorderWidth,
                                                 "dockBorderRadius": dockBorderRadius,
@@ -1906,6 +1928,41 @@ Singleton {
 
     function setDockIconSpacing(spacing) {
         dockIconSpacing = spacing
+        saveSettings()
+    }
+
+    function setDockWidgetAreaOpacity(opacity) {
+        dockWidgetAreaOpacity = opacity
+        saveSettings()
+    }
+
+    function setDockBackgroundTintOpacity(opacity) {
+        dockBackgroundTintOpacity = opacity
+        saveSettings()
+    }
+
+    function setDockCollapsedHeight(height) {
+        dockCollapsedHeight = height
+        saveSettings()
+    }
+
+    function setDockSlideDistance(distance) {
+        dockSlideDistance = distance
+        saveSettings()
+    }
+
+    function setDockAnimationDuration(ms) {
+        dockAnimationDuration = ms
+        saveSettings()
+    }
+
+    function setDockLeftWidgetAreaMinWidth(width) {
+        dockLeftWidgetAreaMinWidth = width
+        saveSettings()
+    }
+
+    function setDockRightWidgetAreaMinWidth(width) {
+        dockRightWidgetAreaMinWidth = width
         saveSettings()
     }
 

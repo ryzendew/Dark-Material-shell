@@ -90,6 +90,12 @@ Item {
                 }
             }
 
+            
+
+            
+
+            
+
             // Tooltips Section
             StyledRect {
                 width: parent.width
@@ -535,6 +541,356 @@ Item {
                             onToggled: checked => {
                                            SettingsData.setDockCenterApps(checked)
                                        }
+                        }
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
+            }
+
+            // Dock Widgets Section (below center apps toggle)
+            Column {
+                width: parent.width
+                spacing: Theme.spacingL
+                visible: SettingsData.showDock
+                opacity: visible ? 1 : 0
+
+                // Left Section
+                StyledRect {
+                    width: parent.width
+                    height: leftSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r,
+                                   Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    WidgetsTabSection {
+                        id: leftSection
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        title: "Left Side Widgets"
+                        titleIcon: "format_align_left"
+                        sectionId: "dockLeft"
+                        items: dockTab.getItemsForSection("dockLeft")
+                        allWidgets: dockTab.dockWidgetDefinitions
+
+                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
+                                                  dockTab.handleItemEnabledChanged(sectionId, itemId, enabled)
+                                              }
+                        onItemOrderChanged: newOrder => {
+                                                dockTab.handleItemOrderChanged("dockLeft", newOrder)
+                                            }
+                        onAddWidget: sectionId => {
+                                         widgetSelectionPopup.allWidgets = dockTab.dockWidgetDefinitions
+                                         widgetSelectionPopup.targetSection = sectionId
+                                         widgetSelectionPopup.safeOpen()
+                                     }
+                        onRemoveWidget: (sectionId, widgetIndex) => {
+                                            dockTab.removeWidgetFromSection(sectionId, widgetIndex)
+                                        }
+                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
+                                                 dockTab.handleSpacerSizeChanged(sectionId, widgetIndex, newSize)
+                                             }
+                    }
+                }
+
+                // Right Section
+                StyledRect {
+                    width: parent.width
+                    height: rightSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r,
+                                   Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    WidgetsTabSection {
+                        id: rightSection
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        title: "Right Side Widgets"
+                        titleIcon: "format_align_right"
+                        sectionId: "dockRight"
+                        items: dockTab.getItemsForSection("dockRight")
+                        allWidgets: dockTab.dockWidgetDefinitions
+
+                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
+                                                  dockTab.handleItemEnabledChanged(sectionId, itemId, enabled)
+                                              }
+                        onItemOrderChanged: newOrder => {
+                                                dockTab.handleItemOrderChanged("dockRight", newOrder)
+                                            }
+                        onAddWidget: sectionId => {
+                                         widgetSelectionPopup.allWidgets = dockTab.dockWidgetDefinitions
+                                         widgetSelectionPopup.targetSection = sectionId
+                                         widgetSelectionPopup.safeOpen()
+                                     }
+                        onRemoveWidget: (sectionId, widgetIndex) => {
+                                            dockTab.removeWidgetFromSection(sectionId, widgetIndex)
+                                        }
+                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
+                                                 dockTab.handleSpacerSizeChanged(sectionId, widgetIndex, newSize)
+                                             }
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
+            }
+
+            // Customize Dock Section
+            StyledRect {
+                width: parent.width
+                height: customizeDockSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+                visible: SettingsData.showDock
+                opacity: visible ? 1 : 0
+
+                Column {
+                    id: customizeDockSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DankIcon {
+                            name: "tune"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Customize Dock"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    // Background
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Background Tint Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DankSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(SettingsData.dockBackgroundTintOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            thumbOutlineColor: Theme.surfaceContainer
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDockBackgroundTintOpacity(newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    // Widget Areas
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Widget Area Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DankSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(SettingsData.dockWidgetAreaOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            thumbOutlineColor: Theme.surfaceContainer
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDockWidgetAreaOpacity(newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        Column {
+                            width: (parent.width - Theme.spacingM) / 2
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                text: "Left Widget Area Min Width"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            DankSlider {
+                                width: parent.width
+                                height: 24
+                                value: SettingsData.dockLeftWidgetAreaMinWidth
+                                minimum: 0
+                                maximum: 240
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                thumbOutlineColor: Theme.surfaceContainer
+                                onSliderValueChanged: newValue => {
+                                                          SettingsData.setDockLeftWidgetAreaMinWidth(newValue)
+                                                      }
+                            }
+                        }
+
+                        Column {
+                            width: (parent.width - Theme.spacingM) / 2
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                text: "Right Widget Area Min Width"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            DankSlider {
+                                width: parent.width
+                                height: 24
+                                value: SettingsData.dockRightWidgetAreaMinWidth
+                                minimum: 0
+                                maximum: 240
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                thumbOutlineColor: Theme.surfaceContainer
+                                onSliderValueChanged: newValue => {
+                                                          SettingsData.setDockRightWidgetAreaMinWidth(newValue)
+                                                      }
+                            }
+                        }
+                    }
+
+                    // Behavior
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        Column {
+                            width: (parent.width - Theme.spacingM * 2) / 3
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                text: "Collapsed Height"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            DankSlider {
+                                width: parent.width
+                                height: 24
+                                value: SettingsData.dockCollapsedHeight
+                                minimum: 0
+                                maximum: 60
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                thumbOutlineColor: Theme.surfaceContainer
+                                onSliderValueChanged: newValue => {
+                                                          SettingsData.setDockCollapsedHeight(newValue)
+                                                      }
+                            }
+                        }
+
+                        Column {
+                            width: (parent.width - Theme.spacingM * 2) / 3
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                text: "Slide Distance"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            DankSlider {
+                                width: parent.width
+                                height: 24
+                                value: SettingsData.dockSlideDistance
+                                minimum: 0
+                                maximum: 200
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                thumbOutlineColor: Theme.surfaceContainer
+                                onSliderValueChanged: newValue => {
+                                                          SettingsData.setDockSlideDistance(newValue)
+                                                      }
+                            }
+                        }
+
+                        Column {
+                            width: (parent.width - Theme.spacingM * 2) / 3
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                text: "Animation Duration"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            DankSlider {
+                                width: parent.width
+                                height: 24
+                                value: SettingsData.dockAnimationDuration
+                                minimum: 0
+                                maximum: 1000
+                                unit: "ms"
+                                showValue: true
+                                wheelEnabled: false
+                                thumbOutlineColor: Theme.surfaceContainer
+                                onSliderValueChanged: newValue => {
+                                                          SettingsData.setDockAnimationDuration(newValue)
+                                                      }
+                            }
                         }
                     }
                 }
@@ -1050,104 +1406,7 @@ Item {
                 }
             }
 
-            // Dock Widgets Section
-            Column {
-                width: parent.width
-                spacing: Theme.spacingL
-                visible: SettingsData.showDock
-                opacity: visible ? 1 : 0
-
-                // Left Section
-                StyledRect {
-                    width: parent.width
-                    height: leftSection.implicitHeight + Theme.spacingL * 2
-                    radius: Theme.cornerRadius
-                    color: Qt.rgba(Theme.surfaceVariant.r,
-                                   Theme.surfaceVariant.g,
-                                   Theme.surfaceVariant.b, 0.3)
-                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                          Theme.outline.b, 0.2)
-                    border.width: 1
-
-                    WidgetsTabSection {
-                        id: leftSection
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingL
-                        title: "Left Side Widgets"
-                        titleIcon: "format_align_left"
-                        sectionId: "dockLeft"
-                        items: dockTab.getItemsForSection("dockLeft")
-                        allWidgets: dockTab.dockWidgetDefinitions
-
-                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
-                                                  dockTab.handleItemEnabledChanged(sectionId, itemId, enabled)
-                                              }
-                        onItemOrderChanged: newOrder => {
-                                                dockTab.handleItemOrderChanged("dockLeft", newOrder)
-                                            }
-                        onAddWidget: sectionId => {
-                                         widgetSelectionPopup.allWidgets = dockTab.dockWidgetDefinitions
-                                         widgetSelectionPopup.targetSection = sectionId
-                                         widgetSelectionPopup.safeOpen()
-                                     }
-                        onRemoveWidget: (sectionId, widgetIndex) => {
-                                            dockTab.removeWidgetFromSection(sectionId, widgetIndex)
-                                        }
-                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
-                                                 dockTab.handleSpacerSizeChanged(sectionId, widgetIndex, newSize)
-                                             }
-                    }
-                }
-
-                // Right Section
-                StyledRect {
-                    width: parent.width
-                    height: rightSection.implicitHeight + Theme.spacingL * 2
-                    radius: Theme.cornerRadius
-                    color: Qt.rgba(Theme.surfaceVariant.r,
-                                   Theme.surfaceVariant.g,
-                                   Theme.surfaceVariant.b, 0.3)
-                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                          Theme.outline.b, 0.2)
-                    border.width: 1
-
-                    WidgetsTabSection {
-                        id: rightSection
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingL
-                        title: "Right Side Widgets"
-                        titleIcon: "format_align_right"
-                        sectionId: "dockRight"
-                        items: dockTab.getItemsForSection("dockRight")
-                        allWidgets: dockTab.dockWidgetDefinitions
-
-                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
-                                                  dockTab.handleItemEnabledChanged(sectionId, itemId, enabled)
-                                              }
-                        onItemOrderChanged: newOrder => {
-                                                dockTab.handleItemOrderChanged("dockRight", newOrder)
-                                            }
-                        onAddWidget: sectionId => {
-                                         widgetSelectionPopup.allWidgets = dockTab.dockWidgetDefinitions
-                                         widgetSelectionPopup.targetSection = sectionId
-                                         widgetSelectionPopup.safeOpen()
-                                     }
-                        onRemoveWidget: (sectionId, widgetIndex) => {
-                                            dockTab.removeWidgetFromSection(sectionId, widgetIndex)
-                                        }
-                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
-                                                 dockTab.handleSpacerSizeChanged(sectionId, widgetIndex, newSize)
-                                             }
-                    }
-                }
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Theme.mediumDuration
-                        easing.type: Theme.emphasizedEasing
-                    }
-                }
-            }
+            
 
             // Dock Border Settings
             StyledRect {

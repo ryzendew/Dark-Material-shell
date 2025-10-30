@@ -697,6 +697,346 @@ Item {
                 }
             }
 
+            // TopBar Widgets Sections (moved directly under toggles)
+            Column {
+                width: parent.width
+                spacing: Theme.spacingL
+
+                // Widget Management Section
+                StyledRect {
+                    width: parent.width
+                    height: widgetManagementSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    Column {
+                        id: widgetManagementSection
+
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        spacing: Theme.spacingM
+
+                        RowLayout {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            DankIcon {
+                                id: widgetIcon
+                                name: "widgets"
+                                size: Theme.iconSize
+                                color: Theme.primary
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            StyledText {
+                                id: widgetTitle
+                                text: "Widget Management"
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            Item {
+                                height: 1
+                                Layout.fillWidth: true
+                            }
+
+                            Rectangle {
+                                id: resetButton
+                                width: 80
+                                height: 28
+                                radius: Theme.cornerRadius
+                                color: resetArea.containsMouse ? Theme.surfacePressed : Theme.surfaceVariant
+                                Layout.alignment: Qt.AlignVCenter
+                                border.width: 1
+                                border.color: resetArea.containsMouse ? Theme.outline : Qt.rgba(
+                                                                            Theme.outline.r,
+                                                                            Theme.outline.g,
+                                                                            Theme.outline.b,
+                                                                            0.5)
+
+                                Row {
+                                    anchors.centerIn: parent
+                                    spacing: Theme.spacingXS
+
+                                    DankIcon {
+                                        name: "refresh"
+                                        size: 14
+                                        color: Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    StyledText {
+                                        text: "Reset"
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        font.weight: Font.Medium
+                                        color: Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: resetArea
+
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        SettingsData.setTopBarLeftWidgets(
+                                                    defaultLeftWidgets)
+                                        SettingsData.setTopBarCenterWidgets(
+                                                    defaultCenterWidgets)
+                                        SettingsData.setTopBarRightWidgets(
+                                                    defaultRightWidgets)
+                                    }
+                                }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Theme.shortDuration
+                                        easing.type: Theme.standardEasing
+                                    }
+                                }
+
+                                Behavior on border.color {
+                                    ColorAnimation {
+                                        duration: Theme.shortDuration
+                                        easing.type: Theme.standardEasing
+                                    }
+                                }
+                            }
+                        }
+
+                        StyledText {
+                            width: parent.width
+                            text: "Drag widgets to reorder within sections. Use the eye icon to hide/show widgets (maintains spacing), or X to remove them completely."
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                            wrapMode: Text.WordWrap
+                        }
+                    }
+                }
+
+                // Left Section
+                StyledRect {
+                    width: parent.width
+                    height: leftSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r,
+                                   Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    WidgetsTabSection {
+                        id: leftSection
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        title: "Left Section"
+                        titleIcon: "format_align_left"
+                        sectionId: "left"
+                        allWidgets: topBarTab.baseWidgetDefinitions
+                        items: topBarTab.getItemsForSection("left")
+                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
+                                                  topBarTab.handleItemEnabledChanged(
+                                                      sectionId,
+                                                      itemId, enabled)
+                                              }
+                        onItemOrderChanged: newOrder => {
+                                                topBarTab.handleItemOrderChanged(
+                                                    "left", newOrder)
+                                            }
+                        onAddWidget: sectionId => {
+                                         widgetSelectionPopup.allWidgets
+                                         = topBarTab.baseWidgetDefinitions
+                                         widgetSelectionPopup.targetSection = sectionId
+                                         widgetSelectionPopup.safeOpen()
+                                     }
+                        onRemoveWidget: (sectionId, widgetIndex) => {
+                                            topBarTab.removeWidgetFromSection(
+                                                sectionId, widgetIndex)
+                                        }
+                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
+                                                 topBarTab.handleSpacerSizeChanged(
+                                                     sectionId, widgetIndex, newSize)
+                                             }
+                        onCompactModeChanged: (widgetId, value) => {
+                                                  if (widgetId === "clock") {
+                                                      SettingsData.setClockCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "music") {
+                                                      SettingsData.setMediaSize(
+                                                          value)
+                                                  } else if (widgetId === "focusedWindow") {
+                                                      SettingsData.setFocusedWindowCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "runningApps") {
+                                                      SettingsData.setRunningAppsCompactMode(
+                                                          value)
+                                                  }
+                                              }
+                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
+                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
+                                                       }
+                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
+                                                   topBarTab.handleGpuSelectionChanged(
+                                                       sectionId, widgetIndex,
+                                                       selectedIndex)
+                                               }
+                    }
+                }
+
+                // Center Section
+                StyledRect {
+                    width: parent.width
+                    height: centerSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r,
+                                   Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    WidgetsTabSection {
+                        id: centerSection
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        title: "Center Section"
+                        titleIcon: "format_align_center"
+                        sectionId: "center"
+                        allWidgets: topBarTab.baseWidgetDefinitions
+                        items: topBarTab.getItemsForSection("center")
+                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
+                                                  topBarTab.handleItemEnabledChanged(
+                                                      sectionId,
+                                                      itemId, enabled)
+                                              }
+                        onItemOrderChanged: newOrder => {
+                                                topBarTab.handleItemOrderChanged(
+                                                    "center", newOrder)
+                                            }
+                        onAddWidget: sectionId => {
+                                         widgetSelectionPopup.allWidgets
+                                         = topBarTab.baseWidgetDefinitions
+                                         widgetSelectionPopup.targetSection = sectionId
+                                         widgetSelectionPopup.safeOpen()
+                                     }
+                        onRemoveWidget: (sectionId, widgetIndex) => {
+                                            topBarTab.removeWidgetFromSection(
+                                                sectionId, widgetIndex)
+                                        }
+                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
+                                                 topBarTab.handleSpacerSizeChanged(
+                                                     sectionId, widgetIndex, newSize)
+                                             }
+                        onCompactModeChanged: (widgetId, value) => {
+                                                  if (widgetId === "clock") {
+                                                      SettingsData.setClockCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "music") {
+                                                      SettingsData.setMediaSize(
+                                                          value)
+                                                  } else if (widgetId === "focusedWindow") {
+                                                      SettingsData.setFocusedWindowCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "runningApps") {
+                                                      SettingsData.setRunningAppsCompactMode(
+                                                          value)
+                                                  }
+                                              }
+                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
+                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
+                                                       }
+                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
+                                                   topBarTab.handleGpuSelectionChanged(
+                                                       sectionId, widgetIndex,
+                                                       selectedIndex)
+                                               }
+                    }
+                }
+
+                // Right Section
+                StyledRect {
+                    width: parent.width
+                    height: rightSection.implicitHeight + Theme.spacingL * 2
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(Theme.surfaceVariant.r,
+                                   Theme.surfaceVariant.g,
+                                   Theme.surfaceVariant.b, 0.3)
+                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                          Theme.outline.b, 0.2)
+                    border.width: 1
+
+                    WidgetsTabSection {
+                        id: rightSection
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingL
+                        title: "Right Section"
+                        titleIcon: "format_align_right"
+                        sectionId: "right"
+                        allWidgets: topBarTab.baseWidgetDefinitions
+                        items: topBarTab.getItemsForSection("right")
+                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
+                                                  topBarTab.handleItemEnabledChanged(
+                                                      sectionId,
+                                                      itemId, enabled)
+                                              }
+                        onItemOrderChanged: newOrder => {
+                                                topBarTab.handleItemOrderChanged(
+                                                    "right", newOrder)
+                                            }
+                        onAddWidget: sectionId => {
+                                         widgetSelectionPopup.allWidgets
+                                         = topBarTab.baseWidgetDefinitions
+                                         widgetSelectionPopup.targetSection = sectionId
+                                         widgetSelectionPopup.safeOpen()
+                                     }
+                        onRemoveWidget: (sectionId, widgetIndex) => {
+                                            topBarTab.removeWidgetFromSection(
+                                                sectionId, widgetIndex)
+                                        }
+                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
+                                                 topBarTab.handleSpacerSizeChanged(
+                                                     sectionId, widgetIndex, newSize)
+                                             }
+                        onCompactModeChanged: (widgetId, value) => {
+                                                  if (widgetId === "clock") {
+                                                      SettingsData.setClockCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "music") {
+                                                      SettingsData.setMediaSize(
+                                                          value)
+                                                  } else if (widgetId === "focusedWindow") {
+                                                      SettingsData.setFocusedWindowCompactMode(
+                                                          value)
+                                                  } else if (widgetId === "runningApps") {
+                                                      SettingsData.setRunningAppsCompactMode(
+                                                          value)
+                                                  }
+                                              }
+                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
+                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
+                                                       }
+                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
+                                                   topBarTab.handleGpuSelectionChanged(
+                                                       sectionId, widgetIndex,
+                                                       selectedIndex)
+                                               }
+                    }
+                }
+            }
+
+            
+
+            
+
 
             // Opacity Controls
             StyledRect {
@@ -925,340 +1265,7 @@ Item {
                 }
             }
 
-            // Widget Management Section
-            StyledRect {
-                width: parent.width
-                height: widgetManagementSection.implicitHeight + Theme.spacingL * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
-                               Theme.surfaceVariant.b, 0.3)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                      Theme.outline.b, 0.2)
-                border.width: 1
-
-                Column {
-                    id: widgetManagementSection
-
-                    anchors.fill: parent
-                    anchors.margins: Theme.spacingL
-                    spacing: Theme.spacingM
-
-                    RowLayout {
-                        width: parent.width
-                        spacing: Theme.spacingM
-
-                        DankIcon {
-                            id: widgetIcon
-                            name: "widgets"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
-                        StyledText {
-                            id: widgetTitle
-                            text: "Widget Management"
-                            font.pixelSize: Theme.fontSizeLarge
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
-                        Item {
-                            height: 1
-                            Layout.fillWidth: true
-                        }
-
-                        Rectangle {
-                            id: resetButton
-                            width: 80
-                            height: 28
-                            radius: Theme.cornerRadius
-                            color: resetArea.containsMouse ? Theme.surfacePressed : Theme.surfaceVariant
-                            Layout.alignment: Qt.AlignVCenter
-                            border.width: 1
-                            border.color: resetArea.containsMouse ? Theme.outline : Qt.rgba(
-                                                                        Theme.outline.r,
-                                                                        Theme.outline.g,
-                                                                        Theme.outline.b,
-                                                                        0.5)
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing: Theme.spacingXS
-
-                                DankIcon {
-                                    name: "refresh"
-                                    size: 14
-                                    color: Theme.surfaceText
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-
-                                StyledText {
-                                    text: "Reset"
-                                    font.pixelSize: Theme.fontSizeSmall
-                                    font.weight: Font.Medium
-                                    color: Theme.surfaceText
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
-
-                            MouseArea {
-                                id: resetArea
-
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    SettingsData.setTopBarLeftWidgets(
-                                                defaultLeftWidgets)
-                                    SettingsData.setTopBarCenterWidgets(
-                                                defaultCenterWidgets)
-                                    SettingsData.setTopBarRightWidgets(
-                                                defaultRightWidgets)
-                                }
-                            }
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.shortDuration
-                                    easing.type: Theme.standardEasing
-                                }
-                            }
-
-                            Behavior on border.color {
-                                ColorAnimation {
-                                    duration: Theme.shortDuration
-                                    easing.type: Theme.standardEasing
-                                }
-                            }
-                        }
-                    }
-
-                    StyledText {
-                        width: parent.width
-                        text: "Drag widgets to reorder within sections. Use the eye icon to hide/show widgets (maintains spacing), or X to remove them completely."
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.surfaceVariantText
-                        wrapMode: Text.WordWrap
-                    }
-                }
-            }
-
-            Column {
-                width: parent.width
-                spacing: Theme.spacingL
-
-                // Left Section
-                StyledRect {
-                    width: parent.width
-                    height: leftSection.implicitHeight + Theme.spacingL * 2
-                    radius: Theme.cornerRadius
-                    color: Qt.rgba(Theme.surfaceVariant.r,
-                                   Theme.surfaceVariant.g,
-                                   Theme.surfaceVariant.b, 0.3)
-                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                          Theme.outline.b, 0.2)
-                    border.width: 1
-
-                    WidgetsTabSection {
-                        id: leftSection
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingL
-                        title: "Left Section"
-                        titleIcon: "format_align_left"
-                        sectionId: "left"
-                        allWidgets: topBarTab.baseWidgetDefinitions
-                        items: topBarTab.getItemsForSection("left")
-                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
-                                                  topBarTab.handleItemEnabledChanged(
-                                                      sectionId,
-                                                      itemId, enabled)
-                                              }
-                        onItemOrderChanged: newOrder => {
-                                                topBarTab.handleItemOrderChanged(
-                                                    "left", newOrder)
-                                            }
-                        onAddWidget: sectionId => {
-                                         widgetSelectionPopup.allWidgets
-                                         = topBarTab.baseWidgetDefinitions
-                                         widgetSelectionPopup.targetSection = sectionId
-                                         widgetSelectionPopup.safeOpen()
-                                     }
-                        onRemoveWidget: (sectionId, widgetIndex) => {
-                                            topBarTab.removeWidgetFromSection(
-                                                sectionId, widgetIndex)
-                                        }
-                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
-                                                 topBarTab.handleSpacerSizeChanged(
-                                                     sectionId, widgetIndex, newSize)
-                                             }
-                        onCompactModeChanged: (widgetId, value) => {
-                                                  if (widgetId === "clock") {
-                                                      SettingsData.setClockCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "music") {
-                                                      SettingsData.setMediaSize(
-                                                          value)
-                                                  } else if (widgetId === "focusedWindow") {
-                                                      SettingsData.setFocusedWindowCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "runningApps") {
-                                                      SettingsData.setRunningAppsCompactMode(
-                                                          value)
-                                                  }
-                                              }
-                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
-                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
-                                                       }
-                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
-                                                   topBarTab.handleGpuSelectionChanged(
-                                                       sectionId, widgetIndex,
-                                                       selectedIndex)
-                                               }
-                    }
-                }
-
-                // Center Section
-                StyledRect {
-                    width: parent.width
-                    height: centerSection.implicitHeight + Theme.spacingL * 2
-                    radius: Theme.cornerRadius
-                    color: Qt.rgba(Theme.surfaceVariant.r,
-                                   Theme.surfaceVariant.g,
-                                   Theme.surfaceVariant.b, 0.3)
-                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                          Theme.outline.b, 0.2)
-                    border.width: 1
-
-                    WidgetsTabSection {
-                        id: centerSection
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingL
-                        title: "Center Section"
-                        titleIcon: "format_align_center"
-                        sectionId: "center"
-                        allWidgets: topBarTab.baseWidgetDefinitions
-                        items: topBarTab.getItemsForSection("center")
-                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
-                                                  topBarTab.handleItemEnabledChanged(
-                                                      sectionId,
-                                                      itemId, enabled)
-                                              }
-                        onItemOrderChanged: newOrder => {
-                                                topBarTab.handleItemOrderChanged(
-                                                    "center", newOrder)
-                                            }
-                        onAddWidget: sectionId => {
-                                         widgetSelectionPopup.allWidgets
-                                         = topBarTab.baseWidgetDefinitions
-                                         widgetSelectionPopup.targetSection = sectionId
-                                         widgetSelectionPopup.safeOpen()
-                                     }
-                        onRemoveWidget: (sectionId, widgetIndex) => {
-                                            topBarTab.removeWidgetFromSection(
-                                                sectionId, widgetIndex)
-                                        }
-                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
-                                                 topBarTab.handleSpacerSizeChanged(
-                                                     sectionId, widgetIndex, newSize)
-                                             }
-                        onCompactModeChanged: (widgetId, value) => {
-                                                  if (widgetId === "clock") {
-                                                      SettingsData.setClockCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "music") {
-                                                      SettingsData.setMediaSize(
-                                                          value)
-                                                  } else if (widgetId === "focusedWindow") {
-                                                      SettingsData.setFocusedWindowCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "runningApps") {
-                                                      SettingsData.setRunningAppsCompactMode(
-                                                          value)
-                                                  }
-                                              }
-                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
-                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
-                                                       }
-                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
-                                                   topBarTab.handleGpuSelectionChanged(
-                                                       sectionId, widgetIndex,
-                                                       selectedIndex)
-                                               }
-                    }
-                }
-
-                // Right Section
-                StyledRect {
-                    width: parent.width
-                    height: rightSection.implicitHeight + Theme.spacingL * 2
-                    radius: Theme.cornerRadius
-                    color: Qt.rgba(Theme.surfaceVariant.r,
-                                   Theme.surfaceVariant.g,
-                                   Theme.surfaceVariant.b, 0.3)
-                    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                          Theme.outline.b, 0.2)
-                    border.width: 1
-
-                    WidgetsTabSection {
-                        id: rightSection
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingL
-                        title: "Right Section"
-                        titleIcon: "format_align_right"
-                        sectionId: "right"
-                        allWidgets: topBarTab.baseWidgetDefinitions
-                        items: topBarTab.getItemsForSection("right")
-                        onItemEnabledChanged: (sectionId, itemId, enabled) => {
-                                                  topBarTab.handleItemEnabledChanged(
-                                                      sectionId,
-                                                      itemId, enabled)
-                                              }
-                        onItemOrderChanged: newOrder => {
-                                                topBarTab.handleItemOrderChanged(
-                                                    "right", newOrder)
-                                            }
-                        onAddWidget: sectionId => {
-                                         widgetSelectionPopup.allWidgets
-                                         = topBarTab.baseWidgetDefinitions
-                                         widgetSelectionPopup.targetSection = sectionId
-                                         widgetSelectionPopup.safeOpen()
-                                     }
-                        onRemoveWidget: (sectionId, widgetIndex) => {
-                                            topBarTab.removeWidgetFromSection(
-                                                sectionId, widgetIndex)
-                                        }
-                        onSpacerSizeChanged: (sectionId, widgetIndex, newSize) => {
-                                                 topBarTab.handleSpacerSizeChanged(
-                                                     sectionId, widgetIndex, newSize)
-                                             }
-                        onCompactModeChanged: (widgetId, value) => {
-                                                  if (widgetId === "clock") {
-                                                      SettingsData.setClockCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "music") {
-                                                      SettingsData.setMediaSize(
-                                                          value)
-                                                  } else if (widgetId === "focusedWindow") {
-                                                      SettingsData.setFocusedWindowCompactMode(
-                                                          value)
-                                                  } else if (widgetId === "runningApps") {
-                                                      SettingsData.setRunningAppsCompactMode(
-                                                          value)
-                                                  }
-                                              }
-                        onControlCenterSettingChanged: (sectionId, widgetIndex, settingName, value) => {
-                                                           handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value)
-                                                       }
-                        onGpuSelectionChanged: (sectionId, widgetIndex, selectedIndex) => {
-                                                   topBarTab.handleGpuSelectionChanged(
-                                                       sectionId, widgetIndex,
-                                                       selectedIndex)
-                                               }
-                    }
-                }
-            }
+            // Removed duplicate widgets sections (now placed under toggles)
 
             // TopBar Border Settings
             StyledRect {

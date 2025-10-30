@@ -189,10 +189,10 @@ Singleton {
         }
 
         try {
-            // Apply blur size
-            Hyprland.dispatch("keyword", "blur:size", blurSize)
-            // Apply blur passes
-            Hyprland.dispatch("keyword", "blur:passes", blurPasses)
+            hyprKeyword1.command = ["hyprctl", "keyword", "blur:size", String(blurSize)]
+            hyprKeyword1.startDetached()
+            hyprKeyword2.command = ["hyprctl", "keyword", "blur:passes", String(blurPasses)]
+            hyprKeyword2.startDetached()
             console.log("CompositorService: Applied blur settings - size:", blurSize, "passes:", blurPasses)
             return true
         } catch (error) {
@@ -235,4 +235,8 @@ Singleton {
             }
         }
     }
+
+    // Reusable hyprctl keyword processes
+    Process { id: hyprKeyword1; command: ["true"] }
+    Process { id: hyprKeyword2; command: ["true"] }
 }

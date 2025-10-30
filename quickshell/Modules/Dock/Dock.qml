@@ -82,7 +82,7 @@ PanelWindow {
         property real screenWidth: currentScreen ? currentScreen.geometry.width : 1920
         property real maxDockWidth: Math.min(screenWidth * 0.8, 1200)
 
-        height: dock.reveal ? (65 + SettingsData.dockTopPadding + SettingsData.dockBottomPadding) : 20
+        height: dock.reveal ? (65 + SettingsData.dockTopPadding + SettingsData.dockBottomPadding) : SettingsData.dockCollapsedHeight
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -104,7 +104,7 @@ PanelWindow {
 
         Behavior on height {
             NumberAnimation {
-                duration: 200
+                duration: SettingsData.dockAnimationDuration
                 easing.type: Easing.OutCubic
             }
         }
@@ -115,11 +115,11 @@ PanelWindow {
 
             transform: Translate {
                 id: dockSlide
-                y: dock.reveal ? 0 : 60
+                y: dock.reveal ? 0 : SettingsData.dockSlideDistance
 
                 Behavior on y {
                     NumberAnimation {
-                        duration: 200
+                        duration: SettingsData.dockAnimationDuration
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -168,7 +168,7 @@ PanelWindow {
                     anchors.fill: parent
                     color: {
                         var baseColor = Theme.surfaceTint
-                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, 0.04)
+                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, SettingsData.dockBackgroundTintOpacity)
                     }
                     radius: parent.radius
                 }
@@ -180,11 +180,11 @@ PanelWindow {
                     anchors.leftMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     height: parent.height - 8
-                    width: Math.max(60, leftWidgets.implicitWidth + 16) // Increased minimum width for launcher button
+                    width: Math.max(SettingsData.dockLeftWidgetAreaMinWidth, leftWidgets.implicitWidth + 16)
                     radius: Theme.cornerRadius
                     color: {
                         const baseColor = Theme.surfaceContainer
-                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, 0.3)
+                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, SettingsData.dockWidgetAreaOpacity)
                     }
                     border.width: 1
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
@@ -194,7 +194,7 @@ PanelWindow {
                     // Smooth width animation
                     Behavior on width {
                         NumberAnimation {
-                            duration: 200
+                            duration: SettingsData.dockAnimationDuration
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -234,11 +234,11 @@ PanelWindow {
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     height: parent.height - 8
-                    width: Math.max(40, rightWidgets.implicitWidth + 16) // Minimum width, expands with content
+                    width: Math.max(SettingsData.dockRightWidgetAreaMinWidth, rightWidgets.implicitWidth + 16)
                     radius: Theme.cornerRadius
                     color: {
                         const baseColor = Theme.surfaceContainer
-                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, 0.3)
+                        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, SettingsData.dockWidgetAreaOpacity)
                     }
                     border.width: 1
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)

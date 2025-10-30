@@ -100,14 +100,14 @@ Rectangle {
                     DankIcon {
                         name: modelData.icon || ""
                         size: Theme.iconSize - 2
-                        color: parent.parent.isActive ? Theme.primaryContainerText : Theme.surfaceText
+                        color: parent.parent.isActive ? (Theme.primaryContainerText || Theme.primary) : Theme.surfaceText
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
                     StyledText {
                         text: modelData.text || ""
                         font.pixelSize: Theme.fontSizeMedium
-                        color: parent.parent.isActive ? Theme.primaryContainerText : Theme.surfaceText
+                        color: parent.parent.isActive ? (Theme.primaryContainerText || Theme.primary) : Theme.surfaceText
                         font.weight: parent.parent.isActive ? Font.Medium : Font.Normal
                         anchors.verticalCenter: parent.verticalCenter
                     }

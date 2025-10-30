@@ -148,7 +148,7 @@ Row {
                         id: checkIcon
                         name: "check"
                         size: root.checkIconSize
-                        color: segment.selected ? Theme.primaryContainerText : Theme.primaryText
+                        color: segment.selected ? (Theme.primaryContainerText || Theme.surfaceText) : (Theme.primaryText || Theme.surfaceText)
                         visible: root.checkEnabled && segment.selected
                         opacity: segment.selected ? 1 : 0
                         scale: segment.selected ? 1 : 0.6
@@ -174,7 +174,7 @@ Row {
                         text: typeof modelData === "string" ? modelData : modelData.text || ""
                         font.pixelSize: root.textSize
                         font.weight: segment.selected ? Font.Medium : Font.Normal
-                        color: segment.selected ? Theme.primaryContainerText : Theme.primaryText
+                        color: segment.selected ? (Theme.primaryContainerText || Theme.surfaceText) : (Theme.primaryText || Theme.surfaceText)
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
