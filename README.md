@@ -4,7 +4,15 @@ This is my personal dotfiles repository. These configurations are built specific
 
 You're welcome to use any part of this configuration, but **no support will be provided**. Use at your own risk.
 
-<img width="1921" height="1081" alt="image" src="https://github.com/user-attachments/assets/729793f1-97df-4cea-94c4-4be41349961c" />
+<img width="2562" height="1441" alt="image" src="https://github.com/user-attachments/assets/354c34ca-f393-49de-ac9f-e46c0367fc4a" />
+<img width="2560" height="1441" alt="image" src="https://github.com/user-attachments/assets/705f616d-524b-465e-8451-7fe0ecd1fb30" />
+<img width="2561" height="1441" alt="image" src="https://github.com/user-attachments/assets/314f8656-2cce-4a23-b089-f99cfc8a22b7" />
+<img width="2560" height="1441" alt="image" src="https://github.com/user-attachments/assets/ec69120b-96e4-49cd-9da6-68ed17cf0c00" />
+<img width="2561" height="1441" alt="image" src="https://github.com/user-attachments/assets/b600c5d2-dad0-445d-8d23-83efe3aa0830" />
+
+
+
+
 
 
 # QuickShell Dotfiles Installation Guide
