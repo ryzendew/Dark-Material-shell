@@ -22,19 +22,17 @@ Singleton {
     Process {
         id: checkProcess
         command: ["grep", "-q", "cm\\s*=\\s*hdr", "/home/matt/.config/hypr/monitors.conf"]
-        onExited: {
+        onExited: (code, status) => {
             isChecking = false
-            // Exit code 0 means HDR was found, non-zero means it wasn't
-            hdrEnabled = (exitCode === 0)
+            hdrEnabled = (code === 0)
         }
     }
 
     Process {
         id: toggleProcess
         command: ["python", "/home/matt/.config/hypr/hyprhdr.py"]
-        onExited: {
-            if (exitCode === 0) {
-                // Recheck state after toggle
+        onExited: (code, status) => {
+            if (code === 0) {
                 checkHdrState()
             }
         }
