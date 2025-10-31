@@ -6,6 +6,13 @@ import qs.Widgets
 StyledRect {
     id: root
 
+    FontLoader {
+        id: notoSansLoader
+        source: "/usr/share/fonts/noto/NotoSans-Regular.ttf"
+    }
+    
+    readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"
+
     activeFocusOnTab: true
 
     KeyNavigation.tab: keyNavigationTab
@@ -98,6 +105,7 @@ StyledRect {
         anchors.topMargin: root.topPadding
         anchors.bottomMargin: root.bottomPadding
         font.pixelSize: Theme.fontSizeMedium
+        font.family: root.notoSansFamily
         color: Theme.surfaceText
         verticalAlignment: TextInput.AlignVCenter
         selectByMouse: !root.ignoreLeftRightKeys
@@ -166,12 +174,12 @@ StyledRect {
         }
     }
 
-    StyledText {
-        id: placeholderLabel
-
+    Text {
         anchors.fill: textInput
         text: root.placeholderText
-        font: textInput.font
+        font.pixelSize: textInput.font.pixelSize
+        font.family: root.notoSansFamily
+        font.weight: textInput.font.weight
         color: placeholderColor
         verticalAlignment: textInput.verticalAlignment
         visible: textInput.text.length === 0 && !textInput.activeFocus

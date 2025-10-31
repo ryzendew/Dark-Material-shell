@@ -230,6 +230,10 @@ Singleton {
     property bool notepadShowLineNumbers: false
     property real notepadTransparencyOverride: -1
     property real notepadLastCustomTransparency: 0.7
+    property string terminalEmulator: ""
+    property var availableTerminals: []
+    property string aurHelper: ""
+    property var availableAurHelpers: []
 
     onNotepadUseMonospaceChanged: saveSettings()
     onNotepadFontFamilyChanged: saveSettings()
@@ -242,6 +246,8 @@ Singleton {
         saveSettings()
     }
     onNotepadLastCustomTransparencyChanged: saveSettings()
+    onTerminalEmulatorChanged: saveSettings()
+    onAurHelperChanged: saveSettings()
     property bool gtkThemingEnabled: false
     property bool qtThemingEnabled: false
     property bool showDock: true
@@ -574,6 +580,8 @@ Singleton {
                 notepadShowLineNumbers = settings.notepadShowLineNumbers !== undefined ? settings.notepadShowLineNumbers : false
                 notepadTransparencyOverride = settings.notepadTransparencyOverride !== undefined ? settings.notepadTransparencyOverride : -1
                 notepadLastCustomTransparency = settings.notepadLastCustomTransparency !== undefined ? settings.notepadLastCustomTransparency : 0.95
+                terminalEmulator = settings.terminalEmulator !== undefined ? settings.terminalEmulator : ""
+                aurHelper = settings.aurHelper !== undefined ? settings.aurHelper : ""
                 gtkThemingEnabled = settings.gtkThemingEnabled !== undefined ? settings.gtkThemingEnabled : false
                 qtThemingEnabled = settings.qtThemingEnabled !== undefined ? settings.qtThemingEnabled : false
                 showDock = settings.showDock !== undefined ? settings.showDock : true
@@ -821,6 +829,8 @@ Singleton {
                                                 "notepadShowLineNumbers": notepadShowLineNumbers,
                                                 "notepadTransparencyOverride": notepadTransparencyOverride,
                                                 "notepadLastCustomTransparency": notepadLastCustomTransparency,
+                                                "terminalEmulator": terminalEmulator,
+                                                "aurHelper": aurHelper,
                                                 "gtkThemingEnabled": gtkThemingEnabled,
                                                 "qtThemingEnabled": qtThemingEnabled,
                                                 "showDock": showDock,
@@ -2126,6 +2136,8 @@ Singleton {
         loadSettings()
         fontCheckTimer.start()
         initializeListModels()
+        terminalDetectionProcess.running = true
+        aurHelperDetectionProcess.running = true
         
         // Set desktop widgets to DP-2 if not already configured
         if (!screenPreferences || !screenPreferences["desktopWidgets"]) {
@@ -2279,6 +2291,94 @@ Singleton {
             } else {
                 // No default settings file found, just apply stored theme
                 applyStoredTheme()
+            }
+        }
+    }
+
+    Process {
+        id: terminalDetectionProcess
+
+        command: ["sh", "-c", "for term in alacritty foot kitty konsole gnome-terminal xterm termite st wezterm tilde rxvt urxvt xfce4-terminal lxterminal mate-terminal qterminal ptyxis; do which $term 2>/dev/null && echo $term; done"]
+        running: false
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var terminals = []
+                if (text && text.trim()) {
+                    var lines = text.trim().split('\n')
+                    for (var i = 0; i < lines.length; i++) {
+                        var term = lines[i].trim()
+                        if (term && term !== "" && !terminals.includes(term)) {
+                            terminals.push(term)
+                        }
+                    }
+                }
+                // Fallback to common terminals if none detected
+                if (terminals.length === 0) {
+                    terminals = ["xterm", "gnome-terminal", "konsole"]
+                }
+                availableTerminals = terminals
+                
+                // Set default if not already set
+                if (!terminalEmulator || terminalEmulator === "") {
+                    var envTerminal = Quickshell.env("TERMINAL") || ""
+                    if (envTerminal && terminals.includes(envTerminal)) {
+                        terminalEmulator = envTerminal
+                    } else if (terminals.length > 0) {
+                        // Prefer common terminals
+                        var preferred = ["alacritty", "foot", "kitty", "wezterm", "xterm"]
+                        for (var j = 0; j < preferred.length; j++) {
+                            if (terminals.includes(preferred[j])) {
+                                terminalEmulator = preferred[j]
+                                break
+                            }
+                        }
+                        // If no preferred found, use first available
+                        if (!terminalEmulator || terminalEmulator === "") {
+                            terminalEmulator = terminals[0]
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Process {
+        id: aurHelperDetectionProcess
+
+        command: ["sh", "-c", "for helper in yay paru trizen aurutils pikaur pakku paruz yay-bin; do which $helper 2>/dev/null && echo $helper; done"]
+        running: false
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var helpers = []
+                if (text && text.trim()) {
+                    var lines = text.trim().split('\n')
+                    for (var i = 0; i < lines.length; i++) {
+                        var helper = lines[i].trim()
+                        if (helper && helper !== "" && !helpers.includes(helper)) {
+                            helpers.push(helper)
+                        }
+                    }
+                }
+                availableAurHelpers = helpers
+                
+                // Set default if not already set (prefer yay, then paru)
+                if (!aurHelper || aurHelper === "") {
+                    if (helpers.length > 0) {
+                        var preferred = ["yay", "paru", "pikaur"]
+                        for (var j = 0; j < preferred.length; j++) {
+                            if (helpers.includes(preferred[j])) {
+                                aurHelper = preferred[j]
+                                break
+                            }
+                        }
+                        // If no preferred found, use first available
+                        if (!aurHelper || aurHelper === "") {
+                            aurHelper = helpers[0]
+                        }
+                    }
+                }
             }
         }
     }

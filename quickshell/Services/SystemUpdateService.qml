@@ -52,14 +52,40 @@ Singleton {
         onExited: (exitCode) => {
             if (exitCode === 0) {
                 const helperPath = stdout.text.trim()
-                pkgManager = helperPath.split('/').pop()
+                var detectedHelper = helperPath.split('/').pop()
+                
+                // Use SettingsData.aurHelper if set, otherwise use detected helper
+                if (SettingsData.aurHelper && SettingsData.aurHelper !== "") {
+                    pkgManager = SettingsData.aurHelper
+                } else {
+                    pkgManager = detectedHelper
+                }
                 checkForUpdates()
             } else {
-                console.warn("SystemUpdate: No package manager found")
+                // Try to use SettingsData.aurHelper even if detection failed
+                if (SettingsData.aurHelper && SettingsData.aurHelper !== "") {
+                    pkgManager = SettingsData.aurHelper
+                    checkForUpdates()
+                } else {
+                    console.warn("SystemUpdate: No package manager found")
+                }
             }
         }
 
         stdout: StdioCollector {}
+    }
+    
+    // Also listen for changes to aurHelper in SettingsData
+    Connections {
+        target: SettingsData
+        function onAurHelperChanged() {
+            if (SettingsData.aurHelper && SettingsData.aurHelper !== "") {
+                pkgManager = SettingsData.aurHelper
+                if (distributionSupported) {
+                    checkForUpdates()
+                }
+            }
+        }
     }
 
     Process {
@@ -120,7 +146,9 @@ Singleton {
     function runUpdates() {
         if (!distributionSupported || !pkgManager || updateCount === 0) return
 
-        const terminal = Quickshell.env("TERMINAL") || "xterm"
+        const terminal = (SettingsData.terminalEmulator && SettingsData.terminalEmulator !== "") 
+            ? SettingsData.terminalEmulator 
+            : (Quickshell.env("TERMINAL") || "xterm")
         const updateCommand = `${pkgManager} -Syu && echo "Updates complete! Press Enter to close..." && read`
 
         updater.command = [terminal, "-e", "sh", "-c", updateCommand]

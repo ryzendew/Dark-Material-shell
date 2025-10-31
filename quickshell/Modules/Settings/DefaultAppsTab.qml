@@ -7,6 +7,13 @@ import qs.Widgets
 
 Item {
     id: root
+    
+    FontLoader {
+        id: notoSansLoader
+        source: "/usr/share/fonts/noto/NotoSans-Regular.ttf"
+    }
+    
+    readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"
 
     // Reusable Process for querying current defaults
     property var queryCallback: null
@@ -32,9 +39,19 @@ Item {
         queryProcess.running = true
     }
 
-    // Set default handler via gio (preferred)
+    // Set default handler using gio mime (handles mimeapps.list automatically)
     function setDefault(mime, desktopId) {
-        Quickshell.execDetached(["gio", "mime", mime, desktopId])
+        // Ensure desktopId has .desktop extension
+        var finalId = desktopId
+        if (!finalId.endsWith(".desktop")) {
+            finalId = finalId + ".desktop"
+        }
+        
+        // Use gio mime which properly updates mimeapps.list
+        Quickshell.execDetached(["gio", "mime", mime, finalId])
+        
+        // Also use xdg-mime as backup
+        Quickshell.execDetached(["xdg-mime", "default", finalId, mime])
     }
 
     // Application list sourced from DesktopEntries when available (reactive binding)
@@ -94,7 +111,15 @@ Item {
           candidates: () => uniqueApps(appsByCategory("TextEditor").concat(appsByCategory("Development"))) },
         { key: "files",      title: "File Manager",     icon: "folder",
           mimes: ["inode/directory"],
-          candidates: () => uniqueApps(appsByCategory("FileManager").concat(appsByCategory("Utilities"))) }
+          candidates: () => uniqueApps(appsByCategory("FileManager").concat(appsByCategory("Utilities"))) },
+        { key: "terminal",   title: "Terminal Emulator", icon: "terminal",
+          mimes: [],
+          isTerminal: true,
+          candidates: () => [] },
+        { key: "aurhelper",  title: "AUR Helper",        icon: "",
+          mimes: [],
+          isAurHelper: true,
+          candidates: () => [] }
     ]
 
     // UI
@@ -139,19 +164,21 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            StyledText {
+                            Text {
                                 text: modelData.title
                                 font.pixelSize: Theme.fontSizeLarge
+                                font.family: root.notoSansFamily
                                 font.weight: Font.Normal
                                 color: Theme.surfaceText
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
 
-                        StyledText {
+                        Text {
                             width: parent.width
                             text: "Choose the default application. Changes apply immediately."
                             font.pixelSize: Theme.fontSizeSmall
+                            font.family: root.notoSansFamily
                             color: Theme.surfaceVariantText
                             wrapMode: Text.WordWrap
                         }
@@ -161,58 +188,240 @@ Item {
                             spacing: Theme.spacingM
 
                             // Prefer apps that explicitly declare the mime(s); fallback to category candidates or all apps
-                            property var candidates: (function(){
-                                var apps = allApps || []
-                                var byMime = []
-                                for (var mi = 0; mi < (modelData.mimes || []).length; mi++) {
-                                    var m = modelData.mimes[mi]
-                                    for (var ai = 0; ai < apps.length; ai++) {
-                                        var a = apps[ai]
-                                        if ((a.mimeTypes || []).indexOf(m) !== -1) byMime.push(a)
+                            property var candidates: []
+                            property string currentDesktopId: ""
+                            
+                            // Function to initialize candidates
+                            function initCandidates() {
+                                if (modelData.isTerminal) {
+                                    // For terminals, use detected terminals from SettingsData
+                                    candidates = SettingsData.availableTerminals.map(function(term) {
+                                        return { name: term, id: term, displayName: term }
+                                    })
+                                } else if (modelData.isAurHelper) {
+                                    // For AUR helpers, use detected helpers from SettingsData
+                                    candidates = SettingsData.availableAurHelpers.map(function(helper) {
+                                        return { name: helper, id: helper, displayName: helper }
+                                    })
+                                } else {
+                                    var apps = allApps || []
+                                    var byMime = []
+                                    for (var mi = 0; mi < (modelData.mimes || []).length; mi++) {
+                                        var m = modelData.mimes[mi]
+                                        for (var ai = 0; ai < apps.length; ai++) {
+                                            var a = apps[ai]
+                                            if ((a.mimeTypes || []).indexOf(m) !== -1) byMime.push(a)
+                                        }
+                                    }
+                                    if (byMime.length > 0) {
+                                        candidates = uniqueApps(byMime)
+                                    } else if (modelData.candidates) {
+                                        candidates = modelData.candidates() || []
+                                    } else {
+                                        candidates = apps
                                     }
                                 }
-                                if (byMime.length > 0) return uniqueApps(byMime)
-                                if (modelData.candidates) return modelData.candidates() || []
-                                return apps
-                            })()
-                            property string currentDesktopId: ""
-                            property var optionNames: (candidates || []).map(a => displayName(a))
-                            property var optionIcons: (candidates || []).map(a => a.icon || "application-x-executable")
-                            property var nameToDesktopId: (function() {
+                            }
+                            
+                            // Function to ensure current default app is in candidates
+                            function ensureCurrentAppInCandidates() {
+                                if (modelData.isTerminal || modelData.isAurHelper || !currentDesktopId) return
+                                
+                                // Check if currentDesktopId is already in candidates
+                                var found = false
+                                for (var i = 0; i < candidates.length; i++) {
+                                    var appId = getAppId(candidates[i])
+                                    if (appId === currentDesktopId || normalizeId(appId) === normalizeId(currentDesktopId)) {
+                                        found = true
+                                        break
+                                    }
+                                }
+                                
+                                // If not found, add it from allApps
+                                if (!found) {
+                                    var normalizedCurrent = normalizeId(currentDesktopId)
+                                    var currentWithoutExt = normalizedCurrent
+                                    
+                                    for (var j = 0; j < allApps.length; j++) {
+                                        var app = allApps[j]
+                                        var appId = getAppId(app)
+                                        var normalizedAppId = normalizeId(appId)
+                                        
+                                        // Try various matching strategies
+                                        var matches = false
+                                        
+                                        // Exact matches
+                                        if (appId === currentDesktopId || normalizedAppId === normalizedCurrent) {
+                                            matches = true
+                                        }
+                                        // Filename matches
+                                        else if (app.filename && (app.filename === currentDesktopId || normalizeId(app.filename) === normalizedCurrent)) {
+                                            matches = true
+                                        }
+                                        // Desktop ID matches
+                                        else if (app.desktopId && (app.desktopId === currentDesktopId || normalizeId(app.desktopId) === normalizedCurrent)) {
+                                            matches = true
+                                        }
+                                        // ID matches
+                                        else if (app.id && (app.id === currentDesktopId || normalizeId(app.id) === normalizedCurrent)) {
+                                            matches = true
+                                        }
+                                        // Extension variations
+                                        else if (appId === normalizedCurrent + ".desktop" || normalizedAppId + ".desktop" === currentDesktopId) {
+                                            matches = true
+                                        }
+                                        // Partial matches (name-based)
+                                        else if (app.name && normalizeId(app.name) === normalizedCurrent) {
+                                            matches = true
+                                        }
+                                        
+                                        if (matches) {
+                                            // Create a new array to trigger binding updates
+                                            var newCandidates = [app]
+                                            for (var k = 0; k < candidates.length; k++) {
+                                                newCandidates.push(candidates[k])
+                                            }
+                                            candidates = newCandidates
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                            property var optionNames: (candidates || []).map(a => ((modelData.isTerminal || modelData.isAurHelper) ? a.name : displayName(a)))
+                            property var optionIcons: (candidates || []).map(a => (modelData.isTerminal ? "terminal" : (modelData.isAurHelper ? "" : (a.icon || "application-x-executable"))))
+                            property var nameToDesktopId: {
+                                // Force recalculation when candidates changes
+                                var _ = candidates.length // Dummy access to make this reactive
                                 const m = {}
                                 for (var i = 0; i < (candidates || []).length; i++) {
                                     var a = candidates[i]
-                                    var id = a.id || a.desktopId || a.filename || a.appId || ((a.name || "Unknown") + ".desktop")
-                                    var name = displayName(a)
+                                    var id = ((modelData.isTerminal || modelData.isAurHelper) ? a.id : (a.id || a.desktopId || a.filename || a.appId || ((a.name || "Unknown") + ".desktop")))
+                                    var name = ((modelData.isTerminal || modelData.isAurHelper) ? a.name : displayName(a))
                                     m[name] = id
                                 }
                                 return m
-                            })()
+                            }
+                            // Helper function to normalize desktop IDs for comparison
+                            function normalizeId(id) {
+                                if (!id) return ""
+                                // Remove .desktop extension if present
+                                var normalized = id.toString()
+                                if (normalized.endsWith(".desktop")) {
+                                    normalized = normalized.substring(0, normalized.length - 8)
+                                }
+                                return normalized.toLowerCase()
+                            }
+                            
+                            // Helper function to get app ID from candidate
+                            function getAppId(app) {
+                                return app.id || app.desktopId || app.filename || app.appId || ((app.name || "Unknown") + ".desktop")
+                            }
+                            
                             property string currentName: {
+                                if (modelData.isTerminal) {
+                                    return SettingsData.terminalEmulator || ""
+                                }
+                                if (modelData.isAurHelper) {
+                                    return SettingsData.aurHelper || ""
+                                }
+                                if (!currentDesktopId) return ""
+                                var normalizedCurrent = normalizeId(currentDesktopId)
+                                
+                                // Try to match against all candidates
                                 for (var i = 0; i < (candidates || []).length; i++) {
                                     var a = candidates[i]
-                                    var id = a.id || a.desktopId || a.filename || a.appId || ((a.name || "Unknown") + ".desktop")
-                                    if (id === currentDesktopId)
+                                    var appId = getAppId(a)
+                                    var normalizedAppId = normalizeId(appId)
+                                    
+                                    // Try exact match first
+                                    if (appId === currentDesktopId) {
                                         return displayName(a)
+                                    }
+                                    
+                                    // Try normalized match (most common case)
+                                    if (normalizedAppId === normalizedCurrent) {
+                                        return displayName(a)
+                                    }
+                                    
+                                    // Try all app properties for matches
+                                    var propertiesToCheck = [a.id, a.desktopId, a.filename, a.appId]
+                                    for (var p = 0; p < propertiesToCheck.length; p++) {
+                                        var prop = propertiesToCheck[p]
+                                        if (prop && (prop === currentDesktopId || normalizeId(prop) === normalizedCurrent)) {
+                                            return displayName(a)
+                                        }
+                                        // Also try with/without .desktop
+                                        if (prop && (prop + ".desktop" === currentDesktopId || normalizeId(prop) + ".desktop" === currentDesktopId)) {
+                                            return displayName(a)
+                                        }
+                                        if (prop && prop === normalizedCurrent + ".desktop") {
+                                            return displayName(a)
+                                        }
+                                    }
+                                    
+                                    // Try partial matches on the base name
+                                    var currentBase = normalizedCurrent.split('.')[0] // Get base name before first dot
+                                    var appBase = normalizedAppId.split('.')[0]
+                                    if (currentBase && appBase && currentBase === appBase && currentBase.length > 2) {
+                                        return displayName(a)
+                                    }
                                 }
-                                return ""
+                                
+                                // If no match found, try to extract a readable name from the desktop ID
+                                var readableName = currentDesktopId.replace(".desktop", "").split('.').pop() || currentDesktopId.replace(".desktop", "")
+                                return readableName || ""
                             }
                             property string currentIcon: {
+                                if (modelData.isTerminal) {
+                                    return "terminal"
+                                }
+                                if (modelData.isAurHelper) {
+                                    return "" // No icon for AUR helpers
+                                }
+                                if (!currentDesktopId) return "application-x-executable"
+                                var normalizedCurrent = normalizeId(currentDesktopId)
                                 for (var i = 0; i < (candidates || []).length; i++) {
                                     var a = candidates[i]
-                                    var id = a.id || a.desktopId || a.filename || a.appId || ((a.name || "Unknown") + ".desktop")
-                                    if (id === currentDesktopId)
+                                    var appId = getAppId(a)
+                                    // Try exact match first
+                                    if (appId === currentDesktopId) {
                                         return a.icon || "application-x-executable"
+                                    }
+                                    // Try normalized match
+                                    if (normalizeId(appId) === normalizedCurrent) {
+                                        return a.icon || "application-x-executable"
+                                    }
+                                    // Try matching just the filename part
+                                    if (appId.includes(normalizedCurrent) || normalizedCurrent.includes(normalizeId(a.name || ""))) {
+                                        return a.icon || "application-x-executable"
+                                    }
                                 }
                                 return "application-x-executable"
                             }
+                            
+                            property string currentDisplayName: {
+                                // Return the current name which matches the dropdown option format
+                                return currentName
+                            }
+
+                            // Function to refresh the current default
+                            function refreshDefault() {
+                                if (modelData.isTerminal) {
+                                    currentDesktopId = SettingsData.terminalEmulator || ""
+                                } else if (modelData.isAurHelper) {
+                                    currentDesktopId = SettingsData.aurHelper || ""
+                                } else {
+                                    var mime = modelData.mimes[0]
+                                    root.queryDefault(mime, function(id) {
+                                        currentDesktopId = id || ""
+                                        ensureCurrentAppInCandidates()
+                                    })
+                                }
+                            }
 
                             Component.onCompleted: {
-                                // pick first mime to read current default
-                                var mime = modelData.mimes[0]
-                                root.queryDefault(mime, function(id) {
-                                    currentDesktopId = id
-                                })
+                                initCandidates()
+                                refreshDefault()
                             }
 
                             DankDropdown {
@@ -222,14 +431,33 @@ Item {
                                 description: ""
                                 options: parent.optionNames || []
                                 optionIcons: parent.optionIcons || []
-                                currentValue: "" // suppress inline label; show icon+name to the right
+                                // Set currentValue to show selected option in dropdown
+                                currentValue: parent.currentDisplayName || ""
                                 onValueChanged: (value) => {
                                     var desktopId = parent.nameToDesktopId[value] || ""
                                     if (!desktopId) return
-                                    for (const mime of modelData.mimes) {
-                                        root.setDefault(mime, desktopId)
+                                    if (modelData.isTerminal) {
+                                        // For terminals, update SettingsData directly
+                                        SettingsData.terminalEmulator = desktopId
+                                        parent.currentDesktopId = desktopId
+                                    } else if (modelData.isAurHelper) {
+                                        // For AUR helpers, update SettingsData directly
+                                        SettingsData.aurHelper = desktopId
+                                        parent.currentDesktopId = desktopId
+                                    } else {
+                                        for (const mime of modelData.mimes) {
+                                            root.setDefault(mime, desktopId)
+                                        }
+                                        parent.currentDesktopId = desktopId
+                                        parent.ensureCurrentAppInCandidates()
+                                        // Wait a bit for the file to be written, then refresh
+                                        Qt.callLater(function() {
+                                            // Use setTimeout-like delay via callLater
+                                            Qt.callLater(function() {
+                                                parent.refreshDefault()
+                                            })
+                                        })
                                     }
-                                    parent.currentDesktopId = desktopId
                                 }
                             }
 
@@ -244,12 +472,13 @@ Item {
                                     sourceSize.width: 24
                                     sourceSize.height: 24
                                     fillMode: Image.PreserveAspectFit
+                                    visible: parent.parent.currentIcon && parent.parent.currentIcon !== ""
                                 }
 
-                                StyledText {
+                                Text {
                                     text: parent.parent.currentName || ""
                                     font.pixelSize: Theme.fontSizeMedium
-                                    font.family: SettingsData.defaultFontFamily
+                                    font.family: root.notoSansFamily
                                     font.weight: Font.Normal
                                     color: Theme.surfaceText
                                 }

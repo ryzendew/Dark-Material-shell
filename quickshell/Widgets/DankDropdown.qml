@@ -6,6 +6,13 @@ import qs.Widgets
 
 Rectangle {
     id: root
+    
+    FontLoader {
+        id: notoSansLoader
+        source: "/usr/share/fonts/noto/NotoSans-Regular.ttf"
+    }
+    
+    readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"
 
     property string text: ""
     property string description: ""
@@ -57,16 +64,19 @@ Rectangle {
         anchors.rightMargin: Theme.spacingM
         spacing: Theme.spacingXS
 
-        StyledText {
+        Text {
             text: root.text
             font.pixelSize: Theme.fontSizeMedium
+            font.family: root.notoSansFamily
             color: Theme.surfaceText
             font.weight: Font.Medium
+            visible: !root.currentValue || root.currentValue === ""
         }
 
-        StyledText {
+        Text {
             text: root.description
             font.pixelSize: Theme.fontSizeSmall
+            font.family: root.notoSansFamily
             color: Theme.surfaceVariantText
             visible: description.length > 0
             wrapMode: Text.WordWrap
@@ -119,37 +129,60 @@ Rectangle {
             anchors.leftMargin: Theme.spacingM
             spacing: Theme.spacingS
 
-            DankIcon {
-                name: {
+            Item {
+                width: root.currentValue ? 18 : 0
+                height: 18
+                visible: {
+                    if (!root.currentValue || root.currentValue === "") return false
                     const currentIndex = root.options.indexOf(root.currentValue)
-                    return currentIndex >= 0 && root.optionIcons.length > currentIndex ? root.optionIcons[currentIndex] : ""
+                    return currentIndex >= 0 && root.optionIcons.length > currentIndex && root.optionIcons[currentIndex] !== "" && root.width > 60
                 }
-                size: 18
-                color: Theme.surfaceVariantText
-                visible: name !== "" && root.width > 60
+                
+                Image {
+                    anchors.centerIn: parent
+                    width: 18
+                    height: 18
+                    source: {
+                        const currentIndex = root.options.indexOf(root.currentValue)
+                        return "image://icon/" + (currentIndex >= 0 && root.optionIcons.length > currentIndex ? root.optionIcons[currentIndex] : "")
+                    }
+                    sourceSize.width: 18
+                    sourceSize.height: 18
+                    fillMode: Image.PreserveAspectFit
+                }
             }
 
-            StyledText {
-                text: root.currentValue
+            Text {
+                text: root.currentValue || ""
                 font.pixelSize: Theme.fontSizeMedium
-                font.family: SettingsData.defaultFontFamily
+                font.family: root.notoSansFamily
                 font.weight: Font.Normal
                 color: Theme.surfaceText
                 width: root.width <= 60 ? dropdown.width - expandIcon.width - Theme.spacingS * 2 : dropdown.width - contentRow.x - expandIcon.width - Theme.spacingM - Theme.spacingS
                 elide: root.width <= 60 ? Text.ElideNone : Text.ElideRight
                 horizontalAlignment: root.width <= 60 ? Text.AlignHCenter : Text.AlignLeft
+                visible: root.currentValue && root.currentValue !== ""
             }
         }
 
-        DankIcon {
+        Item {
             id: expandIcon
-
-            name: "expand_more"
-            size: 20
-            color: Theme.surfaceVariantText
+            width: root.currentValue ? 0 : 20
+            height: 20
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: Theme.spacingS
+            visible: !root.currentValue || root.currentValue === ""
+            
+            Image {
+                anchors.centerIn: parent
+                width: 20
+                height: 20
+                source: "image://icon/expand_more"
+                sourceSize.width: 20
+                sourceSize.height: 20
+                fillMode: Image.PreserveAspectFit
+            }
         }
     }
 
@@ -171,6 +204,7 @@ Rectangle {
                 property string searchQuery: ""
                 property var filteredOptions: []
                 property int selectedIndex: -1
+                readonly property string notoSansFamily: root.notoSansFamily
                 property var fzfFinder: new Fzf.Finder(root.options, {
                                                            "selector": option => option,
                                                            "limit": 50,
@@ -312,22 +346,32 @@ Rectangle {
                                     anchors.verticalCenter: parent.verticalCenter
                                     spacing: Theme.spacingS
 
-                                    DankIcon {
-                                        name: optionIndex >= 0 && root.optionIcons.length > optionIndex ? root.optionIcons[optionIndex] : ""
-                                        size: 18
-                                        color: isCurrentValue ? Theme.primary : Theme.surfaceVariantText
-                                        visible: name !== ""
+                                    Item {
+                                        width: 18
+                                        height: 18
+                                        visible: optionIndex >= 0 && root.optionIcons.length > optionIndex && root.optionIcons[optionIndex] !== ""
+                                        
+                                        Image {
+                                            anchors.centerIn: parent
+                                            width: 18
+                                            height: 18
+                                            source: "image://icon/" + (optionIndex >= 0 && root.optionIcons.length > optionIndex ? root.optionIcons[optionIndex] : "")
+                                            sourceSize.width: 18
+                                            sourceSize.height: 18
+                                            fillMode: Image.PreserveAspectFit
+                                        }
                                     }
 
-                                    StyledText {
+                                    Text {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: modelData
                                         font.pixelSize: Theme.fontSizeMedium
-                                        font.family: SettingsData.defaultFontFamily
-                                        color: isCurrentValue ? Theme.primary : Theme.surfaceText
+                                        font.family: dropdownMenu.notoSansFamily
                                         font.weight: isCurrentValue ? Font.Medium : Font.Normal
+                                        color: isCurrentValue ? Theme.primary : Theme.surfaceText
                                         width: parent.parent.width - parent.x - Theme.spacingS
                                         elide: Text.ElideRight
+                                        
                                     }
                                 }
 
