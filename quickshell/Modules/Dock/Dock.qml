@@ -283,7 +283,7 @@ PanelWindow {
                 Item {
                     id: mainDockContainer
                     anchors.left: SettingsData.dockExpandToScreen ? parent.left : leftWidgetArea.right
-                    anchors.leftMargin: SettingsData.dockExpandToScreen ? 8 : 8
+                    anchors.leftMargin: SettingsData.dockExpandToScreen ? 8 : 12
                     anchors.right: SettingsData.dockExpandToScreen ? parent.right : parent.right
                     anchors.rightMargin: SettingsData.dockExpandToScreen ? 8 : 8
                     anchors.top: parent.top
@@ -292,7 +292,7 @@ PanelWindow {
                     anchors.bottomMargin: 4 + SettingsData.dockTopPadding
                     
                     // Ensure this container doesn't extend into left widget area
-                    clip: true
+                    clip: false
                     z: 5 // Lower than left widget area (z: 10)
 
                     Item {
@@ -302,14 +302,14 @@ PanelWindow {
                         DockApps {
                             id: dockApps
                             anchors.left: SettingsData.dockCenterApps ? undefined : (SettingsData.dockExpandToScreen ? expandedLeftWidgets.right : parent.left)
-                            anchors.leftMargin: SettingsData.dockExpandToScreen ? 8 : 0
+                            anchors.leftMargin: SettingsData.dockExpandToScreen ? 4 : (SettingsData.dockLeftPadding > 0 ? SettingsData.dockLeftPadding : 4)
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: SettingsData.dockCenterApps ? parent.horizontalCenter : undefined
                             height: parent.height
                             contextMenu: dock.contextMenu
                             
                             // Ensure dock apps don't extend beyond their container
-                            clip: true
+                            clip: false
                             z: 1 // Lower than left widget area
                         }
 

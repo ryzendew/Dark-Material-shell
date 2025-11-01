@@ -91,13 +91,22 @@ Singleton {
     function getMatugenColor(path, fallback) {
         colorUpdateTrigger
         const colorMode = (typeof SessionData !== "undefined" && SessionData.isLightMode) ? "light" : "dark"
-        let cur = matugenColors && matugenColors.colors && matugenColors.colors[colorMode]
-        for (const part of path.split(".")) {
-            if (!cur || typeof cur !== "object" || !(part in cur))
-                return fallback
-            cur = cur[part]
+        
+        // Matugen v3.0.0+ uses a different JSON structure:
+        // Old: colors.light.primary or colors.dark.primary
+        // New: colors.primary.light or colors.primary.dark
+        if (!matugenColors || !matugenColors.colors) {
+            return fallback
         }
-        return cur || fallback
+        
+        // In v3.0.0+, the path is the color name (e.g., "primary", "surface")
+        // Access it as colors[path][colorMode]
+        const colorName = path
+        if (matugenColors.colors[colorName] && matugenColors.colors[colorName][colorMode]) {
+            return matugenColors.colors[colorName][colorMode]
+        }
+        
+        return fallback
     }
 
     readonly property var currentThemeData: {
@@ -796,7 +805,8 @@ Singleton {
 
     Process {
         id: matugenProcess
-        command: ["matugen", "image", wallpaperPath, "--json", "hex"]
+        // Matugen v3.0.0+ requires --json flag before the command
+        command: ["matugen", "--json", "hex", "image", wallpaperPath]
 
         stdout: StdioCollector {
             id: matugenCollector
@@ -844,7 +854,8 @@ Singleton {
 
     Process {
         id: colorMatugenProcess
-        command: ["matugen", "color", "hex", wallpaperPath, "--json", "hex"]
+        // Matugen v3.0.0+ requires --json flag before the command
+        command: ["matugen", "--json", "hex", "color", "hex", wallpaperPath]
 
         stdout: StdioCollector {
             id: colorMatugenCollector

@@ -871,6 +871,58 @@ Item {
                                 }
                             }
                         }
+
+                        // Desktop Terminal Widget
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Desktop Terminal"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 120
+                            }
+
+                            Item {
+                                width: Math.max(0, (parent.width - 120 - 150 - 60 - Theme.spacingM * 3) / 2 + 20)
+                                height: 1
+                            }
+
+                            DankDropdown {
+                                width: 150
+                                height: 40
+                                options: [
+                                    "top-left",
+                                    "top-center", 
+                                    "top-right",
+                                    "middle-left",
+                                    "middle-center",
+                                    "middle-right",
+                                    "bottom-left",
+                                    "bottom-center",
+                                    "bottom-right"
+                                ]
+                                currentValue: SettingsData.desktopTerminalPosition
+                                onValueChanged: {
+                                    SettingsData.setDesktopTerminalPosition(value)
+                                }
+                            }
+
+                            Item {
+                                width: Math.max(0, (parent.width - 120 - 150 - 60 - Theme.spacingM * 3) / 2 - 20)
+                                height: 1
+                            }
+
+                            DankToggle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                checked: SettingsData.desktopTerminalEnabled
+                                onToggled: checked => {
+                                    SettingsData.setDesktopTerminalEnabled(checked)
+                                }
+                            }
+                        }
                         
                         // Clock Background Opacity
                         Row {

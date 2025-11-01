@@ -1,0 +1,46 @@
+# Gedit temporary and backup files
+# These can cause quickshell to crash when auto-reloading
+*~
+*.swp
+*.swo
+*#
+.#*
+.goutputstream-*
+
+# General editor backup files
+*.bak
+*.backup
+*.tmp
+*.orig
+
+# Log files
+log.txt
+logk.txt
+logw.txt
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+nvml_env/
+venv/
+env/
+
+# QML cache
+*.qmlc
+*.jsc
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+
+
+

@@ -58,7 +58,8 @@ Singleton {
         // // console.log("ColorPaletteService: Starting color extraction...")
         
         // Use matugen to extract colors from wallpaper
-        matugenProcess.command = ["matugen", "image", wallpaperPath, "--json", "hex"]
+        // Matugen v3.0.0+ requires --json flag before the command
+        matugenProcess.command = ["matugen", "--json", "hex", "image", wallpaperPath]
         matugenProcess.running = true
     }
 
@@ -342,29 +343,37 @@ Singleton {
         
         // // console.log("ColorPaletteService: Extracting colors for mode:", currentMode)
         
-        // Extract colors from current mode only
-        if (jsonData.colors && jsonData.colors[currentMode]) {
-            const modeColors = jsonData.colors[currentMode]
+        // Matugen v3.0.0+ uses a different JSON structure:
+        // Old: colors.light.primary or colors.dark.primary
+        // New: colors.primary.light or colors.primary.dark
+        if (jsonData.colors) {
+            const colorKeys = [
+                'primary',
+                'secondary',
+                'tertiary',
+                'surface',
+                'surface_variant',
+                'outline',
+                'surface_container',
+                'surface_container_high',
+                'primary_container',
+                'secondary_container',
+                'tertiary_container'
+            ]
             
-            // Extract key colors
-            const keyColors = [
-                modeColors.primary,
-                modeColors.secondary,
-                modeColors.tertiary,
-                modeColors.surface,
-                modeColors.surface_variant,
-                modeColors.outline,
-                modeColors.surface_container,
-                modeColors.surface_container_high,
-                modeColors.primary_container,
-                modeColors.secondary_container,
-                modeColors.tertiary_container
-            ].filter(color => color && color.startsWith('#'))
+            // Extract colors using the new v3.0.0+ structure
+            colorKeys.forEach(colorKey => {
+                if (jsonData.colors[colorKey] && jsonData.colors[colorKey][currentMode]) {
+                    const colorValue = jsonData.colors[colorKey][currentMode]
+                    if (colorValue && colorValue.startsWith('#')) {
+                        colors.push(colorValue)
+                    }
+                }
+            })
             
-            colors.push(...keyColors)
-            // // console.log("ColorPaletteService: Extracted", keyColors.length, "colors for", currentMode, "mode")
+            // // console.log("ColorPaletteService: Extracted", colors.length, "colors for", currentMode, "mode")
         } else {
-            // // console.log("ColorPaletteService: No colors found for mode:", currentMode)
+            // // console.log("ColorPaletteService: No colors found in JSON data")
         }
         
         // Remove duplicates and limit to 16 colors

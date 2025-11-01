@@ -49,6 +49,7 @@ Singleton {
     property bool desktopSystemMonitorEnabled: true
     property bool desktopClockEnabled: true
     property bool desktopWeatherEnabled: false
+    property bool desktopTerminalEnabled: false
     property string desktopWidgetsDisplay: "primary"
     property string desktopWidgetsPosition: "top-left"
     
@@ -58,6 +59,7 @@ Singleton {
     property string desktopSystemMonitorPosition: "top-right"
     property string desktopClockPosition: "bottom-right"
     property string desktopWeatherPosition: "top-left"
+    property string desktopTerminalPosition: "bottom-left"
     
     // Desktop widget opacity settings
     property real desktopCpuTempOpacity: 0.9
@@ -66,6 +68,7 @@ Singleton {
     property real desktopClockOpacity: 0.9
     property real desktopClockBackgroundOpacity: 0.9
     property real desktopWeatherOpacity: 0.9
+    property real desktopTerminalOpacity: 0.9
     
     // Desktop widget sizing
     property real desktopWidgetWidth: 180
@@ -78,6 +81,9 @@ Singleton {
     property real desktopSystemMonitorHeight: 200
     property real desktopWeatherWidth: 800
     property real desktopWeatherHeight: 500
+    property real desktopTerminalWidth: 600
+    property real desktopTerminalHeight: 400
+    property real desktopTerminalFontSize: 12
     property real desktopWeatherFontSize: 20
     property real desktopWeatherIconSize: 24
     property real desktopWeatherSpacing: 8
@@ -399,6 +405,7 @@ Singleton {
                 desktopSystemMonitorEnabled = settings.desktopSystemMonitorEnabled !== undefined ? settings.desktopSystemMonitorEnabled : true
                 desktopClockEnabled = settings.desktopClockEnabled !== undefined ? settings.desktopClockEnabled : true
                 desktopWeatherEnabled = settings.desktopWeatherEnabled !== undefined ? settings.desktopWeatherEnabled : false
+                desktopTerminalEnabled = settings.desktopTerminalEnabled !== undefined ? settings.desktopTerminalEnabled : false
         desktopWidgetsDisplay = settings.desktopWidgetsDisplay !== undefined ? settings.desktopWidgetsDisplay : "primary"
         desktopWidgetsPosition = settings.desktopWidgetsPosition !== undefined ? settings.desktopWidgetsPosition : "top-left"
         desktopCpuTempPosition = settings.desktopCpuTempPosition !== undefined ? settings.desktopCpuTempPosition : "top-left"
@@ -406,12 +413,14 @@ Singleton {
         desktopSystemMonitorPosition = settings.desktopSystemMonitorPosition !== undefined ? settings.desktopSystemMonitorPosition : "top-right"
         desktopClockPosition = settings.desktopClockPosition !== undefined ? settings.desktopClockPosition : "bottom-right"
         desktopWeatherPosition = settings.desktopWeatherPosition !== undefined ? settings.desktopWeatherPosition : "top-left"
+        desktopTerminalPosition = settings.desktopTerminalPosition !== undefined ? settings.desktopTerminalPosition : "bottom-left"
         desktopCpuTempOpacity = settings.desktopCpuTempOpacity !== undefined ? settings.desktopCpuTempOpacity : 0.9
         desktopGpuTempOpacity = settings.desktopGpuTempOpacity !== undefined ? settings.desktopGpuTempOpacity : 0.9
         desktopSystemMonitorOpacity = settings.desktopSystemMonitorOpacity !== undefined ? settings.desktopSystemMonitorOpacity : 0.9
         desktopClockOpacity = settings.desktopClockOpacity !== undefined ? settings.desktopClockOpacity : 0.9
         desktopClockBackgroundOpacity = settings.desktopClockBackgroundOpacity !== undefined ? settings.desktopClockBackgroundOpacity : 0.9
         desktopWeatherOpacity = settings.desktopWeatherOpacity !== undefined ? settings.desktopWeatherOpacity : 0.9
+        desktopTerminalOpacity = settings.desktopTerminalOpacity !== undefined ? settings.desktopTerminalOpacity : 0.9
         desktopWidgetWidth = settings.desktopWidgetWidth !== undefined ? settings.desktopWidgetWidth : 180
         desktopWidgetHeight = settings.desktopWidgetHeight !== undefined ? settings.desktopWidgetHeight : 80
         desktopWidgetFontSize = settings.desktopWidgetFontSize !== undefined ? settings.desktopWidgetFontSize : 14
@@ -421,6 +430,9 @@ Singleton {
         desktopWeatherWidth = settings.desktopWeatherWidth !== undefined ? settings.desktopWeatherWidth : 400
         desktopWeatherHeight = settings.desktopWeatherHeight !== undefined ? settings.desktopWeatherHeight : 500
         desktopWeatherFontSize = settings.desktopWeatherFontSize !== undefined ? settings.desktopWeatherFontSize : 20
+        desktopTerminalWidth = settings.desktopTerminalWidth !== undefined ? settings.desktopTerminalWidth : 600
+        desktopTerminalHeight = settings.desktopTerminalHeight !== undefined ? settings.desktopTerminalHeight : 400
+        desktopTerminalFontSize = settings.desktopTerminalFontSize !== undefined ? settings.desktopTerminalFontSize : 12
         desktopWeatherIconSize = settings.desktopWeatherIconSize !== undefined ? settings.desktopWeatherIconSize : 24
         desktopWeatherSpacing = settings.desktopWeatherSpacing !== undefined ? settings.desktopWeatherSpacing : 8
         desktopWeatherPadding = settings.desktopWeatherPadding !== undefined ? settings.desktopWeatherPadding : 16
@@ -684,6 +696,7 @@ Singleton {
                                                 "desktopSystemMonitorEnabled": desktopSystemMonitorEnabled,
                                                 "desktopClockEnabled": desktopClockEnabled,
                                                 "desktopWeatherEnabled": desktopWeatherEnabled,
+                                                "desktopTerminalEnabled": desktopTerminalEnabled,
             "desktopWidgetsDisplay": desktopWidgetsDisplay,
             "desktopWidgetsPosition": desktopWidgetsPosition,
             "desktopCpuTempPosition": desktopCpuTempPosition,
@@ -691,12 +704,14 @@ Singleton {
             "desktopSystemMonitorPosition": desktopSystemMonitorPosition,
             "desktopClockPosition": desktopClockPosition,
             "desktopWeatherPosition": desktopWeatherPosition,
+            "desktopTerminalPosition": desktopTerminalPosition,
             "desktopCpuTempOpacity": desktopCpuTempOpacity,
             "desktopGpuTempOpacity": desktopGpuTempOpacity,
             "desktopSystemMonitorOpacity": desktopSystemMonitorOpacity,
             "desktopClockOpacity": desktopClockOpacity,
             "desktopClockBackgroundOpacity": desktopClockBackgroundOpacity,
             "desktopWeatherOpacity": desktopWeatherOpacity,
+            "desktopTerminalOpacity": desktopTerminalOpacity,
             "desktopWidgetWidth": desktopWidgetWidth,
             "desktopWidgetHeight": desktopWidgetHeight,
             "desktopWidgetFontSize": desktopWidgetFontSize,
@@ -707,6 +722,9 @@ Singleton {
             "desktopWeatherHeight": desktopWeatherHeight,
             "desktopWeatherFontSize": desktopWeatherFontSize,
             "desktopWeatherIconSize": desktopWeatherIconSize,
+            "desktopTerminalWidth": desktopTerminalWidth,
+            "desktopTerminalHeight": desktopTerminalHeight,
+            "desktopTerminalFontSize": desktopTerminalFontSize,
             "desktopWeatherSpacing": desktopWeatherSpacing,
             "desktopWeatherPadding": desktopWeatherPadding,
             "desktopWeatherBorderRadius": desktopWeatherBorderRadius,
@@ -1202,6 +1220,36 @@ Singleton {
     
     function setDesktopWeatherPosition(position) {
         desktopWeatherPosition = position
+        saveSettings()
+    }
+    
+    function setDesktopTerminalEnabled(enabled) {
+        desktopTerminalEnabled = enabled
+        saveSettings()
+    }
+    
+    function setDesktopTerminalPosition(position) {
+        desktopTerminalPosition = position
+        saveSettings()
+    }
+    
+    function setDesktopTerminalOpacity(opacity) {
+        desktopTerminalOpacity = opacity
+        saveSettings()
+    }
+    
+    function setDesktopTerminalWidth(width) {
+        desktopTerminalWidth = width
+        saveSettings()
+    }
+    
+    function setDesktopTerminalHeight(height) {
+        desktopTerminalHeight = height
+        saveSettings()
+    }
+    
+    function setDesktopTerminalFontSize(size) {
+        desktopTerminalFontSize = size
         saveSettings()
     }
     

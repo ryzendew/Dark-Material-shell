@@ -10,4 +10,6 @@ DesktopCpuTempWidget 1.0 DesktopCpuTempWidget.qml
 DesktopGpuTempWidget 1.0 DesktopGpuTempWidget.qml
 DesktopSystemMonitorWidget 1.0 DesktopSystemMonitorWidget.qml
 DesktopClockWidget 1.0 DesktopClockWidget.qml
+DesktopTerminal 1.0 DesktopTerminal.qml
+DesktopTerminalWidget 1.0 DesktopTerminalWidget.qml
 

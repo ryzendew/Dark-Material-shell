@@ -70,6 +70,7 @@ ShellRoot {
             property bool showSystemMonitor: SettingsData.desktopWidgetsEnabled && SettingsData.desktopSystemMonitorEnabled
             property bool showClock: SettingsData.desktopWidgetsEnabled && SettingsData.desktopClockEnabled
             property bool showWeather: SettingsData.desktopWidgetsEnabled && SettingsData.desktopWeatherEnabled
+            property bool showTerminal: SettingsData.desktopWidgetsEnabled && SettingsData.desktopTerminalEnabled
 
             // Desktop positioning system
             DesktopPositioning {
@@ -140,6 +141,19 @@ ShellRoot {
                     item.screen = parent.modelData
                     item.position = SettingsData.desktopWeatherPosition
                     item.positioningBox = positioning.getPositionBox(SettingsData.desktopWeatherPosition)
+                }
+            }
+
+            // Desktop Terminal Widget
+            Loader {
+                id: terminalLoader
+                visible: parent.showTerminal
+                source: "Modules/Desktop/DesktopTerminalWidget.qml"
+                onLoaded: {
+                    item.alwaysVisible = parent.showTerminal
+                    item.screen = parent.modelData
+                    item.position = SettingsData.desktopTerminalPosition
+                    item.positioningBox = positioning.getPositionBox(SettingsData.desktopTerminalPosition)
                 }
             }
         }

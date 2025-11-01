@@ -336,6 +336,165 @@ ScrollView {
                 }
             }
 
+            // Desktop Terminal Widget
+            Column {
+                width: parent.width
+                spacing: Theme.spacingS
+
+                StyledText {
+                    text: "Desktop Terminal Widget"
+                    font.pixelSize: Theme.fontSizeLarge
+                    color: Theme.surfaceText
+                    font.weight: Font.Medium
+                }
+
+                StyledText {
+                    text: "Interactive terminal widget for running commands directly on the desktop"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceTextMedium
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                }
+
+                DankToggle {
+                    checked: SettingsData.desktopTerminalEnabled
+                    onToggled: {
+                        SettingsData.setDesktopTerminalEnabled(checked)
+                    }
+                }
+                
+                // Size sliders
+                Column {
+                    width: parent.width
+                    spacing: Theme.spacingXS
+                    visible: SettingsData.desktopTerminalEnabled
+                    
+                    StyledText {
+                        text: "Size: " + SettingsData.desktopTerminalWidth + "x" + SettingsData.desktopTerminalHeight
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceTextMedium
+                    }
+                    
+                    // Width slider
+                    Column {
+                        width: parent.width
+                        spacing: 4
+                        
+                        StyledText {
+                            text: "Width: " + SettingsData.desktopTerminalWidth + "px"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceTextMedium
+                        }
+                        
+                        Slider {
+                            width: parent.width
+                            from: 400
+                            to: 1200
+                            stepSize: 50
+                            value: SettingsData.desktopTerminalWidth
+                            onValueChanged: {
+                                SettingsData.setDesktopTerminalWidth(value)
+                            }
+                        }
+                    }
+                    
+                    // Height slider
+                    Column {
+                        width: parent.width
+                        spacing: 4
+                        
+                        StyledText {
+                            text: "Height: " + SettingsData.desktopTerminalHeight + "px"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceTextMedium
+                        }
+                        
+                        Slider {
+                            width: parent.width
+                            from: 200
+                            to: 800
+                            stepSize: 50
+                            value: SettingsData.desktopTerminalHeight
+                            onValueChanged: {
+                                SettingsData.setDesktopTerminalHeight(value)
+                            }
+                        }
+                    }
+                    
+                    // Font size slider
+                    Column {
+                        width: parent.width
+                        spacing: 4
+                        
+                        StyledText {
+                            text: "Font Size: " + SettingsData.desktopTerminalFontSize + "px"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceTextMedium
+                        }
+                        
+                        Slider {
+                            width: parent.width
+                            from: 8
+                            to: 20
+                            stepSize: 1
+                            value: SettingsData.desktopTerminalFontSize
+                            onValueChanged: {
+                                SettingsData.setDesktopTerminalFontSize(value)
+                            }
+                        }
+                    }
+                }
+                
+                // Position dropdown
+                Column {
+                    width: parent.width
+                    spacing: Theme.spacingXS
+                    visible: SettingsData.desktopTerminalEnabled
+                    
+                    StyledText {
+                        text: "Position"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceTextMedium
+                    }
+                    
+                    ComboBox {
+                        width: 200
+                        model: ["top-left", "top-center", "top-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+                        currentIndex: {
+                            const positions = ["top-left", "top-center", "top-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+                            return positions.indexOf(SettingsData.desktopTerminalPosition)
+                        }
+                        onActivated: {
+                            SettingsData.setDesktopTerminalPosition(model[index])
+                        }
+                    }
+                }
+                
+                // Opacity slider
+                Column {
+                    width: parent.width
+                    spacing: Theme.spacingXS
+                    visible: SettingsData.desktopTerminalEnabled
+                    
+                    StyledText {
+                        text: "Opacity: " + Math.round(SettingsData.desktopTerminalOpacity * 100) + "%"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceTextMedium
+                    }
+                    
+                    Slider {
+                        width: parent.width
+                        from: 0.1
+                        to: 1.0
+                        stepSize: 0.1
+                        value: SettingsData.desktopTerminalOpacity
+                        onValueChanged: {
+                            SettingsData.setDesktopTerminalOpacity(value)
+                        }
+                    }
+                }
+            }
+
             // Desktop Weather Widget
             Column {
                 width: parent.width

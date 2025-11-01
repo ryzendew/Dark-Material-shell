@@ -12,6 +12,7 @@ Item {
     property bool showGpuTemp: SettingsData.desktopWidgetsEnabled && SettingsData.desktopGpuTempEnabled
     property bool showSystemMonitor: SettingsData.desktopWidgetsEnabled && SettingsData.desktopSystemMonitorEnabled
     property bool showClock: SettingsData.desktopWidgetsEnabled && SettingsData.desktopClockEnabled
+    property bool showTerminal: SettingsData.desktopWidgetsEnabled && SettingsData.desktopTerminalEnabled
 
     // Position mapping function
     function getPositionAnchors(position) {
@@ -61,6 +62,14 @@ Item {
         screen: root.modelData
     }
 
+    // Desktop Terminal Widget
+    DesktopTerminal {
+        id: terminalWidget
+        visible: root.showTerminal
+        alwaysVisible: root.showTerminal
+        screen: root.modelData
+    }
+
     // Function to toggle widgets
     function toggleCpuTemp() {
         showCpuTemp = !showCpuTemp
@@ -78,12 +87,17 @@ Item {
         showClock = !showClock
     }
 
+    function toggleTerminal() {
+        showTerminal = !showTerminal
+    }
+
     // Function to show all widgets
     function showAllWidgets() {
         showCpuTemp = true
         showGpuTemp = true
         showSystemMonitor = true
         showClock = true
+        showTerminal = true
     }
 
     // Function to hide all widgets
@@ -92,5 +106,6 @@ Item {
         showGpuTemp = false
         showSystemMonitor = false
         showClock = false
+        showTerminal = false
     }
 }
