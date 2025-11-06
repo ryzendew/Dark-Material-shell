@@ -144,7 +144,8 @@ Rectangle {
                     height: 18
                     source: {
                         const currentIndex = root.options.indexOf(root.currentValue)
-                        return "image://icon/" + (currentIndex >= 0 && root.optionIcons.length > currentIndex ? root.optionIcons[currentIndex] : "")
+                        const iconName = currentIndex >= 0 && root.optionIcons.length > currentIndex ? root.optionIcons[currentIndex] : ""
+                        return iconName && iconName !== "" ? "image://icon/" + iconName : ""
                     }
                     sourceSize.width: 18
                     sourceSize.height: 18
@@ -174,14 +175,11 @@ Rectangle {
             anchors.rightMargin: Theme.spacingS
             visible: !root.currentValue || root.currentValue === ""
             
-            Image {
+            DankIcon {
                 anchors.centerIn: parent
-                width: 20
-                height: 20
-                source: "image://icon/expand_more"
-                sourceSize.width: 20
-                sourceSize.height: 20
-                fillMode: Image.PreserveAspectFit
+                name: "expand_more"
+                size: 20
+                color: Theme.surfaceText
             }
         }
     }
@@ -355,7 +353,10 @@ Rectangle {
                                             anchors.centerIn: parent
                                             width: 18
                                             height: 18
-                                            source: "image://icon/" + (optionIndex >= 0 && root.optionIcons.length > optionIndex ? root.optionIcons[optionIndex] : "")
+                                            source: {
+                                                const iconName = optionIndex >= 0 && root.optionIcons.length > optionIndex ? root.optionIcons[optionIndex] : ""
+                                                return iconName && iconName !== "" ? "image://icon/" + iconName : ""
+                                            }
                                             sourceSize.width: 18
                                             sourceSize.height: 18
                                             fillMode: Image.PreserveAspectFit

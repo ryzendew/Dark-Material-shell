@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Widgets
@@ -372,40 +373,53 @@ Item {
                    }
     }
 
-    Image {
-        id: iconImg
-
+    Item {
+        id: iconContainer
         anchors.centerIn: parent
         width: SettingsData.dockIconSize
         height: SettingsData.dockIconSize
-        sourceSize.width: SettingsData.dockIconSize
-        sourceSize.height: SettingsData.dockIconSize
-        fillMode: Image.PreserveAspectFit
-        source: {
-            if (appData.appId === "__SEPARATOR__") {
-                return ""
-            }
-            const moddedId = Paths.moddedAppId(appData.appId)
-            if (moddedId.toLowerCase().includes("steam_app")) {
-                return ""
-            }
-            const desktopEntry = DesktopEntries.heuristicLookup(moddedId)
-            return desktopEntry && desktopEntry.icon ? Quickshell.iconPath(desktopEntry.icon, true) : ""
-        }
-        mipmap: true
-        smooth: true
-        asynchronous: true
-        visible: status === Image.Ready
+        layer.enabled: SettingsData.systemIconTinting
 
-        // Drop shadow
-        layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: 0
-            verticalOffset: 2
-            radius: 8
-            samples: 16
-            color: Qt.rgba(0, 0, 0, SettingsData.dockIconDropShadowOpacity)
-            transparentBorder: true
+        Image {
+            id: iconImg
+
+            anchors.centerIn: parent
+            width: SettingsData.dockIconSize
+            height: SettingsData.dockIconSize
+            sourceSize.width: SettingsData.dockIconSize
+            sourceSize.height: SettingsData.dockIconSize
+            fillMode: Image.PreserveAspectFit
+            source: {
+                if (appData.appId === "__SEPARATOR__") {
+                    return ""
+                }
+                const moddedId = Paths.moddedAppId(appData.appId)
+                if (moddedId.toLowerCase().includes("steam_app")) {
+                    return ""
+                }
+                const desktopEntry = DesktopEntries.heuristicLookup(moddedId)
+                return desktopEntry && desktopEntry.icon ? Quickshell.iconPath(desktopEntry.icon, true) : ""
+            }
+            mipmap: true
+            smooth: true
+            asynchronous: true
+            visible: status === Image.Ready
+
+            // Drop shadow
+            layer.enabled: true
+            layer.effect: DropShadow {
+                horizontalOffset: 0
+                verticalOffset: 2
+                radius: 8
+                samples: 16
+                color: Qt.rgba(0, 0, 0, SettingsData.dockIconDropShadowOpacity)
+                transparentBorder: true
+            }
+        }
+
+        layer.effect: MultiEffect {
+            colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+            colorizationColor: Theme.primary
         }
     }
 
@@ -466,8 +480,8 @@ Item {
 
     // Indicator for running/focused/minimized state
     Rectangle {
-        anchors.horizontalCenter: iconImg.horizontalCenter
-        anchors.top: iconImg.bottom
+        anchors.horizontalCenter: iconContainer.horizontalCenter
+        anchors.top: iconContainer.bottom
         anchors.topMargin: 2
         width: 6
         height: 6

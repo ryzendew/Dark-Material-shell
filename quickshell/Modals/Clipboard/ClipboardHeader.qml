@@ -22,7 +22,7 @@ Item {
 
         DankIcon {
             name: "content_paste"
-            size: Theme.iconSize
+            size: Theme.iconSize - 4
             color: Theme.primary
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -50,7 +50,7 @@ Item {
 
         DankActionButton {
             iconName: "delete_sweep"
-            iconSize: Theme.iconSize
+            iconSize: Theme.iconSize - 4
             iconColor: Theme.surfaceText
             onClicked: clearAllClicked()
         }

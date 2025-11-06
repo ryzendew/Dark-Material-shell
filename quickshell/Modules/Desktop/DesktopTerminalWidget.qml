@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Wayland
@@ -270,7 +271,7 @@ PanelWindow {
                     Rectangle {
                         width: 4
                         height: 20
-                        radius: 2
+                        radius: Theme.cornerRadius * 0.2
                         color: Theme.primary
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -291,7 +292,7 @@ PanelWindow {
                 width: parent.width
                 height: parent.height - 30 - 50
                 color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
-                radius: 4
+                radius: Theme.cornerRadius * 0.3
                 border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                 border.width: 1
 
@@ -324,7 +325,7 @@ PanelWindow {
                 width: parent.width
                 height: 40
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.5)
-                radius: 4
+                radius: Theme.cornerRadius * 0.3
                 border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                 border.width: 1
 

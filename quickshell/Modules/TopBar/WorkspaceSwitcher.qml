@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Widgets
@@ -332,7 +333,7 @@ Rectangle {
                     return isActive ? widgetHeight * 1.2 + Theme.spacingXS : widgetHeight * 0.8
                 }
                 height: SettingsData.showWorkspaceApps ? widgetHeight * 0.8 : widgetHeight * 0.6
-                radius: height / 2
+                radius: Theme.cornerRadius * 0.6
                 color: isActive ? Theme.primary : isPlaceholder ? Theme.surfaceTextLight : isHovered ? Theme.outlineButton : Theme.surfaceTextAlpha
 
                 MouseArea {
@@ -366,6 +367,7 @@ Rectangle {
                         delegate: Item {
                             width: 18
                             height: 18
+                            layer.enabled: SettingsData.systemIconTinting
 
                             Image {
                                 id: appIcon
@@ -385,6 +387,11 @@ Rectangle {
                                     color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
                                     transparentBorder: true
                                 }
+                            }
+
+                            layer.effect: MultiEffect {
+                                colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                colorizationColor: Theme.primary
                             }
 
                             DankIcon {
@@ -426,7 +433,7 @@ Rectangle {
                                 visible: modelData.count > 1 && !isActive
                                 width: 12
                                 height: 12
-                                radius: 6
+                                radius: Theme.cornerRadius * 0.3
                                 color: "black"
                                 border.color: "white"
                                 border.width: 1

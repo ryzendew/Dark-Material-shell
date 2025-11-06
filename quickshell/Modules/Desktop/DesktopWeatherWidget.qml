@@ -31,9 +31,6 @@ PanelWindow {
     property real scaledPadding: basePadding * scaleFactor
     property real baseIconSize: SettingsData.desktopWeatherIconSize
     property real scaledIconSize: baseIconSize * scaleFactor
-    property real baseBorderRadius: SettingsData.desktopWeatherBorderRadius
-    property real scaledBorderRadius: baseBorderRadius * scaleFactor
-
     WlrLayershell.layer: WlrLayershell.Background
     WlrLayershell.namespace: "quickshell:desktop:weather"
     WlrLayershell.exclusiveZone: -1
@@ -62,7 +59,7 @@ PanelWindow {
     // Main container
     Rectangle {
         anchors.fill: parent
-        radius: scaledPadding
+        radius: Theme.cornerRadius
         color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, widgetOpacity)
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
         border.width: 1
@@ -229,7 +226,7 @@ PanelWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    radius: scaledPadding / 2
+                    radius: Theme.cornerRadius * 0.5
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
 
                     Column {
@@ -239,7 +236,7 @@ PanelWindow {
                         Rectangle {
                             width: 24 * scaleFactor
                             height: 24 * scaleFactor
-                            radius: 12 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -272,7 +269,7 @@ PanelWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    radius: scaledPadding / 2
+                    radius: Theme.cornerRadius * 0.5
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
 
                     Column {
@@ -282,7 +279,7 @@ PanelWindow {
                         Rectangle {
                             width: 24 * scaleFactor
                             height: 24 * scaleFactor
-                            radius: 12 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -315,7 +312,7 @@ PanelWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    radius: scaledPadding / 2
+                    radius: Theme.cornerRadius * 0.5
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
 
                     Column {
@@ -325,7 +322,7 @@ PanelWindow {
                         Rectangle {
                             width: 24 * scaleFactor
                             height: 24 * scaleFactor
-                            radius: 12 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -384,7 +381,7 @@ PanelWindow {
                         Rectangle {
                             width: (parent.width - scaledSpacing * 6) / 7
                             height: childrenRect.height + scaledPadding
-                            radius: scaledPadding / 2
+                            radius: Theme.cornerRadius * 0.5
                             
                             property var dayDate: {
                                 const date = new Date()

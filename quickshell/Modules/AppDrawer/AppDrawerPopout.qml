@@ -251,6 +251,7 @@ DankPopout {
                                                     width: 64
                                                     height: 64
                                                     anchors.horizontalCenter: parent.horizontalCenter
+                                                    layer.enabled: SettingsData.systemIconTinting
 
                                                     Image {
                                                         id: pinnedIconImg
@@ -264,6 +265,11 @@ DankPopout {
                                                         smooth: true
                                                         asynchronous: true
                                                         visible: status === Image.Ready
+                                                    }
+
+                                                    layer.effect: MultiEffect {
+                                                        colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                                        colorizationColor: Theme.primary
                                                     }
 
                                                     Rectangle {
@@ -869,6 +875,7 @@ DankPopout {
                                             width: appList.iconSize
                                             height: appList.iconSize
                                             anchors.verticalCenter: parent.verticalCenter
+                                            layer.enabled: SettingsData.systemIconTinting
 
                                             Image {
                                                 id: listIconImg
@@ -882,6 +889,11 @@ DankPopout {
                                                 smooth: true
                                                 asynchronous: true
                                                 visible: status === Image.Ready
+                                            }
+
+                                            layer.effect: MultiEffect {
+                                                colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                                colorizationColor: Theme.primary
                                             }
 
                                             Rectangle {

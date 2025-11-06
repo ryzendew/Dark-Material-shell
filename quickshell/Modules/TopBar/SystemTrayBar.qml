@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Wayland
@@ -111,14 +112,26 @@ Item {
                     radius: Theme.cornerRadius
                     color: trayItemArea.containsMouse ? Theme.primaryHover : "transparent"
 
-                        IconImage {
+                        Item {
                             anchors.centerIn: parent
                             width: 16
                             height: 16
-                            source: delegateRoot.iconSource
-                            asynchronous: true
-                            smooth: true
-                            mipmap: true
+                            layer.enabled: SettingsData.systemIconTinting
+                            
+                            IconImage {
+                                anchors.centerIn: parent
+                                width: 16
+                                height: 16
+                                source: delegateRoot.iconSource
+                                asynchronous: true
+                                smooth: true
+                                mipmap: true
+                            }
+                            
+                            layer.effect: MultiEffect {
+                                colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                colorizationColor: Theme.primary
+                            }
                         }
                     }
 
@@ -207,14 +220,26 @@ Item {
                         radius: Theme.cornerRadius
                         color: trayItemArea.containsMouse ? Theme.primaryHover : "transparent"
 
-                IconImage {
-                    anchors.centerIn: parent
-                    width: 16
-                    height: 16
-                            source: delegateRoot.iconSource
-                    asynchronous: true
-                    smooth: true
-                    mipmap: true
+                        Item {
+                            anchors.centerIn: parent
+                            width: 16
+                            height: 16
+                            layer.enabled: SettingsData.systemIconTinting
+                            
+                            IconImage {
+                                anchors.centerIn: parent
+                                width: 16
+                                height: 16
+                                source: delegateRoot.iconSource
+                                asynchronous: true
+                                smooth: true
+                                mipmap: true
+                            }
+                            
+                            layer.effect: MultiEffect {
+                                colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                colorizationColor: Theme.primary
+                            }
                         }
                 }
 

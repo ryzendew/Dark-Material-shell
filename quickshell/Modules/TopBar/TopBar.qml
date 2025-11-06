@@ -763,7 +763,7 @@ PanelWindow {
                                     id: clipboardIcon
                                     anchors.centerIn: parent
                                     name: "content_paste"
-                                    size: Theme.iconSize - 6
+                                    size: Theme.iconSize - 10
                                     color: Theme.surfaceText
                                 }
 

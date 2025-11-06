@@ -27,3 +27,8 @@ echo "If you still experience crashes, try using a different editor like vim, na
 
 
 
+
+
+
+
+

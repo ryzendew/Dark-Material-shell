@@ -388,7 +388,7 @@ PanelWindow {
                     Rectangle {
                         width: 4 * scaleFactor
                         height: 20 * scaleFactor
-                        radius: 2 * scaleFactor
+                        radius: Theme.cornerRadius * 0.2
                         color: Theme.primary
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -416,7 +416,7 @@ PanelWindow {
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
-                    radius: 8 * scaleFactor
+                    radius: Theme.cornerRadius * 0.6
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
@@ -452,7 +452,7 @@ PanelWindow {
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
-                            radius: 4 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
                             border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
@@ -570,7 +570,7 @@ PanelWindow {
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
-                    radius: 8 * scaleFactor
+                    radius: Theme.cornerRadius * 0.6
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
@@ -607,7 +607,7 @@ PanelWindow {
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
-                            radius: 4 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
                             border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
@@ -731,7 +731,7 @@ PanelWindow {
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
-                    radius: 8 * scaleFactor
+                    radius: Theme.cornerRadius * 0.6
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
@@ -765,7 +765,7 @@ PanelWindow {
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
-                            radius: 4 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
                             border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1
@@ -886,7 +886,7 @@ PanelWindow {
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
-                    radius: 8 * scaleFactor
+                    radius: Theme.cornerRadius * 0.6
                     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
@@ -920,7 +920,7 @@ PanelWindow {
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
-                            radius: 4 * scaleFactor
+                            radius: Theme.cornerRadius * 0.3
                             color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.8)
                             border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                             border.width: 1

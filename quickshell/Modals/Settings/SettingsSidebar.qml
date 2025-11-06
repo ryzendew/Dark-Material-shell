@@ -12,11 +12,11 @@ Rectangle {
         "text": "Personalization",
         "icon": "person"
     }, {
-        "text": "Time & Date",
-        "icon": "schedule"
+        "text": "Theme & Colors",
+        "icon": "palette"
     }, {
-        "text": "Weather",
-        "icon": "cloud"
+        "text": "Dock",
+        "icon": "dock_to_bottom"
     }, {
         "text": "Top Bar",
         "icon": "toolbar"
@@ -24,23 +24,26 @@ Rectangle {
         "text": "Widgets",
         "icon": "widgets"
     }, {
-        "text": "Dock",
-        "icon": "dock_to_bottom"
-    }, {
-        "text": "Displays",
-        "icon": "monitor"
+        "text": "Positioning",
+        "icon": "open_with"
     }, {
         "text": "Launcher",
         "icon": "apps"
     }, {
-        "text": "Positioning",
-        "icon": "open_with"
+        "text": "Default Apps",
+        "icon": "apps"
     }, {
-        "text": "Theme & Colors",
-        "icon": "palette"
+        "text": "Displays",
+        "icon": "monitor"
     }, {
-        "text": "Window Size",
-        "icon": "aspect_ratio"
+        "text": "Sound",
+        "icon": "volume_up"
+    }, {
+        "text": "Keyboard & Language",
+        "icon": "keyboard"
+    }, {
+        "text": "Time & Date",
+        "icon": "schedule"
     }, {
         "text": "Power",
         "icon": "power_settings_new"
@@ -48,11 +51,11 @@ Rectangle {
         "text": "About",
         "icon": "info"
     }, {
-        "text": "Sound",
-        "icon": "volume_up"
+        "text": "Window Size",
+        "icon": "aspect_ratio"
     }, {
-        "text": "Default Apps",
-        "icon": "apps"
+        "text": "Weather",
+        "icon": "cloud"
     }]
 
     width: 270

@@ -93,29 +93,37 @@ Item {
         }
 
         Loader {
-            id: timeLoader
+            id: themeColorsLoader
 
             anchors.fill: parent
             active: root.currentIndex === 1
             visible: active
             asynchronous: true
 
-            sourceComponent: TimeTab {
+            sourceComponent: ThemeColorsTab {
             }
 
         }
 
         Loader {
-            id: weatherLoader
+            id: dockLoader
 
             anchors.fill: parent
             active: root.currentIndex === 2
             visible: active
             asynchronous: true
 
-            sourceComponent: WeatherTab {
+            sourceComponent: Component {
+                DockTab {
+                }
             }
 
+            onLoaded: {
+                // Ensure the dock tab is properly initialized when loaded
+                if (item) {
+                    item.forceActiveFocus()
+                }
+            }
         }
 
         Loader {
@@ -144,57 +152,10 @@ Item {
         }
 
         Loader {
-            id: dockLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 5
-            visible: active
-            asynchronous: true
-
-            sourceComponent: Component {
-                DockTab {
-                }
-            }
-
-            onLoaded: {
-                // Ensure the dock tab is properly initialized when loaded
-                if (item) {
-                    item.forceActiveFocus()
-                }
-            }
-        }
-
-        Loader {
-            id: displaysLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 6
-            visible: active
-            asynchronous: true
-
-            sourceComponent: DisplaysTab {
-            }
-
-        }
-
-        Loader {
-            id: launcherLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 7
-            visible: active
-            asynchronous: true
-
-            sourceComponent: LauncherTab {
-            }
-
-        }
-
-        Loader {
             id: positioningLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 8
+            active: root.currentIndex === 5
             visible: active
             asynchronous: true
 
@@ -204,14 +165,105 @@ Item {
         }
 
         Loader {
-            id: themeColorsLoader
+            id: launcherLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 6
+            visible: active
+            asynchronous: true
+
+            sourceComponent: LauncherTab {
+            }
+
+        }
+
+        Loader {
+            id: defaultAppsLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 7
+            visible: active
+            asynchronous: true
+
+            sourceComponent: DefaultAppsTab {
+            }
+
+        }
+
+        Loader {
+            id: displaysLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 8
+            visible: active
+            asynchronous: true
+
+            sourceComponent: DisplaysTab {
+            }
+
+        }
+
+        Loader {
+            id: soundLoader
 
             anchors.fill: parent
             active: root.currentIndex === 9
             visible: active
             asynchronous: true
 
-            sourceComponent: ThemeColorsTab {
+            sourceComponent: SoundTab {
+            }
+
+        }
+
+        Loader {
+            id: keyboardLangLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 10
+            visible: active
+            asynchronous: true
+
+            sourceComponent: KeyboardLangTab {
+            }
+
+        }
+
+        Loader {
+            id: timeLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 11
+            visible: active
+            asynchronous: true
+
+            sourceComponent: TimeTab {
+            }
+
+        }
+
+        Loader {
+            id: powerLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 12
+            visible: active
+            asynchronous: true
+
+            sourceComponent: PowerTab {
+            }
+
+        }
+
+        Loader {
+            id: aboutLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 13
+            visible: active
+            asynchronous: true
+
+            sourceComponent: AboutTab {
             }
 
         }
@@ -220,7 +272,7 @@ Item {
             id: windowSizingLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 10
+            active: root.currentIndex === 14
             visible: active
             asynchronous: true
 
@@ -231,53 +283,14 @@ Item {
         }
 
         Loader {
-            id: powerLoader
+            id: weatherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 11
+            active: root.currentIndex === 15
             visible: active
             asynchronous: true
 
-            sourceComponent: PowerSettings {
-            }
-
-        }
-
-        Loader {
-            id: aboutLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 12
-            visible: active
-            asynchronous: true
-
-            sourceComponent: AboutTab {
-            }
-
-        }
-
-        Loader {
-            id: soundLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 13
-            visible: active
-            asynchronous: true
-
-            sourceComponent: SoundTab {
-            }
-
-        }
-
-        Loader {
-            id: defaultAppsLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 14
-            visible: active
-            asynchronous: true
-
-            sourceComponent: DefaultAppsTab {
+            sourceComponent: WeatherTab {
             }
 
         }

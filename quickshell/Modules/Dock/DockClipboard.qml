@@ -10,7 +10,7 @@ Item {
 
     property real widgetHeight: 40
 
-    width: clipboardRow.implicitWidth + 16
+    width: widgetHeight
     height: widgetHeight
 
     Rectangle {
@@ -20,24 +20,11 @@ Item {
         border.width: 1
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
 
-        Row {
-            id: clipboardRow
+        DankIcon {
             anchors.centerIn: parent
-            spacing: 6
-
-            DankIcon {
-                name: "content_paste"
-                size: 16
-                color: Theme.primary
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            StyledText {
-                text: "Clipboard"
-                font.pixelSize: 12
-                color: Theme.surfaceText
-                anchors.verticalCenter: parent.verticalCenter
-            }
+            name: "content_paste"
+            size: 14
+            color: Theme.primary
         }
     }
 }

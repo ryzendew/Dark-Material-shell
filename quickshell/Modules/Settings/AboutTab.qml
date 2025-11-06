@@ -8,8 +8,6 @@ import qs.Widgets
 Item {
     id: aboutTab
 
-    property bool isHyprland: CompositorService.isHyprland
-
     DankFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
@@ -23,10 +21,10 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // ASCII Art Header
+            // Hardware Information Section
             StyledRect {
                 width: parent.width
-                height: asciiSection.implicitHeight + Theme.spacingL * 2
+                height: hardwareSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
                                Theme.surfaceVariant.b, 0.3)
@@ -35,222 +33,25 @@ Item {
                 border.width: 1
 
                 Column {
-                    id: asciiSection
+                    id: hardwareSection
 
                     anchors.fill: parent
                     anchors.margins: Theme.spacingL
-                    spacing: Theme.spacingM
-
-                    Item {
-                        width: parent.width
-                        height: asciiText.implicitHeight
-
-                        StyledText {
-                            id: asciiText
-
-                            text: "██████╗  █████╗ ███╗   ██╗██╗  ██╗\n██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝\n██║  ██║███████║██╔██╗ ██║█████╔╝ \n██║  ██║██╔══██║██║╚██╗██║██╔═██╗ \n██████╔╝██║  ██║██║ ╚████║██║  ██╗\n╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝"
-                            isMonospace: true
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: Theme.primary
-                            anchors.centerIn: parent
-                        }
-                    }
-
-                    StyledText {
-                        text: "DankMaterialShell"
-                        font.pixelSize: Theme.fontSizeXLarge
-                        font.weight: Font.Bold
-                        color: Theme.surfaceText
-                        horizontalAlignment: Text.AlignHCenter
-                        width: parent.width
-                    }
-
-                    Item {
-                        id: communityIcons
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        height: 24
-                        width: {
-                            if (isHyprland) {
-                                return compositorButton.width + discordButton.width + Theme.spacingM + redditButton.width + Theme.spacingM
-                            } else {
-                                return compositorButton.width + matrixButton.width + 4 + discordButton.width + Theme.spacingM + redditButton.width + Theme.spacingM
-                            }
-                        }
-
-                        // Compositor logo (Niri or Hyprland)
-                        Item {
-                            id: compositorButton
-                            width: 24
-                            height: 24
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.verticalCenterOffset: -2
-                            x: 0
-
-                            property bool hovered: false
-                            property string tooltipText: isHyprland ? "Hyprland Website" : "niri GitHub"
-
-                            Image {
-                                anchors.fill: parent
-                                source: Qt.resolvedUrl(".").toString().replace(
-                                            "file://", "").replace(
-                                            "/Modules/Settings/",
-                                            "") + (isHyprland ? "/assets/hyprland.svg" : "/assets/niri.svg")
-                                sourceSize: Qt.size(24, 24)
-                                smooth: true
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: parent.hovered = true
-                                onExited: parent.hovered = false
-                                onClicked: Qt.openUrlExternally(
-                                               isHyprland ? "https://hypr.land" : "https://github.com/YaLTeR/niri")
-                            }
-                        }
-
-                        // Matrix button (only for Niri)
-                        Item {
-                            id: matrixButton
-                            width: 30
-                            height: 24
-                            x: compositorButton.x + compositorButton.width + 4
-                            visible: !isHyprland
-
-                            property bool hovered: false
-                            property string tooltipText: "niri Matrix Chat"
-
-                            Image {
-                                anchors.fill: parent
-                                source: Qt.resolvedUrl(".").toString().replace(
-                                            "file://", "").replace(
-                                            "/Modules/Settings/",
-                                            "") + "/assets/matrix-logo-white.svg"
-                                sourceSize: Qt.size(28, 18)
-                                smooth: true
-                                fillMode: Image.PreserveAspectFit
-                                layer.enabled: true
-
-                                layer.effect: MultiEffect {
-                                    colorization: 1
-                                    colorizationColor: Theme.surfaceText
-                                }
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: parent.hovered = true
-                                onExited: parent.hovered = false
-                                onClicked: Qt.openUrlExternally(
-                                               "https://matrix.to/#/#niri:matrix.org")
-                            }
-                        }
-
-                        // Discord button
-                        Item {
-                            id: discordButton
-                            width: 20
-                            height: 20
-                            x: isHyprland ? compositorButton.x + compositorButton.width + Theme.spacingM : matrixButton.x + matrixButton.width + Theme.spacingM
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            property bool hovered: false
-                            property string tooltipText: isHyprland ? "Hyprland Discord Server" : "niri Discord Server"
-
-                            Image {
-                                anchors.fill: parent
-                                source: Qt.resolvedUrl(".").toString().replace(
-                                            "file://", "").replace(
-                                            "/Modules/Settings/",
-                                            "") + "/assets/discord.svg"
-                                sourceSize: Qt.size(20, 20)
-                                smooth: true
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: parent.hovered = true
-                                onExited: parent.hovered = false
-                                onClicked: Qt.openUrlExternally(
-                                               isHyprland ? "https://discord.com/invite/hQ9XvMUjjr" : "https://discord.gg/vT8Sfjy7sx")
-                            }
-                        }
-
-                        // Reddit button
-                        Item {
-                            id: redditButton
-                            width: 20
-                            height: 20
-                            x: discordButton.x + discordButton.width + Theme.spacingM
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            property bool hovered: false
-                            property string tooltipText: isHyprland ? "r/hyprland Subreddit" : "r/niri Subreddit"
-
-                            Image {
-                                anchors.fill: parent
-                                source: Qt.resolvedUrl(".").toString().replace(
-                                            "file://", "").replace(
-                                            "/Modules/Settings/",
-                                            "") + "/assets/reddit.svg"
-                                sourceSize: Qt.size(20, 20)
-                                smooth: true
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: parent.hovered = true
-                                onExited: parent.hovered = false
-                                onClicked: Qt.openUrlExternally(
-                                               isHyprland ? "https://reddit.com/r/hyprland" : "https://reddit.com/r/niri")
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            // Project Information
-            StyledRect {
-                width: parent.width
-                height: projectSection.implicitHeight + Theme.spacingL * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
-                               Theme.surfaceVariant.b, 0.3)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                      Theme.outline.b, 0.2)
-                border.width: 1
-
-                Column {
-                    id: projectSection
-
-                    anchors.fill: parent
-                    anchors.margins: Theme.spacingL
-                    spacing: Theme.spacingM
+                    spacing: Theme.spacingXL
 
                     Row {
                         width: parent.width
                         spacing: Theme.spacingM
 
                         DankIcon {
-                            name: "info"
+                            name: "memory"
                             size: Theme.iconSize
                             color: Theme.primary
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         StyledText {
-                            text: "About"
+                            text: "Hardware Information"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
                             color: Theme.surfaceText
@@ -258,278 +59,505 @@ Item {
                         }
                     }
 
-                    StyledText {
-                        text: `DankMaterialShell is a modern desktop with a <a href="https://m3.material.io/" style="text-decoration:none; color:${Theme.primary};">material</a>-ish design.
-                        <br /><br/>The goal is to provide a high level of functionality and customization so that it can be a suitable replacement for complete desktop environments like Gnome, KDE, or Cosmic.
-                        `
-                        textFormat: Text.RichText
-                        font.pixelSize: Theme.fontSizeMedium
-                        linkColor: Theme.primary
-                        onLinkActivated: url => Qt.openUrlExternally(url)
-                        color: Theme.surfaceVariantText
+                    // Processor Section
+                    StyledRect {
                         width: parent.width
-                        wrapMode: Text.WordWrap
+                        height: processorSection.implicitHeight + Theme.spacingM * 2
+                        radius: Theme.cornerRadius
+                        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g,
+                                       Theme.surfaceContainer.b, 0.5)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                              Theme.outline.b, 0.1)
+                        border.width: 1
 
-                        MouseArea {
+                        Column {
+                            id: processorSection
+
                             anchors.fill: parent
-                            cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                            acceptedButtons: Qt.NoButton
-                            propagateComposedEvents: true
+                            anchors.margins: Theme.spacingM
+                            spacing: Theme.spacingM
+
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
+                                DankIcon {
+                                    name: "memory"
+                                    size: Theme.iconSize - 4
+                                    color: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Processor"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Grid {
+                                width: parent.width
+                                columns: 2
+                                columnSpacing: Theme.spacingL
+                                rowSpacing: Theme.spacingM
+
+                                StyledText {
+                                    text: "Model:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
+
+                                Column {
+                                    spacing: 2
+                                    width: parent.width - parent.children[0].width - Theme.spacingL
+
+                                    StyledText {
+                                        text: HardwareService.cpuModel || "Loading..."
+                                        font.pixelSize: Theme.fontSizeMedium
+                                        color: Theme.surfaceVariantText
+                                        width: parent.width
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                StyledText {
+                                    text: "Cores:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.cpuCores > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.cpuCores > 0 ? HardwareService.cpuCores + " cores" : ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.cpuCores > 0
+                                }
+
+                                StyledText {
+                                    text: "Threads:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.cpuThreads > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.cpuThreads > 0 ? HardwareService.cpuThreads + " threads" : ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.cpuThreads > 0
+                                }
+
+                                StyledText {
+                                    text: "Frequency:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.cpuFrequency && HardwareService.cpuFrequency.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.cpuFrequency || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.cpuFrequency && HardwareService.cpuFrequency.length > 0
+                                }
+
+                                StyledText {
+                                    text: "Architecture:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.cpuArchitecture && HardwareService.cpuArchitecture.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.cpuArchitecture || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.cpuArchitecture && HardwareService.cpuArchitecture.length > 0
+                                }
+                            }
                         }
+                    }
+
+                    // Memory Section
+                    StyledRect {
+                        width: parent.width
+                        height: memorySection.implicitHeight + Theme.spacingM * 2
+                        radius: Theme.cornerRadius
+                        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g,
+                                       Theme.surfaceContainer.b, 0.5)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                              Theme.outline.b, 0.1)
+                        border.width: 1
+
+                        Column {
+                            id: memorySection
+
+                            anchors.fill: parent
+                            anchors.margins: Theme.spacingM
+                            spacing: Theme.spacingM
+
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
+                                DankIcon {
+                                    name: "memory"
+                                    size: Theme.iconSize - 4
+                                    color: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Memory"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Grid {
+                                width: parent.width
+                                columns: 2
+                                columnSpacing: Theme.spacingL
+                                rowSpacing: Theme.spacingM
+
+                                StyledText {
+                                    text: "Total:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
+
+                                StyledText {
+                                    text: HardwareService.totalMemory || "Loading..."
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                }
+
+                                StyledText {
+                                    text: "Used:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.usedMemory && HardwareService.usedMemory.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.usedMemory || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.usedMemory && HardwareService.usedMemory.length > 0
+                                }
+
+                                StyledText {
+                                    text: "Available:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.availableMemory && HardwareService.availableMemory.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.availableMemory || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.availableMemory && HardwareService.availableMemory.length > 0
+                                }
+                            }
+                        }
+                    }
+
+                    // Graphics Section
+                    StyledRect {
+                        width: parent.width
+                        height: graphicsSection.implicitHeight + Theme.spacingM * 2
+                        radius: Theme.cornerRadius
+                        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g,
+                                       Theme.surfaceContainer.b, 0.5)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                              Theme.outline.b, 0.1)
+                        border.width: 1
+
+                        Column {
+                            id: graphicsSection
+
+                            anchors.fill: parent
+                            anchors.margins: Theme.spacingM
+                            spacing: Theme.spacingM
+
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
+                                DankIcon {
+                                    name: "videocam"
+                                    size: Theme.iconSize - 4
+                                    color: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Graphics"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Grid {
+                                width: parent.width
+                                columns: 2
+                                columnSpacing: Theme.spacingL
+                                rowSpacing: Theme.spacingM
+
+                                StyledText {
+                                    text: "Model:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
+
+                                Column {
+                                    spacing: 2
+                                    width: parent.width - parent.children[0].width - Theme.spacingL
+
+                                    StyledText {
+                                        text: HardwareService.gpuModel || "Loading..."
+                                        font.pixelSize: Theme.fontSizeMedium
+                                        color: Theme.surfaceVariantText
+                                        width: parent.width
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                StyledText {
+                                    text: "Driver:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.gpuDriver && HardwareService.gpuDriver.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.gpuDriver || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.gpuDriver && HardwareService.gpuDriver.length > 0
+                                }
+                            }
+                        }
+                    }
+
+                    // Storage Section
+                    StyledRect {
+                        width: parent.width
+                        height: storageSection.implicitHeight + Theme.spacingM * 2
+                        radius: Theme.cornerRadius
+                        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g,
+                                       Theme.surfaceContainer.b, 0.5)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                              Theme.outline.b, 0.1)
+                        border.width: 1
+
+                        Column {
+                            id: storageSection
+
+                            anchors.fill: parent
+                            anchors.margins: Theme.spacingM
+                            spacing: Theme.spacingM
+
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
+                                DankIcon {
+                                    name: "storage"
+                                    size: Theme.iconSize - 4
+                                    color: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Storage"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Grid {
+                                width: parent.width
+                                columns: 2
+                                columnSpacing: Theme.spacingL
+                                rowSpacing: Theme.spacingM
+
+                                StyledText {
+                                    text: "Total:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
+
+                                StyledText {
+                                    text: HardwareService.diskTotal || "Loading..."
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                }
+
+                                StyledText {
+                                    text: "Used:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.diskUsed && HardwareService.diskUsed.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.diskUsed || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.diskUsed && HardwareService.diskUsed.length > 0
+                                }
+
+                                StyledText {
+                                    text: "Available:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.diskAvailable && HardwareService.diskAvailable.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.diskAvailable || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.diskAvailable && HardwareService.diskAvailable.length > 0
+                                }
+
+                                StyledText {
+                                    text: "Usage:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.diskUsagePercent && HardwareService.diskUsagePercent.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.diskUsagePercent || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.diskUsagePercent && HardwareService.diskUsagePercent.length > 0
+                                }
+                            }
+                        }
+                    }
+
+                    // System Section
+                    StyledRect {
+                        width: parent.width
+                        height: systemSection.implicitHeight + Theme.spacingM * 2
+                        radius: Theme.cornerRadius
+                        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g,
+                                       Theme.surfaceContainer.b, 0.5)
+                        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                              Theme.outline.b, 0.1)
+                        border.width: 1
+
+                        Column {
+                            id: systemSection
+
+                            anchors.fill: parent
+                            anchors.margins: Theme.spacingM
+                            spacing: Theme.spacingM
+
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
+                                DankIcon {
+                                    name: "computer"
+                                    size: Theme.iconSize - 4
+                                    color: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "System"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Grid {
+                                width: parent.width
+                                columns: 2
+                                columnSpacing: Theme.spacingL
+                                rowSpacing: Theme.spacingM
+
+                                StyledText {
+                                    text: "OS:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
+
+                                StyledText {
+                                    text: HardwareService.osName || "Loading..."
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                }
+
+                                StyledText {
+                                    text: "Kernel:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.kernelVersion && HardwareService.kernelVersion.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.kernelVersion || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.kernelVersion && HardwareService.kernelVersion.length > 0
+                                }
+
+                                StyledText {
+                                    text: "Hostname:"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    visible: HardwareService.hostname && HardwareService.hostname.length > 0
+                                }
+
+                                StyledText {
+                                    text: HardwareService.hostname || ""
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceVariantText
+                                    visible: HardwareService.hostname && HardwareService.hostname.length > 0
+                                }
+                            }
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        HardwareService.refreshAll()
                     }
                 }
             }
-
-            // Technical Details
-            StyledRect {
-                width: parent.width
-                height: techSection.implicitHeight + Theme.spacingL * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
-                               Theme.surfaceVariant.b, 0.3)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                      Theme.outline.b, 0.2)
-                border.width: 1
-
-                Column {
-                    id: techSection
-
-                    anchors.fill: parent
-                    anchors.margins: Theme.spacingL
-                    spacing: Theme.spacingM
-
-                    Row {
-                        width: parent.width
-                        spacing: Theme.spacingM
-
-                        DankIcon {
-                            name: "code"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        StyledText {
-                            text: "Technical Details"
-                            font.pixelSize: Theme.fontSizeLarge
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-                    }
-
-                    Grid {
-                        width: parent.width
-                        columns: 2
-                        columnSpacing: Theme.spacingL
-                        rowSpacing: Theme.spacingS
-
-                        StyledText {
-                            text: "Framework:"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                        }
-
-                        StyledText {
-                            text: `<a href="https://quickshell.org" style="text-decoration:none; color:${Theme.primary};">Quickshell</a>`
-                            linkColor: Theme.primary
-                            textFormat: Text.RichText
-                            onLinkActivated: url => Qt.openUrlExternally(url)
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: Theme.surfaceVariantText
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                acceptedButtons: Qt.NoButton
-                                propagateComposedEvents: true
-                            }
-                        }
-
-                        StyledText {
-                            text: "Language:"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                        }
-
-                        StyledText {
-                            text: "QML (Qt Modeling Language)"
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: Theme.surfaceVariantText
-                        }
-
-                        StyledText {
-                            text: "Compositor:"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                        }
-
-                        Row {
-                            spacing: 4
-                            
-                            StyledText {
-                                text: `<a href="https://github.com/YaLTeR/niri" style="text-decoration:none; color:${Theme.primary};">niri</a>`
-                                font.pixelSize: Theme.fontSizeMedium
-                                linkColor: Theme.primary
-                                textFormat: Text.RichText
-                                color: Theme.surfaceVariantText
-                                onLinkActivated: url => Qt.openUrlExternally(url)
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                    acceptedButtons: Qt.NoButton
-                                    propagateComposedEvents: true
-                                }
-                            }
-                            
-                            StyledText {
-                                text: "&"
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceVariantText
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                            
-                            StyledText {
-                                text: `<a href="https://github.com/hyprwm/Hyprland" style="text-decoration:none; color:${Theme.primary};">hyprland</a>`
-                                font.pixelSize: Theme.fontSizeMedium
-                                linkColor: Theme.primary
-                                textFormat: Text.RichText
-                                color: Theme.surfaceVariantText
-                                onLinkActivated: url => Qt.openUrlExternally(url)
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                    acceptedButtons: Qt.NoButton
-                                    propagateComposedEvents: true
-                                }
-                            }
-                        }
-
-                        StyledText {
-                            text: "Github:"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                        }
-
-                        Row {
-                            spacing: 4
-                            
-                            StyledText {
-                                text: `<a href="https://github.com/AvengeMedia/DankMaterialShell" style="text-decoration:none; color:${Theme.primary};">DankMaterialShell</a>`
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceVariantText
-                                linkColor: Theme.primary
-                                textFormat: Text.RichText
-                                onLinkActivated: url => Qt.openUrlExternally(url)
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                    acceptedButtons: Qt.NoButton
-                                    propagateComposedEvents: true
-                                }
-                            }
-                            
-                            StyledText {
-                                text: "- Support Us With a Star ⭐"
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceVariantText
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-
-                        StyledText {
-                            text: "System Monitoring:"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.weight: Font.Medium
-                            color: Theme.surfaceText
-                        }
-
-                        Row {
-                            spacing: 4
-                            
-                            StyledText {
-                                text: `<a href="https://github.com/AvengeMedia/dgop" style="text-decoration:none; color:${Theme.primary};">dgop</a>`
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceVariantText
-                                linkColor: Theme.primary
-                                textFormat: Text.RichText
-                                onLinkActivated: url => Qt.openUrlExternally(url)
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                    acceptedButtons: Qt.NoButton
-                                    propagateComposedEvents: true
-                                }
-                            }
-                            
-                            StyledText {
-                                text: "- Stateless System Monitoring"
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceVariantText
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
-    // Community tooltip - positioned absolutely above everything
-    Rectangle {
-        id: communityTooltip
-        parent: aboutTab
-        z: 1000
-
-        property var hoveredButton: {
-            if (compositorButton.hovered) return compositorButton
-            if (matrixButton.visible && matrixButton.hovered) return matrixButton
-            if (discordButton.hovered) return discordButton
-            if (redditButton.hovered) return redditButton
-            return null
-        }
-
-        property string tooltipText: hoveredButton ? hoveredButton.tooltipText : ""
-
-        visible: hoveredButton !== null && tooltipText !== ""
-        width: tooltipLabel.implicitWidth + 24
-        height: tooltipLabel.implicitHeight + 12
-
-        color: Theme.surfaceContainer
-        radius: Theme.cornerRadius
-        border.width: 1
-        border.color: Theme.outlineMedium
-
-        x: hoveredButton ? hoveredButton.mapToItem(aboutTab, hoveredButton.width / 2, 0).x - width / 2 : 0
-        y: hoveredButton ? communityIcons.mapToItem(aboutTab, 0, 0).y - height - 8 : 0
-
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            shadowEnabled: true
-            shadowOpacity: 0.15
-            shadowVerticalOffset: 2
-            shadowBlur: 0.5
-        }
-
-        StyledText {
-            id: tooltipLabel
-            anchors.centerIn: parent
-            text: communityTooltip.tooltipText
-            font.pixelSize: Theme.fontSizeSmall
-            color: Theme.surfaceText
         }
     }
 }

@@ -36,9 +36,12 @@ Singleton {
     property real launcherLogoRed: 1.0
     property real launcherLogoGreen: 1.0
     property real launcherLogoBlue: 1.0
+    property bool launcherLogoAutoSync: false
     property real launcherLogoDropShadowOpacity: 0.15
     property real dockIconDropShadowOpacity: 0.15
     property real topBarDropShadowOpacity: 0.15
+    property bool systemIconTinting: false
+    property real iconTintIntensity: 0.5 // 0.0 to 1.0
     property int settingsWindowWidth: 0 // 0 means auto sizing
     property int settingsWindowHeight: 0 // 0 means auto sizing
     property int settingsWindowX: -1 // -1 means auto centering
@@ -100,6 +103,7 @@ Singleton {
     property bool dockBorderEnabled: false
     property real dockBorderWidth: 2
     property real dockBorderRadius: 8
+    property real dockRadius: 12
     property real dockBorderRed: 0.0
     property real dockBorderGreen: 0.0
     property real dockBorderBlue: 0.0
@@ -181,6 +185,9 @@ Singleton {
     property bool runningAppsCurrentWorkspace: false
     property string clockDateFormat: ""
     property string lockDateFormat: ""
+    property int firstDayOfWeek: 1 // 0 = Sunday, 1 = Monday, etc.
+    property string weekNumbering: "ISO" // "ISO", "US", "None"
+    property string systemTimezone: ""
     property int mediaSize: 1
     property var topBarLeftWidgets: ["launcherButton", "workspaceSwitcher", "focusedWindow"]
     property var topBarCenterWidgets: ["music", "clock", "weather"]
@@ -392,9 +399,12 @@ Singleton {
                 launcherLogoRed = settings.launcherLogoRed !== undefined ? (settings.launcherLogoRed > 1 ? settings.launcherLogoRed / 255 : settings.launcherLogoRed) : 1.0
                 launcherLogoGreen = settings.launcherLogoGreen !== undefined ? (settings.launcherLogoGreen > 1 ? settings.launcherLogoGreen / 255 : settings.launcherLogoGreen) : 1.0
                 launcherLogoBlue = settings.launcherLogoBlue !== undefined ? (settings.launcherLogoBlue > 1 ? settings.launcherLogoBlue / 255 : settings.launcherLogoBlue) : 1.0
+                launcherLogoAutoSync = settings.launcherLogoAutoSync !== undefined ? settings.launcherLogoAutoSync : false
                 launcherLogoDropShadowOpacity = settings.launcherLogoDropShadowOpacity !== undefined ? (settings.launcherLogoDropShadowOpacity > 1 ? settings.launcherLogoDropShadowOpacity / 100 : settings.launcherLogoDropShadowOpacity) : 0.15
                 dockIconDropShadowOpacity = settings.dockIconDropShadowOpacity !== undefined ? (settings.dockIconDropShadowOpacity > 1 ? settings.dockIconDropShadowOpacity / 100 : settings.dockIconDropShadowOpacity) : 0.15
                 topBarDropShadowOpacity = settings.topBarDropShadowOpacity !== undefined ? (settings.topBarDropShadowOpacity > 1 ? settings.topBarDropShadowOpacity / 100 : settings.topBarDropShadowOpacity) : 0.15
+                systemIconTinting = settings.systemIconTinting !== undefined ? settings.systemIconTinting : false
+                iconTintIntensity = settings.iconTintIntensity !== undefined ? settings.iconTintIntensity : 0.5
                 settingsWindowWidth = settings.settingsWindowWidth !== undefined ? settings.settingsWindowWidth : 0
                 settingsWindowHeight = settings.settingsWindowHeight !== undefined ? settings.settingsWindowHeight : 0
                 settingsWindowX = settings.settingsWindowX !== undefined ? settings.settingsWindowX : -1
@@ -448,6 +458,7 @@ Singleton {
                 dockBorderEnabled = settings.dockBorderEnabled !== undefined ? settings.dockBorderEnabled : false
                 dockBorderWidth = settings.dockBorderWidth !== undefined ? settings.dockBorderWidth : 2
                 dockBorderRadius = settings.dockBorderRadius !== undefined ? settings.dockBorderRadius : 8
+                dockRadius = settings.dockRadius !== undefined ? settings.dockRadius : 12
                 dockBorderRed = settings.dockBorderRed !== undefined ? settings.dockBorderRed : 0.0
                 dockBorderGreen = settings.dockBorderGreen !== undefined ? settings.dockBorderGreen : 0.0
                 dockBorderBlue = settings.dockBorderBlue !== undefined ? settings.dockBorderBlue : 0.0
@@ -528,6 +539,9 @@ Singleton {
                 runningAppsCurrentWorkspace = settings.runningAppsCurrentWorkspace !== undefined ? settings.runningAppsCurrentWorkspace : false
                 clockDateFormat = settings.clockDateFormat !== undefined ? settings.clockDateFormat : ""
                 lockDateFormat = settings.lockDateFormat !== undefined ? settings.lockDateFormat : ""
+                firstDayOfWeek = settings.firstDayOfWeek !== undefined ? settings.firstDayOfWeek : 1
+                weekNumbering = settings.weekNumbering !== undefined ? settings.weekNumbering : "ISO"
+                systemTimezone = settings.systemTimezone !== undefined ? settings.systemTimezone : ""
                 mediaSize = settings.mediaSize !== undefined ? settings.mediaSize : (settings.mediaCompactMode !== undefined ? (settings.mediaCompactMode ? 0 : 1) : 1)
                 if (settings.topBarWidgetOrder) {
                     topBarLeftWidgets = settings.topBarWidgetOrder.filter(w => {
@@ -683,9 +697,12 @@ Singleton {
                                                 "launcherLogoRed": launcherLogoRed,
                                                 "launcherLogoGreen": launcherLogoGreen,
                                                 "launcherLogoBlue": launcherLogoBlue,
+                                                "launcherLogoAutoSync": launcherLogoAutoSync,
                                                 "launcherLogoDropShadowOpacity": launcherLogoDropShadowOpacity,
                                                 "dockIconDropShadowOpacity": dockIconDropShadowOpacity,
                                                 "topBarDropShadowOpacity": topBarDropShadowOpacity,
+                                                "systemIconTinting": systemIconTinting,
+                                                "iconTintIntensity": iconTintIntensity,
                                                 "settingsWindowWidth": settingsWindowWidth,
                                                 "settingsWindowHeight": settingsWindowHeight,
                                                 "settingsWindowX": settingsWindowX,
@@ -744,6 +761,7 @@ Singleton {
                                                 "dockBorderEnabled": dockBorderEnabled,
                                                 "dockBorderWidth": dockBorderWidth,
                                                 "dockBorderRadius": dockBorderRadius,
+                                                "dockRadius": dockRadius,
                                                 "dockBorderRed": dockBorderRed,
                                                 "dockBorderGreen": dockBorderGreen,
                                                 "dockBorderBlue": dockBorderBlue,
@@ -810,6 +828,9 @@ Singleton {
                                                 "runningAppsCurrentWorkspace": runningAppsCurrentWorkspace,
                                                 "clockDateFormat": clockDateFormat,
                                                 "lockDateFormat": lockDateFormat,
+                                                "firstDayOfWeek": firstDayOfWeek,
+                                                "weekNumbering": weekNumbering,
+                                                "systemTimezone": systemTimezone,
                                                 "mediaSize": mediaSize,
                                                 "topBarLeftWidgets": topBarLeftWidgets,
                                                 "topBarCenterWidgets": topBarCenterWidgets,
@@ -993,6 +1014,21 @@ Singleton {
         saveSettings()
     }
 
+    function setFirstDayOfWeek(day) {
+        firstDayOfWeek = day
+        saveSettings()
+    }
+
+    function setWeekNumbering(mode) {
+        weekNumbering = mode
+        saveSettings()
+    }
+
+    function setSystemTimezone(timezone) {
+        systemTimezone = timezone
+        saveSettings()
+    }
+
     function setMediaSize(size) {
         mediaSize = size
         saveSettings()
@@ -1114,6 +1150,26 @@ Singleton {
         saveSettings()
     }
 
+    function setLauncherLogoAutoSync(enabled) {
+        launcherLogoAutoSync = enabled
+        saveSettings()
+    }
+
+    function syncLauncherLogoWithWallpaper() {
+        if (launcherLogoAutoSync && typeof Theme !== 'undefined' && Theme.primary) {
+            const primaryColor = Theme.primary
+            // Only update if the color actually changed to avoid unnecessary saves
+            if (Math.abs(launcherLogoRed - primaryColor.r) > 0.001 ||
+                Math.abs(launcherLogoGreen - primaryColor.g) > 0.001 ||
+                Math.abs(launcherLogoBlue - primaryColor.b) > 0.001) {
+                launcherLogoRed = primaryColor.r
+                launcherLogoGreen = primaryColor.g
+                launcherLogoBlue = primaryColor.b
+                saveSettings()
+            }
+        }
+    }
+
     function setLauncherLogoDropShadowOpacity(opacity) {
         launcherLogoDropShadowOpacity = opacity
         saveSettings()
@@ -1125,6 +1181,16 @@ Singleton {
     }
     function setTopBarDropShadowOpacity(opacity) {
         topBarDropShadowOpacity = opacity
+        saveSettings()
+    }
+
+    function setSystemIconTinting(enabled) {
+        systemIconTinting = enabled
+        saveSettings()
+    }
+
+    function setIconTintIntensity(intensity) {
+        iconTintIntensity = Math.max(0.0, Math.min(1.0, intensity))
         saveSettings()
     }
     function setSettingsWindowWidth(width) {
@@ -1414,6 +1480,11 @@ Singleton {
 
     function setDockBorderRadius(radius) {
         dockBorderRadius = radius
+        saveSettings()
+    }
+
+    function setDockRadius(radius) {
+        dockRadius = radius
         saveSettings()
     }
 
@@ -2199,6 +2270,60 @@ Singleton {
                 CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
             }
         })
+        
+        // Initialize launcher logo auto-sync if enabled
+        if (launcherLogoAutoSync) {
+            Qt.callLater(() => {
+                syncLauncherLogoWithWallpaper()
+            })
+        }
+    }
+
+    Connections {
+        target: typeof Theme !== "undefined" ? Theme : null
+        function onColorUpdateTriggerChanged() {
+            // When colorUpdateTrigger changes, it means matugen colors were updated
+            if (launcherLogoAutoSync) {
+                // Use a small delay to ensure Theme.primary has been updated
+                Qt.callLater(() => {
+                    syncLauncherLogoWithWallpaper()
+                })
+            }
+        }
+    }
+
+    Connections {
+        target: typeof ColorPaletteService !== "undefined" ? ColorPaletteService : null
+        function onColorsExtracted() {
+            // When colors are extracted from wallpaper, sync if auto-sync is enabled
+            if (launcherLogoAutoSync) {
+                // Use a small delay to ensure Theme.primary has been updated
+                Qt.callLater(() => {
+                    syncLauncherLogoWithWallpaper()
+                })
+            }
+        }
+    }
+
+    Connections {
+        target: typeof SessionData !== "undefined" ? SessionData : null
+        function onWallpaperPathChanged() {
+            // When wallpaper changes, wait for colors to be extracted
+            if (launcherLogoAutoSync) {
+                // Use a longer delay to allow matugen to extract colors
+                Qt.callLater(() => {
+                    Qt.callLater(() => {
+                        syncLauncherLogoWithWallpaper()
+                    })
+                })
+            }
+        }
+    }
+
+    onLauncherLogoAutoSyncChanged: {
+        if (launcherLogoAutoSync) {
+            syncLauncherLogoWithWallpaper()
+        }
     }
 
     ListModel {

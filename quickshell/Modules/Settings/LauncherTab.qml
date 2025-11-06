@@ -5,9 +5,67 @@ import Quickshell.Widgets
 import qs.Common
 import qs.Widgets
 import qs.Modals.FileBrowser
+import qs.Services
 
 Item {
     id: recentAppsTab
+
+    Component.onCompleted: {
+        // Sync logo color when auto-sync is enabled and theme changes
+        if (SettingsData.launcherLogoAutoSync) {
+            SettingsData.syncLauncherLogoWithWallpaper()
+        }
+    }
+
+    Connections {
+        target: Theme
+        function onColorUpdateTriggerChanged() {
+            // When colorUpdateTrigger changes, it means matugen colors were updated
+            if (SettingsData.launcherLogoAutoSync) {
+                // Use a small delay to ensure Theme.primary has been updated
+                Qt.callLater(() => {
+                    SettingsData.syncLauncherLogoWithWallpaper()
+                })
+            }
+        }
+    }
+
+    Connections {
+        target: SettingsData
+        function onLauncherLogoAutoSyncChanged() {
+            if (SettingsData.launcherLogoAutoSync) {
+                SettingsData.syncLauncherLogoWithWallpaper()
+            }
+        }
+    }
+
+    Connections {
+        target: ColorPaletteService
+        function onColorsExtracted() {
+            // When colors are extracted from wallpaper, sync if auto-sync is enabled
+            if (SettingsData.launcherLogoAutoSync) {
+                // Use a small delay to ensure Theme.primary has been updated
+                Qt.callLater(() => {
+                    SettingsData.syncLauncherLogoWithWallpaper()
+                })
+            }
+        }
+    }
+
+    Connections {
+        target: typeof SessionData !== "undefined" ? SessionData : null
+        function onWallpaperPathChanged() {
+            // When wallpaper changes, wait for colors to be extracted
+            if (SettingsData.launcherLogoAutoSync) {
+                // Use a longer delay to allow matugen to extract colors
+                Qt.callLater(() => {
+                    Qt.callLater(() => {
+                        SettingsData.syncLauncherLogoWithWallpaper()
+                    })
+                })
+            }
+        }
+    }
 
     DankFlickable {
         anchors.fill: parent
@@ -242,11 +300,41 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingS
 
-                        StyledText {
-                            text: "Logo Color (RGB)"
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceText
-                            font.weight: Font.Medium
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            Column {
+                                width: parent.width - autoSyncToggle.width - Theme.spacingM
+                                spacing: Theme.spacingXS
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                StyledText {
+                                    text: "Logo Color (RGB)"
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceText
+                                    font.weight: Font.Medium
+                                }
+
+                                StyledText {
+                                    text: SettingsData.launcherLogoAutoSync ? "Automatically syncing with wallpaper colors" : "Manual color control"
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceVariantText
+                                    visible: true
+                                }
+                            }
+
+                            DankToggle {
+                                id: autoSyncToggle
+                                anchors.verticalCenter: parent.verticalCenter
+                                checked: SettingsData.launcherLogoAutoSync
+                                onToggled: checked => {
+                                    SettingsData.setLauncherLogoAutoSync(checked)
+                                    if (checked) {
+                                        SettingsData.syncLauncherLogoWithWallpaper()
+                                    }
+                                }
+                            }
                         }
 
                         Row {
