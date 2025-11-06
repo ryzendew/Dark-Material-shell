@@ -15,162 +15,151 @@ You're welcome to use any part of this configuration, but **no support will be p
 
 
 
-# QuickShell Dotfiles Installation Guide
+## Installation
 
-This guide provides step-by-step instructions to install the necessary dependencies for the QuickShell dotfiles on Arch Linux.
+<details>
+<summary>System Utilities & Tools</summary>
 
-## Prerequisites
+- **anyrun** — Application launcher (fallback)
+- **brightnessctl** — Brightness control
+- **cliphist** — Clipboard history manager
+- **fuzzel** — Application launcher/dmenu
+- **grim** — Screenshot tool
+- **hyprpicker** — Color picker
+- **hyprswitch** — Window switcher
+- **ptyxis** — Terminal emulator
+- **quickshell** — Shell/launcher/widget system
+- **slurp** — Region selector for screenshots
+- **swappy** — Screenshot editor
+- **tesseract** — OCR engine
+- **wl-copy** — Wayland clipboard utility
+- **wlogout** — Logout menu
+- **wpctl** — WirePlumber audio control
+- **yad** — Dialog tool (file picker)
 
-Ensure your system is up-to-date:
+</details>
+
+<details>
+<summary>Applications</summary>
+
+- **better-control** — Settings application
+- **code** — Visual Studio Code
+- **easyeffects** — Audio effects/equalizer
+- **firefox** — Firefox browser
+- **gnome-system-monitor** — System monitor
+- **gnome-text-editor** — GNOME text editor
+- **google-chrome-stable** — Google Chrome browser
+- **nautilus** — GNOME file manager
+- **pavucontrol** — PulseAudio volume control GUI
+- **wps** — WPS Office suite
+- **Zed** — Code editor
+
+</details>
+
+<details>
+<summary>Package Installation</summary>
+
+Update your system first:
 
 ```bash
 sudo pacman -Syu
 ```
 
-## Installing Required Packages
-
-### Official Arch Repository Packages
-
-Install the following packages from the official Arch repositories:
+### Official Repositories
 
 ```bash
-sudo pacman -S ptyxis nautilus gedit pavucontrol gnome-system-monitor grim slurp swappy cliphist wl-clipboard brightnessctl tesseract yad fuzzel wlogout systemd dbus xdg-user-dirs python
+sudo pacman -S brightnessctl cliphist easyeffects firefox fuzzel gnome-system-monitor gnome-text-editor grim nautilus pavucontrol ptyxis slurp swappy tesseract wl-clipboard wlogout yad
 ```
-
-**Packages included:**
-- **ptyxis** - Terminal emulator
-- **nautilus** - File manager
-- **gedit** - Text editor
-- **pavucontrol** - Audio mixer
-- **gnome-system-monitor** - System monitoring tool
-- **grim** - Screenshot utility
-- **slurp** - Area selection tool
-- **swappy** - Screenshot editor
-- **cliphist** - Clipboard history manager
-- **wl-clipboard** - Wayland clipboard utilities
-- **brightnessctl** - Brightness control
-- **tesseract** - OCR engine
-- **yad** - Dialog boxes
-- **fuzzel** - Application launcher
-- **wlogout** - Logout menu
-- **systemd** - System and service manager
-- **dbus** - Message bus system
-- **xdg-user-dirs** - User directory management
-- **python** - Python interpreter
 
 ### AUR Packages
 
-For packages available in the Arch User Repository (AUR), you can use an AUR helper like `yay`. If you don't have `yay` installed, follow these steps:
-
-1. Install the necessary build tools:
-
-   ```bash
-   sudo pacman -S --needed git base-devel
-   ```
-
-2. Clone and install `yay`:
-
-   ```bash
-   git clone https://aur.archlinux.org/yay.git
-   cd yay
-   makepkg -si
-   cd ..
-   rm -rf yay
-   ```
-
-Once `yay` is installed, proceed to install the AUR packages:
+Install `yay` if you don't have it:
 
 ```bash
-yay -S quickshell-git hyprpicker-git anyrun matugen
-```
-
-**AUR packages included:**
-- **quickshell-git** - QuickShell framework (development version)
-- **hyprpicker-git** - Color picker for Hyprland
-- **anyrun** - Application launcher
-- **matugen** - Material You color generation tool
-
-### Building and Installing Hyprswitch
-
-`Hyprswitch` is not available in the official repositories or AUR, so it needs to be built from source:
-
-1. Install build dependencies:
-
-   ```bash
-   sudo pacman -S rust cargo gtk4 pkg-config
-   ```
-
-2. Clone the Hyprswitch repository:
-
-   ```bash
-   git clone https://github.com/ryzendew/hyprswitch.git
-   cd hyprswitch
-   ```
-
-3. Build and install Hyprswitch:
-
-   ```bash
-   cargo build --release
-   sudo cp target/release/hyprswitch /usr/local/bin/
-   cd ..
-   rm -rf hyprswitch
-   ```
-
-### Installing Python Dependencies
-
-Install the required Python package using `pip`:
-
-```bash
-pip install pynvml
-```
-
-## Complete Installation Script
-
-Here's a complete script that installs all dependencies:
-
-```bash
-#!/bin/bash
-
-# Update system
-sudo pacman -Syu
-
-# Install AUR helper if not present
 sudo pacman -S --needed git base-devel
 git clone https://aur.archlinux.org/yay.git
-cd yay && makepkg -si
-cd .. && rm -rf yay
-
-# Install from official repos
-sudo pacman -S ptyxis nautilus gedit pavucontrol gnome-system-monitor grim slurp swappy cliphist wl-clipboard brightnessctl tesseract yad fuzzel wlogout systemd dbus xdg-user-dirs python
-
-# Install from AUR
-yay -S quickshell-git hyprpicker-git anyrun matugen
-
-# Install hyprswitch build dependencies
-sudo pacman -S rust cargo gtk4 pkg-config
-
-# Build and install hyprswitch
-git clone https://github.com/ryzendew/hyprswitch.git
-cd hyprswitch
-cargo build --release
-sudo cp target/release/hyprswitch /usr/local/bin/
-cd .. && rm -rf hyprswitch
-
-# Install Python dependency
-pip install pynvml
-
-# Update user directories
-xdg-user-dirs-update
-
-echo "All dependencies installed successfully!"
+cd yay && makepkg -si && cd .. && rm -rf yay
 ```
 
-## Final Steps
+Install AUR packages:
 
-After installing all the necessary packages, ensure that your user directories are set up correctly:
+```bash
+yay -S anyrun hyprpicker-git quickshell-git
+```
+
+### Hyprswitch (Build from Source)
+
+```bash
+sudo pacman -S rust cargo gtk4 pkg-config
+git clone https://github.com/ryzendew/hyprswitch.git
+cd hyprswitch && cargo build --release
+sudo cp target/release/hyprswitch /usr/local/bin/
+cd .. && rm -rf hyprswitch
+```
+
+### Additional Applications
+
+- **Zed**: `yay -S zed-bin` or download from [zed.dev](https://zed.dev)
+- **code**: `yay -S visual-studio-code-bin`
+- **google-chrome-stable**: `yay -S google-chrome`
+- **wps**: `yay -S wps-office`
+- **better-control**: `yay -S better-control`
+
+### Python Dependencies
+
+```bash
+pip install pynvml
+```
+
+</details>
+
+<details>
+<summary>Font Installation</summary>
+
+### Inter Variable Font
+
+```bash
+curl -L "https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip" -o /tmp/Inter.zip
+unzip -j /tmp/Inter.zip "InterVariable.ttf" "InterVariable-Italic.ttf" -d ~/.local/share/fonts/
+rm /tmp/Inter.zip && fc-cache -f
+```
+
+### Fira Code
+
+```bash
+curl -L "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip" -o /tmp/FiraCode.zip
+unzip -j /tmp/FiraCode.zip "ttf/*.ttf" -d ~/.local/share/fonts/
+rm /tmp/FiraCode.zip && fc-cache -f
+```
+
+### Material Symbols
+
+**Manual:**
+
+```bash
+mkdir -p ~/.local/share/fonts
+curl -L "https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf" -o ~/.local/share/fonts/MaterialSymbolsRounded.ttf
+fc-cache -f
+```
+
+**AUR:**
+
+```bash
+yay -S ttf-material-symbols-variable-git
+```
+
+### Noto Fonts
+
+```bash
+sudo pacman -S noto-fonts noto-fonts-emoji
+```
+
+**Note:** SF Pro Display and SF Pro Rounded are included in `quickshell/eqsh/media/fonts/` and don't need installation.
+
+</details>
+
+## Post-Installation
 
 ```bash
 xdg-user-dirs-update
 ```
-
-This completes the installation of all dependencies required for the QuickShell dotfiles on Arch Linux.
