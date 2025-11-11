@@ -457,7 +457,7 @@ DankPopout {
                                                             default: return "settings"
                                                         }
                                                     }
-                                                    font.family: "Material Symbols Outlined"
+                                                    font.family: "Material Symbols Rounded"
                                                     font.pixelSize: 20
                                                     color: Theme.surfaceText
                                                 }
@@ -528,7 +528,7 @@ DankPopout {
                                         Text {
                                             anchors.centerIn: parent
                                             text: idleInhibitorButton.isInhibiting ? "coffee" : "bedtime"
-                                            font.family: "Material Symbols Outlined"
+                                            font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
                                             color: Theme.surfaceText
                                         }
@@ -578,7 +578,7 @@ DankPopout {
                                         Text {
                                             anchors.centerIn: parent
                                             text: "nightlight"
-                                            font.family: "Material Symbols Outlined"
+                                            font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
                                             color: Theme.surfaceText
                                         }
@@ -636,7 +636,7 @@ DankPopout {
                                                         default: return "settings"
                                                     }
                                                 }
-                                                font.family: "Material Symbols Outlined"
+                                                font.family: "Material Symbols Rounded"
                                                 font.pixelSize: 20
                                                 color: Theme.surfaceText
                                             }

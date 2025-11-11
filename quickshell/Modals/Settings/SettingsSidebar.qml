@@ -51,9 +51,6 @@ Rectangle {
         "text": "About",
         "icon": "info"
     }, {
-        "text": "Window Size",
-        "icon": "aspect_ratio"
-    }, {
         "text": "Weather",
         "icon": "cloud"
     }]

@@ -269,24 +269,10 @@ Item {
         }
 
         Loader {
-            id: windowSizingLoader
-
-            anchors.fill: parent
-            active: root.currentIndex === 14
-            visible: active
-            asynchronous: true
-
-            sourceComponent: WindowSizingTab {
-                parentModal: root.parentModal
-            }
-
-        }
-
-        Loader {
             id: weatherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 15
+            active: root.currentIndex === 14
             visible: active
             asynchronous: true
 

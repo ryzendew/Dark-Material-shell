@@ -314,7 +314,6 @@ PanelWindow {
                             font.family: "monospace"
                             font.pixelSize: SettingsData.desktopTerminalFontSize
                             wrapMode: Text.Wrap
-                            selectByMouse: true
                         }
                     }
                 }
