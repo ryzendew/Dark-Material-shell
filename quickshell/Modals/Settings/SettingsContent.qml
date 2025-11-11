@@ -74,6 +74,7 @@ Item {
         anchors.bottomMargin: Theme.spacingM
         anchors.topMargin: 0
         color: "transparent"
+        clip: true
 
         Loader {
             id: personalizationLoader

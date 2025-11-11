@@ -162,6 +162,7 @@ PanelWindow {
         opacity: root.shouldBeVisible ? 1 : 0
         scale: root.animationType === "scale" ? (root.shouldBeVisible ? 1 : 0.9) : 1
         transform: root.animationType === "slide" ? slideTransform : null
+        clip: true
 
         Translate {
             id: slideTransform

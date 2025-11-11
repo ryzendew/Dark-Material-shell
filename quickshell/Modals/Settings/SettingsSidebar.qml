@@ -59,6 +59,7 @@ Rectangle {
     height: parent.height
     color: Theme.surfaceContainer
     radius: Theme.cornerRadius
+    clip: true
 
     Column {
         anchors.fill: parent
@@ -67,6 +68,7 @@ Rectangle {
         anchors.bottomMargin: Theme.spacingS
         anchors.topMargin: Theme.spacingM + 2
         spacing: Theme.spacingXS
+        clip: true
 
         ProfileSection {
             parentModal: sidebarContainer.parentModal

@@ -140,6 +140,7 @@ DankModal {
         Item {
             anchors.fill: parent
             focus: true
+            clip: true
 
             Column {
                 anchors.fill: parent
@@ -148,6 +149,7 @@ DankModal {
                 anchors.topMargin: Theme.spacingM
                 anchors.bottomMargin: Theme.spacingL
                 spacing: 0
+                clip: true
 
                 Item {
                     width: parent.width
@@ -193,6 +195,7 @@ DankModal {
                     width: parent.width
                     height: parent.height - 35
                     spacing: 0
+                    clip: true
 
                     SettingsSidebar {
                         id: sidebar
