@@ -131,9 +131,10 @@ sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-r
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 ```
 
-Enable COPR repository for Quickshell:
+Enable COPR repositories:
 
 ```bash
+sudo dnf copr enable -y solopasha/hyprland
 sudo dnf copr enable -y errornointernet/quickshell
 ```
 
