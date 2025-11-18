@@ -1,6 +1,7 @@
 ColorPickerModal 1.0 ColorPickerModal.qml
 NetworkInfoModal 1.0 NetworkInfoModal.qml
 NotificationModal 1.0 NotificationModal.qml
+PolkitAuthModal 1.0 PolkitAuthModal.qml
 PowerConfirmationModal 1.0 PowerConfirmationModal.qml
 PowerMenuModal 1.0 PowerMenuModal.qml
 ProcessListModal 1.0 ProcessListModal.qml

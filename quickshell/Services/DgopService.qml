@@ -221,8 +221,46 @@ Singleton {
         if (dgopAvailable && refCount > 0 && enabledModules.length > 0) {
             isUpdating = true
             dgopProcess.running = true
+        } else if (!dgopAvailable && refCount > 0 && enabledModules.length > 0) {
+            // Fallback to standard Linux commands when dgop is not available
+            isUpdating = true
+            console.log("DgopService: updateAllStats() called, calling updateStatsFallback()")
+            updateStatsFallback()
         } else {
             isUpdating = false
+        }
+    }
+    
+    function updateStatsFallback() {
+        // Use standard Linux commands available on both Arch and Fedora
+        console.log("DgopService: updateStatsFallback() called, enabledModules:", enabledModules)
+        if (enabledModules.includes("cpu") || enabledModules.includes("all")) {
+            fallbackCpuProcess.running = true
+            fallbackCpuFreqProcess.running = true
+            fallbackCpuTempProcess.running = true
+        }
+        if (enabledModules.includes("memory") || enabledModules.includes("all")) {
+            console.log("DgopService: Starting fallbackMemoryProcess")
+            fallbackMemoryProcess.running = true
+        }
+        if (enabledModules.includes("network") || enabledModules.includes("all")) {
+            fallbackNetworkProcess.running = true
+        }
+        if (enabledModules.includes("gpu") || enabledModules.includes("all")) {
+            // Make sure GPU is initialized before trying to read temperature
+            if (availableGpus.length === 0) {
+                initializeFallbackGpu()
+            }
+            fallbackGpuTempProcess.running = true
+        }
+    }
+    
+    function initializeFallbackGpu() {
+        // Initialize GPU list from /sys/class/drm if available
+        if (availableGpus.length === 0) {
+            fallbackGpuInitProcess.running = true
+            // Also try to get GPU name
+            fallbackGpuNameProcess.running = true
         }
     }
 
@@ -669,7 +707,19 @@ Singleton {
                     }
                 }
             } else {
-                console.warn("dgop is not installed or not in PATH")
+                console.warn("dgop is not installed or not in PATH - using fallback methods")
+                // Initialize fallback GPU detection
+                initializeFallbackGpu()
+                // Initialize CPU info
+                fallbackCpuInfoProcess.running = true
+                // Trigger immediate memory update if memory module is enabled
+                if (refCount > 0 && (enabledModules.includes("memory") || enabledModules.includes("all"))) {
+                    fallbackMemoryProcess.running = true
+                }
+                // Trigger update if we already have active modules
+                if (refCount > 0 && enabledModules.length > 0) {
+                    updateAllStats()
+                }
             }
         }
     }
@@ -791,6 +841,514 @@ Singleton {
                 }
             }
         }
+    }
+
+    // Fallback processes for when dgop is not available
+    Process {
+        id: fallbackCpuProcess
+        command: ["sh", "-c", "head -n 1 /proc/stat"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const parts = text.trim().split(/\s+/)
+                    if (parts.length >= 8) {
+                        const user = parseInt(parts[1])
+                        const nice = parseInt(parts[2])
+                        const system = parseInt(parts[3])
+                        const idle = parseInt(parts[4])
+                        const iowait = parseInt(parts[5] || 0)
+                        const irq = parseInt(parts[6] || 0)
+                        const softirq = parseInt(parts[7] || 0)
+                        const total = user + nice + system + idle + iowait + irq + softirq
+                        const used = user + nice + system + irq + softirq
+                        
+                        if (root.lastCpuStats) {
+                            const totalDiff = total - root.lastCpuStats.total
+                            const usedDiff = used - root.lastCpuStats.used
+                            if (totalDiff > 0) {
+                                root.cpuUsage = (usedDiff / totalDiff) * 100
+                                addToHistory(root.cpuHistory, root.cpuUsage)
+                            }
+                        }
+                        root.lastCpuStats = { total: total, used: used }
+                    }
+                } catch (e) {
+                    console.warn("DgopService: Failed to parse CPU stats:", e)
+                }
+            }
+        }
+    }
+    
+    property var lastCpuStats: null
+    
+    Process {
+        id: fallbackCpuFreqProcess
+        command: ["sh", "-c", "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq 2>/dev/null || echo 0"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const freq = parseInt(text.trim())
+                    if (freq > 0) {
+                        root.cpuFrequency = freq / 1000000.0 // Convert from kHz to GHz
+                    }
+                } catch (e) {
+                    // Ignore if frequency file not available
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackMemoryProcess
+        command: ["sh", "-c", "free -k | grep -E '^Mem|^Swap'"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const rawText = text.trim()
+                    if (!rawText || rawText.length === 0) {
+                        // Fallback to /proc/meminfo if free command fails
+                        fallbackMemoryProcessAlt.running = true
+                        return
+                    }
+                    
+                    const lines = rawText.split('\n')
+                    let memTotal = 0
+                    let memUsed = 0
+                    let memFree = 0
+                    let memAvailable = 0
+                    let swapTotal = 0
+                    let swapFree = 0
+                    
+                    for (const line of lines) {
+                        if (!line || line.trim().length === 0) continue
+                        
+                        // Format: "Mem:    65374240   16723468    48650772           0     1234567     2345678"
+                        //         Label   total       used        free        shared    buff/cache   available
+                        const parts = line.trim().split(/\s+/)
+                        
+                        if (parts[0] === "Mem:") {
+                            // free -k output: total, used, free, shared, buff/cache, available
+                            // Format: "Mem:    65374240    17156552    31912368     2407148    19446076    48217688"
+                            if (parts.length >= 7) {
+                                memTotal = parseInt(parts[1]) || 0
+                                memUsed = parseInt(parts[2]) || 0
+                                memFree = parseInt(parts[3]) || 0
+                                memAvailable = parseInt(parts[6]) || memFree
+                            } else if (parts.length >= 4) {
+                                // Fallback if available column is missing
+                                memTotal = parseInt(parts[1]) || 0
+                                memUsed = parseInt(parts[2]) || 0
+                                memFree = parseInt(parts[3]) || 0
+                                memAvailable = memFree
+                            }
+                        } else if (parts[0] === "Swap:") {
+                            // free -k output: total, used, free
+                            // Format: "Swap:       65374204     2832908    62541296"
+                            if (parts.length >= 4) {
+                                swapTotal = parseInt(parts[1]) || 0
+                                const swapUsed = parseInt(parts[2]) || 0
+                                swapFree = parseInt(parts[3]) || (swapTotal - swapUsed)
+                            }
+                        }
+                    }
+                    
+                    if (memTotal === 0) {
+                        // Fallback to /proc/meminfo if parsing failed
+                        fallbackMemoryProcessAlt.running = true
+                        return
+                    }
+                    
+                    const memUsagePercent = memTotal > 0 ? (memUsed / memTotal) * 100 : 0
+                    
+                    // Set all memory properties
+                    const totalMB = memTotal / 1024
+                    const usedMB = memUsed / 1024
+                    const availableMB = (memAvailable || memFree) / 1024
+                    const freeMB = memFree / 1024
+                    
+                    root.totalMemoryKB = memTotal
+                    root.availableMemoryKB = memAvailable || memFree
+                    root.usedMemoryKB = memUsed
+                    root.totalMemoryMB = totalMB
+                    root.availableMemoryMB = availableMB
+                    root.usedMemoryMB = usedMB
+                    root.freeMemoryMB = freeMB
+                    root.memoryUsage = memUsagePercent
+                    root.totalSwapKB = swapTotal
+                    root.usedSwapKB = swapTotal - swapFree
+                    
+                    addToHistory(root.memoryHistory, root.memoryUsage)
+                } catch (e) {
+                    // Fallback to /proc/meminfo if free command parsing fails
+                    fallbackMemoryProcessAlt.running = true
+                }
+            }
+        }
+    }
+    
+    // Fallback to /proc/meminfo if free command is not available
+    Process {
+        id: fallbackMemoryProcessAlt
+        command: ["sh", "-c", "cat /proc/meminfo | grep -E '^(MemTotal|MemAvailable|MemFree|SwapTotal|SwapFree):'"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const rawText = text.trim()
+                    if (!rawText || rawText.length === 0) {
+                        return
+                    }
+                    
+                    const lines = rawText.split('\n')
+                    let memTotal = 0
+                    let memAvailable = 0
+                    let memFree = 0
+                    let swapTotal = 0
+                    let swapFree = 0
+                    
+                    for (const line of lines) {
+                        if (!line || line.trim().length === 0) continue
+                        
+                        const parts = line.trim().split(/\s+/)
+                        let value = 0
+                        
+                        // Find the first numeric value in the line (skip the label)
+                        for (let i = 1; i < parts.length; i++) {
+                            const parsed = parseInt(parts[i])
+                            if (!isNaN(parsed) && parsed > 0) {
+                                value = parsed
+                                break
+                            }
+                        }
+                        
+                        if (value > 0) {
+                            if (line.startsWith("MemTotal:")) {
+                                memTotal = value
+                            } else if (line.startsWith("MemAvailable:")) {
+                                memAvailable = value
+                            } else if (line.startsWith("MemFree:")) {
+                                memFree = value
+                            } else if (line.startsWith("SwapTotal:")) {
+                                swapTotal = value
+                            } else if (line.startsWith("SwapFree:")) {
+                                swapFree = value
+                            }
+                        }
+                    }
+                    
+                    if (memTotal === 0) {
+                        return
+                    }
+                    
+                    const usedMem = memTotal - (memAvailable || memFree)
+                    const memUsagePercent = memTotal > 0 ? (usedMem / memTotal) * 100 : 0
+                    
+                    const totalMB = memTotal / 1024
+                    const usedMB = usedMem / 1024
+                    const availableMB = (memAvailable || memFree) / 1024
+                    const freeMB = memFree / 1024
+                    
+                    root.totalMemoryKB = memTotal
+                    root.availableMemoryKB = memAvailable || memFree
+                    root.usedMemoryKB = usedMem
+                    root.totalMemoryMB = totalMB
+                    root.availableMemoryMB = availableMB
+                    root.usedMemoryMB = usedMB
+                    root.freeMemoryMB = freeMB
+                    root.memoryUsage = memUsagePercent
+                    root.totalSwapKB = swapTotal
+                    root.usedSwapKB = swapTotal - swapFree
+                    
+                    addToHistory(root.memoryHistory, root.memoryUsage)
+                } catch (e) {
+                    // Ignore errors
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackNetworkProcess
+        command: ["sh", "-c", "cat /proc/net/dev | grep -E '^\\s*(eth|en|wlan|wl|wlp)'"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const lines = text.trim().split('\n')
+                    let totalRx = 0
+                    let totalTx = 0
+                    
+                    for (const line of lines) {
+                        const parts = line.trim().split(/\s+/)
+                        if (parts.length >= 10) {
+                            totalRx += parseInt(parts[1])
+                            totalTx += parseInt(parts[9])
+                        }
+                    }
+                    
+                    if (root.lastNetworkStats) {
+                        const timeDiff = root.updateInterval / 1000
+                        const rxDiff = totalRx - root.lastNetworkStats.rx
+                        const txDiff = totalTx - root.lastNetworkStats.tx
+                        root.networkRxRate = (rxDiff / timeDiff) || 0
+                        root.networkTxRate = (txDiff / timeDiff) || 0
+                    }
+                    root.lastNetworkStats = { rx: totalRx, tx: totalTx }
+                } catch (e) {
+                    console.warn("DgopService: Failed to parse network stats:", e)
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackCpuTempProcess
+        command: ["sh", "-c", "for zone in /sys/class/thermal/thermal_zone*/temp /sys/devices/platform/coretemp.*/hwmon/hwmon*/temp*_input /sys/devices/system/cpu/cpu*/thermal_throttle/temp /sys/devices/pci*/hwmon/hwmon*/temp*_input; do [ -f \"$zone\" ] && echo \"$(cat $zone 2>/dev/null)\"; done | grep -v '^$' | grep -v '^0$' | sort -rn | head -1"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const tempText = text.trim()
+                    if (tempText && tempText.length > 0) {
+                        const temp = parseInt(tempText)
+                        if (temp > 0) {
+                            // If temp is > 1000, it's in millidegrees, otherwise it's already in degrees
+                            if (temp > 1000 && temp < 200000) {
+                                root.cpuTemperature = temp / 1000.0
+                            } else if (temp > 0 && temp < 200) {
+                                root.cpuTemperature = temp
+                            }
+                            if (root.cpuTemperature > 0) {
+                                console.log("DgopService fallback: CPU temp found:", root.cpuTemperature)
+                            } else {
+                                fallbackSensorsProcess.running = true
+                            }
+                        } else {
+                            fallbackSensorsProcess.running = true
+                        }
+                    } else {
+                        fallbackSensorsProcess.running = true
+                    }
+                } catch (e) {
+                    console.warn("DgopService: Failed to parse CPU temp, trying sensors:", e)
+                    fallbackSensorsProcess.running = true
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackSensorsProcess
+        command: ["sh", "-c", "sensors 2>/dev/null | grep -E '^Tctl:|^Tdie:|^Package id 0:|^CPU Temperature:' | head -1 | grep -oE '[0-9]+\\.[0-9]+' | head -1"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const tempText = text.trim()
+                    if (tempText && tempText.length > 0) {
+                        const temp = parseFloat(tempText)
+                        if (temp > 0 && temp < 200) {
+                            root.cpuTemperature = temp
+                            console.log("DgopService fallback: CPU temp from sensors (Tctl/Tdie):", root.cpuTemperature)
+                        } else {
+                            // Fallback: try to find k10temp or coretemp adapter
+                            fallbackCpuTempAltProcess.running = true
+                        }
+                    } else {
+                        // Fallback: try to find k10temp or coretemp adapter
+                        fallbackCpuTempAltProcess.running = true
+                    }
+                } catch (e) {
+                    // Fallback: try to find k10temp or coretemp adapter
+                    fallbackCpuTempAltProcess.running = true
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackCpuTempAltProcess
+        command: ["sh", "-c", "sensors 2>/dev/null | grep -A 5 -E 'k10temp|coretemp' | grep -E '^Core 0|^Package id 0|^temp1:' | head -1 | grep -oE '[0-9]+\\.[0-9]+' | head -1"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const tempText = text.trim()
+                    if (tempText && tempText.length > 0) {
+                        const temp = parseFloat(tempText)
+                        if (temp > 0 && temp < 200) {
+                            root.cpuTemperature = temp
+                            console.log("DgopService fallback: CPU temp from sensors (k10temp/coretemp):", root.cpuTemperature)
+                        }
+                    }
+                } catch (e) {
+                    // Ignore if sensors not available
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackGpuTempProcess
+        command: ["sh", "-c", "for card in /sys/class/drm/card*/device/hwmon/hwmon*/temp*_input; do [ -f \"$card\" ] && cat \"$card\" 2>/dev/null; done | grep -v '^$' | sort -rn | head -1"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const tempText = text.trim()
+                    if (tempText && tempText.length > 0) {
+                        const temp = parseInt(tempText)
+                        if (temp > 0 && temp < 200000) { // Sanity check
+                            const tempC = temp / 1000.0
+                            console.log("DgopService fallback: GPU temp found:", tempC)
+                            if (root.availableGpus.length > 0) {
+                                const updatedGpus = root.availableGpus.slice()
+                                updatedGpus[0].temperature = tempC
+                                root.availableGpus = updatedGpus
+                            } else {
+                                // Initialize GPU if we found a temperature
+                                root.availableGpus = [{
+                                    name: "GPU",
+                                    temperature: tempC,
+                                    memoryUsedMB: 0,
+                                    memoryTotalMB: 0
+                                }]
+                            }
+                        } else {
+                            // Try sensors for GPU
+                            fallbackGpuSensorsProcess.running = true
+                        }
+                    } else {
+                        // Try sensors for GPU if no hwmon found
+                        fallbackGpuSensorsProcess.running = true
+                    }
+                } catch (e) {
+                    console.warn("DgopService: Failed to parse GPU temp, trying sensors:", e)
+                    // Try sensors for GPU
+                    fallbackGpuSensorsProcess.running = true
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackGpuSensorsProcess
+        command: ["sh", "-c", "sensors 2>/dev/null | grep -iE 'gpu|nvidia|amd|radeon' | grep -oE '[0-9]+\\.[0-9]+°C' | head -1 | grep -oE '[0-9]+\\.[0-9]+'"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const temp = parseFloat(text.trim())
+                    if (temp > 0 && root.availableGpus.length > 0) {
+                        const updatedGpus = root.availableGpus.slice()
+                        updatedGpus[0].temperature = temp
+                        root.availableGpus = updatedGpus
+                    } else if (temp > 0 && root.availableGpus.length === 0) {
+                        root.availableGpus = [{
+                            name: "GPU",
+                            temperature: temp,
+                            memoryUsedMB: 0,
+                            memoryTotalMB: 0
+                        }]
+                    }
+                } catch (e) {
+                    // Ignore if sensors not available
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackGpuInitProcess
+        command: ["sh", "-c", "ls -d /sys/class/drm/card[0-9]* 2>/dev/null | grep -v '-' | wc -l"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const gpuCount = parseInt(text.trim())
+                    console.log("DgopService fallback: Found", gpuCount, "GPU cards")
+                    if (gpuCount > 0 && root.availableGpus.length === 0) {
+                        // Initialize GPU entries
+                        const gpus = []
+                        for (let i = 0; i < gpuCount; i++) {
+                            gpus.push({
+                                name: "GPU " + (i + 1),
+                                temperature: 0,
+                                memoryUsedMB: 0,
+                                memoryTotalMB: 0
+                            })
+                        }
+                        root.availableGpus = gpus
+                        console.log("DgopService fallback: Initialized", gpus.length, "GPUs")
+                    }
+                } catch (e) {
+                    console.warn("DgopService: Failed to initialize GPUs:", e)
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackGpuNameProcess
+        command: ["sh", "-c", "for card in /sys/class/drm/card[0-9]*/device/vendor /sys/class/drm/card[0-9]*/device/uevent; do [ -f \"$card\" ] && echo \"$card: $(cat $card 2>/dev/null | head -1)\"; done | head -3"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    // Try to get GPU vendor/model info
+                    // This is optional, just for better naming
+                } catch (e) {
+                    // Ignore errors
+                }
+            }
+        }
+    }
+    
+    Process {
+        id: fallbackCpuInfoProcess
+        command: ["sh", "-c", "cat /proc/cpuinfo"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const lines = text.trim().split('\n')
+                    let processorCount = 0
+                    for (const line of lines) {
+                        if (line.includes("model name") && !root.cpuModel) {
+                            const match = line.match(/model name\s*:\s*(.+)/i)
+                            if (match) {
+                                root.cpuModel = match[1].trim()
+                            }
+                        } else if (line.includes("cpu cores") && root.cpuCores === 1) {
+                            const match = line.match(/cpu cores\s*:\s*(\d+)/i)
+                            if (match) {
+                                root.cpuCores = parseInt(match[1])
+                            }
+                        } else if (line.startsWith("processor")) {
+                            processorCount++
+                        }
+                    }
+                    // If cores not found, use processor count
+                    if (root.cpuCores === 1 && processorCount > 0) {
+                        root.cpuCores = processorCount
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
+            }
+        }
+    }
+    
+    Timer {
+        id: fallbackUpdateTimer
+        interval: root.updateInterval
+        running: !root.dgopAvailable && root.refCount > 0 && root.enabledModules.length > 0
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.updateStatsFallback()
     }
 
     Component.onCompleted: {

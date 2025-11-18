@@ -39,6 +39,8 @@ ShellRoot {
         WallpaperCyclingService.cyclingActive
         // Initialize ColorPaletteService
         ColorPaletteService.extractedColors
+        // PolkitService disabled
+        // PolkitService.agent
     }
 
     // Force refresh entire shell when custom theme is created

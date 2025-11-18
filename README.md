@@ -114,7 +114,119 @@ pip install pynvml
 </details>
 
 <details>
-<summary>Font Installation</summary>
+<summary>Package Installation (Fedora)</summary>
+
+Update your system first:
+
+```bash
+sudo dnf update -y
+```
+
+### Step 1: Enable Required Repositories
+
+Enable RPM Fusion (free and nonfree):
+
+```bash
+sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+```
+
+Enable COPR repository for Quickshell:
+
+```bash
+sudo dnf copr enable -y errornointernet/quickshell
+```
+
+Update package cache:
+
+```bash
+sudo dnf makecache
+```
+
+### Step 2: Install All Packages
+
+Install all required packages in a single command:
+
+```bash
+sudo dnf install -y \
+    hyprland hyprpicker swww xdg-desktop-portal-hyprland xdg-desktop-portal-wlr xdg-desktop-portal-gnome hyprpolkitagent gnome-keyring \
+    brightnessctl cliphist easyeffects firefox fuzzel gnome-system-monitor gnome-text-editor grim nautilus pavucontrol ptyxis slurp swappy tesseract wl-clipboard wlogout yad \
+    quickshell-git \
+    rust cargo gcc gcc-c++ pkg-config openssl-devel libX11-devel libXcursor-devel libXrandr-devel libXi-devel mesa-libGL-devel fontconfig-devel freetype-devel expat-devel \
+    cairo-gobject cairo-gobject-devel rust-gdk4-sys+default-devel gtk4-layer-shell-devel \
+    qt5-qtgraphicaleffects qt6-qt5compat python3-pyqt6 qt6ct \
+    python3.11 python3.11-libs libxcrypt-compat libcurl libcurl-devel apr fuse-libs fuse2 fuse \
+    btop lm_sensors gedit nwg-look
+```
+
+### Step 3: Hyprswitch (Build from Source)
+
+If you need hyprswitch, build it from source:
+
+```bash
+git clone https://github.com/ryzendew/hyprswitch.git
+cd hyprswitch && cargo build --release
+sudo cp target/release/hyprswitch /usr/local/bin/
+cd .. && rm -rf hyprswitch
+```
+
+### Step 4: Additional Applications (Optional)
+
+- **Zed**: Download from [zed.dev](https://zed.dev)
+- **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo dnf install code` if available
+- **google-chrome-stable**: Download from [google.com/chrome](https://www.google.com/chrome)
+- **wps**: Download from [wps.com](https://www.wps.com)
+- **better-control**: Check if available in COPR or build from source
+
+### Step 5: Python Dependencies
+
+```bash
+pip install pynvml
+```
+
+</details>
+
+<details>
+<summary>Font Installation (Fedora)</summary>
+
+### Inter Variable Font
+
+```bash
+curl -L "https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip" -o /tmp/Inter.zip
+unzip -j /tmp/Inter.zip "InterVariable.ttf" "InterVariable-Italic.ttf" -d ~/.local/share/fonts/
+rm /tmp/Inter.zip && fc-cache -f
+```
+
+### Fira Code
+
+```bash
+curl -L "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip" -o /tmp/FiraCode.zip
+unzip -j /tmp/FiraCode.zip "ttf/*.ttf" -d ~/.local/share/fonts/
+rm /tmp/FiraCode.zip && fc-cache -f
+```
+
+### Material Symbols
+
+**Manual:**
+
+```bash
+mkdir -p ~/.local/share/fonts
+curl -L "https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf" -o ~/.local/share/fonts/MaterialSymbolsRounded.ttf
+fc-cache -f
+```
+
+### Noto Fonts
+
+```bash
+sudo dnf install -y google-noto-fonts google-noto-emoji-fonts
+```
+
+**Note:** SF Pro Display and SF Pro Rounded are included in `quickshell/eqsh/media/fonts/` and don't need installation.
+
+</details>
+
+<details>
+<summary>Font Installation (Arch)</summary>
 
 ### Inter Variable Font
 
