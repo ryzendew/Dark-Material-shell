@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Wayland
@@ -38,6 +39,8 @@ PanelWindow {
     property real currentGpuMemoryTotal: (DgopService.availableGpus && DgopService.availableGpus.length > 0) ? (DgopService.availableGpus[0].memoryTotalMB || 0) : 0
     property real currentCpuUsage: DgopService.cpuUsage || 0
     property real currentMemoryUsage: DgopService.memoryUsage || 0
+    property real currentMemoryTotalMB: DgopService.totalMemoryMB || 0
+    property real currentMemoryUsedMB: DgopService.usedMemoryMB || 0
     property real currentNetworkDownloadSpeed: DgopService.networkRxRate || 0
     property real currentNetworkUploadSpeed: DgopService.networkTxRate || 0
     
@@ -84,6 +87,13 @@ PanelWindow {
             gpuMemoryHistory.push(0);
             networkHistory.push(0);
         }
+        
+        // Force initial update of memory values
+        Qt.callLater(() => {
+            currentMemoryUsage = DgopService.memoryUsage || 0;
+            currentMemoryTotalMB = DgopService.totalMemoryMB || 0;
+            currentMemoryUsedMB = DgopService.usedMemoryMB || 0;
+        });
     }
 
     // Update data when services change
@@ -94,6 +104,14 @@ PanelWindow {
         }
         function onMemoryUsageChanged() {
             currentMemoryUsage = DgopService.memoryUsage || 0;
+            currentMemoryTotalMB = DgopService.totalMemoryMB || 0;
+            currentMemoryUsedMB = DgopService.usedMemoryMB || 0;
+        }
+        function onTotalMemoryMBChanged() {
+            currentMemoryTotalMB = DgopService.totalMemoryMB || 0;
+        }
+        function onUsedMemoryMBChanged() {
+            currentMemoryUsedMB = DgopService.usedMemoryMB || 0;
         }
         function onNetworkRxRateChanged() {
             currentNetworkDownloadSpeed = DgopService.networkRxRate || 0;
@@ -223,6 +241,10 @@ PanelWindow {
         return shortName;
     }
 
+    readonly property string configDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.ConfigLocation))
+    readonly property string nvmlPythonPath: "python3"
+    readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
+    
     // Function to start NVML monitoring
     function startNvmlMonitoring() {
         nvmlGpuProcess.running = true;
@@ -235,7 +257,7 @@ PanelWindow {
     // NVML GPU temperature monitoring process
     Process {
         id: nvmlGpuProcess
-        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "/home/matt/.config/quickshell/scripts/nvidia_gpu_temp.py"]
+        command: [nvmlPythonPath, nvmlScriptPath]
         running: false
         onExited: exitCode => {
             // Process completed
@@ -317,8 +339,9 @@ PanelWindow {
             }
             cpuUsageHistoryChanged();
             
-            // Update memory usage history
-            memoryUsageHistory.push(currentMemoryUsage);
+            // Update memory usage history - read directly from DgopService
+            const memUsage = DgopService.memoryUsage || 0
+            memoryUsageHistory.push(memUsage);
             if (memoryUsageHistory.length > maxHistoryPoints) {
                 memoryUsageHistory.shift();
             }
@@ -782,7 +805,8 @@ PanelWindow {
                                     
                                     if (memoryUsageHistory.length < 2) return;
                                     
-                                    ctx.strokeStyle = currentMemoryUsage > 90 ? Theme.tempDanger : (currentMemoryUsage > 75 ? Theme.tempWarning : Theme.primary);
+                                    const usage = DgopService.memoryUsage || 0
+                                    ctx.strokeStyle = usage > 90 ? Theme.tempDanger : (usage > 75 ? Theme.tempWarning : Theme.primary);
                                     ctx.lineWidth = 2;
                                     ctx.beginPath();
                                     
@@ -840,18 +864,25 @@ PanelWindow {
                                 }
                                 
                                 StyledText {
-                                    text: Math.round(currentMemoryUsage) + "%"
+                                    text: {
+                                        const usage = DgopService.memoryUsage || 0
+                                        if (usage > 0) {
+                                            return Math.round(usage) + "%"
+                                        }
+                                        return "--%"
+                                    }
                                     font.pixelSize: 24 * scaleFactor
                                     font.weight: Font.Bold
                                     color: {
-                                        if (currentMemoryUsage > 90) return Theme.tempDanger
-                                        if (currentMemoryUsage > 75) return Theme.tempWarning
+                                        const usage = DgopService.memoryUsage || 0
+                                        if (usage > 90) return Theme.tempDanger
+                                        if (usage > 75) return Theme.tempWarning
                                         return Theme.surfaceText
                                     }
                                 }
                             }
                             
-                            // RAM Total (right)
+                            // RAM Total (right) - Show Used/Total format
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.right: parent.right
@@ -869,10 +900,17 @@ PanelWindow {
                                 
                                 StyledText {
                                     text: {
-                                        const usedGB = (DgopService.usedMemoryMB || 0) / 1024
-                                        return usedGB.toFixed(1) + "GB"
+                                        const usedMB = DgopService.usedMemoryMB || 0
+                                        const totalMB = DgopService.totalMemoryMB || 0
+                                        
+                                        if (totalMB > 0) {
+                                            const usedGB = (usedMB / 1024).toFixed(1)
+                                            const totalGB = (totalMB / 1024).toFixed(1)
+                                            return usedGB + "/" + totalGB + "GB"
+                                        }
+                                        return "--/--GB"
                                     }
-                                    font.pixelSize: 20 * scaleFactor
+                                    font.pixelSize: 18 * scaleFactor
                                     font.weight: Font.Bold
                                     color: Theme.surfaceText
                                     anchors.right: parent.right

@@ -11,6 +11,7 @@ import qs.Modals.Clipboard
 import qs.Modals.Common
 import qs.Modals.Settings
 import qs.Modals.Spotlight
+import qs.Modals.Overview
 import qs.Modules
 import qs.Modules.AppDrawer
 import qs.Modules.DankDash
@@ -39,6 +40,8 @@ ShellRoot {
         WallpaperCyclingService.cyclingActive
         // Initialize ColorPaletteService
         ColorPaletteService.extractedColors
+        // PolkitService disabled
+        // PolkitService.agent
     }
 
     // Force refresh entire shell when custom theme is created
@@ -390,6 +393,115 @@ ShellRoot {
 
     SpotlightModal {
         id: spotlightModal
+    }
+
+    // Overview modal on all screens
+    Variants {
+        id: overviewModalVariants
+        model: Quickshell.screens
+        
+        property var instances: []
+        
+        delegate: OverviewModal {
+            id: overviewModalInstance
+            modelData: item
+            
+            Component.onCompleted: {
+                if (overviewModalVariants.instances.indexOf(overviewModalInstance) === -1) {
+                    overviewModalVariants.instances.push(overviewModalInstance)
+                }
+            }
+            
+            Component.onDestruction: {
+                const index = overviewModalVariants.instances.indexOf(overviewModalInstance)
+                if (index !== -1) {
+                    overviewModalVariants.instances.splice(index, 1)
+                }
+            }
+        }
+    }
+    
+    // Global overview control - toggle all instances
+    function toggleOverview() {
+        Qt.callLater(() => {
+            const instances = overviewModalVariants.instances || []
+            
+            if (instances.length === 0) {
+                // Try again after a short delay if instances not ready
+                Qt.callLater(() => {
+                    const retryInstances = overviewModalVariants.instances || []
+                    if (retryInstances.length > 0) {
+                        const anyOpen = retryInstances.some(instance => instance && instance.overviewOpen)
+                        retryInstances.forEach(instance => {
+                            if (instance) {
+                                if (anyOpen) {
+                                    instance.hide()
+                                } else {
+                                    instance.show()
+                                }
+                            }
+                        })
+                    }
+                })
+                return
+            }
+            
+            const anyOpen = instances.some(instance => instance && instance.overviewOpen)
+            
+            instances.forEach(instance => {
+                if (instance) {
+                    if (anyOpen) {
+                        instance.hide()
+                    } else {
+                        instance.show()
+                    }
+                }
+            })
+        })
+    }
+    
+    // Basic Alt+Tab keyboard handler
+    // Note: This only works when shell has focus. For global shortcut,
+    // configure in Hyprland: bind = ALT, TAB, exec, qs ipc call overview toggle
+    Item {
+        id: globalKeyHandler
+        focus: true
+        Keys.onPressed: (event) => {
+            if ((event.modifiers & Qt.AltModifier) && event.key === Qt.Key_Tab) {
+                toggleOverview()
+                event.accepted = true
+            }
+        }
+    }
+    
+    // Function to hide all overview modals (accessible from content)
+    function hideAllOverviewModals() {
+        const instances = overviewModalVariants.instances || []
+        instances.forEach(instance => {
+            if (instance && instance.hide) {
+                instance.hide()
+            }
+        })
+    }
+    
+    // IPC handler for overview
+    IpcHandler {
+        function open(): string {
+            toggleOverview()
+            return "OVERVIEW_OPEN_SUCCESS"
+        }
+
+        function close(): string {
+            hideAllOverviewModals()
+            return "OVERVIEW_CLOSE_SUCCESS"
+        }
+
+        function toggle(): string {
+            toggleOverview()
+            return "OVERVIEW_TOGGLE_SUCCESS"
+        }
+
+        target: "overview"
     }
 
     ClipboardHistoryModal {

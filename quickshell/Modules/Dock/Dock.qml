@@ -3,6 +3,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
+import Quickshell.Services.Mpris
 import qs.Common
 import qs.Services
 import qs.Widgets
@@ -211,6 +212,22 @@ PanelWindow {
                             })
                         }
                     }
+                    
+                    // Reset widget area when media closes
+                    Connections {
+                        target: MprisController
+                        function onActivePlayerChanged() {
+                            if (MprisController.activePlayer === null) {
+                                // Media closed - force widget area to recalculate width
+                                Qt.callLater(() => {
+                                    leftWidgets.visible = false
+                                    Qt.callLater(() => {
+                                        leftWidgets.visible = true
+                                    })
+                                })
+                            }
+                        }
+                    }
 
                     DockWidgets {
                         id: leftWidgets
@@ -262,6 +279,22 @@ PanelWindow {
                                     rightWidgets.visible = true
                                 })
                             })
+                        }
+                    }
+                    
+                    // Reset widget area when media closes
+                    Connections {
+                        target: MprisController
+                        function onActivePlayerChanged() {
+                            if (MprisController.activePlayer === null) {
+                                // Media closed - force widget area to recalculate width
+                                Qt.callLater(() => {
+                                    rightWidgets.visible = false
+                                    Qt.callLater(() => {
+                                        rightWidgets.visible = true
+                                    })
+                                })
+                            }
                         }
                     }
 

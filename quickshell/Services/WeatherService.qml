@@ -205,7 +205,12 @@ Singleton {
         refCount++
 
         if (refCount === 1 && !weather.available && SettingsData.weatherEnabled) {
-            fetchWeather()
+            // If location isn't set, update it first, then fetch weather
+            if (!location) {
+                updateLocation()
+            } else {
+                fetchWeather()
+            }
         }
     }
 
@@ -215,6 +220,8 @@ Singleton {
 
     function updateLocation() {
         if (SettingsData.useAutoLocation) {
+            // Clear any cached location when using auto location
+            root.location = null
             getLocationFromIP()
         } else {
             const coords = SettingsData.weatherCoordinates
@@ -322,7 +329,8 @@ Singleton {
 
     Process {
         id: ipLocationFetcher
-        command: lowPriorityCmd.concat(curlBaseCmd).concat(["http://ipinfo.io/json"])
+        // Try ip-api.com first (more accurate), fallback to ipinfo.io
+        command: lowPriorityCmd.concat(curlBaseCmd).concat(["http://ip-api.com/json/?fields=status,message,lat,lon,city,regionName,country"])
         running: false
         
         stdout: StdioCollector {
@@ -335,31 +343,33 @@ Singleton {
 
                 try {
                     const data = JSON.parse(raw)
-                    const coords = data.loc
-                    const city = data.city
                     
-                    if (!coords || !city) {
-                        throw new Error("Missing location data")
+                    // Try ip-api.com format first
+                    let lat, lon
+                    if (data.status === "success" && data.lat && data.lon) {
+                        lat = parseFloat(data.lat)
+                        lon = parseFloat(data.lon)
+                    } else if (data.loc) {
+                        // Fallback to ipinfo.io format
+                        const coordsParts = data.loc.split(",")
+                        if (coordsParts.length !== 2) {
+                            throw new Error("Invalid coordinates format")
+                        }
+                        lat = parseFloat(coordsParts[0])
+                        lon = parseFloat(coordsParts[1])
+                    } else {
+                        throw new Error("Missing coordinates")
                     }
-                    
-                    const coordsParts = coords.split(",")
-                    if (coordsParts.length !== 2) {
-                        throw new Error("Invalid coordinates format")
-                    }
-                    
-                    const lat = parseFloat(coordsParts[0])
-                    const lon = parseFloat(coordsParts[1])
                     
                     if (isNaN(lat) || isNaN(lon)) {
                         throw new Error("Invalid coordinate values")
                     }
                     
-                    root.location = {
-                        city: city,
-                        latitude: lat,
-                        longitude: lon
-                    }
-                    fetchWeather()
+                    // Use coordinates to get accurate location via reverse geocoding
+                    // This ensures we get the correct city name based on coordinates
+                    // rather than relying on the IP service's potentially incorrect city name
+                    // The reverse geocoding will set the location and fetch weather
+                    getLocationFromCoords(lat, lon)
                 } catch (e) {
                     root.handleWeatherFailure()
                 }
@@ -389,11 +399,39 @@ Singleton {
                     const data = JSON.parse(raw)
                     const address = data.address || {}
                     
+                    const lat = parseFloat(data.lat)
+                    const lon = parseFloat(data.lon)
+                    
+                    // Prioritize city, then town, then other settlement types
+                    // This helps get the correct city name (e.g., Halifax instead of a suburb)
+                    const city = address.city || address.town || address.municipality || address.hamlet || address.village || address.suburb || "Unknown"
+                    const state = address.state || address.region || address.province || ""
+                    const country = address.country || "Unknown"
+                    
                     root.location = {
-                        city: address.hamlet || address.city || address.town || address.village || "Unknown",
-                        country: address.country || "Unknown",
-                        latitude: parseFloat(data.lat),
-                        longitude: parseFloat(data.lon)
+                        city: city,
+                        country: country,
+                        latitude: lat,
+                        longitude: lon
+                    }
+                    
+                    // Save coordinates to settings for reference (only if auto location is enabled)
+                    if (SettingsData.useAutoLocation) {
+                        const coordsString = lat + "," + lon
+                        if (SettingsData.weatherCoordinates !== coordsString) {
+                            SettingsData.weatherCoordinates = coordsString
+                        }
+                        // Build location display name and update if different
+                        let locationName = city
+                        if (state) {
+                            locationName += ", " + state
+                        }
+                        if (country && country !== "Unknown") {
+                            locationName += ", " + country
+                        }
+                        if (SettingsData.weatherLocation !== locationName) {
+                            SettingsData.weatherLocation = locationName
+                        }
                     }
                     
                     fetchWeather()
@@ -577,6 +615,41 @@ Singleton {
     }
 
     Component.onCompleted: {
+        // Initialize location if weather is enabled
+        if (SettingsData.weatherEnabled) {
+            Qt.callLater(() => {
+                updateLocation()
+            })
+        }
+        
+        SettingsData.useAutoLocationChanged.connect(() => {
+                                                        // Clear location and force refresh when auto location changes
+                                                        root.location = null
+                                                        root.weather = {
+                                                            "available": false,
+                                                            "loading": true,
+                                                            "temp": 0,
+                                                            "tempF": 0,
+                                                            "feelsLike": 0,
+                                                            "feelsLikeF": 0,
+                                                            "city": "",
+                                                            "country": "",
+                                                            "wCode": 0,
+                                                            "humidity": 0,
+                                                            "wind": "",
+                                                            "sunrise": "06:00",
+                                                            "sunset": "18:00",
+                                                            "uv": 0,
+                                                            "pressure": 0,
+                                                            "precipitationProbability": 0,
+                                                            "isDay": true,
+                                                            "forecast": []
+                                                        }
+                                                        root.lastFetchTime = 0
+                                                        if (SettingsData.useAutoLocation && SettingsData.weatherEnabled) {
+                                                            root.forceRefresh()
+                                                        }
+                                                    })
         
         SettingsData.weatherCoordinatesChanged.connect(() => {
                                                            root.location = null
