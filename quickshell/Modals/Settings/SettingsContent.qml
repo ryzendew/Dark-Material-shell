@@ -218,10 +218,24 @@ Item {
         }
 
         Loader {
-            id: keyboardLangLoader
+            id: networkLoader
 
             anchors.fill: parent
             active: root.currentIndex === 10
+            visible: active
+            asynchronous: true
+
+            sourceComponent: NetworkTab {
+                parentModal: root.parentModal
+            }
+
+        }
+
+        Loader {
+            id: keyboardLangLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 11
             visible: active
             asynchronous: true
 
@@ -234,7 +248,7 @@ Item {
             id: timeLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 11
+            active: root.currentIndex === 12
             visible: active
             asynchronous: true
 
@@ -247,7 +261,7 @@ Item {
             id: powerLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 12
+            active: root.currentIndex === 13
             visible: active
             asynchronous: true
 
@@ -260,7 +274,7 @@ Item {
             id: aboutLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 13
+            active: root.currentIndex === 14
             visible: active
             asynchronous: true
 
@@ -273,7 +287,7 @@ Item {
             id: weatherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 14
+            active: root.currentIndex === 15
             visible: active
             asynchronous: true
 

@@ -39,6 +39,9 @@ Rectangle {
         "text": "Sound",
         "icon": "volume_up"
     }, {
+        "text": "Network",
+        "icon": "wifi"
+    }, {
         "text": "Keyboard & Language",
         "icon": "keyboard"
     }, {

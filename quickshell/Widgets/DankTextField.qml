@@ -8,7 +8,7 @@ StyledRect {
 
     FontLoader {
         id: notoSansLoader
-        source: "/usr/share/fonts/noto/NotoSans-Regular.ttf"
+        source: "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
     }
     
     readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"

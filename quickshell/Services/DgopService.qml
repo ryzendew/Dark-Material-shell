@@ -3,6 +3,7 @@ pragma Singleton
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtCore
 import Quickshell
 import Quickshell.Io
 import qs.Common
@@ -724,9 +725,13 @@ Singleton {
         }
     }
 
+    readonly property string configDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.ConfigLocation))
+    readonly property string nvmlPythonPath: "python3"
+    readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
+    
     Process {
         id: nvmlCheckProcess
-        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "-c", "import pynvml; print('NVML available')"]
+        command: [nvmlPythonPath, "-c", "import pynvml; print('NVML available')"]
         running: false
         onExited: exitCode => {
             nvmlAvailable = (exitCode === 0)
@@ -744,7 +749,7 @@ Singleton {
 
     Process {
         id: nvmlGpuProcess
-        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "/home/matt/.config/quickshell/scripts/nvidia_gpu_temp.py"]
+        command: [nvmlPythonPath, nvmlScriptPath]
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {

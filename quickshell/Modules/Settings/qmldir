@@ -18,6 +18,7 @@ WindowSizingTab 1.0 WindowSizingTab.qml
 SoundTab 1.0 SoundTab.qml
 DefaultAppsTab 1.0 DefaultAppsTab.qml
 KeyboardLangTab 1.0 KeyboardLangTab.qml
+NetworkTab 1.0 NetworkTab.qml
 PowerTab 1.0 PowerTab.qml
 
 

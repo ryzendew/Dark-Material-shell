@@ -1083,4 +1083,228 @@ Singleton {
             "bssid": network.bssid
         }
     }
+
+    // DNS Configuration
+    function setDnsServers(connectionName, primaryDns, secondaryDns) {
+        if (!connectionName) {
+            // Apply to active connection
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        const dnsServers = [primaryDns]
+        if (secondaryDns) {
+            dnsServers.push(secondaryDns)
+        }
+        
+        setDnsProcess.command = lowPriorityCmd.concat(["nmcli", "connection", "modify", connectionName, "ipv4.dns", dnsServers.join(" "), "ipv4.dns-search", ""])
+        setDnsProcess.running = true
+    }
+
+    Process {
+        id: setDnsProcess
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("DNS servers updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update DNS servers")
+            }
+        }
+    }
+
+    // IP Configuration
+    function setIpv4Config(connectionName, method, address, gateway) {
+        if (!connectionName) {
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        let cmd = ["nmcli", "connection", "modify", connectionName, "ipv4.method", method]
+        
+        if (method === "manual" && address) {
+            cmd.push("ipv4.addresses", address)
+            if (gateway) {
+                cmd.push("ipv4.gateway", gateway)
+            }
+        }
+        
+        setIpv4Process.command = lowPriorityCmd.concat(cmd)
+        setIpv4Process.running = true
+    }
+
+    Process {
+        id: setIpv4Process
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("IPv4 configuration updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update IPv4 configuration")
+            }
+        }
+    }
+
+    function setIpv6Config(connectionName, method, address, gateway) {
+        if (!connectionName) {
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        let cmd = ["nmcli", "connection", "modify", connectionName, "ipv6.method", method]
+        
+        if (method === "manual" && address) {
+            cmd.push("ipv6.addresses", address)
+            if (gateway) {
+                cmd.push("ipv6.gateway", gateway)
+            }
+        }
+        
+        setIpv6Process.command = lowPriorityCmd.concat(cmd)
+        setIpv6Process.running = true
+    }
+
+    Process {
+        id: setIpv6Process
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("IPv6 configuration updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update IPv6 configuration")
+            }
+        }
+    }
+
+    // Proxy Configuration
+    function setProxyConfig(connectionName, method, httpProxy, httpsProxy, ftpProxy, socksProxy, noProxy) {
+        if (!connectionName) {
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        let cmd = ["nmcli", "connection", "modify", connectionName, "proxy.method", method]
+        
+        if (method === "manual") {
+            if (httpProxy) cmd.push("proxy.http", httpProxy)
+            if (httpsProxy) cmd.push("proxy.https", httpsProxy)
+            if (ftpProxy) cmd.push("proxy.ftp", ftpProxy)
+            if (socksProxy) cmd.push("proxy.socks", socksProxy)
+            if (noProxy) cmd.push("proxy.no-proxy", noProxy)
+        } else if (method === "auto") {
+            // PAC URL would go here if needed
+        }
+        
+        setProxyProcess.command = lowPriorityCmd.concat(cmd)
+        setProxyProcess.running = true
+    }
+
+    Process {
+        id: setProxyProcess
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("Proxy configuration updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update proxy configuration")
+            }
+        }
+    }
+
+    // Advanced Settings
+    function setMtu(connectionName, mtu) {
+        if (!connectionName) {
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        setMtuProcess.command = lowPriorityCmd.concat(["nmcli", "connection", "modify", connectionName, "802-3-ethernet.mtu", mtu.toString()])
+        setMtuProcess.running = true
+    }
+
+    Process {
+        id: setMtuProcess
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("MTU updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update MTU")
+            }
+        }
+    }
+
+    function setClonedMac(connectionName, macAddress) {
+        if (!connectionName) {
+            if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
+                connectionName = root.wifiConnectionUuid
+            } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
+                connectionName = root.ethernetConnectionUuid
+            } else {
+                ToastService.showError("No active connection")
+                return
+            }
+        }
+        
+        if (macAddress) {
+            setMacProcess.command = lowPriorityCmd.concat(["nmcli", "connection", "modify", connectionName, "802-3-ethernet.cloned-mac-address", macAddress])
+        } else {
+            setMacProcess.command = lowPriorityCmd.concat(["nmcli", "connection", "modify", connectionName, "802-3-ethernet.cloned-mac-address", ""])
+        }
+        setMacProcess.running = true
+    }
+
+    Process {
+        id: setMacProcess
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                ToastService.showInfo("MAC address updated")
+                refreshNetworkState()
+            } else {
+                ToastService.showError("Failed to update MAC address")
+            }
+        }
+    }
 }

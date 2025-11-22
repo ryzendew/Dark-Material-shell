@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Wayland
@@ -240,6 +241,10 @@ PanelWindow {
         return shortName;
     }
 
+    readonly property string configDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.ConfigLocation))
+    readonly property string nvmlPythonPath: "python3"
+    readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
+    
     // Function to start NVML monitoring
     function startNvmlMonitoring() {
         nvmlGpuProcess.running = true;
@@ -252,7 +257,7 @@ PanelWindow {
     // NVML GPU temperature monitoring process
     Process {
         id: nvmlGpuProcess
-        command: ["/home/matt/.config/quickshell/nvml_env/bin/python", "/home/matt/.config/quickshell/scripts/nvidia_gpu_temp.py"]
+        command: [nvmlPythonPath, nvmlScriptPath]
         running: false
         onExited: exitCode => {
             // Process completed
