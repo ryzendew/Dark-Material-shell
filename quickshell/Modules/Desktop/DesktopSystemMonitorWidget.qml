@@ -244,7 +244,7 @@ PanelWindow {
     readonly property string configDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.ConfigLocation))
     readonly property string nvmlPythonPath: "python3"
     readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
-    
+
     // Function to start NVML monitoring
     function startNvmlMonitoring() {
         nvmlGpuProcess.running = true;

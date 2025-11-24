@@ -1748,6 +1748,286 @@ Item {
                 }
             }
 
+            // GTK Theme
+            StyledRect {
+                width: parent.width
+                height: gtkThemeSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: gtkThemeSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingXS
+
+                        DankIcon {
+                            name: "palette"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DankDropdown {
+                            width: parent.width - Theme.iconSize - Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "GTK Theme"
+                            description: "GTK3/GTK4 Applications\n(requires restart)"
+                            currentValue: SettingsData.gtkTheme
+                            enableFuzzySearch: true
+                            popupWidthOffset: 100
+                            maxPopupHeight: 236
+                            options: {
+                                SettingsData.detectAvailableGtkThemes()
+                                return SettingsData.availableGtkThemes
+                            }
+                            onValueChanged: value => {
+                                                SettingsData.setGtkTheme(value)
+                                                ToastService.showInfo("GTK theme changed", "Restart GTK applications to see changes")
+                                            }
+                        }
+                    }
+                }
+            }
+
+            // GNOME Shell Theme
+            StyledRect {
+                width: parent.width
+                height: shellThemeSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: shellThemeSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingXS
+
+                        DankIcon {
+                            name: "extension"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingXS
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            DankDropdown {
+                                width: parent.width
+                                text: "GNOME Shell Theme"
+                                description: SettingsData.userThemeExtensionAvailable && SettingsData.userThemeExtensionEnabled 
+                                            ? "Shell Interface Theme\n(requires shell restart)" 
+                                            : SettingsData.userThemeExtensionAvailable 
+                                            ? "Shell Interface Theme\n(extension not enabled)" 
+                                            : "Shell Interface Theme\n(CSS fallback, no extension)"
+                                currentValue: SettingsData.shellTheme
+                                enableFuzzySearch: true
+                                popupWidthOffset: 100
+                                maxPopupHeight: 236
+                                options: {
+                                    SettingsData.detectAvailableShellThemes()
+                                    return SettingsData.availableShellThemes
+                                }
+                                onValueChanged: value => {
+                                                    SettingsData.setShellTheme(value)
+                                                }
+                            }
+
+                            StyledText {
+                                visible: !SettingsData.userThemeExtensionAvailable
+                                text: "Note: Using CSS fallback method. Only CSS styling is applied, not full theme assets. Install the user-theme extension for full theme support."
+                                font.pixelSize: Theme.fontSizeSmall - 1
+                                color: Theme.warning || "#ff9800"
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+
+                            StyledText {
+                                visible: SettingsData.userThemeExtensionAvailable && !SettingsData.userThemeExtensionEnabled
+                                text: "Note: Extension is installed but not enabled. Enable it in GNOME Tweaks or Extensions app for full theme support."
+                                font.pixelSize: Theme.fontSizeSmall - 1
+                                color: Theme.warning || "#ff9800"
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+                        }
+                    }
+                }
+            }
+
+            // QT Theme
+            StyledRect {
+                width: parent.width
+                height: qtThemeSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: qtThemeSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingXS
+
+                        DankIcon {
+                            name: "settings"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingXS
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            DankDropdown {
+                                width: parent.width
+                                text: "QT Theme"
+                                description: SettingsData.qt5ctAvailable || SettingsData.qt6ctAvailable
+                                            ? "QT5/QT6 Applications\n(requires restart)"
+                                            : "QT5/QT6 Applications\n(qt5ct/qt6ct not found)"
+                                currentValue: SettingsData.qtTheme
+                                enableFuzzySearch: true
+                                popupWidthOffset: 100
+                                maxPopupHeight: 236
+                                options: {
+                                    SettingsData.detectAvailableQtThemes()
+                                    return SettingsData.availableQtThemes
+                                }
+                                onValueChanged: value => {
+                                                    SettingsData.setQtTheme(value)
+                                                    if (SettingsData.qt5ctAvailable || SettingsData.qt6ctAvailable) {
+                                                        ToastService.showInfo("QT theme changed", "Restart QT applications to see changes")
+                                                    }
+                                                }
+                            }
+
+                            StyledText {
+                                visible: !SettingsData.qt5ctAvailable && !SettingsData.qt6ctAvailable
+                                text: "Note: Install qt5ct or qt6ct for QT theme support. Without these tools, theme changes will not be applied."
+                                font.pixelSize: Theme.fontSizeSmall - 1
+                                color: Theme.warning || "#ff9800"
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Cursor Theme
+            StyledRect {
+                width: parent.width
+                height: cursorThemeSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: cursorThemeSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingXS
+
+                        DankIcon {
+                            name: "ads_click"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingXS
+                            spacing: Theme.spacingS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            DankDropdown {
+                                width: parent.width
+                                text: "Cursor Theme"
+                                description: "Mouse Cursor Appearance"
+                                currentValue: SettingsData.cursorTheme
+                                enableFuzzySearch: true
+                                popupWidthOffset: 100
+                                maxPopupHeight: 236
+                                options: {
+                                    SettingsData.detectAvailableCursorThemes()
+                                    return SettingsData.availableCursorThemes
+                                }
+                                onValueChanged: value => {
+                                                    SettingsData.setCursorTheme(value, SettingsData.cursorSize)
+                                                    ToastService.showInfo("Cursor theme changed", "Cursor theme updated. You may need to log out and back in for full effect.")
+                                                }
+                            }
+
+                            Column {
+                                width: parent.width
+                                spacing: Theme.spacingXS
+
+                                StyledText {
+                                    text: "Cursor Size: " + SettingsData.cursorSize + "px"
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceText
+                                    font.weight: Font.Medium
+                                }
+
+                                DankSlider {
+                                    width: parent.width
+                                    height: 24
+                                    value: SettingsData.cursorSize
+                                    minimum: 16
+                                    maximum: 48
+                                    unit: "px"
+                                    showValue: true
+                                    wheelEnabled: false
+                                    onSliderValueChanged: newValue => {
+                                                              SettingsData.setCursorTheme(SettingsData.cursorTheme, newValue)
+                                                              ToastService.showInfo("Cursor size changed", "Cursor size updated to " + newValue + "px")
+                                                          }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // System App Theming
             StyledRect {
                 width: parent.width

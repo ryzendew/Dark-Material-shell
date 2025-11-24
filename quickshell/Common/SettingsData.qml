@@ -223,6 +223,29 @@ Singleton {
     property bool qt5ctAvailable: false
     property bool qt6ctAvailable: false
     property bool gtkAvailable: false
+    
+    // GTK Theme Properties
+    property var availableGtkThemes: ["System Default"]
+    property string systemDefaultGtkTheme: ""
+    property string gtkTheme: "System Default"
+    
+    // QT Theme Properties  
+    property var availableQtThemes: ["System Default"]
+    property string systemDefaultQtTheme: ""
+    property string qtTheme: "System Default"
+    
+    // GNOME Shell Theme Properties
+    property var availableShellThemes: ["System Default"]
+    property string systemDefaultShellTheme: ""
+    property string shellTheme: "System Default"
+    property bool userThemeExtensionAvailable: false
+    property bool userThemeExtensionEnabled: false
+    
+    // Cursor Theme Properties
+    property var availableCursorThemes: ["System Default"]
+    property string systemDefaultCursorTheme: ""
+    property string cursorTheme: "System Default"
+    property int cursorSize: 24
     property bool useOSLogo: false
     property string osLogoColorOverride: ""
     property real osLogoBrightness: 0.5
@@ -587,6 +610,11 @@ Singleton {
                 spotlightModalViewMode = settings.spotlightModalViewMode !== undefined ? settings.spotlightModalViewMode : "list"
                 networkPreference = settings.networkPreference !== undefined ? settings.networkPreference : "auto"
                 iconTheme = settings.iconTheme !== undefined ? settings.iconTheme : "System Default"
+                gtkTheme = settings.gtkTheme !== undefined ? settings.gtkTheme : "System Default"
+                qtTheme = settings.qtTheme !== undefined ? settings.qtTheme : "System Default"
+                shellTheme = settings.shellTheme !== undefined ? settings.shellTheme : "System Default"
+                cursorTheme = settings.cursorTheme !== undefined ? settings.cursorTheme : "System Default"
+                cursorSize = settings.cursorSize !== undefined ? settings.cursorSize : 24
                 useOSLogo = settings.useOSLogo !== undefined ? settings.useOSLogo : false
                 osLogoColorOverride = settings.osLogoColorOverride !== undefined ? settings.osLogoColorOverride : ""
                 osLogoBrightness = settings.osLogoBrightness !== undefined ? settings.osLogoBrightness : 0.5
@@ -657,6 +685,10 @@ Singleton {
                 detectQtTools()
                 updateGtkIconTheme(iconTheme)
                 applyStoredIconTheme()
+                applyStoredGtkTheme()
+                applyStoredQtTheme()
+                applyStoredShellTheme()
+                applyStoredCursorTheme()
             } else {
                 applyStoredTheme()
             }
@@ -849,6 +881,11 @@ Singleton {
                                                 "spotlightModalViewMode": spotlightModalViewMode,
                                                 "networkPreference": networkPreference,
                                                 "iconTheme": iconTheme,
+                                                "gtkTheme": gtkTheme,
+                                                "qtTheme": qtTheme,
+                                                "shellTheme": shellTheme,
+                                                "cursorTheme": cursorTheme,
+                                                "cursorSize": cursorSize,
                                                 "useOSLogo": useOSLogo,
                                                 "osLogoColorOverride": osLogoColorOverride,
                                                 "osLogoBrightness": osLogoBrightness,
@@ -1933,6 +1970,328 @@ Singleton {
         updateQtIconTheme(iconTheme)
     }
 
+    // GTK Theme Functions
+    function detectAvailableGtkThemes() {
+        systemDefaultGtkThemeProcess.running = true
+    }
+
+    function setGtkTheme(themeName) {
+        gtkTheme = themeName
+        updateGtkTheme(themeName)
+        saveSettings()
+    }
+
+    function updateGtkTheme(themeName) {
+        var gtkThemeName = (themeName === "System Default") ? systemDefaultGtkTheme : themeName
+        if (gtkThemeName !== "System Default" && gtkThemeName !== "") {
+            // Use _shq for proper shell escaping
+            var escapedTheme = _shq(gtkThemeName)
+            var script = "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.desktop.interface; then\n"
+                    + "    gsettings set org.gnome.desktop.interface gtk-theme " + escapedTheme + "\n"
+                    + "    echo 'Updated via gsettings'\n"
+                    + "elif command -v dconf >/dev/null 2>&1; then\n"
+                    + "    dconf write /org/gnome/desktop/interface/gtk-theme " + escapedTheme + "\n"
+                    + "    echo 'Updated via dconf'\n"
+                    + "fi\n"
+                    + "\n"
+                    + "# Ensure config directories exist\n"
+                    + "mkdir -p " + _configDir + "/gtk-3.0 " + _configDir + "/gtk-4.0\n"
+                    + "\n"
+                    + "# Update settings.ini files (keep existing icon-theme-name and other settings)\n"
+                    + "for config_dir in " + _configDir + "/gtk-3.0 " + _configDir + "/gtk-4.0; do\n"
+                    + "    settings_file=\"$config_dir/settings.ini\"\n"
+                    + "    if [ -f \"$settings_file\" ]; then\n"
+                    + "        # Update existing gtk-theme-name line or add it\n"
+                    + "        if grep -q '^gtk-theme-name=' \"$settings_file\"; then\n"
+                    + "            sed -i 's/^gtk-theme-name=.*/gtk-theme-name=" + gtkThemeName.replace(/'/g, "'\\''") + "/' \"$settings_file\"\n"
+                    + "        else\n"
+                    + "            # Add theme setting to [Settings] section or create it\n"
+                    + "            if grep -q '\\[Settings\\]' \"$settings_file\"; then\n"
+                    + "                sed -i '/\\[Settings\\]/a gtk-theme-name=" + gtkThemeName.replace(/'/g, "'\\''") + "' \"$settings_file\"\n"
+                    + "            else\n"
+                    + "                echo -e '\\n[Settings]\\ngtk-theme-name=" + gtkThemeName.replace(/'/g, "'\\''") + "' >> \"$settings_file\"\n"
+                    + "            fi\n"
+                    + "        fi\n"
+                    + "    else\n"
+                    + "        # Create new settings.ini file\n"
+                    + "        echo -e '[Settings]\\ngtk-theme-name=" + gtkThemeName.replace(/'/g, "'\\''") + "' > \"$settings_file\"\n"
+                    + "    fi\n"
+                    + "    echo \"Updated $settings_file\"\n"
+                    + "done\n"
+                    + "\n"
+                    + "# Update GTK2 config\n"
+                    + "if [ ! -f ~/.gtkrc-2.0 ]; then\n"
+                    + "    echo 'gtk-theme-name=" + escapedTheme + "' > ~/.gtkrc-2.0\n"
+                    + "else\n"
+                    + "    if grep -q '^gtk-theme-name=' ~/.gtkrc-2.0; then\n"
+                    + "        sed -i 's/^gtk-theme-name=.*/gtk-theme-name=" + escapedTheme + "/' ~/.gtkrc-2.0\n"
+                    + "    else\n"
+                    + "        echo 'gtk-theme-name=" + escapedTheme + "' >> ~/.gtkrc-2.0\n"
+                    + "    fi\n"
+                    + "fi\n"
+                    + "\n"
+                    + "# Send SIGHUP to running GTK applications to reload themes (optional, may not work on all systems)\n"
+                    + "pkill -HUP -f 'gtk' 2>/dev/null || true\n"
+            
+            Quickshell.execDetached(["sh", "-lc", script])
+        }
+    }
+
+    function applyStoredGtkTheme() {
+        updateGtkTheme(gtkTheme)
+    }
+
+    // QT Theme Functions
+    function detectAvailableQtThemes() {
+        systemDefaultQtThemeProcess.running = true
+    }
+
+    function setQtTheme(themeName) {
+        qtTheme = themeName
+        updateQtTheme(themeName)
+        saveSettings()
+    }
+
+    function updateQtTheme(themeName) {
+        var qtThemeName = (themeName === "System Default") ? systemDefaultQtTheme : themeName
+        if (!qtThemeName || qtThemeName === "System Default" || qtThemeName === "") {
+            // When "System Default" is selected, don't modify the config files at all
+            // This preserves the user's existing qt5ct/qt6ct configuration
+            return
+        }
+        
+        // Use _shq for proper shell escaping
+        var escapedTheme = _shq(qtThemeName)
+        var home = _shq(Paths.strip(root._homeUrl))
+        
+        var script = "mkdir -p " + _configDir + "/qt5ct " + _configDir + "/qt6ct 2>/dev/null || true\n"
+                + "update_qt_theme() {\n"
+                + "  local config_file=\"$1\"\n"
+                + "  local theme_name=\"$2\"\n"
+                + "  if [ -f \"$config_file\" ]; then\n"
+                + "    if grep -q '^\\[Appearance\\]' \"$config_file\"; then\n"
+                + "      if grep -q '^style=' \"$config_file\"; then\n"
+                + "        sed -i \"s/^style=.*/style=$theme_name/\" \"$config_file\"\n"
+                + "      else\n"
+                + "        sed -i \"/^\\[Appearance\\]/a style=$theme_name\" \"$config_file\"\n"
+                + "      fi\n"
+                + "    else\n"
+                + "      printf '\\n[Appearance]\\nstyle=%s\\n' \"$theme_name\" >> \"$config_file\"\n"
+                + "    fi\n"
+                + "  else\n"
+                + "    printf '[Appearance]\\nstyle=%s\\n' \"$theme_name\" > \"$config_file\"\n"
+                + "  fi\n"
+                + "}\n"
+                + "update_qt_theme " + _configDir + "/qt5ct/qt5ct.conf " + escapedTheme + "\n"
+                + "update_qt_theme " + _configDir + "/qt6ct/qt6ct.conf " + escapedTheme + "\n"
+                + "rm -rf " + home + "/.cache/icon-cache " + home + "/.cache/thumbnails 2>/dev/null || true\n"
+        
+        Quickshell.execDetached(["sh", "-lc", script])
+    }
+
+    function applyStoredQtTheme() {
+        updateQtTheme(qtTheme)
+    }
+
+    // GNOME Shell Theme Functions
+    function detectAvailableShellThemes() {
+        userThemeExtensionCheckProcess.running = true
+    }
+
+    function setShellTheme(themeName) {
+        shellTheme = themeName
+        updateShellTheme(themeName)
+        saveSettings()
+    }
+
+    function updateShellTheme(themeName) {
+        var shellThemeName = (themeName === "System Default") ? systemDefaultShellTheme : themeName
+        var home = _shq(Paths.strip(root._homeUrl))
+        
+        if (shellThemeName !== "System Default" && shellThemeName !== "") {
+            // Use _shq for proper shell escaping
+            var escapedTheme = _shq(shellThemeName)
+            
+            var script = "# Try extension method first (preferred)\n"
+                    + "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.shell.extensions.user-theme; then\n"
+                    + "    gsettings set org.gnome.shell.extensions.user-theme name " + escapedTheme + "\n"
+                    + "    echo 'Updated via user-theme extension (gsettings)'\n"
+                    + "elif command -v dconf >/dev/null 2>&1 && dconf list /org/gnome/shell/extensions/user-theme/ 2>/dev/null | grep -q name; then\n"
+                    + "    dconf write /org/gnome/shell/extensions/user-theme/name " + escapedTheme + "\n"
+                    + "    echo 'Updated via user-theme extension (dconf)'\n"
+                    + "else\n"
+                    + "    # Fallback: Copy theme CSS to ~/.config/gnome-shell/gnome-shell.css\n"
+                    + "    # This works without the extension but only applies CSS (not full theme assets)\n"
+                    + "    theme_css=\"\"\n"
+                    + "    for dir in " + home + "/.themes " + home + "/.local/share/themes /usr/share/themes; do\n"
+                    + "        if [ -f \"$dir/" + shellThemeName.replace(/'/g, "'\\''") + "/gnome-shell/gnome-shell.css\" ]; then\n"
+                    + "            theme_css=\"$dir/" + shellThemeName.replace(/'/g, "'\\''") + "/gnome-shell/gnome-shell.css\"\n"
+                    + "            break\n"
+                    + "        fi\n"
+                    + "    done\n"
+                    + "    \n"
+                    + "    if [ -n \"$theme_css\" ] && [ -f \"$theme_css\" ]; then\n"
+                    + "        mkdir -p " + home + "/.config/gnome-shell\n"
+                    + "        cp \"$theme_css\" " + home + "/.config/gnome-shell/gnome-shell.css\n"
+                    + "        echo 'Updated via CSS file copy (extension not available)'\n"
+                    + "    else\n"
+                    + "        echo 'Error: Theme CSS file not found'\n"
+                    + "        exit 1\n"
+                    + "    fi\n"
+                    + "fi\n"
+            
+            Quickshell.execDetached(["sh", "-lc", script])
+            
+            if (typeof ToastService !== "undefined") {
+                if (userThemeExtensionAvailable && userThemeExtensionEnabled) {
+                    ToastService.showInfo("Shell theme changed", "Restart GNOME Shell to see changes:\nPress Alt+F2, type 'r', then press Enter")
+                } else {
+                    ToastService.showInfo("Shell theme changed (CSS only)", "Applied theme CSS without extension.\nNote: Only CSS is applied, not full theme assets.\nRestart GNOME Shell (Alt+F2, type 'r', Enter) to see changes.")
+                }
+            }
+        } else if (themeName === "System Default") {
+            // Reset to default
+            var script = "# Try extension method first\n"
+                    + "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.shell.extensions.user-theme; then\n"
+                    + "    gsettings reset org.gnome.shell.extensions.user-theme name\n"
+                    + "    echo 'Reset to system default (extension)'\n"
+                    + "elif command -v dconf >/dev/null 2>&1 && dconf list /org/gnome/shell/extensions/user-theme/ 2>/dev/null | grep -q name; then\n"
+                    + "    dconf reset /org/gnome/shell/extensions/user-theme/name\n"
+                    + "    echo 'Reset to system default (extension)'\n"
+                    + "else\n"
+                    + "    # Fallback: Remove custom CSS file\n"
+                    + "    if [ -f " + home + "/.config/gnome-shell/gnome-shell.css ]; then\n"
+                    + "        rm " + home + "/.config/gnome-shell/gnome-shell.css\n"
+                    + "        echo 'Removed custom CSS file'\n"
+                    + "    fi\n"
+                    + "    echo 'Reset to system default (CSS fallback)'\n"
+                    + "fi\n"
+            Quickshell.execDetached(["sh", "-lc", script])
+            
+            if (typeof ToastService !== "undefined") {
+                ToastService.showInfo("Shell theme reset", "Restart GNOME Shell to see changes:\nPress Alt+F2, type 'r', then press Enter")
+            }
+        }
+    }
+
+    function applyStoredShellTheme() {
+        updateShellTheme(shellTheme)
+    }
+
+    // Cursor Theme Functions
+    function detectAvailableCursorThemes() {
+        systemDefaultCursorThemeProcess.running = true
+    }
+
+    function setCursorTheme(themeName, size) {
+        cursorTheme = themeName
+        if (size !== undefined && size > 0) cursorSize = size
+        updateCursorTheme(themeName, cursorSize)
+        saveSettings()
+    }
+
+    function updateCursorTheme(themeName, size) {
+        var cursorThemeName = (themeName === "System Default") ? systemDefaultCursorTheme : themeName
+        var cursorSizeValue = size || 24
+        
+        if (cursorThemeName !== "System Default" && cursorThemeName !== "" && cursorSizeValue > 0) {
+            // Use _shq for proper shell escaping
+            var escapedTheme = _shq(cursorThemeName)
+            var home = _shq(Paths.strip(root._homeUrl))
+            
+            var script = "# Update via gsettings/dconf\n"
+                    + "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.desktop.interface; then\n"
+                    + "    gsettings set org.gnome.desktop.interface cursor-theme " + escapedTheme + "\n"
+                    + "    gsettings set org.gnome.desktop.interface cursor-size " + cursorSizeValue + "\n"
+                    + "    echo 'Updated via gsettings'\n"
+                    + "elif command -v dconf >/dev/null 2>&1; then\n"
+                    + "    dconf write /org/gnome/desktop/interface/cursor-theme " + escapedTheme + "\n"
+                    + "    dconf write /org/gnome/desktop/interface/cursor-size " + cursorSizeValue + "\n"
+                    + "    echo 'Updated via dconf'\n"
+                    + "fi\n"
+                    + "\n"
+                    + "# Update GTK settings.ini files\n"
+                    + "mkdir -p " + _configDir + "/gtk-3.0 " + _configDir + "/gtk-4.0\n"
+                    + "\n"
+                    + "for config_dir in " + _configDir + "/gtk-3.0 " + _configDir + "/gtk-4.0; do\n"
+                    + "    settings_file=\"$config_dir/settings.ini\"\n"
+                    + "    if [ -f \"$settings_file\" ]; then\n"
+                    + "        # Update cursor theme name\n"
+                    + "        if grep -q '^gtk-cursor-theme-name=' \"$settings_file\"; then\n"
+                    + "            sed -i 's/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=" + cursorThemeName.replace(/'/g, "'\\''") + "/' \"$settings_file\"\n"
+                    + "        else\n"
+                    + "            if grep -q '\\[Settings\\]' \"$settings_file\"; then\n"
+                    + "                sed -i '/\\[Settings\\]/a gtk-cursor-theme-name=" + cursorThemeName.replace(/'/g, "'\\''") + "' \"$settings_file\"\n"
+                    + "            else\n"
+                    + "                echo -e '\\n[Settings]\\ngtk-cursor-theme-name=" + cursorThemeName.replace(/'/g, "'\\''") + "' >> \"$settings_file\"\n"
+                    + "            fi\n"
+                    + "        fi\n"
+                    + "        # Update cursor size\n"
+                    + "        if grep -q '^gtk-cursor-theme-size=' \"$settings_file\"; then\n"
+                    + "            sed -i 's/^gtk-cursor-theme-size=.*/gtk-cursor-theme-size=" + cursorSizeValue + "/' \"$settings_file\"\n"
+                    + "        else\n"
+                    + "            if grep -q '\\[Settings\\]' \"$settings_file\"; then\n"
+                    + "                sed -i '/\\[Settings\\]/a gtk-cursor-theme-size=" + cursorSizeValue + "' \"$settings_file\"\n"
+                    + "            fi\n"
+                    + "        fi\n"
+                    + "    else\n"
+                    + "        # Create new settings.ini file\n"
+                    + "        echo -e '[Settings]\\ngtk-cursor-theme-name=" + cursorThemeName.replace(/'/g, "'\\''") + "\\ngtk-cursor-theme-size=" + cursorSizeValue + "' > \"$settings_file\"\n"
+                    + "    fi\n"
+                    + "    echo \"Updated $settings_file\"\n"
+                    + "done\n"
+                    + "\n"
+                    + "# Update X11 cursor theme\n"
+                    + "xresources_file=" + home + "/.Xresources\n"
+                    + "if [ -f \"$xresources_file\" ]; then\n"
+                    + "    if grep -q '^Xcursor\\.theme:' \"$xresources_file\"; then\n"
+                    + "        sed -i \"s/^Xcursor\\.theme:.*/Xcursor.theme: " + cursorThemeName.replace(/[.\\]/g, "\\$&") + "/\" \"$xresources_file\"\n"
+                    + "    else\n"
+                    + "        echo \"Xcursor.theme: " + cursorThemeName.replace(/[.\\]/g, "\\$&") + "\" >> \"$xresources_file\"\n"
+                    + "    fi\n"
+                    + "    if grep -q '^Xcursor\\.size:' \"$xresources_file\"; then\n"
+                    + "        sed -i \"s/^Xcursor\\.size:.*/Xcursor.size: " + cursorSizeValue + "/\" \"$xresources_file\"\n"
+                    + "    else\n"
+                    + "        echo \"Xcursor.size: " + cursorSizeValue + "\" >> \"$xresources_file\"\n"
+                    + "    fi\n"
+                    + "    # Apply Xresources changes\n"
+                    + "    if command -v xrdb >/dev/null 2>&1; then\n"
+                    + "        xrdb -merge \"$xresources_file\"\n"
+                    + "    fi\n"
+                    + "else\n"
+                    + "    echo \"Xcursor.theme: " + cursorThemeName.replace(/[.\\]/g, "\\$&") + "\" > \"$xresources_file\"\n"
+                    + "    echo \"Xcursor.size: " + cursorSizeValue + "\" >> \"$xresources_file\"\n"
+                    + "    if command -v xrdb >/dev/null 2>&1; then\n"
+                    + "        xrdb -merge \"$xresources_file\"\n"
+                    + "    fi\n"
+                    + "fi\n"
+                    + "\n"
+                    + "# Update GTK2 config\n"
+                    + "gtk2_file=" + home + "/.gtkrc-2.0\n"
+                    + "if [ ! -f \"$gtk2_file\" ]; then\n"
+                    + "    echo 'gtk-cursor-theme-name=" + escapedTheme + "' > \"$gtk2_file\"\n"
+                    + "    echo 'gtk-cursor-theme-size=" + cursorSizeValue + "' >> \"$gtk2_file\"\n"
+                    + "else\n"
+                    + "    if grep -q '^gtk-cursor-theme-name=' \"$gtk2_file\"; then\n"
+                    + "        sed -i 's/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=" + escapedTheme + "/' \"$gtk2_file\"\n"
+                    + "    else\n"
+                    + "        echo 'gtk-cursor-theme-name=" + escapedTheme + "' >> \"$gtk2_file\"\n"
+                    + "    fi\n"
+                    + "    if grep -q '^gtk-cursor-theme-size=' \"$gtk2_file\"; then\n"
+                    + "        sed -i 's/^gtk-cursor-theme-size=.*/gtk-cursor-theme-size=" + cursorSizeValue + "/' \"$gtk2_file\"\n"
+                    + "    else\n"
+                    + "        echo 'gtk-cursor-theme-size=" + cursorSizeValue + "' >> \"$gtk2_file\"\n"
+                    + "    fi\n"
+                    + "fi\n"
+            
+            Quickshell.execDetached(["sh", "-lc", script])
+        }
+    }
+
+    function applyStoredCursorTheme() {
+        updateCursorTheme(cursorTheme, cursorSize)
+    }
+
     function setUseOSLogo(enabled) {
         useOSLogo = enabled
         saveSettings()
@@ -2257,6 +2616,10 @@ Singleton {
         initializeListModels()
         terminalDetectionProcess.running = true
         aurHelperDetectionProcess.running = true
+        detectAvailableGtkThemes()
+        detectAvailableQtThemes()
+        detectAvailableShellThemes()
+        detectAvailableCursorThemes()
         
         // Set desktop widgets to DP-2 if not already configured
         if (!screenPreferences || !screenPreferences["desktopWidgets"]) {
@@ -2447,6 +2810,268 @@ Singleton {
                         gtkAvailable = line.split(':')[1] === 'true'
                     }
                 }
+            }
+        }
+    }
+
+    // GTK Theme Detection Processes
+    Process {
+        id: systemDefaultGtkThemeProcess
+        
+        command: ["sh", "-c", "gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | sed \"s/'//g\" || echo ''"]
+        running: false
+        onExited: exitCode => {
+            if (exitCode === 0 && stdout && stdout.length > 0)
+                systemDefaultGtkTheme = stdout.trim()
+            else
+                systemDefaultGtkTheme = ""
+            gtkThemeDetectionProcess.running = true
+        }
+    }
+
+    Process {
+        id: gtkThemeDetectionProcess
+        
+        // Find themes with gtk-3.0 or gtk-4.0 subdirectories (validates theme structure)
+        command: ["sh", "-c", "for dir in /usr/share/themes ~/.local/share/themes ~/.themes; do [ -d \"$dir\" ] && find \"$dir\" -maxdepth 1 -type d -exec sh -c 'test -d \"$1/gtk-3.0\" || test -d \"$1/gtk-4.0\"' _ {} \\; -print 2>/dev/null; done | sed 's|.*/||' | sort -u"]
+        running: false
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var detectedThemes = ["System Default"]
+                if (text && text.trim()) {
+                    var themes = text.trim().split('\n')
+                    for (var i = 0; i < themes.length; i++) {
+                        var theme = themes[i].trim()
+                        // Filter out invalid entries
+                        if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor") {
+                            detectedThemes.push(theme)
+                        }
+                    }
+                }
+                availableGtkThemes = detectedThemes
+            }
+        }
+    }
+
+    // QT Theme Detection Processes
+    Process {
+        id: systemDefaultQtThemeProcess
+        
+        command: ["sh", "-c", "qt5_theme=\"\"; qt6_theme=\"\"; if [ -f ~/.config/qt5ct/qt5ct.conf ]; then qt5_theme=$(grep '^style=' ~/.config/qt5ct/qt5ct.conf 2>/dev/null | cut -d'=' -f2 | tr -d ' ' | head -n1); fi; if [ -f ~/.config/qt6ct/qt6ct.conf ]; then qt6_theme=$(grep '^style=' ~/.config/qt6ct/qt6ct.conf 2>/dev/null | cut -d'=' -f2 | tr -d ' ' | head -n1); fi; if [ -n \"$qt6_theme\" ]; then echo \"$qt6_theme\"; elif [ -n \"$qt5_theme\" ]; then echo \"$qt5_theme\"; else echo ''; fi"]
+        running: false
+        onExited: exitCode => {
+            if (exitCode === 0 && stdout && stdout.length > 0) {
+                var theme = stdout.trim()
+                systemDefaultQtTheme = theme || ""
+            } else {
+                systemDefaultQtTheme = ""
+            }
+            qtThemeDetectionProcess.running = true
+        }
+    }
+
+    Process {
+        id: qtThemeDetectionProcess
+        
+        command: ["sh", "-c", `
+            themes="Fusion\\nWindows\\nWindowsVista\\nGTK+\\n"
+            
+            # Check qt5ct/qt6ct theme/style directories (standard KDE locations)
+            # These directories may contain additional style plugins or themes
+            for base_dir in /usr/share/qt5ct /usr/share/qt6ct ~/.local/share/qt5ct ~/.local/share/qt6ct; do
+                if [ -d "$base_dir" ]; then
+                    # Check for themes directory
+                    if [ -d "$base_dir/themes" ]; then
+                        qt_themes=$(find "$base_dir/themes" -maxdepth 1 -type d ! -path "$base_dir/themes" 2>/dev/null | sed 's|.*/||' | sort -u)
+                        if [ -n "$qt_themes" ]; then
+                            themes="$themes$qt_themes\\n"
+                        fi
+                    fi
+                    # Check for styles directory (some installations use this)
+                    if [ -d "$base_dir/styles" ]; then
+                        qt_styles=$(find "$base_dir/styles" -maxdepth 1 -type d ! -path "$base_dir/styles" 2>/dev/null | sed 's|.*/||' | sort -u)
+                        if [ -n "$qt_styles" ]; then
+                            themes="$themes$qt_styles\\n"
+                        fi
+                    fi
+                    # Check for plugins directory (may contain style plugins)
+                    if [ -d "$base_dir/plugins" ]; then
+                        qt_plugins=$(find "$base_dir/plugins" -maxdepth 1 -type d ! -path "$base_dir/plugins" 2>/dev/null | sed 's|.*/||' | sort -u)
+                        if [ -n "$qt_plugins" ]; then
+                            themes="$themes$qt_plugins\\n"
+                        fi
+                    fi
+                fi
+            done
+            
+            # Check for Kvantum themes (KDE's popular theme engine)
+            if [ -d /usr/share/Kvantum ] || [ -d ~/.config/Kvantum ]; then
+                kvantum_themes=$(find /usr/share/Kvantum ~/.config/Kvantum -maxdepth 1 -type d -name "Kv*" 2>/dev/null | sed 's|.*/||' | sort -u)
+                if [ -n "$kvantum_themes" ]; then
+                    themes="$themes$kvantum_themes\\n"
+                fi
+            fi
+            
+            # Also check KDE-specific locations for QT styles
+            # KDE may install additional QT styles in these locations
+            for kde_dir in /usr/share/qt5/plugins/styles /usr/share/qt6/plugins/styles ~/.local/share/qt5/plugins/styles ~/.local/share/qt6/plugins/styles; do
+                if [ -d "$kde_dir" ]; then
+                    kde_styles=$(find "$kde_dir" -maxdepth 1 -type f -name "*.so" 2>/dev/null | sed 's|.*/||' | sed 's|^libq||' | sed 's|style\\.so$||' | sed 's|Style\\.so$||' | sort -u)
+                    if [ -n "$kde_styles" ]; then
+                        themes="$themes$kde_styles\\n"
+                    fi
+                fi
+            done
+            
+            # Check KDE Plasma theme directories
+            # Plasma themes may include QT styles or be usable as QT theme names
+            for plasma_dir in /usr/share/plasma/look-and-feel /usr/share/plasma/desktoptheme ~/.local/share/plasma/look-and-feel ~/.local/share/plasma/desktoptheme; do
+                if [ -d "$plasma_dir" ]; then
+                    # Extract theme names from Plasma directories
+                    # Handle both simple names (MacTahoe-Dark) and app IDs (com.github.vinceliuice.MacTahoe-Dark)
+                    plasma_themes=$(find "$plasma_dir" -maxdepth 1 -type d ! -path "$plasma_dir" 2>/dev/null | sed 's|.*/||' | while read theme_name; do
+                        # If it's an app ID (contains dots), extract the last part after the last dot
+                        if echo "$theme_name" | grep -q '\.'; then
+                            echo "$theme_name" | sed 's|.*\.||'
+                        else
+                            echo "$theme_name"
+                        fi
+                    done | sort -u)
+                    if [ -n "$plasma_themes" ]; then
+                        themes="$themes$plasma_themes\\n"
+                    fi
+                fi
+            done
+            
+            echo -e "$themes" | sort -u
+        `]
+        running: false
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var detectedThemes = ["System Default"]
+                if (text && text.trim()) {
+                    var themes = text.trim().split('\n')
+                    for (var i = 0; i < themes.length; i++) {
+                        var theme = themes[i].trim()
+                        if (theme && theme !== "" && theme !== "default")
+                            detectedThemes.push(theme)
+                    }
+                }
+                availableQtThemes = detectedThemes
+            }
+        }
+    }
+
+    // GNOME Shell Theme Detection Processes
+    Process {
+        id: userThemeExtensionCheckProcess
+        
+        command: ["sh", "-c", "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.shell.extensions.user-theme; then echo 'available'; gsettings get org.gnome.shell.extensions.user-theme name 2>/dev/null | sed \"s/'//g\" || echo ''; else echo ''; fi"]
+        running: false
+        onExited: exitCode => {
+            if (exitCode === 0 && stdout && stdout.length > 0) {
+                var lines = stdout.trim().split('\n')
+                if (lines.length > 0 && lines[0] === 'available') {
+                    userThemeExtensionAvailable = true
+                    if (lines.length > 1 && lines[1].trim() !== '') {
+                        systemDefaultShellTheme = lines[1].trim()
+                    } else {
+                        systemDefaultShellTheme = ""
+                    }
+                    // Check if extension is enabled
+                    extensionEnabledCheckProcess.running = true
+                } else {
+                    userThemeExtensionAvailable = false
+                    userThemeExtensionEnabled = false
+                    systemDefaultShellTheme = ""
+                    shellThemeDetectionProcess.running = true
+                }
+            } else {
+                userThemeExtensionAvailable = false
+                userThemeExtensionEnabled = false
+                systemDefaultShellTheme = ""
+                shellThemeDetectionProcess.running = true
+            }
+        }
+    }
+
+    Process {
+        id: extensionEnabledCheckProcess
+        
+        command: ["sh", "-c", "gsettings get org.gnome.shell enabled-extensions 2>/dev/null | grep -o 'user-theme' | head -n1"]
+        running: false
+        onExited: exitCode => {
+            if (exitCode === 0 && stdout && stdout.trim() === 'user-theme') {
+                userThemeExtensionEnabled = true
+            } else {
+                userThemeExtensionEnabled = false
+            }
+            shellThemeDetectionProcess.running = true
+        }
+    }
+
+    Process {
+        id: shellThemeDetectionProcess
+        
+        // Find themes with gnome-shell subdirectory containing gnome-shell.css
+        // Use -exec to avoid subshell issues with while read loops
+        command: ["sh", "-c", "for dir in /usr/share/themes ~/.local/share/themes ~/.themes; do [ -d \"$dir\" ] && find \"$dir\" -maxdepth 1 -type d -exec sh -c 'test -f \"$1/gnome-shell/gnome-shell.css\"' _ {} \\; -print 2>/dev/null; done | sed 's|.*/||' | sort -u"]
+        running: false
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var detectedThemes = ["System Default"]
+                if (text && text.trim()) {
+                    var themes = text.trim().split('\n')
+                    for (var i = 0; i < themes.length; i++) {
+                        var theme = themes[i].trim()
+                        // Filter out invalid entries
+                        if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor")
+                            detectedThemes.push(theme)
+                    }
+                }
+                availableShellThemes = detectedThemes
+            }
+        }
+    }
+
+    // Cursor Theme Detection Processes
+    Process {
+        id: systemDefaultCursorThemeProcess
+        
+        command: ["sh", "-c", "gsettings get org.gnome.desktop.interface cursor-theme 2>/dev/null | sed \"s/'//g\" || echo ''"]
+        running: false
+        onExited: exitCode => {
+            if (exitCode === 0 && stdout && stdout.length > 0)
+                systemDefaultCursorTheme = stdout.trim()
+            else
+                systemDefaultCursorTheme = ""
+            cursorThemeDetectionProcess.running = true
+        }
+    }
+
+    Process {
+        id: cursorThemeDetectionProcess
+        
+        // Find cursor themes by checking for cursors/left_ptr file
+        command: ["sh", "-c", "find /usr/share/icons ~/.local/share/icons ~/.icons -maxdepth 1 -type d -exec test -f {}/cursors/left_ptr \\; -print 2>/dev/null | sed 's|.*/||' | sort -u"]
+        running: false
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var detectedThemes = ["System Default"]
+                if (text && text.trim()) {
+                    var themes = text.trim().split('\n')
+                    for (var i = 0; i < themes.length; i++) {
+                        var theme = themes[i].trim()
+                        // Filter out invalid entries (same as icon theme detection)
+                        if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor")
+                            detectedThemes.push(theme)
+                    }
+                }
+                availableCursorThemes = detectedThemes
             }
         }
     }

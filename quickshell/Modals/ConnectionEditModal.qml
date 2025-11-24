@@ -10,10 +10,11 @@ import qs.Widgets
 
 DankModal {
     id: root
+
     property string connectionName: ""
     property string connectionUuid: ""
     property string connectionType: "" // wifi, ethernet, vpn, etc.
-
+    
     // Connection settings
     property string currentIpv4Method: "auto"
     property string currentIpv4Address: ""
@@ -25,6 +26,7 @@ DankModal {
     property string currentDnsSecondary: ""
     property string currentMtu: ""
     property string currentMacAddress: ""
+    
     property bool loading: true
 
     function show(connName, connUuid) {
@@ -40,6 +42,7 @@ DankModal {
     height: 900
     positioning: "center"
     enableShadow: true
+    
     onBackgroundClicked: () => {
         close()
     }
@@ -49,6 +52,7 @@ DankModal {
             id: contentScope
             anchors.fill: parent
             focus: true
+            
             Keys.onEscapePressed: event => {
                 close()
                 event.accepted = true
@@ -687,6 +691,7 @@ DankModal {
                     width: parent.width
                     spacing: Theme.spacingM
                     anchors.bottom: parent.bottom
+
                     Item { Layout.fillWidth: true }
 
                     Rectangle {
@@ -750,9 +755,9 @@ DankModal {
         }
 
         // Use -g all to get all properties, or use show without -g to get key:value format
-        const cmd = connectionUuid ? ["nmcli", "connection", "show", "uuid", connId] :
+        const cmd = connectionUuid ? ["nmcli", "connection", "show", "uuid", connId] : 
                                       ["nmcli", "connection", "show", "id", connId]
-
+        
         loadSettingsProcess.command = lowPriorityCmd.concat(cmd)
         loadSettingsProcess.running = true
     }
@@ -761,11 +766,12 @@ DankModal {
         id: loadSettingsProcess
         running: false
         command: []
+
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.trim().split('\n')
                 const settings = {}
-
+                
                 lines.forEach(line => {
                     // Handle both "KEY: value" and "KEY = value" formats
                     let parts
@@ -776,7 +782,7 @@ DankModal {
                     } else {
                         return
                     }
-
+                    
                     if (parts.length >= 2) {
                         const key = parts[0].trim()
                         const value = parts.slice(1).join(parts[0].includes(':') ? ':' : '=').trim()
@@ -874,6 +880,7 @@ DankModal {
         id: saveSettingsProcess
         running: false
         command: []
+
         onExited: exitCode => {
             if (exitCode === 0) {
                 ToastService.showInfo("Connection settings saved")

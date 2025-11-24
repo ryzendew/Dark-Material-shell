@@ -728,7 +728,7 @@ Singleton {
     readonly property string configDir: Paths.strip(StandardPaths.writableLocation(StandardPaths.ConfigLocation))
     readonly property string nvmlPythonPath: "python3"
     readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
-    
+
     Process {
         id: nvmlCheckProcess
         command: [nvmlPythonPath, "-c", "import pynvml; print('NVML available')"]

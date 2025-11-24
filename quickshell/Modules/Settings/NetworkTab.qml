@@ -10,18 +10,19 @@ import qs.Modals
 
 Item {
     id: networkTab
-    property var parentModal: null
 
+    property var parentModal: null
+    
     // DNS Configuration properties
     property bool dnsMethodAuto: true
-
+    
     // IP Configuration properties
     property int ipv4MethodIndex: 0
     property int ipv6MethodIndex: 0
-
+    
     // Proxy Configuration properties
     property int proxyMethodIndex: 0
-
+    
     // Advanced Settings properties
     property int macAddressIndex: 0
 
@@ -83,6 +84,7 @@ Item {
                             text: "WiFi"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -140,6 +142,7 @@ Item {
                                 StyledText {
                                     text: "Connected to:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     opacity: 0.7
                                 }
 
@@ -150,10 +153,11 @@ Item {
                                     color: Theme.primary
                                 }
 
+
                                 StyledText {
                                     text: "Signal: " + NetworkService.wifiSignalStrength + "%"
                                     font.pixelSize: Theme.fontSizeSmall
-
+                                    
                                 }
                             }
 
@@ -164,8 +168,9 @@ Item {
                                 StyledText {
                                     text: "IP: " + (NetworkService.wifiIP || "Not assigned")
                                     font.pixelSize: Theme.fontSizeSmall
-
+                                    
                                 }
+
 
                                 Rectangle {
                                     width: 80
@@ -203,7 +208,7 @@ Item {
                             text: "Available Networks"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Rectangle {
@@ -272,6 +277,7 @@ Item {
                                         DankIcon {
                                             name: modelData.secured ? "lock" : "lock_open"
                                             size: 20
+                                            
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
@@ -284,6 +290,7 @@ Item {
                                                 text: modelData.ssid || "Unknown"
                                                 font.pixelSize: Theme.fontSizeMedium
                                                 font.weight: Font.Medium
+                                                
                                             }
 
                                             Row {
@@ -308,11 +315,13 @@ Item {
                                                 StyledText {
                                                     text: modelData.signal ? modelData.signal + "%" : ""
                                                     font.pixelSize: Theme.fontSizeSmall
+                                                    
                                                     opacity: 0.7
                                                     anchors.verticalCenter: parent.verticalCenter
                                                 }
                                             }
                                         }
+
 
                                         // Connect Button
                                         Rectangle {
@@ -356,6 +365,7 @@ Item {
                             StyledText {
                                 text: "No networks found"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 opacity: 0.5
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 visible: !NetworkService.isScanning && (!NetworkService.wifiNetworks || NetworkService.wifiNetworks.length === 0)
@@ -415,7 +425,7 @@ Item {
                             text: "Saved Networks"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Column {
@@ -439,6 +449,7 @@ Item {
                                         DankIcon {
                                             name: "wifi"
                                             size: 18
+                                            
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
@@ -549,6 +560,7 @@ Item {
                             text: "Ethernet"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -573,6 +585,7 @@ Item {
                                 StyledText {
                                     text: "Interface:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     opacity: 0.7
                                 }
 
@@ -583,16 +596,18 @@ Item {
                                     color: Theme.primary
                                 }
 
+
                                 StyledText {
                                     text: "IP: " + (NetworkService.ethernetIP || "Not assigned")
                                     font.pixelSize: Theme.fontSizeSmall
-
+                                    
                                 }
                             }
 
                             Row {
                                 width: parent.width
                                 spacing: Theme.spacingM
+
                                 Item { width: 1; height: 1 }
 
                                 Rectangle {
@@ -652,6 +667,7 @@ Item {
                     StyledText {
                         text: NetworkService.ethernetConnected ? "Ethernet connected" : "No ethernet connection"
                         font.pixelSize: Theme.fontSizeSmall
+                        
                         opacity: 0.7
                         visible: !NetworkService.ethernetConnected
                     }
@@ -688,6 +704,7 @@ Item {
                             text: "VPN"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -743,7 +760,7 @@ Item {
                             text: "Active Connections"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Repeater {
@@ -777,15 +794,17 @@ Item {
                                             text: modelData.name || "Unknown"
                                             font.pixelSize: Theme.fontSizeMedium
                                             font.weight: Font.Medium
-
+                                            
                                         }
 
                                         StyledText {
                                             text: "State: " + (modelData.state || "unknown")
                                             font.pixelSize: Theme.fontSizeSmall
+                                            
                                             opacity: 0.7
                                         }
                                     }
+
 
                                     Rectangle {
                                         width: 80
@@ -827,7 +846,7 @@ Item {
                             text: "VPN Profiles"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Column {
@@ -853,6 +872,7 @@ Item {
                                         DankIcon {
                                             name: "vpn_key"
                                             size: 20
+                                            
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
@@ -864,7 +884,7 @@ Item {
                                                 text: modelData.name || "Unknown"
                                                 font.pixelSize: Theme.fontSizeMedium
                                                 font.weight: Font.Medium
-
+                                                
                                             }
 
                                             Row {
@@ -873,12 +893,14 @@ Item {
                                                 StyledText {
                                                     text: modelData.type || "vpn"
                                                     font.pixelSize: Theme.fontSizeSmall
+                                                    
                                                     opacity: 0.7
                                                 }
 
                                                 StyledText {
                                                     text: modelData.serviceType ? " • " + modelData.serviceType : ""
                                                     font.pixelSize: Theme.fontSizeSmall
+                                                    
                                                     opacity: 0.7
                                                 }
                                             }
@@ -949,6 +971,7 @@ Item {
                             StyledText {
                                 text: "No VPN profiles configured"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 opacity: 0.5
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 visible: !VpnService || !VpnService.profiles || VpnService.profiles.length === 0
@@ -988,6 +1011,7 @@ Item {
                             text: "DNS Configuration"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -1000,6 +1024,7 @@ Item {
                         StyledText {
                             text: "DNS Method:"
                             font.pixelSize: Theme.fontSizeMedium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -1074,7 +1099,7 @@ Item {
                             text: "DNS Servers"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         // Primary DNS
@@ -1085,6 +1110,7 @@ Item {
                             StyledText {
                                 text: "Primary:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 80
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1107,7 +1133,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         // Secondary DNS
@@ -1118,6 +1145,7 @@ Item {
                             StyledText {
                                 text: "Secondary:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 80
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1140,7 +1168,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         // DNS Presets
@@ -1151,6 +1180,7 @@ Item {
                             StyledText {
                                 text: "Presets:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
@@ -1173,7 +1203,7 @@ Item {
                                         anchors.centerIn: parent
                                         text: modelData.name
                                         font.pixelSize: Theme.fontSizeSmall
-
+                                        
                                     }
 
                                     MouseArea {
@@ -1216,7 +1246,7 @@ Item {
                                         NetworkService.setDnsServers("", primaryDnsInput.text.trim(), secondaryDnsInput.text.trim())
                                     } else {
                                         // Reset to automatic
-                                        const connectionName = NetworkService.networkStatus === "wifi" ? NetworkService.wifiConnectionUuid :
+                                        const connectionName = NetworkService.networkStatus === "wifi" ? NetworkService.wifiConnectionUuid : 
                                                                NetworkService.networkStatus === "ethernet" ? NetworkService.ethernetConnectionUuid : ""
                                         if (connectionName) {
                                             Quickshell.execDetached(["nmcli", "connection", "modify", connectionName, "ipv4.dns", "", "ipv4.dns-search", ""])
@@ -1260,6 +1290,7 @@ Item {
                             text: "IP Configuration"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -1273,7 +1304,7 @@ Item {
                             text: "IPv4"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         // IPv4 Method
@@ -1284,6 +1315,7 @@ Item {
                             StyledText {
                                 text: "Method:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1343,6 +1375,7 @@ Item {
                                 StyledText {
                                     text: "IP Address:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     width: 100
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -1365,7 +1398,8 @@ Item {
                                         background: Rectangle {
                                             color: "transparent"
                                         }
-
+                                    }
+                                }
                             }
 
                             Row {
@@ -1375,6 +1409,7 @@ Item {
                                 StyledText {
                                     text: "Gateway:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     width: 100
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -1393,11 +1428,13 @@ Item {
                                         anchors.fill: parent
                                         anchors.margins: Theme.spacingS
                                         font.pixelSize: Theme.fontSizeSmall
+                                        
                                         placeholderText: "192.168.1.1"
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                    }
+                                }
                             }
 
                             // Apply IPv4 Button
@@ -1421,7 +1458,7 @@ Item {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const method = networkTab.ipv4MethodIndex === 0 ? "auto" :
+                                        const method = networkTab.ipv4MethodIndex === 0 ? "auto" : 
                                                       networkTab.ipv4MethodIndex === 1 ? "manual" : "link-local"
                                         const address = networkTab.ipv4MethodIndex === 1 ? ipv4AddressInput.text.trim() : ""
                                         const gateway = networkTab.ipv4MethodIndex === 1 ? ipv4GatewayInput.text.trim() : ""
@@ -1446,7 +1483,7 @@ Item {
                             text: "IPv6"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         // IPv6 Method
@@ -1457,6 +1494,7 @@ Item {
                             StyledText {
                                 text: "Method:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1516,6 +1554,7 @@ Item {
                                 StyledText {
                                     text: "IPv6 Address:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     width: 100
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -1534,11 +1573,13 @@ Item {
                                         anchors.fill: parent
                                         anchors.margins: Theme.spacingS
                                         font.pixelSize: Theme.fontSizeSmall
+                                        
                                         placeholderText: "2001:db8::1/64"
-                                        background: Rectangle {
-                                            color: "transparent"
-                                        }
-
+                                    background: Rectangle {
+                                        color: "transparent"
+                                    }
+                                    }
+                                }
                             }
 
                             Row {
@@ -1548,6 +1589,7 @@ Item {
                                 StyledText {
                                     text: "Gateway:"
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     width: 100
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -1566,11 +1608,13 @@ Item {
                                         anchors.fill: parent
                                         anchors.margins: Theme.spacingS
                                         font.pixelSize: Theme.fontSizeSmall
+                                        
                                         placeholderText: "2001:db8::1"
-                                        background: Rectangle {
-                                            color: "transparent"
-                                        }
-
+                                    background: Rectangle {
+                                        color: "transparent"
+                                    }
+                                    }
+                                }
                             }
 
                             // Apply IPv6 Button
@@ -1594,7 +1638,7 @@ Item {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const method = networkTab.ipv6MethodIndex === 0 ? "auto" :
+                                        const method = networkTab.ipv6MethodIndex === 0 ? "auto" : 
                                                       networkTab.ipv6MethodIndex === 1 ? "manual" : "ignore"
                                         const address = networkTab.ipv6MethodIndex === 1 ? ipv6AddressInput.text.trim() : ""
                                         const gateway = networkTab.ipv6MethodIndex === 1 ? ipv6GatewayInput.text.trim() : ""
@@ -1637,6 +1681,7 @@ Item {
                             text: "Proxy Configuration"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -1649,6 +1694,7 @@ Item {
                         StyledText {
                             text: "Proxy Method:"
                             font.pixelSize: Theme.fontSizeMedium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -1704,7 +1750,7 @@ Item {
                             text: "Proxy Servers"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Row {
@@ -1737,7 +1783,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         Row {
@@ -1770,7 +1817,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         Row {
@@ -1803,7 +1851,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         Row {
@@ -1836,7 +1885,8 @@ Item {
                                     background: Rectangle {
                                         color: "transparent"
                                     }
-
+                                }
+                            }
                         }
 
                         Row {
@@ -1846,6 +1896,7 @@ Item {
                             StyledText {
                                 text: "No Proxy For:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 120
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1864,11 +1915,13 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: Theme.spacingS
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     placeholderText: "localhost,127.0.0.1,*.local"
                                 background: Rectangle {
                                     color: "transparent"
                                 }
-
+                                }
+                            }
                         }
                     }
 
@@ -1882,7 +1935,7 @@ Item {
                             text: "Automatic Proxy Configuration"
                             font.pixelSize: Theme.fontSizeMedium
                             font.weight: Font.Medium
-
+                            
                         }
 
                         Row {
@@ -1892,6 +1945,7 @@ Item {
                             StyledText {
                                 text: "PAC URL:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -1910,11 +1964,13 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: Theme.spacingS
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     placeholderText: "http://proxy.example.com/proxy.pac"
                                 background: Rectangle {
                                     color: "transparent"
                                 }
-
+                                }
+                            }
                         }
 
                         // Apply Proxy Button
@@ -1938,15 +1994,15 @@ Item {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    const method = networkTab.proxyMethodIndex === 0 ? "none" :
+                                    const method = networkTab.proxyMethodIndex === 0 ? "none" : 
                                                   networkTab.proxyMethodIndex === 1 ? "manual" : "auto"
-
+                                    
                                     if (method === "manual") {
-                                        NetworkService.setProxyConfig("", method,
-                                            httpProxyInput.text.trim(),
-                                            httpsProxyInput.text.trim(),
-                                            ftpProxyInput.text.trim(),
-                                            socksProxyInput.text.trim(),
+                                        NetworkService.setProxyConfig("", method, 
+                                            httpProxyInput.text.trim(), 
+                                            httpsProxyInput.text.trim(), 
+                                            ftpProxyInput.text.trim(), 
+                                            socksProxyInput.text.trim(), 
                                             noProxyInput.text.trim())
                                     } else {
                                         NetworkService.setProxyConfig("", method, "", "", "", "", "")
@@ -1988,6 +2044,7 @@ Item {
                             text: "Advanced Settings"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
+                            
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -2004,6 +2061,7 @@ Item {
                             StyledText {
                                 text: "MTU:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -2022,6 +2080,7 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: Theme.spacingS
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     placeholderText: "1500"
                                     validator: IntValidator { bottom: 576; top: 9000 }
                                 }
@@ -2030,6 +2089,7 @@ Item {
                             StyledText {
                                 text: "(576-9000, default: 1500)"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 opacity: 0.7
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -2088,6 +2148,7 @@ Item {
                             StyledText {
                                 text: "MAC Address:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -2143,6 +2204,7 @@ Item {
                             StyledText {
                                 text: "Cloned MAC:"
                                 font.pixelSize: Theme.fontSizeSmall
+                                
                                 width: 100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -2161,11 +2223,13 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: Theme.spacingS
                                     font.pixelSize: Theme.fontSizeSmall
+                                    
                                     placeholderText: "aa:bb:cc:dd:ee:ff"
                                 background: Rectangle {
                                     color: "transparent"
                                 }
-
+                                }
+                            }
                         }
 
                         // Apply MAC Button
@@ -2209,7 +2273,7 @@ Item {
     Process {
         id: findEthernetConnection
         running: false
-        command: ["bash", "-c",
+        command: ["bash", "-c", 
             "ETH_CONN=$(nmcli -t -f NAME,UUID connection show | grep ':802-3-ethernet$' | cut -d: -f1 | head -1); " +
             "ETH_UUID=$(nmcli -t -f NAME,UUID connection show | grep ':802-3-ethernet$' | cut -d: -f2 | head -1); " +
             "if [ -n \"$ETH_CONN\" ]; then echo \"$ETH_CONN:$ETH_UUID\"; fi"
