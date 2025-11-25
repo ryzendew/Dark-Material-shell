@@ -45,7 +45,7 @@ Rectangle {
         anchors.rightMargin: Theme.spacingS
         spacing: Theme.spacingS
 
-        DankIcon {
+        DarkIcon {
             name: root.iconName
             size: Theme.iconSize
             color: root.iconColor
@@ -69,7 +69,7 @@ Rectangle {
         width: 120
         height: parent.height - Theme.spacingS * 2
 
-        DankSlider {
+        DarkSlider {
             anchors.centerIn: parent
             width: parent.width
             enabled: root.enabled

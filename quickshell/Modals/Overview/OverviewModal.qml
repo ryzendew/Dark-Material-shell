@@ -9,7 +9,7 @@ import qs.Modals.Overview
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: overviewModal
 
     required property var modelData

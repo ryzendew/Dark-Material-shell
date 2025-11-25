@@ -48,6 +48,8 @@ Singleton {
     property string lastBrightnessDevice: ""
     property string launchPrefix: ""
     property string wallpaperTransition: "fade"
+    property int wallpaperTransitionFps: 60 // Default 60 for QML, 30 for awww (set based on backend)
+    property bool useAwwwBackend: false
 
     // Power management settings - AC Power
     property int acMonitorTimeout: 0 // Never
@@ -121,6 +123,8 @@ Singleton {
                 lastBrightnessDevice = settings.lastBrightnessDevice !== undefined ? settings.lastBrightnessDevice : ""
                 launchPrefix = settings.launchPrefix !== undefined ? settings.launchPrefix : ""
                 wallpaperTransition = settings.wallpaperTransition !== undefined ? settings.wallpaperTransition : "fade"
+                wallpaperTransitionFps = settings.wallpaperTransitionFps !== undefined ? settings.wallpaperTransitionFps : 60
+                useAwwwBackend = settings.useAwwwBackend !== undefined ? settings.useAwwwBackend : false
 
                 acMonitorTimeout = settings.acMonitorTimeout !== undefined ? settings.acMonitorTimeout : 0
                 acLockTimeout = settings.acLockTimeout !== undefined ? settings.acLockTimeout : 0
@@ -176,6 +180,8 @@ Singleton {
                                                 "lastBrightnessDevice": lastBrightnessDevice,
                                                 "launchPrefix": launchPrefix,
                                                 "wallpaperTransition": wallpaperTransition,
+                                                "wallpaperTransitionFps": wallpaperTransitionFps,
+                                                "useAwwwBackend": useAwwwBackend,
                                                 "acMonitorTimeout": acMonitorTimeout,
                                                 "acLockTimeout": acLockTimeout,
                                                 "acSuspendTimeout": acSuspendTimeout,
@@ -507,6 +513,16 @@ Singleton {
         saveSettings()
     }
 
+    function setWallpaperTransitionFps(fps) {
+        wallpaperTransitionFps = fps
+        saveSettings()
+    }
+
+    function setUseAwwwBackend(enabled) {
+        useAwwwBackend = enabled
+        saveSettings()
+    }
+
     function setAcMonitorTimeout(timeout) {
         acMonitorTimeout = timeout
         saveSettings()
@@ -555,7 +571,7 @@ Singleton {
     FileView {
         id: settingsFile
 
-        path: StandardPaths.writableLocation(StandardPaths.GenericStateLocation) + "/DankMaterialShell/session.json"
+        path: StandardPaths.writableLocation(StandardPaths.GenericStateLocation) + "/DarkMaterialShell/session.json"
         blockLoading: true
         blockWrites: true
         watchChanges: true
@@ -575,7 +591,7 @@ Singleton {
         id: defaultSessionCheckProcess
 
         command: ["sh", "-c", "CONFIG_DIR=\"" + _stateDir
-            + "/DankMaterialShell\"; if [ -f \"$CONFIG_DIR/default-session.json\" ] && [ ! -f \"$CONFIG_DIR/session.json\" ]; then cp \"$CONFIG_DIR/default-session.json\" \"$CONFIG_DIR/session.json\" && echo 'copied'; else echo 'not_found'; fi"]
+            + "/DarkMaterialShell\"; if [ -f \"$CONFIG_DIR/default-session.json\" ] && [ ! -f \"$CONFIG_DIR/session.json\" ]; then cp \"$CONFIG_DIR/default-session.json\" \"$CONFIG_DIR/session.json\" && echo 'copied'; else echo 'not_found'; fi"]
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {

@@ -64,7 +64,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 3
 
-        DankIcon {
+        DarkIcon {
             name: "developer_board"
             size: Theme.iconSize - 8
             color: {

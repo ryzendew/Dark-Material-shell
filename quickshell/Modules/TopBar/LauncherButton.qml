@@ -107,7 +107,7 @@ Item {
             }
         }
 
-        DankIcon {
+        DarkIcon {
             visible: !SettingsData.useOSLogo && !SettingsData.useCustomLauncherImage
             anchors.centerIn: parent
             name: "apps"

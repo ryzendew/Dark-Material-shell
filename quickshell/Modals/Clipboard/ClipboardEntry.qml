@@ -115,7 +115,7 @@ Rectangle {
     }
 
     // Delete button
-    DankActionButton {
+    DarkActionButton {
         anchors.right: parent.right
         anchors.rightMargin: Theme.spacingM
         anchors.verticalCenter: parent.verticalCenter

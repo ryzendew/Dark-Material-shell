@@ -54,7 +54,7 @@ Rectangle {
             }
             
             // Fallback icon
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 size: 48
                 name: "window"
@@ -150,7 +150,7 @@ Rectangle {
             }
         }
         
-        DankIcon {
+        DarkIcon {
             anchors.centerIn: parent
             size: 12
             name: "close"

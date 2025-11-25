@@ -10,7 +10,7 @@ import qs.Modals
 import qs.Services
 import qs.Widgets
 
-DankPopout {
+DarkPopout {
     id: appDrawerPopout
     objectName: "appDrawerPopout"
 
@@ -736,7 +736,7 @@ DankPopout {
                             }
 
                             // Search Bar
-                    DankTextField {
+                    DarkTextField {
                         id: searchField
 
                         width: parent.width
@@ -806,7 +806,7 @@ DankPopout {
                                 border.width: 1
                                 clip: true // Ensure content is clipped to container bounds
 
-                                DankListView {
+                                DarkListView {
                                     id: appList
 
                                     property int itemHeight: 60
@@ -1057,7 +1057,7 @@ DankPopout {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: contextMenu.isPinned ? "keep_off" : "push_pin"
                         size: Theme.iconSize - 2
                         color: Theme.surfaceText
@@ -1107,7 +1107,7 @@ DankPopout {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: contextMenu.isStartMenuPinned ? "keep_off" : "push_pin"
                         size: Theme.iconSize - 2
                         color: Theme.surfaceText
@@ -1171,7 +1171,7 @@ DankPopout {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: "launch"
                         size: Theme.iconSize - 2
                         color: Theme.surfaceText
@@ -1318,7 +1318,7 @@ DankPopout {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: "launch"
                         size: Theme.iconSize - 2
                         color: Theme.surfaceText
@@ -1362,7 +1362,7 @@ DankPopout {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: "keep_off"
                         size: Theme.iconSize - 2
                         color: Theme.surfaceText

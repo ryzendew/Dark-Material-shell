@@ -51,7 +51,7 @@ Row {
             }
         }
 
-        DankIcon {
+        DarkIcon {
             anchors.centerIn: parent
             name: {
                 if (!defaultSource) return "mic_off"
@@ -67,7 +67,7 @@ Row {
         }
     }
 
-    DankSlider {
+    DarkSlider {
         readonly property real actualVolumePercent: defaultSource ? Math.round(defaultSource.audio.volume * 100) : 0
 
         anchors.verticalCenter: parent.verticalCenter

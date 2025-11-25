@@ -53,7 +53,7 @@ Row {
                 }
             }
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: {
                     if (!DisplayService.brightnessAvailable) return "brightness_low"
@@ -69,7 +69,7 @@ Row {
         }
     }
 
-    DankSlider {
+    DarkSlider {
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width - (Theme.iconSize + Theme.spacingS * 2)
         enabled: DisplayService.brightnessAvailable

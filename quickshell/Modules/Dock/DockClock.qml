@@ -24,7 +24,7 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            DankIcon {
+            DarkIcon {
                 name: "schedule"
                 size: 16
                 color: Theme.primary

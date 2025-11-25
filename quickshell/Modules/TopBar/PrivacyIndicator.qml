@@ -54,7 +54,7 @@ Rectangle {
             visible: PrivacyService.microphoneActive
             anchors.verticalCenter: parent.verticalCenter
 
-            DankIcon {
+            DarkIcon {
                 name: "mic"
                 size: Theme.iconSizeSmall
                 color: Theme.error
@@ -70,7 +70,7 @@ Rectangle {
             visible: PrivacyService.cameraActive
             anchors.verticalCenter: parent.verticalCenter
 
-            DankIcon {
+            DarkIcon {
                 name: "camera_video"
                 size: Theme.iconSizeSmall
                 color: Theme.surfaceText
@@ -97,7 +97,7 @@ Rectangle {
             visible: PrivacyService.screensharingActive
             anchors.verticalCenter: parent.verticalCenter
 
-            DankIcon {
+            DarkIcon {
                 name: "screen_share"
                 size: Theme.iconSizeSmall
                 color: Theme.warning

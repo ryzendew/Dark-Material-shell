@@ -4,7 +4,7 @@ import qs.Modals.Common
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: root
 
     property string wifiPasswordSSID: ""
@@ -93,7 +93,7 @@ DankModal {
                         }
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         iconName: "close"
                         iconSize: Theme.iconSize - 4
                         iconColor: Theme.surfaceText
@@ -119,7 +119,7 @@ DankModal {
                                    }
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         id: passwordInput
 
                         anchors.fill: parent
@@ -182,7 +182,7 @@ DankModal {
                         border.color: checked ? Theme.primary : Theme.outlineButton
                         border.width: 2
 
-                        DankIcon {
+                        DarkIcon {
                             anchors.centerIn: parent
                             name: "check"
                             size: 12

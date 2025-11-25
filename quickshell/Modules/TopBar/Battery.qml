@@ -37,7 +37,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: SettingsData.topBarNoBackground ? 1 : 2
 
-        DankIcon {
+        DarkIcon {
             name: BatteryService.getBatteryIcon()
             size: Theme.iconSize - 6
             color: {

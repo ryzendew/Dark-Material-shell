@@ -40,7 +40,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: Theme.spacingXS
 
-        DankIcon {
+        DarkIcon {
             id: networkIcon
 
             name: {
@@ -77,7 +77,7 @@ Rectangle {
             }
         }
 
-        DankIcon {
+        DarkIcon {
             id: bluetoothIcon
 
             name: "bluetooth"
@@ -105,7 +105,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showAudioIcon
 
-            DankIcon {
+            DarkIcon {
                 id: audioIcon
 
                 name: {
@@ -169,7 +169,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showMicIcon && PrivacyService.microphoneActive
 
-            DankIcon {
+            DarkIcon {
                 id: micIcon
 
                 name: {
@@ -214,7 +214,7 @@ Rectangle {
         }
 
         // Fallback settings icon when all other icons are hidden
-        DankIcon {
+        DarkIcon {
             name: "settings"
             size: Theme.iconSize - 8
             color: controlCenterArea.containsMouse || root.isActive ? Theme.primary : Theme.surfaceText

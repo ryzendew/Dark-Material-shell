@@ -72,7 +72,7 @@ Rectangle {
         anchors.rightMargin: Theme.spacingM
         spacing: Theme.spacingM
 
-        DankIcon {
+        DarkIcon {
             name: root.iconName
             size: (Theme.iconSize || 24)
             color: isActive ? (Theme.primaryContainer || Theme.primary) : (Theme.primary || "#888888")

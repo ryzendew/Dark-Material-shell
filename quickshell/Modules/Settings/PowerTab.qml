@@ -44,7 +44,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -80,7 +80,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: BatteryService.getBatteryIcon()
                             size: Theme.iconSize
                             color: Theme.primary
@@ -146,7 +146,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "tune"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -170,7 +170,7 @@ Item {
                         width: parent.width
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Power Profile"
@@ -208,7 +208,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "power_settings_new"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -232,7 +232,7 @@ Item {
                         width: parent.width
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Power Button"
@@ -246,7 +246,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Sleep Button"
@@ -260,7 +260,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Hibernate Button"
@@ -300,7 +300,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "laptop"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -324,7 +324,7 @@ Item {
                         width: parent.width
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "When Lid is Closed (On Battery)"
@@ -338,7 +338,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "When Lid is Closed (Plugged In)"
@@ -376,7 +376,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "bedtime"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -414,7 +414,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 height: 50
                                 text: "Select Time"
@@ -438,7 +438,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 height: 50
                                 text: "Select Time"
@@ -478,7 +478,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "desktop_windows"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -516,7 +516,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 height: 50
                                 text: "Select Time"
@@ -540,7 +540,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 height: 50
                                 text: "Select Time"
@@ -580,7 +580,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "battery_charging_full"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -618,7 +618,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 id: lowBatterySlider
                                 width: parent.width
                                 minimum: 5
@@ -648,7 +648,7 @@ Item {
                                 color: Theme.surfaceText
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 minimum: 1
                                 maximum: 10
@@ -666,7 +666,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Low Battery Action"
@@ -680,7 +680,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Critical Battery Action"

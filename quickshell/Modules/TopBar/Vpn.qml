@@ -29,7 +29,7 @@ Rectangle {
         return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, baseColor.a * Theme.widgetTransparency);
     }
 
-    DankIcon {
+    DarkIcon {
         id: icon
 
         name: VpnService.isBusy ? "sync" : (VpnService.connected ? "vpn_lock" : "vpn_key_off")

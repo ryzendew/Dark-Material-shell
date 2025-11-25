@@ -58,7 +58,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: Theme.spacingS
 
-        DankIcon {
+        DarkIcon {
             name: "network_check"
             size: Theme.iconSize - 8
             color: Theme.surfaceText

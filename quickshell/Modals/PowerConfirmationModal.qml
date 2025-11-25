@@ -4,7 +4,7 @@ import qs.Modals.Common
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: root
 
     property string action: ""
@@ -90,7 +90,7 @@ DankModal {
                         height: 1
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         iconName: "close"
                         iconSize: Theme.iconSize - 4
                         iconColor: Theme.surfaceText
@@ -121,7 +121,7 @@ DankModal {
                         anchors.centerIn: parent
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "timer"
                             size: Theme.iconSize
                             color: Theme.error

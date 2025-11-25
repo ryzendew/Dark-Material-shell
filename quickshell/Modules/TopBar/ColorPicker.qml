@@ -20,7 +20,7 @@ Rectangle {
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: "transparent"
 
-    DankIcon {
+    DarkIcon {
         id: colorPickerIcon
 
         anchors.centerIn: parent

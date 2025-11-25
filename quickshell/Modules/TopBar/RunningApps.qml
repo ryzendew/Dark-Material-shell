@@ -232,7 +232,7 @@ Rectangle {
                     }
                 }
 
-                DankIcon {
+                DarkIcon {
                     anchors.left: parent.left
                     anchors.leftMargin: SettingsData.runningAppsCompactMode ? (parent.width - 18) / 2 : Theme.spacingXS
                     anchors.verticalCenter: parent.verticalCenter

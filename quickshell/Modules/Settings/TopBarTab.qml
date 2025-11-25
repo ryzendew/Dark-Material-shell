@@ -513,7 +513,7 @@ Item {
                          })
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         anchors.bottomMargin: Theme.spacingS
@@ -548,7 +548,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "visibility_off"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -577,7 +577,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: autoHideToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -600,7 +600,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "visibility"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -629,7 +629,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: visibilityToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -654,7 +654,7 @@ Item {
                         spacing: Theme.spacingM
                         visible: CompositorService.isNiri
 
-                        DankIcon {
+                        DarkIcon {
                             name: "fullscreen"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -683,7 +683,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: overviewToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -724,7 +724,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 id: widgetIcon
                                 name: "widgets"
                                 size: Theme.iconSize
@@ -764,7 +764,7 @@ Item {
                                     anchors.centerIn: parent
                                     spacing: Theme.spacingXS
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: "refresh"
                                         size: 14
                                         color: Theme.surfaceText
@@ -1060,7 +1060,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "opacity"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1087,7 +1087,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.topBarTransparency * 100)
@@ -1129,7 +1129,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "space_bar"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1156,7 +1156,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarSpacing
@@ -1184,7 +1184,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarBottomGap
@@ -1212,7 +1212,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarInnerPadding
@@ -1230,7 +1230,7 @@ Item {
                     }
 
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Square Corners"
                         description: "Removes rounded corners from bar container."
@@ -1241,7 +1241,7 @@ Item {
                                    }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "No Background"
                         description: "Remove widget backgrounds for a minimal look with tighter spacing."
@@ -1252,7 +1252,7 @@ Item {
                                    }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Goth Corners"
                         description: "Add curved swooping tips at the bottom of the bar."
@@ -1289,7 +1289,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "border_all"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1305,7 +1305,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Enable Border"
                         description: "Add a customizable border around the topbar"
@@ -1328,7 +1328,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarBorderWidth
@@ -1356,7 +1356,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarBorderRadius
@@ -1388,7 +1388,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingS
 
-                            DankToggle {
+                            DarkToggle {
                                 width: Math.max(84, (parent.width - Theme.spacingS * 3) / 4 + 4)
                                 text: "T"
                                 checked: SettingsData.topBarBorderTop
@@ -1397,7 +1397,7 @@ Item {
                                            }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 width: Math.max(84, (parent.width - Theme.spacingS * 3) / 4 + 4)
                                 text: "L"
                                 checked: SettingsData.topBarBorderLeft
@@ -1406,7 +1406,7 @@ Item {
                                            }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 width: Math.max(84, (parent.width - Theme.spacingS * 3) / 4 + 4)
                                 text: "R"
                                 checked: SettingsData.topBarBorderRight
@@ -1415,7 +1415,7 @@ Item {
                                            }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 width: Math.max(84, (parent.width - Theme.spacingS * 3) / 4 + 4)
                                 text: "B"
                                 checked: SettingsData.topBarBorderBottom
@@ -1453,7 +1453,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.topBarBorderRed * 255)
@@ -1478,7 +1478,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.topBarBorderGreen * 255)
@@ -1503,7 +1503,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.topBarBorderBlue * 255)
@@ -1528,7 +1528,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.topBarBorderAlpha * 100)
@@ -1572,7 +1572,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: SettingsData.topBarBorderBottomLeftInset
@@ -1597,7 +1597,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: SettingsData.topBarBorderBottomRightInset
@@ -1652,7 +1652,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "flip_to_front"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1668,7 +1668,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Float TopBar"
                         description: "Make the topbar float above other windows"
@@ -1678,7 +1678,7 @@ Item {
                                    }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Rounded Corners"
                         description: "Enable rounded corners for the topbar"
@@ -1701,7 +1701,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarCornerRadius
@@ -1727,7 +1727,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.topBarHeight
@@ -1763,7 +1763,7 @@ Item {
                                 color: Theme.surfaceVariantText
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.topBarTopMargin
@@ -1792,7 +1792,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: SettingsData.topBarLeftMargin
@@ -1817,7 +1817,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: SettingsData.topBarRightMargin

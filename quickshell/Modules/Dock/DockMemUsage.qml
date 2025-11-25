@@ -25,7 +25,7 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            DankIcon {
+            DarkIcon {
                 name: "storage"
                 size: 16
                 color: Theme.primary

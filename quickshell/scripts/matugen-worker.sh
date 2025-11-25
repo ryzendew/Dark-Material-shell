@@ -174,23 +174,23 @@ build_once() {
   HONOR=$(echo "$SECTION"  | sed -n 's/.*"primary":"\(#[0-9a-fA-F]\{6\}\)".*/\1/p')
   SURFACE=$(echo "$SECTION" | sed -n 's/.*"surface":"\(#[0-9a-fA-F]\{6\}\)".*/\1/p')
 
-  if command -v ghostty >/dev/null 2>&1 && [[ -f "$CONFIG_DIR/ghostty/config-dankcolors" ]]; then
-    OUT=$("$SHELL_DIR/matugen/dank16.py" "$PRIMARY" $([[ "$mode" == "light" ]] && echo --light) ${HONOR:+--honor-primary "$HONOR"} ${SURFACE:+--background "$SURFACE"} 2>/dev/null || true)
+  if command -v ghostty >/dev/null 2>&1 && [[ -f "$CONFIG_DIR/ghostty/config-darkcolors" ]]; then
+    OUT=$("$SHELL_DIR/matugen/dark16.py" "$PRIMARY" $([[ "$mode" == "light" ]] && echo --light) ${HONOR:+--honor-primary "$HONOR"} ${SURFACE:+--background "$SURFACE"} 2>/dev/null || true)
     if [[ -n "${OUT:-}" ]]; then
       TMP="$(mktemp)"
       printf "%s\n\n" "$OUT" > "$TMP"
-      cat "$CONFIG_DIR/ghostty/config-dankcolors" >> "$TMP"
-      mv "$TMP" "$CONFIG_DIR/ghostty/config-dankcolors"
+      cat "$CONFIG_DIR/ghostty/config-darkcolors" >> "$TMP"
+      mv "$TMP" "$CONFIG_DIR/ghostty/config-darkcolors"
     fi
   fi
 
-  if command -v kitty >/dev/null 2>&1 && [[ -f "$CONFIG_DIR/kitty/dank-theme.conf" ]]; then
-    OUT=$("$SHELL_DIR/matugen/dank16.py" "$PRIMARY" $([[ "$mode" == "light" ]] && echo --light) ${HONOR:+--honor-primary "$HONOR"} ${SURFACE:+--background "$SURFACE"} --kitty 2>/dev/null || true)
+  if command -v kitty >/dev/null 2>&1 && [[ -f "$CONFIG_DIR/kitty/dark-theme.conf" ]]; then
+    OUT=$("$SHELL_DIR/matugen/dark16.py" "$PRIMARY" $([[ "$mode" == "light" ]] && echo --light) ${HONOR:+--honor-primary "$HONOR"} ${SURFACE:+--background "$SURFACE"} --kitty 2>/dev/null || true)
     if [[ -n "${OUT:-}" ]]; then
       TMP="$(mktemp)"
       printf "%s\n\n" "$OUT" > "$TMP"
-      cat "$CONFIG_DIR/kitty/dank-theme.conf" >> "$TMP"
-      mv "$TMP" "$CONFIG_DIR/kitty/dank-theme.conf"
+      cat "$CONFIG_DIR/kitty/dark-theme.conf" >> "$TMP"
+      mv "$TMP" "$CONFIG_DIR/kitty/dark-theme.conf"
     fi
   fi
   COLOR_SCHEME=$([[ "$mode" == "light" ]] && echo prefer-light || echo prefer-dark)

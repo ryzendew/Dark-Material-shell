@@ -4,7 +4,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankFlickable {
+DarkFlickable {
     anchors.fill: parent
     contentHeight: systemColumn.implicitHeight
     Component.onCompleted: {
@@ -118,7 +118,7 @@ DankFlickable {
                                 width: parent.width
                                 spacing: Theme.spacingS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "memory"
                                     size: Theme.iconSizeSmall
                                     color: Theme.primary
@@ -259,7 +259,7 @@ DankFlickable {
                                 width: parent.width
                                 spacing: Theme.spacingS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "auto_awesome_mosaic"
                                     size: Theme.iconSizeSmall
                                     color: Theme.secondary
@@ -402,7 +402,7 @@ DankFlickable {
                     width: parent.width
                     spacing: Theme.spacingS
 
-                    DankIcon {
+                    DarkIcon {
                         name: "storage"
                         size: Theme.iconSize
                         color: Theme.surfaceText

@@ -30,7 +30,7 @@ Column {
         width: parent.width
         spacing: Theme.spacingM
 
-        DankIcon {
+        DarkIcon {
             name: root.titleIcon
             size: Theme.iconSize
             color: Theme.primary
@@ -83,7 +83,7 @@ Column {
                                           Theme.outline.b, 0.2)
                     border.width: 1
 
-                    DankIcon {
+                    DarkIcon {
                         name: "drag_indicator"
                         size: Theme.iconSize - 4
                         color: Theme.outline
@@ -93,7 +93,7 @@ Column {
                         opacity: 0.8
                     }
 
-                    DankIcon {
+                    DarkIcon {
                         name: modelData.icon
                         size: Theme.iconSize
                         color: modelData.enabled ? Theme.primary : Theme.outline
@@ -145,7 +145,7 @@ Column {
                             height: 32
                             visible: modelData.id === "gpuTemp"
 
-                            DankDropdown {
+                            DarkDropdown {
                                 id: gpuDropdown
                                 anchors.fill: parent
                                 currentValue: {
@@ -197,7 +197,7 @@ Column {
                                          || modelData.id === "cpuTemp"
                                          || modelData.id === "gpuTemp")
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "warning"
                                 size: 20
                                 color: Theme.error
@@ -261,7 +261,7 @@ Column {
                                      || modelData.id === "focusedWindow"
                                      || modelData.id === "runningApps"
 
-                            DankActionButton {
+                            DarkActionButton {
                                 id: smallSizeButton
                                 buttonSize: 28
                                 visible: modelData.id === "music"
@@ -274,7 +274,7 @@ Column {
                                 }
                             }
 
-                            DankActionButton {
+                            DarkActionButton {
                                 id: mediumSizeButton
                                 buttonSize: 28
                                 visible: modelData.id === "music"
@@ -287,7 +287,7 @@ Column {
                                 }
                             }
 
-                            DankActionButton {
+                            DarkActionButton {
                                 id: largeSizeButton
                                 buttonSize: 28
                                 visible: modelData.id === "music"
@@ -300,7 +300,7 @@ Column {
                                 }
                             }
 
-                            DankActionButton {
+                            DarkActionButton {
                                 id: compactModeButton
                                 buttonSize: 28
                                 visible: modelData.id === "clock"
@@ -373,7 +373,7 @@ Column {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             visible: modelData.id === "controlCenterButton"
                             buttonSize: 32
                             iconName: "more_vert"
@@ -392,7 +392,7 @@ Column {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             visible: modelData.id !== "spacer"
                             buttonSize: 32
                             iconName: modelData.enabled ? "visibility" : "visibility_off"
@@ -410,7 +410,7 @@ Column {
                             spacing: Theme.spacingXS
                             anchors.verticalCenter: parent.verticalCenter
 
-                            DankActionButton {
+                            DarkActionButton {
                                 buttonSize: 24
                                 iconName: "remove"
                                 iconSize: 14
@@ -431,7 +431,7 @@ Column {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankActionButton {
+                            DarkActionButton {
                                 buttonSize: 24
                                 iconName: "add"
                                 iconSize: 14
@@ -447,7 +447,7 @@ Column {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             buttonSize: 32
                             iconName: "close"
                             iconSize: 18
@@ -608,7 +608,7 @@ Column {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "lan"
                             size: 16
                             color: Theme.surfaceText
@@ -624,7 +624,7 @@ Column {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: networkToggle
                         anchors.right: parent.right
                         anchors.rightMargin: Theme.spacingS
@@ -661,7 +661,7 @@ Column {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "bluetooth"
                             size: 16
                             color: Theme.surfaceText
@@ -677,7 +677,7 @@ Column {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: bluetoothToggle
                         anchors.right: parent.right
                         anchors.rightMargin: Theme.spacingS
@@ -714,7 +714,7 @@ Column {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "volume_up"
                             size: 16
                             color: Theme.surfaceText
@@ -730,7 +730,7 @@ Column {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: audioToggle
                         anchors.right: parent.right
                         anchors.rightMargin: Theme.spacingS
@@ -767,7 +767,7 @@ Column {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "mic"
                             size: 16
                             color: Theme.surfaceText
@@ -783,7 +783,7 @@ Column {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: micToggle
                         anchors.right: parent.right
                         anchors.rightMargin: Theme.spacingS

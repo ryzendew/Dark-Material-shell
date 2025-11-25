@@ -14,7 +14,7 @@ import qs.Modals.Spotlight
 import qs.Modals.Overview
 import qs.Modules
 import qs.Modules.AppDrawer
-import qs.Modules.DankDash
+import qs.Modules.DarkDash
 import qs.Modules.ControlCenter
 import qs.Modules.Dock
 import qs.Modules.Lock
@@ -40,6 +40,8 @@ ShellRoot {
         WallpaperCyclingService.cyclingActive
         // Initialize ColorPaletteService
         ColorPaletteService.extractedColors
+        // Initialize AwwwService
+        AwwwService.awwwAvailable
     }
 
     // Force refresh entire shell when custom theme is created
@@ -203,14 +205,14 @@ ShellRoot {
     }
 
     Loader {
-        id: dankDashPopoutLoader
+        id: darkDashPopoutLoader
 
         active: false
         asynchronous: true
 
         sourceComponent: Component {
-            DankDashPopout {
-                id: dankDashPopout
+            DarkDashPopout {
+                id: darkDashPopout
             }
         }
     }
@@ -537,7 +539,7 @@ ShellRoot {
         id: notepadSlideoutVariants
         model: SettingsData.getFilteredScreens("notepad")
 
-        delegate: DankSlideout {
+        delegate: DarkSlideout {
             id: notepadSlideout
             modelData: item
             title: qsTr("Notepad")
@@ -653,53 +655,53 @@ ShellRoot {
 
     IpcHandler {
         function open(tab: string): string {
-            dankDashPopoutLoader.active = true
-            if (dankDashPopoutLoader.item) {
+            darkDashPopoutLoader.active = true
+            if (darkDashPopoutLoader.item) {
                 switch (tab.toLowerCase()) {
                 case "media":
-                    dankDashPopoutLoader.item.currentTabIndex = 1
+                    darkDashPopoutLoader.item.currentTabIndex = 1
                     break
                 case "weather":
-                    dankDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
+                    darkDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
                     break
                 default:
-                    dankDashPopoutLoader.item.currentTabIndex = 0
+                    darkDashPopoutLoader.item.currentTabIndex = 0
                     break
                 }
-                dankDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
-                dankDashPopoutLoader.item.dashVisible = true
+                darkDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
+                darkDashPopoutLoader.item.dashVisible = true
                 return "DASH_OPEN_SUCCESS"
             }
             return "DASH_OPEN_FAILED"
         }
 
         function close(): string {
-            if (dankDashPopoutLoader.item) {
-                dankDashPopoutLoader.item.dashVisible = false
+            if (darkDashPopoutLoader.item) {
+                darkDashPopoutLoader.item.dashVisible = false
                 return "DASH_CLOSE_SUCCESS"
             }
             return "DASH_CLOSE_FAILED"
         }
 
         function toggle(tab: string): string {
-            dankDashPopoutLoader.active = true
-            if (dankDashPopoutLoader.item) {
-                if (dankDashPopoutLoader.item.dashVisible) {
-                    dankDashPopoutLoader.item.dashVisible = false
+            darkDashPopoutLoader.active = true
+            if (darkDashPopoutLoader.item) {
+                if (darkDashPopoutLoader.item.dashVisible) {
+                    darkDashPopoutLoader.item.dashVisible = false
                 } else {
                     switch (tab.toLowerCase()) {
                     case "media":
-                        dankDashPopoutLoader.item.currentTabIndex = 1
+                        darkDashPopoutLoader.item.currentTabIndex = 1
                         break
                     case "weather":
-                        dankDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
+                        darkDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
                         break
                     default:
-                        dankDashPopoutLoader.item.currentTabIndex = 0
+                        darkDashPopoutLoader.item.currentTabIndex = 0
                         break
                     }
-                    dankDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
-                    dankDashPopoutLoader.item.dashVisible = true
+                    darkDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
+                    darkDashPopoutLoader.item.dashVisible = true
                 }
                 return "DASH_TOGGLE_SUCCESS"
             }

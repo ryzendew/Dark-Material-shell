@@ -127,7 +127,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -163,7 +163,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "palette"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -225,7 +225,7 @@ Item {
                         spacing: Theme.spacingM
                         anchors.horizontalCenter: parent.horizontalCenter
 
-                        DankButtonGroup {
+                        DarkButtonGroup {
                             property int currentThemeIndex: {
                                 if (Theme.currentTheme === Theme.dynamic) return 2
                                 if (Theme.currentThemeName === "custom") return 3
@@ -337,7 +337,7 @@ Item {
                                             font.pixelSize: Theme.fontSizeSmall
                                         }
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "keyboard_arrow_down"
                                             size: 16
                                             color: Theme.surfaceVariantText
@@ -367,7 +367,7 @@ Item {
                                         color: Theme.error || "#f44336"
                                         visible: SettingsData.currentColorTheme !== ""
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "delete"
                                             size: 16
                                             color: Theme.errorText || "#ffffff"
@@ -808,7 +808,7 @@ Item {
                                         layer.enabled: true
                                     }
 
-                                    DankIcon {
+                                    DarkIcon {
                                         anchors.centerIn: parent
                                         name: {
                                             if (ToastService.wallpaperErrorStatus === "error" || ToastService.wallpaperErrorStatus === "matugen_missing")
@@ -886,7 +886,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankActionButton {
+                                DarkActionButton {
                                     buttonSize: 48
                                     iconName: "folder_open"
                                     iconSize: Theme.iconSize
@@ -947,7 +947,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "opacity"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -992,7 +992,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankButtonGroup {
+                            DarkButtonGroup {
                                 id: widgetColorGroup
                                 property int currentColorIndex: {
                                     switch (SettingsData.widgetBackgroundColor) {
@@ -1025,7 +1025,7 @@ Item {
                             }
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1053,7 +1053,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1081,7 +1081,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1109,7 +1109,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1137,7 +1137,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1165,7 +1165,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1206,7 +1206,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "palette"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1235,7 +1235,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: iconTintingToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -1258,7 +1258,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.iconTintIntensity * 100)
@@ -1305,7 +1305,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "border_style"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1343,7 +1343,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1371,7 +1371,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1399,7 +1399,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1427,7 +1427,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.controlCenterBorderThickness
@@ -1454,7 +1454,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(
@@ -1482,7 +1482,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.settingsBorderThickness
@@ -1522,7 +1522,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "auto_fix_high"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1560,7 +1560,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.colorVibrance * 100
@@ -1587,7 +1587,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.cornerRadius
@@ -1614,7 +1614,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.hyprlandBlurSize
@@ -1641,7 +1641,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.hyprlandBlurPasses
@@ -1675,7 +1675,7 @@ Item {
                     anchors.margins: Theme.spacingM
                     spacing: Theme.spacingM
 
-                    DankIcon {
+                    DarkIcon {
                         name: "info"
                         size: Theme.iconSizeSmall
                         color: Theme.warning
@@ -1715,18 +1715,18 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingXS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "image"
                             size: Theme.iconSize
                             color: Theme.primary
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        DankDropdown {
+                        DarkDropdown {
                             width: parent.width - Theme.iconSize - Theme.spacingXS
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Icon Theme"
-                            description: "DankShell & System Icons\n(requires restart)"
+                            description: "DarkShell & System Icons\n(requires restart)"
                             currentValue: SettingsData.iconTheme
                             enableFuzzySearch: true
                             popupWidthOffset: 100
@@ -1770,14 +1770,14 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingXS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "palette"
                             size: Theme.iconSize
                             color: Theme.primary
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        DankDropdown {
+                        DarkDropdown {
                             width: parent.width - Theme.iconSize - Theme.spacingXS
                             anchors.verticalCenter: parent.verticalCenter
                             text: "GTK Theme"
@@ -1821,7 +1821,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingXS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "extension"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1833,7 +1833,7 @@ Item {
                             spacing: Theme.spacingXS
                             anchors.verticalCenter: parent.verticalCenter
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 text: "GNOME Shell Theme"
                                 description: SettingsData.userThemeExtensionAvailable && SettingsData.userThemeExtensionEnabled 
@@ -1898,7 +1898,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingXS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "settings"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1910,7 +1910,7 @@ Item {
                             spacing: Theme.spacingXS
                             anchors.verticalCenter: parent.verticalCenter
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 text: "QT Theme"
                                 description: SettingsData.qt5ctAvailable || SettingsData.qt6ctAvailable
@@ -1967,7 +1967,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingXS
 
-                        DankIcon {
+                        DarkIcon {
                             name: "ads_click"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1979,7 +1979,7 @@ Item {
                             spacing: Theme.spacingS
                             anchors.verticalCenter: parent.verticalCenter
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: parent.width
                                 text: "Cursor Theme"
                                 description: "Mouse Cursor Appearance"
@@ -2008,7 +2008,7 @@ Item {
                                     font.weight: Font.Medium
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: SettingsData.cursorSize
@@ -2051,7 +2051,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "extension"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -2083,7 +2083,7 @@ Item {
                                 anchors.centerIn: parent
                                 spacing: Theme.spacingS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "folder"
                                     size: 16
                                     color: Theme.primary
@@ -2119,7 +2119,7 @@ Item {
                                 anchors.centerIn: parent
                                 spacing: Theme.spacingS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "settings"
                                     size: 16
                                     color: Theme.primary
@@ -2145,7 +2145,7 @@ Item {
                     }
 
                     StyledText {
-                        text: `Generate baseline GTK3/4 or QT5/QT6 (requires qt6ct-kde) configurations to follow DMS colors. Only needed once.<br /><br />It is recommended to install <a href="https://github.com/AvengeMedia/DankMaterialShell/blob/master/README.md#Theming" style="text-decoration:none; color:${Theme.primary};">Colloid</a> GTK theme prior to applying GTK themes.`
+                        text: `Generate baseline GTK3/4 or QT5/QT6 (requires qt6ct-kde) configurations to follow DMS colors. Only needed once.<br /><br />It is recommended to install <a href="https://github.com/AvengeMedia/DarkMaterialShell/blob/master/README.md#Theming" style="text-decoration:none; color:${Theme.primary};">Colloid</a> GTK theme prior to applying GTK themes.`
                         textFormat: Text.RichText
                         linkColor: Theme.primary
                         onLinkActivated: url => Qt.openUrlExternally(url)

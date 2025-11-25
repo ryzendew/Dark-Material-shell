@@ -1,6 +1,6 @@
 # IPC Commands Reference
 
-DankMaterialShell provides comprehensive IPC (Inter-Process Communication) functionality that allows external control of the shell through command-line commands. All IPC commands follow the format:
+DarkMaterialShell provides comprehensive IPC (Inter-Process Communication) functionality that allows external control of the shell through command-line commands. All IPC commands follow the format:
 
 ```bash
 dms ipc call <target> <function> [parameters...]

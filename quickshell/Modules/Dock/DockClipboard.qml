@@ -20,7 +20,7 @@ Item {
         border.width: 1
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
 
-        DankIcon {
+        DarkIcon {
             anchors.centerIn: parent
             name: "content_paste"
             size: 14

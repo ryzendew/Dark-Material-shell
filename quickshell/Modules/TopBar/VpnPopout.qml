@@ -10,7 +10,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankPopout {
+DarkPopout {
     id: root
 
     property string triggerSection: "right"
@@ -113,7 +113,7 @@ DankPopout {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
 
-                        DankIcon {
+                        DarkIcon {
                             anchors.centerIn: parent
                             name: "close"
                             size: Theme.iconSize - 4
@@ -200,7 +200,7 @@ DankPopout {
                                     anchors.centerIn: parent
                                     spacing: Theme.spacingXS
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: "link_off"
                                         size: Theme.fontSizeSmall
                                         color: Theme.surfaceText
@@ -234,7 +234,7 @@ DankPopout {
                             color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
                         }
 
-                        DankFlickable {
+                        DarkFlickable {
                             width: parent.width
                             height: 160
                             contentHeight: listCol.height
@@ -255,7 +255,7 @@ DankPopout {
                                         anchors.centerIn: parent
                                         spacing: Theme.spacingS
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "playlist_remove"
                                             size: 36
                                             color: Theme.surfaceVariantText
@@ -300,7 +300,7 @@ DankPopout {
                                             anchors.margins: Theme.spacingM
                                             spacing: Theme.spacingS
 
-                                            DankIcon {
+                                            DarkIcon {
                                                 name: VpnService.isActiveUuid(modelData.uuid) ? "vpn_lock" : "vpn_key_off"
                                                 size: Theme.iconSize - 4
                                                 color: VpnService.isActiveUuid(modelData.uuid) ? Theme.primary : Theme.surfaceText

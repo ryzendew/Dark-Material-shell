@@ -65,7 +65,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 4
 
-        DankIcon {
+        DarkIcon {
             name: BatteryService.getBatteryIcon()
             size: parent.parent.width * 0.25
             color: {

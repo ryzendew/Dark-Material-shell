@@ -2,8 +2,8 @@
 contrast=4
 
 [General]
-ColorScheme=DankMatugen
-Name=Dank Shell (matugen)
+ColorScheme=DarkMatugen
+Name=Dark Shell (matugen)
 
 [ColorEffects:Disabled]
 Color={{colors.on_surface_variant.default.red}},{{colors.on_surface_variant.default.green}},{{colors.on_surface_variant.default.blue}}

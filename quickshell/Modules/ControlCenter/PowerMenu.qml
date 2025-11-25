@@ -77,7 +77,7 @@ PanelWindow {
                     height: 1
                 }
 
-                DankActionButton {
+                DarkActionButton {
                     iconName: "close"
                     iconSize: Theme.iconSize - 4
                     iconColor: Theme.surfaceText
@@ -110,7 +110,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "logout"
                             size: Theme.iconSize
                             color: Theme.surfaceText
@@ -160,7 +160,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "bedtime"
                             size: Theme.iconSize
                             color: Theme.surfaceText
@@ -210,7 +210,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "restart_alt"
                             size: Theme.iconSize
                             color: rebootArea.containsMouse ? Theme.warning : Theme.surfaceText
@@ -260,7 +260,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "power_settings_new"
                             size: Theme.iconSize
                             color: powerOffArea.containsMouse ? Theme.error : Theme.surfaceText

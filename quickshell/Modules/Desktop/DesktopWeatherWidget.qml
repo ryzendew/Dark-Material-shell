@@ -71,7 +71,7 @@ PanelWindow {
             spacing: scaledSpacing * 2
             visible: !WeatherService.weather.available || WeatherService.weather.temp === 0
 
-            DankIcon {
+            DarkIcon {
                 name: "cloud_off"
                 size: Theme.iconSize * 2 * scaleFactor
                 color: Qt.rgba(Theme.surfaceText.r, Theme.surfaceText.g, Theme.surfaceText.b, 0.5)
@@ -98,7 +98,7 @@ PanelWindow {
                 width: parent.width
                 height: 50 * scaleFactor
 
-                DankIcon {
+                DarkIcon {
                     id: refreshButton
                     name: "refresh"
                     size: (Theme.iconSize - 4) * scaleFactor
@@ -144,7 +144,7 @@ PanelWindow {
                     anchors.topMargin: 2
                     spacing: 8
 
-                    DankIcon {
+                    DarkIcon {
                         id: weatherIcon
                         name: WeatherService.getWeatherIcon(WeatherService.weather.wCode)
                         size: scaledIconSize * 1.5
@@ -240,7 +240,7 @@ PanelWindow {
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            DankIcon {
+                            DarkIcon {
                                 anchors.centerIn: parent
                                 name: "device_thermostat"
                                 size: (Theme.iconSize - 4) * scaleFactor
@@ -283,7 +283,7 @@ PanelWindow {
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            DankIcon {
+                            DarkIcon {
                                 anchors.centerIn: parent
                                 name: "humidity_low"
                                 size: (Theme.iconSize - 4) * scaleFactor
@@ -326,7 +326,7 @@ PanelWindow {
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            DankIcon {
+                            DarkIcon {
                                 anchors.centerIn: parent
                                 name: "air"
                                 size: (Theme.iconSize - 4) * scaleFactor
@@ -416,7 +416,7 @@ PanelWindow {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                 }
 
-                                DankIcon {
+                                DarkIcon {
                                     name: forecastData ? WeatherService.getWeatherIcon(forecastData.wCode || 0) : "cloud"
                                     size: Theme.iconSize * 1.5 * scaleFactor
                                     color: isToday ? Theme.primary : Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.8)

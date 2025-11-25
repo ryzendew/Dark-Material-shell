@@ -67,7 +67,7 @@ Item {
         SettingsData.setScreenPreferences(prefs);
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         anchors.bottomMargin: Theme.spacingS
@@ -100,7 +100,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "monitor"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -160,7 +160,7 @@ Item {
                                     anchors.margins: Theme.spacingS
                                     spacing: Theme.spacingM
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: "desktop_windows"
                                         size: Theme.iconSize - 4
                                         color: Theme.primary
@@ -242,7 +242,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: modelData.icon
                                     size: Theme.iconSize
                                     color: Theme.primary
@@ -291,7 +291,7 @@ Item {
                                     width: parent.width
                                     spacing: Theme.spacingXS
 
-                                    DankToggle {
+                                    DarkToggle {
                                         width: parent.width
                                         text: "All displays"
                                         description: "Show on all connected displays"
@@ -320,7 +320,7 @@ Item {
                                         Repeater {
                                             model: Quickshell.screens
 
-                                            delegate: DankToggle {
+                                            delegate: DarkToggle {
                                                 property string screenName: modelData.name
                                                 property string componentId: parent.parent.componentId
 

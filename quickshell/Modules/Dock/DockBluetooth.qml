@@ -25,7 +25,7 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            DankIcon {
+            DarkIcon {
                 name: "bluetooth"
                 size: 16
                 color: BluetoothService.enabled ? Theme.primary : Theme.surfaceText

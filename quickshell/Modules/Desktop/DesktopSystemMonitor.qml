@@ -4,7 +4,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankOSD {
+DarkOSD {
     id: root
 
     property var screen: null
@@ -87,7 +87,7 @@ DankOSD {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                DarkIcon {
                     name: "memory"
                     size: Theme.iconSize - 6
                     color: {
@@ -281,7 +281,7 @@ DankOSD {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                DarkIcon {
                     name: "auto_awesome_mosaic"
                     size: Theme.iconSize - 6
                     color: {
@@ -362,7 +362,7 @@ DankOSD {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                DarkIcon {
                     name: "developer_board"
                     size: Theme.iconSize - 6
                     color: {

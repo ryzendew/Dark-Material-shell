@@ -394,7 +394,7 @@ Rectangle {
                                 colorizationColor: Theme.primary
                             }
 
-                            DankIcon {
+                            DarkIcon {
                                 anchors.centerIn: parent
                                 size: 18
                                 name: "sports_esports"
@@ -452,7 +452,7 @@ Rectangle {
                     }
                 }
 
-                DankIcon {
+                DarkIcon {
                     visible: hasIcon && iconData.type === "icon" && (!SettingsData.showWorkspaceApps || icons.length === 0)
                     anchors.centerIn: parent
                     name: (hasIcon && iconData.type === "icon") ? iconData.value : ""

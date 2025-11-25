@@ -55,7 +55,7 @@ ScrollView {
                 width: parent.width
             }
 
-            DankToggle {
+            DarkToggle {
                 checked: SettingsData.desktopWidgetsEnabled
                 onToggled: {
                     SettingsData.setDesktopWidgetsEnabled(checked)
@@ -89,7 +89,7 @@ ScrollView {
                     width: parent.width
                 }
 
-                DankToggle {
+                DarkToggle {
                     checked: SettingsData.desktopCpuTempEnabled
                     onToggled: {
                         SettingsData.setDesktopCpuTempEnabled(checked)
@@ -141,7 +141,7 @@ ScrollView {
                     width: parent.width
                 }
 
-                DankToggle {
+                DarkToggle {
                     checked: SettingsData.desktopGpuTempEnabled
                     onToggled: {
                         SettingsData.setDesktopGpuTempEnabled(checked)
@@ -193,7 +193,7 @@ ScrollView {
                     width: parent.width
                 }
 
-                DankToggle {
+                DarkToggle {
                     checked: SettingsData.desktopSystemMonitorEnabled
                     onToggled: {
                         SettingsData.setDesktopSystemMonitorEnabled(checked)
@@ -304,7 +304,7 @@ ScrollView {
                     width: parent.width
                 }
 
-                DankToggle {
+                DarkToggle {
                     checked: SettingsData.desktopClockEnabled
                     onToggled: {
                         SettingsData.setDesktopClockEnabled(checked)
@@ -356,7 +356,7 @@ ScrollView {
                     width: parent.width
                 }
 
-                DankToggle {
+                DarkToggle {
                     checked: SettingsData.desktopTerminalEnabled
                     onToggled: {
                         SettingsData.setDesktopTerminalEnabled(checked)
@@ -552,7 +552,7 @@ ScrollView {
                             color: Theme.surfaceTextMedium
                         }
                         
-                        DankToggle {
+                        DarkToggle {
                             checked: SettingsData.desktopWeatherEnabled
                             onToggled: {
                                 SettingsData.setDesktopWeatherEnabled(checked)

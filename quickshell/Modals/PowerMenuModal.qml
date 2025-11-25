@@ -4,7 +4,7 @@ import qs.Modals.Common
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: root
 
     property int selectedIndex: 0
@@ -108,7 +108,7 @@ DankModal {
                         height: 1
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         iconName: "close"
                         iconSize: Theme.iconSize - 4
                         iconColor: Theme.surfaceText
@@ -145,7 +145,7 @@ DankModal {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "logout"
                                 size: Theme.iconSize
                                 color: Theme.surfaceText
@@ -198,7 +198,7 @@ DankModal {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "bedtime"
                                 size: Theme.iconSize
                                 color: Theme.surfaceText
@@ -252,7 +252,7 @@ DankModal {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "ac_unit"
                                 size: Theme.iconSize
                                 color: Theme.surfaceText
@@ -306,7 +306,7 @@ DankModal {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "restart_alt"
                                 size: Theme.iconSize
                                 color: rebootArea.containsMouse ? Theme.warning : Theme.surfaceText
@@ -360,7 +360,7 @@ DankModal {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "power_settings_new"
                                 size: Theme.iconSize
                                 color: powerOffArea.containsMouse ? Theme.error : Theme.surfaceText

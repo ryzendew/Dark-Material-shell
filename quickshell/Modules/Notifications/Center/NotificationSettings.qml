@@ -120,7 +120,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: Theme.spacingM
 
-                DankIcon {
+                DarkIcon {
                     name: SessionData.doNotDisturb ? "notifications_off" : "notifications"
                     size: Theme.iconSizeSmall
                     color: SessionData.doNotDisturb ? Theme.error : Theme.surfaceText
@@ -135,7 +135,7 @@ Rectangle {
                 }
             }
 
-            DankToggle {
+            DarkToggle {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 checked: SessionData.doNotDisturb
@@ -156,7 +156,7 @@ Rectangle {
             color: Theme.surfaceVariantText
         }
 
-        DankDropdown {
+        DarkDropdown {
             width: parent.width
             text: "Low Priority"
             description: "Timeout for low priority notifications"
@@ -172,7 +172,7 @@ Rectangle {
                             }
         }
 
-        DankDropdown {
+        DarkDropdown {
             width: parent.width
             text: "Normal Priority"
             description: "Timeout for normal priority notifications"
@@ -188,7 +188,7 @@ Rectangle {
                             }
         }
 
-        DankDropdown {
+        DarkDropdown {
             width: parent.width
             text: "Critical Priority"
             description: "Timeout for critical priority notifications"
@@ -219,7 +219,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: Theme.spacingM
 
-                DankIcon {
+                DarkIcon {
                     name: "notifications_active"
                     size: Theme.iconSizeSmall
                     color: SettingsData.notificationOverlayEnabled ? Theme.primary : Theme.surfaceText
@@ -244,7 +244,7 @@ Rectangle {
                 }
             }
 
-            DankToggle {
+            DarkToggle {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 checked: SettingsData.notificationOverlayEnabled

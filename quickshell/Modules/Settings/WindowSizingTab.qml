@@ -24,7 +24,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -59,7 +59,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "aspect_ratio"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -95,7 +95,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.settingsWindowWidth > 0 ? SettingsData.settingsWindowWidth : getDefaultWidth()
@@ -124,7 +124,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.settingsWindowHeight > 0 ? SettingsData.settingsWindowHeight : getDefaultHeight()
@@ -349,7 +349,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "open_with"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -680,7 +680,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "monitor"
                             size: Theme.iconSize
                             color: Theme.primary

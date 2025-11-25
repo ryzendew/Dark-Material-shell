@@ -64,7 +64,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 3
 
-        DankIcon {
+        DarkIcon {
             name: "memory"
             size: Theme.iconSize - 8
             color: {

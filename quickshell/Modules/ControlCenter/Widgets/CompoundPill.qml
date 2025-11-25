@@ -108,7 +108,7 @@ Rectangle {
                 Behavior on opacity { NumberAnimation { duration: Theme.shortDuration } }
             }
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: iconName
                 size: Theme.iconSize

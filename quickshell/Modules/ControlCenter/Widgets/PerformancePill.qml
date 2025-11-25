@@ -108,7 +108,7 @@ Rectangle {
             height: _tileSize
             anchors.verticalCenter: parent.verticalCenter
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: root.iconName
                 size: Theme.iconSize

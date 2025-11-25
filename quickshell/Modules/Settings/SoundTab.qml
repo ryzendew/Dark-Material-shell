@@ -14,7 +14,7 @@ Item {
     property bool showOutputs: true
     property bool showInputs: true
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         contentWidth: width
         contentHeight: contentColumn.implicitHeight
@@ -327,7 +327,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         id: slider
                         width: Math.max(80, appControlsRow.width - pctLabel.implicitWidth - 40 - (Theme.spacingS || 8) * 2)
                         enabled: rowRoot.node && rowRoot.node.audio
@@ -346,7 +346,7 @@ Item {
                         }
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         buttonSize: 32
                         iconName: rowRoot.node && rowRoot.node.audio && rowRoot.node.audio.muted ? "volume_off" : (rowRoot.isInput ? "mic" : "volume_up")
                         iconSize: 18
@@ -385,7 +385,7 @@ Item {
                 anchors.margins: (Theme.spacingM || 12)
                 spacing: (Theme.spacingM || 12)
 
-                DankIcon {
+                DarkIcon {
                     name: isInput ? "mic" : "volume_up"
                     size: (Theme.iconSize || 24)
                     color: Theme.surfaceText
@@ -428,7 +428,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: Math.max(120, devControlsRow.width - 40 - (Theme.spacingS || 8) * 2 - (parent.children[0].implicitWidth || 36))
                         enabled: devRow.node && devRow.node.audio
                         minimum: 0
@@ -446,7 +446,7 @@ Item {
                         }
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         buttonSize: 32
                         iconName: devRow.node && devRow.node.audio && devRow.node.audio.muted ? "volume_off" : (devRow.isInput ? "mic" : "volume_up")
                         iconSize: 18
@@ -528,7 +528,7 @@ Item {
 
                 Item { width: 1; height: 1 }
 
-                DankDropdown {
+                DarkDropdown {
                     id: routeDropdown
                     width: 320
                     height: 44

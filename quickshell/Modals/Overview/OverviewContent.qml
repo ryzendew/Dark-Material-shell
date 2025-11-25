@@ -247,7 +247,7 @@ Item {
                     anchors.rightMargin: Theme.spacingXL
                     spacing: Theme.spacingM
                     
-                    DankIcon {
+                    DarkIcon {
                         anchors.verticalCenter: parent.verticalCenter
                         size: 24
                         name: "search"
@@ -265,7 +265,7 @@ Item {
                         selectByMouse: true
                     }
                     
-                    DankIcon {
+                    DarkIcon {
                         anchors.verticalCenter: parent.verticalCenter
                         size: 24
                         name: "close"
@@ -530,7 +530,7 @@ Item {
                                                 visible: (windowScreenshot.status !== Image.Ready || !windowScreenshot.source) && status === Image.Ready && source !== ""
                                             }
                                             
-                                            DankIcon {
+                                            DarkIcon {
                                                 anchors.centerIn: parent
                                                 size: 64
                                                 name: "window"
@@ -626,7 +626,7 @@ Item {
                                         anchors.centerIn: parent
                                         spacing: Theme.spacingL
                                         
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.horizontalCenter: parent.horizontalCenter
                                             size: 96
                                             name: "window"

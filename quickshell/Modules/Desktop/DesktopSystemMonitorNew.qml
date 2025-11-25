@@ -88,7 +88,7 @@ PanelWindow {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                DarkIcon {
                     name: "memory"
                     size: Theme.iconSize - 4
                     color: Theme.surfaceText
@@ -129,7 +129,7 @@ PanelWindow {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                DarkIcon {
                     name: "memory"
                     size: Theme.iconSize - 4
                     color: Theme.surfaceText

@@ -6,7 +6,7 @@ import qs.Modules.ProcessList
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: processListModal
 
     property int currentTab: 0
@@ -115,7 +115,7 @@ DankModal {
                     anchors.centerIn: parent
                     spacing: Theme.spacingL
 
-                    DankIcon {
+                    DarkIcon {
                         name: "error"
                         size: 48
                         color: Theme.error
@@ -165,7 +165,7 @@ DankModal {
                         Layout.fillWidth: true
                     }
 
-                    DankActionButton {
+                    DarkActionButton {
                         circular: false
                         iconName: "close"
                         iconSize: Theme.iconSize - 4
@@ -206,7 +206,7 @@ DankModal {
                                     anchors.centerIn: parent
                                     spacing: Theme.spacingXS
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: {
                                             const tabIcons = ["list_alt", "analytics", "settings"];
                                             return tabIcons[index] || "tab";

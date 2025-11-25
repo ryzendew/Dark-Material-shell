@@ -29,7 +29,7 @@ Rectangle {
             height: 80
             anchors.verticalCenter: parent.verticalCenter
 
-            DankCircularImage {
+            DarkCircularImage {
                 id: profileImage
 
                 anchors.fill: parent
@@ -61,7 +61,7 @@ Rectangle {
                         radius: 14
                         color: Qt.rgba(255, 255, 255, 0.9)
 
-                        DankIcon {
+                        DarkIcon {
                             anchors.centerIn: parent
                             name: "edit"
                             size: 16
@@ -91,7 +91,7 @@ Rectangle {
                         color: Qt.rgba(255, 255, 255, 0.9)
                         visible: profileImage.hasImage
 
-                        DankIcon {
+                        DarkIcon {
                             anchors.centerIn: parent
                             name: "close"
                             size: 16

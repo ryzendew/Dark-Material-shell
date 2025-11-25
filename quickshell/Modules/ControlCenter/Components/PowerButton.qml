@@ -38,7 +38,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: Theme.spacingXS
 
-        DankIcon {
+        DarkIcon {
             name: root.iconName
             size: Theme.fontSizeSmall
             color: mouseArea.containsMouse ? Theme.primary : Theme.surfaceText

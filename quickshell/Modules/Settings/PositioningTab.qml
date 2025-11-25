@@ -12,7 +12,7 @@ import qs.Widgets
 Item {
     id: positioningTab
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -47,7 +47,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "apps"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -82,7 +82,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: (SettingsData.startMenuXOffset + 1.0) * 50 // Convert -1..1 to 0..100
@@ -133,7 +133,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: (SettingsData.startMenuYOffset + 1.0) * 50 // Convert -1..1 to 0..100
@@ -197,7 +197,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "tune"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -232,7 +232,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: (SettingsData.controlCenterXOffset + 1.0) * 50 // Convert -1..1 to 0..100
@@ -283,7 +283,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: (SettingsData.controlCenterYOffset + 1.0) * 50 // Convert -1..1 to 0..100
@@ -347,7 +347,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "restore"
                             size: Theme.iconSize
                             color: Theme.primary

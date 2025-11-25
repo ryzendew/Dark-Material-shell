@@ -131,7 +131,7 @@ Item {
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
-            DankToggle {
+            DarkToggle {
                 anchors.left: parent.left
                 anchors.leftMargin: -Theme.spacingM
                 width: parent.width + Theme.spacingM
@@ -143,7 +143,7 @@ Item {
                 }
             }
 
-            DankToggle {
+            DarkToggle {
                 anchors.left: parent.left
                 anchors.leftMargin: -Theme.spacingM
                 width: parent.width + Theme.spacingM
@@ -161,7 +161,7 @@ Item {
                 color: "transparent"
                 visible: !SettingsData.notepadUseMonospace
 
-                DankDropdown {
+                DarkDropdown {
                     id: fontDropdown
                     anchors.left: parent.left
                     anchors.leftMargin: -Theme.spacingM
@@ -219,7 +219,7 @@ Item {
                         spacing: Theme.spacingS
                         anchors.verticalCenter: parent.verticalCenter
 
-                        DankActionButton {
+                        DarkActionButton {
                             buttonSize: 32
                             iconName: "remove"
                             iconSize: Theme.iconSizeSmall
@@ -249,7 +249,7 @@ Item {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             buttonSize: 32
                             iconName: "add"
                             iconSize: Theme.iconSizeSmall
@@ -275,7 +275,7 @@ Item {
                     width: parent.width
                     spacing: Theme.spacingS
 
-                    DankToggle {
+                    DarkToggle {
                         anchors.left: parent.left
                         anchors.leftMargin: -Theme.spacingM
                         width: parent.width + Theme.spacingM
@@ -291,7 +291,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         anchors.left: parent.left
                         anchors.leftMargin: -Theme.spacingM
                         width: parent.width + Theme.spacingM

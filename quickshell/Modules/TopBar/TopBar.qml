@@ -213,7 +213,7 @@ PanelWindow {
                                  "loader": appDrawerLoader,
                                  "prop": "shouldBeVisible"
                              }, {
-                                 "loader": dankDashPopoutLoader,
+                                 "loader": darkDashPopoutLoader,
                                  "prop": "shouldBeVisible"
                              }, {
                                  "loader": processListPopoutLoader,
@@ -759,7 +759,7 @@ PanelWindow {
                                     return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, baseColor.a * Theme.widgetTransparency)
                                 }
 
-                                DankIcon {
+                                DarkIcon {
                                     id: clipboardIcon
                                     anchors.centerIn: parent
                                     name: "content_paste"
@@ -836,15 +836,15 @@ PanelWindow {
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
                                 popupTarget: {
-                                    dankDashPopoutLoader.active = true
-                                    return dankDashPopoutLoader.item
+                                    darkDashPopoutLoader.active = true
+                                    return darkDashPopoutLoader.item
                                 }
                                 parentScreen: root.screen
                                 onClockClicked: {
-                                    dankDashPopoutLoader.active = true
-                                    if (dankDashPopoutLoader.item) {
-                                        dankDashPopoutLoader.item.dashVisible = !dankDashPopoutLoader.item.dashVisible
-                                        dankDashPopoutLoader.item.currentTabIndex = 0
+                                    darkDashPopoutLoader.active = true
+                                    if (darkDashPopoutLoader.item) {
+                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
+                                        darkDashPopoutLoader.item.currentTabIndex = 0
                                     }
                                 }
                             }
@@ -859,15 +859,15 @@ PanelWindow {
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
                                 popupTarget: {
-                                    dankDashPopoutLoader.active = true
-                                    return dankDashPopoutLoader.item
+                                    darkDashPopoutLoader.active = true
+                                    return darkDashPopoutLoader.item
                                 }
                                 parentScreen: root.screen
                                 onClicked: {
-                                    dankDashPopoutLoader.active = true
-                                    if (dankDashPopoutLoader.item) {
-                                        dankDashPopoutLoader.item.dashVisible = !dankDashPopoutLoader.item.dashVisible
-                                        dankDashPopoutLoader.item.currentTabIndex = 1
+                                    darkDashPopoutLoader.active = true
+                                    if (darkDashPopoutLoader.item) {
+                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
+                                        darkDashPopoutLoader.item.currentTabIndex = 1
                                     }
                                 }
                             }
@@ -881,15 +881,15 @@ PanelWindow {
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
                                 popupTarget: {
-                                    dankDashPopoutLoader.active = true
-                                    return dankDashPopoutLoader.item
+                                    darkDashPopoutLoader.active = true
+                                    return darkDashPopoutLoader.item
                                 }
                                 parentScreen: root.screen
                                 onClicked: {
-                                    dankDashPopoutLoader.active = true
-                                    if (dankDashPopoutLoader.item) {
-                                        dankDashPopoutLoader.item.dashVisible = !dankDashPopoutLoader.item.dashVisible
-                                        dankDashPopoutLoader.item.currentTabIndex = 2
+                                    darkDashPopoutLoader.active = true
+                                    if (darkDashPopoutLoader.item) {
+                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
+                                        darkDashPopoutLoader.item.currentTabIndex = 2
                                     }
                                 }
                             }

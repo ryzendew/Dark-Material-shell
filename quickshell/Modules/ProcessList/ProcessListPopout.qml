@@ -11,7 +11,7 @@ import qs.Modules.ProcessList
 import qs.Services
 import qs.Widgets
 
-DankPopout {
+DarkPopout {
     id: processListPopout
 
     property var parentWidget: null

@@ -46,7 +46,7 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 8
 
-        DankIcon {
+        DarkIcon {
             id: processIcon
 
             name: DgopService.getProcessIcon(process ? process.command : "")
@@ -162,7 +162,7 @@ Rectangle {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
 
-            DankIcon {
+            DarkIcon {
                 name: "more_vert"
                 size: Theme.iconSize - 2
                 color: Theme.surfaceText

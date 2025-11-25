@@ -1,6 +1,6 @@
 # Custom Themes
 
-This guide covers creating custom themes for DankMaterialShell. You can define your own color schemes by creating theme files that the shell can load.
+This guide covers creating custom themes for DarkMaterialShell. You can define your own color schemes by creating theme files that the shell can load.
 
 ## Theme Structure
 
@@ -144,7 +144,7 @@ While the core colors above are required, you can also customize these optional 
 
 In settings -> Theme & Colors you can choose "Custom" to choose a path to your theme.
 
-You can also edit `~/.config/DankMaterialShell/settings.json` manually
+You can also edit `~/.config/DarkMaterialShell/settings.json` manually
 
 ```json
 {

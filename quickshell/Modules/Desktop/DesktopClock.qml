@@ -3,7 +3,7 @@ import Qt5Compat.GraphicalEffects
 import qs.Common
 import qs.Widgets
 
-DankOSD {
+DarkOSD {
     id: root
 
     property var screen: null

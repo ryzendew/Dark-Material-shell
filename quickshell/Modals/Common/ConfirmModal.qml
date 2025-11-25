@@ -3,7 +3,7 @@ import qs.Common
 import qs.Modals.Common
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: root
 
     property string confirmTitle: ""

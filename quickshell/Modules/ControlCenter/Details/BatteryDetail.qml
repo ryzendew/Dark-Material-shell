@@ -57,7 +57,7 @@ Rectangle {
             height: 48
             spacing: Theme.spacingM
 
-            DankIcon {
+            DarkIcon {
                 name: BatteryService.getBatteryIcon()
                 size: Theme.iconSizeLarge
                 color: {
@@ -222,7 +222,7 @@ Rectangle {
             }
         }
 
-        DankButtonGroup {
+        DarkButtonGroup {
             property var profileModel: (typeof PowerProfiles !== "undefined") ? [PowerProfile.PowerSaver, PowerProfile.Balanced].concat(PowerProfiles.hasPerformanceProfile ? [PowerProfile.Performance] : []) : [PowerProfile.PowerSaver, PowerProfile.Balanced, PowerProfile.Performance]
             property int currentProfileIndex: {
                 if (typeof PowerProfiles === "undefined") return 1
@@ -271,7 +271,7 @@ Rectangle {
                     width: parent.width
                     spacing: Theme.spacingM
 
-                    DankIcon {
+                    DarkIcon {
                         name: "warning"
                         size: Theme.iconSize
                         color: Theme.error

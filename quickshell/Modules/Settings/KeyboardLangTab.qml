@@ -59,7 +59,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -94,7 +94,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "keyboard"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -145,7 +145,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "keyboard"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -169,7 +169,7 @@ Item {
                         width: parent.width
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         width: parent.width
                         placeholderText: "Search keyboard layouts..."
                         text: layoutSearchText
@@ -179,7 +179,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Layout"
                         description: "Choose keyboard layout"
@@ -197,7 +197,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Variant"
                         description: "Choose keyboard layout variant (optional)"
@@ -276,7 +276,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "language"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -334,7 +334,7 @@ Item {
                         }
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         width: parent.width
                         placeholderText: "Search locales..."
                         text: localeSearchText
@@ -344,7 +344,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "System Locale"
                         description: "Choose system language and region"

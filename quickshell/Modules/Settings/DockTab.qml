@@ -14,7 +14,7 @@ Item {
         // console.log("DockTab loaded, dockGroupApps:", SettingsData.dockGroupApps)
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -48,7 +48,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "dock_to_bottom"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -77,7 +77,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: enableToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -120,7 +120,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "info"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -149,7 +149,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: tooltipsToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -193,7 +193,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "apps"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -222,7 +222,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: groupAppsToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -276,7 +276,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "visibility_off"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -305,7 +305,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: hideOnGamesToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -358,7 +358,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "visibility_off"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -387,7 +387,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: autoHideToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -431,7 +431,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "fullscreen"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -460,7 +460,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: expandToScreenToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -504,7 +504,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "center_focus_strong"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -533,7 +533,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: centerAppsToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -676,7 +676,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "tune"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -704,7 +704,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.dockBackgroundTintOpacity * 100)
@@ -732,7 +732,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.dockWidgetAreaOpacity * 100)
@@ -763,7 +763,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.dockLeftWidgetAreaMinWidth
@@ -790,7 +790,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.dockRightWidgetAreaMinWidth
@@ -823,7 +823,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.dockCollapsedHeight
@@ -850,7 +850,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.dockSlideDistance
@@ -877,7 +877,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.dockAnimationDuration
@@ -927,7 +927,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "opacity"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -943,7 +943,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: Math.round(SettingsData.dockTransparency * 100)
@@ -991,7 +991,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "vertical_align_bottom"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1018,7 +1018,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockBottomGap
@@ -1068,7 +1068,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "tune"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1095,7 +1095,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockIconSize
@@ -1123,7 +1123,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockIconSpacing
@@ -1151,7 +1151,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.dockIconDropShadowOpacity * 100)
@@ -1201,7 +1201,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "vertical_align_bottom"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1228,7 +1228,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockExclusiveZone
@@ -1277,7 +1277,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "padding"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1304,7 +1304,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockLeftPadding
@@ -1331,7 +1331,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockLeftPadding
@@ -1356,7 +1356,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockTopPadding
@@ -1383,7 +1383,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockTopPadding
@@ -1430,7 +1430,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "border_all"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1446,7 +1446,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Enable Border"
                         description: "Add a customizable border around the dock"
@@ -1469,7 +1469,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockBorderWidth
@@ -1497,7 +1497,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.dockBorderRadius
@@ -1539,7 +1539,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.dockBorderRed * 255)
@@ -1564,7 +1564,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.dockBorderGreen * 255)
@@ -1589,7 +1589,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.dockBorderBlue * 255)
@@ -1614,7 +1614,7 @@ Item {
                                     color: Theme.surfaceVariantText
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.dockBorderAlpha * 100)

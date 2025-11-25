@@ -77,7 +77,7 @@ Rectangle {
             height: parent.height
         }
         
-        DankButtonGroup {
+        DarkButtonGroup {
             id: preferenceControls
             anchors.verticalCenter: parent.verticalCenter
             visible: NetworkService.ethernetConnected && NetworkService.wifiConnected
@@ -108,7 +108,7 @@ Rectangle {
             anchors.centerIn: parent
             spacing: Theme.spacingM
             
-            DankIcon {
+            DarkIcon {
                 anchors.horizontalCenter: parent.horizontalCenter
                 name: "sync"
                 size: 32
@@ -148,7 +148,7 @@ Rectangle {
             spacing: Theme.spacingL
             width: parent.width
             
-            DankIcon {
+            DarkIcon {
                 anchors.horizontalCenter: parent.horizontalCenter
                 name: "wifi_off"
                 size: 48
@@ -199,7 +199,7 @@ Rectangle {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         id: wifiContent
         anchors.top: headerRow.bottom
         anchors.left: parent.left
@@ -221,7 +221,7 @@ Rectangle {
                 height: 200
                 visible: NetworkService.wifiInterface && NetworkService.wifiNetworks?.length < 1 && !NetworkService.wifiToggling
                 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     name: "refresh"
                     size: 48
@@ -264,7 +264,7 @@ Rectangle {
                         anchors.leftMargin: Theme.spacingM
                         spacing: Theme.spacingS
                         
-                        DankIcon {
+                        DarkIcon {
                             name: {
                                 let strength = modelData.signal || 0
                                 if (strength >= 50) return "wifi"
@@ -314,7 +314,7 @@ Rectangle {
                         }
                     }
                     
-                    DankActionButton {
+                    DarkActionButton {
                         id: optionsButton
                         anchors.right: parent.right
                         anchors.rightMargin: Theme.spacingS

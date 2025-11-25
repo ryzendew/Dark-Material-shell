@@ -209,7 +209,7 @@ PanelWindow {
                 anchors.rightMargin: 56
                 height: 98
 
-                DankCircularImage {
+                DarkCircularImage {
                     id: iconContainer
 
                     readonly property bool hasNotificationImage: notificationData && notificationData.image && notificationData.image !== ""
@@ -324,7 +324,7 @@ PanelWindow {
                 }
             }
 
-            DankActionButton {
+            DarkActionButton {
                 id: closeButton
 
                 anchors.right: parent.right

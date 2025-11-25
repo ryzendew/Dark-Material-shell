@@ -423,7 +423,7 @@ Item {
         }
     }
 
-    DankIcon {
+    DarkIcon {
         anchors.centerIn: parent
         size: SettingsData.dockIconSize
         name: "sports_esports"

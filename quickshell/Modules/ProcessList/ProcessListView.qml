@@ -239,7 +239,7 @@ Column {
 
     }
 
-    DankListView {
+    DarkListView {
         id: processListView
 
         property string keyRoleName: "pid"

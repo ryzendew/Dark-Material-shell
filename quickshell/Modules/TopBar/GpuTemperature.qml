@@ -137,7 +137,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 3
 
-        DankIcon {
+        DarkIcon {
             name: "auto_awesome_mosaic"
             size: Theme.iconSize - 8
             color: {

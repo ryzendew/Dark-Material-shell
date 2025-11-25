@@ -84,7 +84,7 @@ PanelWindow {
             anchors.centerIn: parent
             spacing: Theme.spacingS
 
-            DankIcon {
+            DarkIcon {
                 name: "memory"
                 size: Theme.iconSize - 4
                 color: {

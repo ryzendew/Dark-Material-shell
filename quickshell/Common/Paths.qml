@@ -12,13 +12,13 @@ Singleton {
                                         StandardPaths.PicturesLocation)[0]
 
     readonly property url data: `${StandardPaths.standardLocations(
-                                    StandardPaths.GenericDataLocation)[0]}/DankMaterialShell`
+                                    StandardPaths.GenericDataLocation)[0]}/DarkMaterialShell`
     readonly property url state: `${StandardPaths.standardLocations(
-                                     StandardPaths.GenericStateLocation)[0]}/DankMaterialShell`
+                                     StandardPaths.GenericStateLocation)[0]}/DarkMaterialShell`
     readonly property url cache: `${StandardPaths.standardLocations(
-                                     StandardPaths.GenericCacheLocation)[0]}/DankMaterialShell`
+                                     StandardPaths.GenericCacheLocation)[0]}/DarkMaterialShell`
     readonly property url config: `${StandardPaths.standardLocations(
-                                      StandardPaths.GenericConfigLocation)[0]}/DankMaterialShell`
+                                      StandardPaths.GenericConfigLocation)[0]}/DarkMaterialShell`
 
     readonly property url imagecache: `${cache}/imagecache`
 

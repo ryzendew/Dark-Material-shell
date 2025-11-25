@@ -6,7 +6,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankOSD {
+DarkOSD {
     id: root
 
     property var screen: null

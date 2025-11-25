@@ -13,8 +13,8 @@ Item {
     property bool requestDockShow: false
     property int pinnedAppCount: 0
 
-    implicitWidth: row.width
-    implicitHeight: row.height
+    implicitWidth: listView.width
+    implicitHeight: listView.height
 
     function movePinnedApp(fromIndex, toIndex) {
         if (fromIndex === toIndex) {
@@ -29,6 +29,7 @@ Item {
         const movedApp = currentPinned.splice(fromIndex, 1)[0]
         currentPinned.splice(toIndex, 0, movedApp)
 
+        // Update with animation - the ListView will handle the move animation
         SessionData.setPinnedApps(currentPinned)
     }
 
@@ -36,10 +37,10 @@ Item {
         // Find the dragging button
         var draggingButton = null
         var draggingIndex = -1
-        for (var i = 0; i < repeater.count; i++) {
-            var item = repeater.itemAt(i)
-            if (item && item.button && item.button.dragging) {
-                draggingButton = item.button
+        for (var i = 0; i < listView.count; i++) {
+            var item = listView.itemAtIndex(i)
+            if (item && item.dockButton && item.dockButton.dragging) {
+                draggingButton = item.dockButton
                 draggingIndex = i
                 break
             }
@@ -53,8 +54,8 @@ Item {
         // console.log("Dragging button found, targetIndex:", draggingButton.targetIndex, "originalIndex:", draggingButton.originalIndex)
         
         // Clear all drop targets first
-        for (var i = 0; i < repeater.count; i++) {
-            var item = repeater.itemAt(i)
+        for (var i = 0; i < listView.count; i++) {
+            var item = listView.itemAtIndex(i)
             if (item) {
                 item.isDropTarget = false
             }
@@ -66,9 +67,9 @@ Item {
         
         // console.log("Target index:", targetIndex, "original index:", originalIndex)
         
-        if (targetIndex >= 0 && targetIndex < repeater.count && targetIndex !== originalIndex) {
+        if (targetIndex >= 0 && targetIndex < listView.count && targetIndex !== originalIndex) {
             // Show green glow on the icon that will be replaced
-            var targetItem = repeater.itemAt(targetIndex)
+            var targetItem = listView.itemAtIndex(targetIndex)
             if (targetItem) {
                 targetItem.isDropTarget = true
                 // console.log("Set drop target at index:", targetIndex)
@@ -81,23 +82,41 @@ Item {
     }
     
     function clearAllDropTargets() {
-        for (var i = 0; i < repeater.count; i++) {
-            var item = repeater.itemAt(i)
+        for (var i = 0; i < listView.count; i++) {
+            var item = listView.itemAtIndex(i)
             if (item) {
                 item.isDropTarget = false
             }
         }
     }
 
-    Row {
-        id: row
+    ListView {
+        id: listView
+        orientation: ListView.Horizontal
         spacing: SettingsData.dockIconSpacing
         anchors.centerIn: parent
         height: SettingsData.dockIconSize
+        width: contentWidth
+        interactive: false
+        
+        // Add move transition for smooth animations
+        move: Transition {
+            NumberAnimation {
+                properties: "x,y"
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+        }
+        
+        moveDisplaced: Transition {
+            NumberAnimation {
+                properties: "x,y"
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+        }
 
-        Repeater {
-            id: repeater
-            model: ListModel {
+        model: ListModel {
                 id: dockModel
 
                 Component.onCompleted: updateModel()
@@ -268,7 +287,7 @@ Item {
                 }
             }
 
-            delegate: Item {
+        delegate: Item {
                 id: delegateItem
                 property alias dockButton: button
                 property bool isDropTarget: false
@@ -345,7 +364,7 @@ Item {
                 Connections {
                     target: button
                     function onDraggingChanged() {
-                        if (button.dragging) {
+                        if (button && button.dragging) {
                             root.updateAllDropTargets()
                         } else {
                             root.clearAllDropTargets()
@@ -353,14 +372,13 @@ Item {
                     }
                     
                     function onTargetIndexChanged() {
-                        if (button.dragging) {
+                        if (button && button.dragging) {
                             root.updateAllDropTargets()
                         }
                     }
                 }
             }
         }
-    }
 
     Connections {
         target: CompositorService

@@ -179,7 +179,7 @@ Rectangle {
                 visible: root.playerAvailable
                 opacity: (activePlayer && activePlayer.canGoPrevious) ? 1 : 0.3
 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     name: "skip_previous"
                     size: 12
@@ -222,7 +222,7 @@ Rectangle {
                 visible: root.playerAvailable
                 opacity: activePlayer ? 1 : 0.3
 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     name: activePlayer && activePlayer.playbackState === 1 ? "pause" : "play_arrow"
                     size: 14
@@ -263,7 +263,7 @@ Rectangle {
                 visible: playerAvailable
                 opacity: (activePlayer && activePlayer.canGoNext) ? 1 : 0.3
 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     name: "skip_next"
                     size: 12

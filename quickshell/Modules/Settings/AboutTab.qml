@@ -8,7 +8,7 @@ import qs.Widgets
 Item {
     id: aboutTab
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -43,7 +43,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "memory"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -81,7 +81,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "memory"
                                     size: Theme.iconSize - 4
                                     color: Theme.primary
@@ -208,7 +208,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "memory"
                                     size: Theme.iconSize - 4
                                     color: Theme.primary
@@ -298,7 +298,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "videocam"
                                     size: Theme.iconSize - 4
                                     color: Theme.primary
@@ -380,7 +380,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "storage"
                                     size: Theme.iconSize - 4
                                     color: Theme.primary
@@ -485,7 +485,7 @@ Item {
                                 width: parent.width
                                 spacing: Theme.spacingM
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "computer"
                                     size: Theme.iconSize - 4
                                     color: Theme.primary

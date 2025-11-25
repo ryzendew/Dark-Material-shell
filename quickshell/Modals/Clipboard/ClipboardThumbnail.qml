@@ -156,7 +156,7 @@ Item {
     }
 
     // Fallback icon
-    DankIcon {
+    DarkIcon {
         visible: !(entryType === "image" && thumbnailImage.status === Image.Ready && thumbnailImage.source != "")
         name: {
             if (entryType === "image") {

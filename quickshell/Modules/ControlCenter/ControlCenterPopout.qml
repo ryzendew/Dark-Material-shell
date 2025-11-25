@@ -17,7 +17,7 @@ import qs.Modules.ControlCenter.Components
 import qs.Modules.ControlCenter.Models
 import "./utils/state.js" as StateUtils
 
-DankPopout {
+DarkPopout {
     id: root
     objectName: "controlCenterPopout"
 

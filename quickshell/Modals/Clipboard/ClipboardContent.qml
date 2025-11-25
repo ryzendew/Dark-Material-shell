@@ -39,7 +39,7 @@ Item {
         }
 
         // Search Field
-        DankTextField {
+        DarkTextField {
             id: searchField
             width: parent.width
             placeholderText: ""
@@ -82,7 +82,7 @@ Item {
             border.width: 1
             clip: true
 
-            DankListView {
+            DarkListView {
                 id: clipboardListView
                 anchors.fill: parent
                 anchors.margins: Theme.spacingS

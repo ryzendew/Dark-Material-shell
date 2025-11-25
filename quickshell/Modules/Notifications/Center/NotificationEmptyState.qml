@@ -15,7 +15,7 @@ Item {
         spacing: Theme.spacingXS
         width: parent.width * 0.8
 
-        DankIcon {
+        DarkIcon {
             anchors.horizontalCenter: parent.horizontalCenter
             name: "notifications_none"
             size: Theme.iconSizeLarge + 16

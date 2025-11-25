@@ -29,7 +29,7 @@ Rectangle {
         return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, baseColor.a * Theme.widgetTransparency);
     }
 
-    DankIcon {
+    DarkIcon {
         id: notepadIcon
 
         anchors.centerIn: parent

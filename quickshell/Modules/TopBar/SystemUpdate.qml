@@ -36,7 +36,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: Theme.spacingXS
 
-        DankIcon {
+        DarkIcon {
             id: statusIcon
 
             anchors.verticalCenter: parent.verticalCenter

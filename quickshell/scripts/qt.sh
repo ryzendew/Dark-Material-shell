@@ -9,7 +9,7 @@ fi
 
 apply_qt_colors() {
     local config_dir="$1"
-    local color_scheme_path="$(dirname "$config_dir")/.local/share/color-schemes/DankMatugen.colors"
+    local color_scheme_path="$(dirname "$config_dir")/.local/share/color-schemes/DarkMatugen.colors"
     
     if [ ! -f "$color_scheme_path" ]; then
         echo "Error: Qt color scheme not found at $color_scheme_path" >&2

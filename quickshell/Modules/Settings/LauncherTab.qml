@@ -67,7 +67,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -100,7 +100,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "terminal"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -124,7 +124,7 @@ Item {
                         wrapMode: Text.WordWrap
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         width: parent.width
                         text: SessionData.launchPrefix
                         placeholderText: "Enter launch prefix (e.g., 'uwsm-app')"
@@ -158,7 +158,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "open_in_full"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -211,7 +211,7 @@ Item {
                                     anchors.centerIn: parent
                                     spacing: Theme.spacingXS
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: modelData.icon
                                         size: Theme.iconSize
                                         color: SettingsData.launcherPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
@@ -253,7 +253,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "apps"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -280,7 +280,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: SettingsData.launcherLogoSize
@@ -324,7 +324,7 @@ Item {
                                 }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 id: autoSyncToggle
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.launcherLogoAutoSync
@@ -352,7 +352,7 @@ Item {
                                     font.weight: Font.Medium
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.launcherLogoRed * 255)
@@ -378,7 +378,7 @@ Item {
                                     font.weight: Font.Medium
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.launcherLogoGreen * 255)
@@ -404,7 +404,7 @@ Item {
                                     font.weight: Font.Medium
                                 }
 
-                                DankSlider {
+                                DarkSlider {
                                     width: parent.width
                                     height: 24
                                     value: Math.round(SettingsData.launcherLogoBlue * 255)
@@ -432,7 +432,7 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 24
                             value: Math.round(SettingsData.launcherLogoDropShadowOpacity * 100)
@@ -448,7 +448,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Use OS Logo"
                         description: "Display operating system logo instead of apps icon"
@@ -480,7 +480,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankTextField {
+                            DarkTextField {
                                 width: parent.width
                                 text: SettingsData.osLogoColorOverride
                                 placeholderText: "#FFFFFF"
@@ -501,7 +501,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width
                                 height: 24
                                 value: SettingsData.osLogoContrast
@@ -541,7 +541,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "image"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -557,7 +557,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Use Custom Image"
                         description: "Use a custom PNG image instead of the default apps icon"
@@ -615,7 +615,7 @@ Item {
                                         anchors.centerIn: parent
                                         spacing: Theme.spacingS
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "edit"
                                             size: 16
                                             color: Theme.surfaceText
@@ -689,7 +689,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "view_list"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -720,7 +720,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankButtonGroup {
+                            DarkButtonGroup {
                                 id: launcherViewModeGroup
                                 width: parent.width
                                 model: ["List", "Grid"]
@@ -785,7 +785,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "history"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -807,7 +807,7 @@ Item {
                             height: 1
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             id: clearAllButton
 
                             iconName: "delete_sweep"
@@ -928,7 +928,7 @@ Item {
                                     }
                                 }
 
-                                DankActionButton {
+                                DarkActionButton {
                                     anchors.right: parent.right
                                     anchors.rightMargin: Theme.spacingM
                                     anchors.verticalCenter: parent.verticalCenter

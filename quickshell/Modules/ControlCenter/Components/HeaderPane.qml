@@ -42,7 +42,7 @@ Rectangle {
         anchors.rightMargin: Theme.spacingL
         spacing: Theme.spacingM
 
-        DankCircularImage {
+        DarkCircularImage {
             id: avatarContainer
 
             width: 60
@@ -85,7 +85,7 @@ Rectangle {
         anchors.rightMargin: Theme.spacingXS
         spacing: Theme.spacingXS
 
-        DankActionButton {
+        DarkActionButton {
             buttonSize: 36
             iconName: "lock"
             iconSize: Theme.iconSize - 4
@@ -96,7 +96,7 @@ Rectangle {
             }
         }
 
-        DankActionButton {
+        DarkActionButton {
             buttonSize: 36
             iconName: root.powerOptionsExpanded ? "expand_less" : "power_settings_new"
             iconSize: Theme.iconSize - 4
@@ -107,7 +107,7 @@ Rectangle {
             }
         }
 
-        DankActionButton {
+        DarkActionButton {
             buttonSize: 36
             iconName: "settings"
             iconSize: Theme.iconSize - 4
@@ -118,7 +118,7 @@ Rectangle {
             }
         }
 
-        DankActionButton {
+        DarkActionButton {
             buttonSize: 36
             iconName: editMode ? "done" : "edit"
             iconSize: Theme.iconSize - 4

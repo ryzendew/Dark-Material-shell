@@ -38,7 +38,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: Theme.spacingXS
 
-        DankIcon {
+        DarkIcon {
             name: WeatherService.getWeatherIcon(WeatherService.weather.wCode)
             size: Theme.iconSize - 4
             color: Theme.primary

@@ -8,7 +8,7 @@ import qs.Modals.FileBrowser
 Item {
     id: widgetTweaksTab
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -44,7 +44,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "opacity"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -60,7 +60,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: Math.round(SettingsData.topBarWidgetTransparency * 100)
@@ -98,7 +98,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "view_module"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -114,7 +114,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Workspace Index Numbers"
                         description: "Show workspace index numbers in the top bar workspace switcher"
@@ -125,7 +125,7 @@ Item {
                                    }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Workspace Padding"
                         description: "Always show a minimum of 3 workspaces, even if fewer are available"
@@ -136,7 +136,7 @@ Item {
                                    }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Show Workspace Apps"
                         description: "Display application icons in workspace indicators"
@@ -182,7 +182,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankTextField {
+                            DarkTextField {
                                 width: parent.width
                                 text: SettingsData.maxWorkspaces.toString()
                                 validator: IntValidator {
@@ -218,7 +218,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankTextField {
+                            DarkTextField {
                                 width: 100
                                 height: 28
                                 placeholderText: "#ffffff"
@@ -241,7 +241,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Per-Monitor Workspaces"
                         description: "Show only workspaces belonging to each specific monitor."
@@ -274,7 +274,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "music_note"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -290,7 +290,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Wave Progress Bars"
                         description: "Use animated wave progress bars for media playback"
@@ -323,7 +323,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "apps"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -339,7 +339,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Running Apps Only In Current Workspace"
                         description: "Show only apps running in current workspace"
@@ -374,7 +374,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "label"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -433,7 +433,7 @@ Item {
                                     elide: Text.ElideRight
                                 }
 
-                                DankIconPicker {
+                                DarkIconPicker {
                                     id: iconPicker
                                     anchors.verticalCenter: parent.verticalCenter
 
@@ -481,7 +481,7 @@ Item {
                                     border.width: 1
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: "close"
                                         size: 16
                                         color: clearMouseArea.containsMouse ? Theme.error : Theme.outline
@@ -533,7 +533,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "widgets"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -580,7 +580,7 @@ Item {
                             height: 1
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: enableDesktopWidgetsToggle
                             anchors.verticalCenter: parent.verticalCenter
                             checked: SettingsData.desktopWidgetsEnabled
@@ -630,7 +630,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -655,7 +655,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopCpuTempEnabled
                                 onToggled: checked => {
@@ -682,7 +682,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -707,7 +707,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopGpuTempEnabled
                                 onToggled: checked => {
@@ -734,7 +734,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -759,7 +759,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopSystemMonitorEnabled
                                 onToggled: checked => {
@@ -786,7 +786,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -811,7 +811,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopClockEnabled
                                 onToggled: checked => {
@@ -838,7 +838,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -863,7 +863,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopWeatherEnabled
                                 onToggled: checked => {
@@ -890,7 +890,7 @@ Item {
                                 height: 1
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 width: 150
                                 height: 40
                                 options: [
@@ -915,7 +915,7 @@ Item {
                                 height: 1
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 checked: SettingsData.desktopTerminalEnabled
                                 onToggled: checked => {
@@ -943,7 +943,7 @@ Item {
                                 height: 1
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: 200
                                 height: 32
                                 value: SettingsData.desktopClockBackgroundOpacity * 100
@@ -987,7 +987,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "memory"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1020,7 +1020,7 @@ Item {
                             height: 1
                         }
 
-                        DankDropdown {
+                        DarkDropdown {
                             width: 200
                             height: 40
                             options: SettingsData.getGpuDropdownOptions()
@@ -1060,7 +1060,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "width"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1076,7 +1076,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: SettingsData.desktopWidgetWidth
@@ -1114,7 +1114,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "height"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1130,7 +1130,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: SettingsData.desktopWidgetHeight
@@ -1168,7 +1168,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "text_fields"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1184,7 +1184,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: SettingsData.desktopWidgetFontSize
@@ -1222,7 +1222,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "image"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1238,7 +1238,7 @@ Item {
                         }
                     }
 
-                    DankSlider {
+                    DarkSlider {
                         width: parent.width
                         height: 32
                         value: SettingsData.desktopWidgetIconSize
@@ -1276,7 +1276,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "aspect_ratio"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1309,7 +1309,7 @@ Item {
                             color: Theme.surfaceTextMedium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 32
                             value: SettingsData.desktopSystemMonitorWidth
@@ -1335,7 +1335,7 @@ Item {
                             color: Theme.surfaceTextMedium
                         }
 
-                        DankSlider {
+                        DarkSlider {
                             width: parent.width
                             height: 32
                             value: SettingsData.desktopSystemMonitorHeight

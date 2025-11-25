@@ -123,7 +123,7 @@ Item {
     ]
 
     // UI
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -157,7 +157,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: modelData.icon
                                 size: Theme.iconSize
                                 color: Theme.primary
@@ -424,7 +424,7 @@ Item {
                                 refreshDefault()
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 id: dropdown
                                 width: Math.min(parent.width, 200)
                                 text: "Select application"

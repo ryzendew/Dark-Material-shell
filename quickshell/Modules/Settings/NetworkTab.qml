@@ -41,7 +41,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -73,7 +73,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "wifi"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -274,7 +274,7 @@ Item {
                                         spacing: Theme.spacingM
 
                                         // Security Icon
-                                        DankIcon {
+                                        DarkIcon {
                                             name: modelData.secured ? "lock" : "lock_open"
                                             size: 20
                                             
@@ -383,7 +383,7 @@ Item {
                                 anchors.centerIn: parent
                                 spacing: Theme.spacingS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "refresh"
                                     size: 18
                                     color: Theme.primary
@@ -446,7 +446,7 @@ Item {
                                         anchors.margins: Theme.spacingS
                                         spacing: Theme.spacingM
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "wifi"
                                             size: 18
                                             
@@ -549,7 +549,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "cable"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -693,7 +693,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "vpn_key"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -722,7 +722,7 @@ Item {
                                 anchors.centerIn: parent
                                 spacing: Theme.spacingXS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "add"
                                     size: 16
                                     color: Theme.onPrimary
@@ -779,7 +779,7 @@ Item {
                                     anchors.margins: Theme.spacingS
                                     spacing: Theme.spacingM
 
-                                    DankIcon {
+                                    DarkIcon {
                                         name: "vpn_key"
                                         size: 20
                                         color: Theme.primary
@@ -869,7 +869,7 @@ Item {
                                         anchors.margins: Theme.spacingS
                                         spacing: Theme.spacingM
 
-                                        DankIcon {
+                                        DarkIcon {
                                             name: "vpn_key"
                                             size: 20
                                             
@@ -1000,7 +1000,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "dns"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1279,7 +1279,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "settings_ethernet"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1670,7 +1670,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "settings_ethernet"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -2033,7 +2033,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "tune"
                             size: Theme.iconSize
                             color: Theme.primary

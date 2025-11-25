@@ -4,7 +4,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankActionButton {
+DarkActionButton {
     id: customButtonKeyboard
     circular: false
     property string text: ""

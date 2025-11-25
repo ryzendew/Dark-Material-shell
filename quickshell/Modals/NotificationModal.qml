@@ -6,7 +6,7 @@ import qs.Modules.Notifications.Center
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: notificationModal
 
     property bool notificationModalOpen: false

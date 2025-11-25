@@ -159,7 +159,7 @@ Row {
             }
 
             // Default Icon (apps icon)
-            DankIcon {
+            DarkIcon {
                 id: launcherIcon
                 visible: !SettingsData.useOSLogo && !SettingsData.useCustomLauncherImage
                 anchors.centerIn: parent
@@ -284,7 +284,7 @@ Row {
                 return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, baseColor.a * Theme.widgetTransparency)
             }
 
-            DankIcon {
+            DarkIcon {
                 id: clipboardIcon
                 anchors.centerIn: parent
                 name: "content_paste"
@@ -414,7 +414,7 @@ Row {
                 }
             }
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: "settings"
                 size: Theme.iconSize

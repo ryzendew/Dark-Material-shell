@@ -380,16 +380,16 @@ Item {
                     const screenY = screen.y || 0
                     const relativeX = globalPos.x - screenX
                     const relativeY = globalPos.y - screenY
-                    const widgetThickness = Math.max(20, 26 + SettingsData.dankBarInnerPadding * 0.6)
-                    const effectiveBarThickness = Math.max(widgetThickness + SettingsData.dankBarInnerPadding + 4, Theme.barHeight - 4 - (8 - SettingsData.dankBarInnerPadding))
+                    const widgetThickness = Math.max(20, 26 + SettingsData.darkBarInnerPadding * 0.6)
+                    const effectiveBarThickness = Math.max(widgetThickness + SettingsData.darkBarInnerPadding + 4, Theme.barHeight - 4 - (8 - SettingsData.darkBarInnerPadding))
 
                     if (menuRoot.isVertical) {
                         const edge = menuRoot.axis?.edge
                         let targetX
                         if (edge === "left") {
-                            targetX = effectiveBarThickness + SettingsData.dankBarSpacing + Theme.popupDistance
+                            targetX = effectiveBarThickness + SettingsData.darkBarSpacing + Theme.popupDistance
                         } else {
-                            const popupX = effectiveBarThickness + SettingsData.dankBarSpacing + Theme.popupDistance
+                            const popupX = effectiveBarThickness + SettingsData.darkBarSpacing + Theme.popupDistance
                             targetX = screen.width - popupX
                         }
                         anchorPos = Qt.point(targetX, relativeY + menuRoot.anchorItem.height / 2)
@@ -402,7 +402,7 @@ Item {
                             const availableHeight = screen.height - dockHeight - dockGap - 20 // Extra margin
                             targetY = availableHeight + 40 // Position much closer to dock
                         } else {
-                            targetY = effectiveBarThickness + SettingsData.dankBarSpacing + SettingsData.dankBarBottomGap + Theme.popupDistance
+                            targetY = effectiveBarThickness + SettingsData.darkBarSpacing + SettingsData.darkBarBottomGap + Theme.popupDistance
                         }
                         anchorPos = Qt.point(relativeX + menuRoot.anchorItem.width / 2, targetY)
                     }
@@ -505,7 +505,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: Theme.spacingXS
 
-                                DankIcon {
+                                DarkIcon {
                                     name: "arrow_back"
                                     size: 16
                                     color: Theme.surfaceText
@@ -600,7 +600,7 @@ Item {
                                             visible: menuEntry?.checkState === 2
                                         }
 
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.centerIn: parent
                                             name: "check"
                                             size: 10
@@ -640,7 +640,7 @@ Item {
                                         height: 16
                                         anchors.verticalCenter: parent.verticalCenter
 
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.centerIn: parent
                                             name: "chevron_right"
                                             size: 14

@@ -340,7 +340,7 @@ Item {
         }
     }
 
-    DankModal {
+    DarkModal {
         id: confirmationDialog
 
         width: 400
@@ -398,7 +398,7 @@ Item {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             iconName: "close"
                             iconSize: Theme.iconSize - 4
                             iconColor: Theme.surfaceText

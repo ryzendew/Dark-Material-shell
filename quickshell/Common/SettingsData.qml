@@ -2735,7 +2735,7 @@ Singleton {
     FileView {
         id: settingsFile
 
-        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/DankMaterialShell/settings.json"
+        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/DarkMaterialShell/settings.json"
         blockLoading: true
         blockWrites: true
         atomicWrites: true
@@ -3080,7 +3080,7 @@ Singleton {
         id: defaultSettingsCheckProcess
 
         command: ["sh", "-c", "CONFIG_DIR=\"" + _configDir
-            + "/DankMaterialShell\"; if [ -f \"$CONFIG_DIR/default-settings.json\" ] && [ ! -f \"$CONFIG_DIR/settings.json\" ]; then cp \"$CONFIG_DIR/default-settings.json\" \"$CONFIG_DIR/settings.json\" && echo 'copied'; else echo 'not_found'; fi"]
+            + "/DarkMaterialShell\"; if [ -f \"$CONFIG_DIR/default-settings.json\" ] && [ ! -f \"$CONFIG_DIR/settings.json\" ]; then cp \"$CONFIG_DIR/default-settings.json\" \"$CONFIG_DIR/settings.json\" && echo 'copied'; else echo 'not_found'; fi"]
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {

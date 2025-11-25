@@ -89,7 +89,7 @@ Item {
             width: parent.width
             spacing: Theme.spacingM
 
-            DankTextField {
+            DarkTextField {
                 id: searchField
 
                 width: parent.width - 80 - Theme.spacingM
@@ -144,7 +144,7 @@ Item {
                     border.color: appLauncher.viewMode === "list" ? Theme.primarySelected : "transparent"
                     border.width: 1
 
-                    DankIcon {
+                    DarkIcon {
                         anchors.centerIn: parent
                         name: "view_list"
                         size: 18
@@ -171,7 +171,7 @@ Item {
                     border.color: appLauncher.viewMode === "grid" ? Theme.primarySelected : "transparent"
                     border.width: 1
 
-                    DankIcon {
+                    DarkIcon {
                         anchors.centerIn: parent
                         name: "grid_view"
                         size: 18

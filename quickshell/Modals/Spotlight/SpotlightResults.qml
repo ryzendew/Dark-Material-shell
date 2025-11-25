@@ -17,7 +17,7 @@ Rectangle {
     border.color: Theme.outlineLight
     border.width: 1
 
-    DankListView {
+    DarkListView {
         id: resultsList
 
         property int itemHeight: 60
@@ -169,7 +169,7 @@ Rectangle {
         }
     }
 
-    DankGridView {
+    DarkGridView {
         id: resultsGrid
 
         property int currentIndex: appLauncher ? appLauncher.selectedIndex : -1

@@ -78,7 +78,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -111,7 +111,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "wallpaper"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -144,7 +144,7 @@ Item {
                                 anchors.margins: 1
                                 property var weExtensions: [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tga"]
                                 property int weExtIndex: 0
-                                source: {
+                                property string currentWallpaperPath: {
                                     var currentWallpaper = SessionData.perMonitorWallpaper ? SessionData.getMonitorWallpaper(selectedMonitorName) : SessionData.wallpaperPath
                                     if (currentWallpaper && currentWallpaper.startsWith("we:")) {
                                         var sceneId = currentWallpaper.substring(3)
@@ -152,17 +152,22 @@ Item {
                                             + "/.local/share/Steam/steamapps/workshop/content/431960/"
                                             + sceneId + "/preview" + weExtensions[weExtIndex]
                                     }
-                                    return (currentWallpaper !== "" && !currentWallpaper.startsWith("#")) ? "file://" + currentWallpaper : ""
+                                    return (currentWallpaper !== "" && !currentWallpaper.startsWith("#")) ? currentWallpaper : ""
                                 }
+                                imagePath: currentWallpaperPath
                                 onStatusChanged: {
                                     var currentWallpaper = SessionData.perMonitorWallpaper ? SessionData.getMonitorWallpaper(selectedMonitorName) : SessionData.wallpaperPath
                                     if (currentWallpaper && currentWallpaper.startsWith("we:") && status === Image.Error) {
                                         if (weExtIndex < weExtensions.length - 1) {
                                             weExtIndex++
-                                            source = StandardPaths.writableLocation(StandardPaths.HomeLocation)
-                                                + "/.local/share/Steam/steamapps/workshop/content/431960/"
-                                                + currentWallpaper.substring(3)
-                                                + "/preview" + weExtensions[weExtIndex]
+                                            // Force update by clearing and setting imagePath again
+                                            imagePath = ""
+                                            Qt.callLater(() => {
+                                                imagePath = StandardPaths.writableLocation(StandardPaths.HomeLocation)
+                                                    + "/.local/share/Steam/steamapps/workshop/content/431960/"
+                                                    + currentWallpaper.substring(3)
+                                                    + "/preview" + weExtensions[weExtIndex]
+                                            })
                                         } else {
                                             visible = false
                                         }
@@ -209,7 +214,7 @@ Item {
                                 layer.enabled: true
                             }
 
-                            DankIcon {
+                            DarkIcon {
                                 anchors.centerIn: parent
                                 name: "image"
                                 size: Theme.iconSizeLarge + 8
@@ -237,7 +242,7 @@ Item {
                                         radius: 16
                                         color: Qt.rgba(255, 255, 255, 0.9)
 
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.centerIn: parent
                                             name: "folder_open"
                                             size: 18
@@ -264,7 +269,7 @@ Item {
                                         radius: 16
                                         color: Qt.rgba(255, 255, 255, 0.9)
 
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.centerIn: parent
                                             name: "palette"
                                             size: 18
@@ -290,7 +295,7 @@ Item {
                                             return currentWallpaper !== ""
                                         }
 
-                                        DankIcon {
+                                        DarkIcon {
                                             anchors.centerIn: parent
                                             name: "clear"
                                             size: 18
@@ -365,7 +370,7 @@ Item {
                                     return currentWallpaper !== ""
                                 }
 
-                                DankActionButton {
+                                DarkActionButton {
                                     buttonSize: 32
                                     iconName: "skip_previous"
                                     iconSize: Theme.iconSizeSmall
@@ -388,7 +393,7 @@ Item {
                                     }
                                 }
 
-                                DankActionButton {
+                                DarkActionButton {
                                     buttonSize: 32
                                     iconName: "skip_next"
                                     iconSize: Theme.iconSizeSmall
@@ -432,7 +437,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "monitor"
                                 size: Theme.iconSize
                                 color: SessionData.perMonitorWallpaper ? Theme.primary : Theme.surfaceVariantText
@@ -459,7 +464,7 @@ Item {
                                 }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 id: perMonitorToggle
 
                                 anchors.verticalCenter: parent.verticalCenter
@@ -483,7 +488,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankDropdown {
+                            DarkDropdown {
                                 id: monitorDropdown
 
                                 width: parent.width - parent.leftPadding
@@ -523,7 +528,7 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "schedule"
                                 size: Theme.iconSize
                                 color: SessionData.wallpaperCyclingEnabled ? Theme.primary : Theme.surfaceVariantText
@@ -550,7 +555,7 @@ Item {
                                 }
                             }
 
-                            DankToggle {
+                            DarkToggle {
                                 id: cyclingToggle
 
                                 anchors.verticalCenter: parent.verticalCenter
@@ -596,7 +601,7 @@ Item {
                                     width: 200
                                     height: 45 + Theme.spacingM
                                     
-                                    DankTabBar {
+                                    DarkTabBar {
                                         id: modeTabBar
 
                                         width: 200
@@ -641,7 +646,7 @@ Item {
                             }
 
                             // Interval settings
-                            DankDropdown {
+                            DarkDropdown {
                                 id: intervalDropdown
                                 property var intervalOptions: ["1 minute", "5 minutes", "15 minutes", "30 minutes", "1 hour", "1.5 hours", "2 hours", "3 hours", "4 hours", "6 hours", "8 hours", "12 hours"]
                                 property var intervalValues: [60, 300, 900, 1800, 3600, 5400, 7200, 10800, 14400, 21600, 28800, 43200]
@@ -715,7 +720,7 @@ Item {
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
-                                DankTextField {
+                                DarkTextField {
                                     id: timeTextField
                                     width: 100
                                     height: 40
@@ -800,10 +805,38 @@ Item {
                         opacity: 0.2
                     }
 
-                    DankDropdown {
+                    DarkToggle {
+                        width: parent.width
+                        text: "Use awww Backend"
+                        description: AwwwService.awwwAvailable 
+                                    ? "Use awww daemon for wallpaper (supports WebP, better performance)" 
+                                    : "awww not available (install awww package)"
+                        checked: SessionData.useAwwwBackend
+                        enabled: AwwwService.awwwAvailable
+                        onToggled: checked => {
+                            SessionData.setUseAwwwBackend(checked)
+                            if (checked) {
+                                ToastService.show("Switched to awww backend", 2000)
+                            } else {
+                                ToastService.show("Switched to QML Image backend", 2000)
+                            }
+                        }
+                    }
+
+                    StyledText {
+                        visible: SessionData.useAwwwBackend
+                        text: "Note: awww uses its own transition system. Transition type selection is not available, but FPS can be controlled below."
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    DarkDropdown {
                         width: parent.width
                         text: "Transition Effect"
                         description: "Visual effect used when wallpaper changes"
+                        enabled: !SessionData.useAwwwBackend
                         currentValue: {
                             switch (SessionData.wallpaperTransition) {
                             case "none": return "None"
@@ -821,6 +854,43 @@ Item {
                         onValueChanged: value => {
                             var transition = value.toLowerCase()
                             SessionData.setWallpaperTransition(transition)
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+                        visible: SessionData.wallpaperTransition !== "none"
+
+                        StyledText {
+                            text: "Animation FPS"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: SessionData.wallpaperTransitionFps || (SessionData.useAwwwBackend ? 30 : 60)
+                            minimum: 1
+                            maximum: 240
+                            unit: " FPS"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                SessionData.setWallpaperTransitionFps(Math.round(newValue))
+                            }
+                        }
+
+                        StyledText {
+                            text: SessionData.useAwwwBackend 
+                                ? "Frame rate for awww transition animations (1-240 FPS)\nDefault: 30 FPS. Higher values = smoother but more CPU intensive"
+                                : "Frame rate for transition animations (1-240 FPS)\nDefault: 60 FPS. Higher values = smoother but more CPU intensive"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                            wrapMode: Text.WordWrap
+                            width: parent.width
                         }
                     }
                 }
@@ -846,7 +916,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "palette"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -874,7 +944,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: toggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -920,7 +990,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "monitor"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -936,7 +1006,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Light Mode"
                         description: "Use light theme instead of dark theme"
@@ -954,7 +1024,7 @@ Item {
                         opacity: 0.2
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: nightModeToggle
 
                         width: parent.width
@@ -974,7 +1044,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Temperature"
                         description: "Color temperature for night mode"
@@ -992,7 +1062,7 @@ Item {
                                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         id: automaticToggle
                         width: parent.width
                         text: "Automatic Control"
@@ -1033,7 +1103,7 @@ Item {
                             width: 200
                             height: 45 + Theme.spacingM
                             
-                            DankTabBar {
+                            DarkTabBar {
                                 id: modeTabBarNight
                                 width: 200
                                 height: 45
@@ -1110,7 +1180,7 @@ Item {
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
-                                DankDropdown {
+                                DarkDropdown {
                                     width: 60
                                     height: 32
                                     text: ""
@@ -1127,7 +1197,7 @@ Item {
                                                     }
                                 }
 
-                                DankDropdown {
+                                DarkDropdown {
                                     width: 60
                                     height: 32
                                     text: ""
@@ -1158,7 +1228,7 @@ Item {
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
-                                DankDropdown {
+                                DarkDropdown {
                                     width: 60
                                     height: 32
                                     text: ""
@@ -1175,7 +1245,7 @@ Item {
                                                     }
                                 }
 
-                                DankDropdown {
+                                DarkDropdown {
                                     width: 60
                                     height: 32
                                     text: ""
@@ -1200,7 +1270,7 @@ Item {
                             spacing: Theme.spacingM
                             width: parent.width
 
-                            DankToggle {
+                            DarkToggle {
                                 width: parent.width
                                 text: "Auto-location"
                                 description: DisplayService.geoclueAvailable ? "Use automatic location detection (geoclue2)" : "Geoclue service not running - cannot auto-detect location"
@@ -1237,7 +1307,7 @@ Item {
                                         color: Theme.surfaceVariantText
                                     }
 
-                                    DankTextField {
+                                    DarkTextField {
                                         width: 120
                                         height: 40
                                         text: SessionData.latitude.toString()
@@ -1260,7 +1330,7 @@ Item {
                                         color: Theme.surfaceVariantText
                                     }
 
-                                    DankTextField {
+                                    DarkTextField {
                                         width: 120
                                         height: 40
                                         text: SessionData.longitude.toString()
@@ -1307,7 +1377,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "lock"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1323,7 +1393,7 @@ Item {
                         }
                     }
 
-                    DankToggle {
+                    DarkToggle {
                         width: parent.width
                         text: "Show Power Actions"
                         description: "Show power, restart, and logout buttons on the lock screen"
@@ -1355,7 +1425,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "font_download"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -1371,7 +1441,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Font Family"
                         description: "Select system font family"
@@ -1393,7 +1463,7 @@ Item {
                                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Font Weight"
                         description: "Select font weight"
@@ -1460,7 +1530,7 @@ Item {
                                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         text: "Monospace Font"
                         description: "Select monospace font for process list and technical displays"
@@ -1521,7 +1591,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: Theme.spacingS
 
-                            DankActionButton {
+                            DarkActionButton {
                                 buttonSize: 32
                                 iconName: "remove"
                                 iconSize: Theme.iconSizeSmall
@@ -1551,7 +1621,7 @@ Item {
                                 }
                             }
 
-                            DankActionButton {
+                            DarkActionButton {
                                 buttonSize: 32
                                 iconName: "add"
                                 iconSize: Theme.iconSizeSmall
@@ -1596,7 +1666,7 @@ Item {
     }
 
 
-    DankColorPicker {
+    DarkColorPicker {
         id: colorPicker
 
         pickerTitle: "Choose Wallpaper Color"

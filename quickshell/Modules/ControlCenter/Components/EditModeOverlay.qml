@@ -39,7 +39,7 @@ Item {
             transparentBorder: true
         }
 
-        DankIcon {
+        DarkIcon {
             anchors.centerIn: parent
             name: "close"
             size: 12
@@ -241,7 +241,7 @@ Item {
             border.color: Theme.outline
             border.width: 1
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: "keyboard_arrow_left"
                 size: 12
@@ -264,7 +264,7 @@ Item {
             border.color: Theme.outline
             border.width: 1
 
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 name: "keyboard_arrow_right"
                 size: 12

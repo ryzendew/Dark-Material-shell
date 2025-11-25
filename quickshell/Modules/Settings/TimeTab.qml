@@ -48,7 +48,7 @@ Item {
         }
     }
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -83,7 +83,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "access_time"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -141,7 +141,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "public"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -168,7 +168,7 @@ Item {
                         }
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         id: timezoneSearchField
                         width: parent.width
                         placeholderText: "Search timezone (e.g., America, Europe, Asia)"
@@ -179,7 +179,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Select Timezone"
@@ -247,7 +247,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "sync"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -283,7 +283,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: ntpToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -318,7 +318,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "event"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -334,7 +334,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "First Day of Week"
@@ -353,7 +353,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Week Numbering"
@@ -389,7 +389,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "schedule"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -418,7 +418,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: toggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -454,7 +454,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "calendar_today"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -470,7 +470,7 @@ Item {
                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Top Bar Format"
@@ -534,7 +534,7 @@ Item {
                                         }
                     }
 
-                    DankDropdown {
+                    DarkDropdown {
                         width: parent.width
                         height: 50
                         text: "Lock Screen Format"
@@ -598,7 +598,7 @@ Item {
                                         }
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         id: customFormatInput
 
                         width: parent.width
@@ -611,7 +611,7 @@ Item {
                         }
                     }
 
-                    DankTextField {
+                    DarkTextField {
                         id: customLockFormatInput
 
                         width: parent.width

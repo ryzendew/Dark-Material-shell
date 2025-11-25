@@ -3,7 +3,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankOSD {
+DarkOSD {
     id: root
 
     osdWidth: Math.min(260, Screen.width - Theme.spacingM * 2)
@@ -49,7 +49,7 @@ DankOSD {
                 x: parent.gap
                 anchors.verticalCenter: parent.verticalCenter
 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     name: {
                         const deviceInfo = DisplayService.getCurrentDeviceInfo()
@@ -66,7 +66,7 @@ DankOSD {
                 }
             }
 
-            DankSlider {
+            DarkSlider {
                 id: brightnessSlider
 
                 width: parent.width - Theme.iconSize - parent.gap * 3

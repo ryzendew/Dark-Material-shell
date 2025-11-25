@@ -8,7 +8,7 @@ import qs.Modals.Common
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: root
 
     property string connectionName: ""
@@ -68,7 +68,7 @@ DankModal {
                     width: parent.width
                     spacing: Theme.spacingM
 
-                    DankIcon {
+                    DarkIcon {
                         name: "settings_ethernet"
                         size: Theme.iconSize
                         color: Theme.primary
@@ -96,7 +96,7 @@ DankModal {
 
                     Item { Layout.fillWidth: true }
 
-                    DankActionButton {
+                    DarkActionButton {
                         iconName: "close"
                         iconSize: Theme.iconSize - 4
                         iconColor: Theme.surfaceText
@@ -113,7 +113,7 @@ DankModal {
                 }
 
                 // Content
-                DankFlickable {
+                DarkFlickable {
                     width: parent.width
                     height: parent.height - 120
                     contentHeight: settingsColumn.implicitHeight

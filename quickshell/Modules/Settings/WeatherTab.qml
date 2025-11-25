@@ -6,7 +6,7 @@ import qs.Widgets
 Item {
     id: weatherTab
 
-    DankFlickable {
+    DarkFlickable {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
@@ -41,7 +41,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "cloud"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -70,7 +70,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: enableToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -108,7 +108,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "thermostat"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -137,7 +137,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: temperatureToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -182,7 +182,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "location_on"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -211,7 +211,7 @@ Item {
                             }
                         }
 
-                        DankToggle {
+                        DarkToggle {
                             id: autoLocationToggle
 
                             anchors.verticalCenter: parent.verticalCenter
@@ -256,7 +256,7 @@ Item {
                                         color: Theme.surfaceVariantText
                                     }
 
-                                    DankTextField {
+                                    DarkTextField {
                                         id: latitudeInput
                                         width: parent.width
                                         height: 48
@@ -307,7 +307,7 @@ Item {
                                         color: Theme.surfaceVariantText
                                     }
 
-                                    DankTextField {
+                                    DarkTextField {
                                         id: longitudeInput
                                         width: parent.width
                                         height: 48
@@ -361,7 +361,7 @@ Item {
                                 font.weight: Font.Medium
                             }
 
-                            DankLocationSearch {
+                            DarkLocationSearch {
                                 id: locationSearchInput
                                 width: parent.width
                                 currentLocation: ""
@@ -413,7 +413,7 @@ Item {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        DankIcon {
+                        DarkIcon {
                             name: "widgets"
                             size: Theme.iconSize
                             color: Theme.primary
@@ -467,7 +467,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 400
@@ -501,7 +501,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 300
@@ -548,7 +548,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 10
@@ -582,7 +582,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 10
@@ -616,7 +616,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 10
@@ -650,7 +650,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 5
@@ -684,7 +684,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 5
@@ -731,7 +731,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 12
@@ -765,7 +765,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 4
@@ -799,7 +799,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 8
@@ -833,7 +833,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            DankSlider {
+                            DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
                                 height: 40
                                 minimum: 4

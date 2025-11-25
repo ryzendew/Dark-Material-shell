@@ -8,7 +8,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankPopout {
+DarkPopout {
     id: systemUpdatePopout
 
     property var parentWidget: null
@@ -115,7 +115,7 @@ DankPopout {
                             }
                         }
 
-                        DankActionButton {
+                        DarkActionButton {
                             id: checkForUpdatesButton
                             buttonSize: 28
                             iconName: "refresh"
@@ -191,7 +191,7 @@ DankPopout {
                             visible: SystemUpdateService.updateCount === 0 || SystemUpdateService.hasError || SystemUpdateService.isChecking
                         }
 
-                        DankListView {
+                        DarkListView {
                             id: packagesList
 
                             width: parent.width
@@ -275,7 +275,7 @@ DankPopout {
                             anchors.centerIn: parent
                             spacing: Theme.spacingS
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "system_update_alt"
                                 size: Theme.iconSize
                                 color: Theme.primary
@@ -319,7 +319,7 @@ DankPopout {
                             anchors.centerIn: parent
                             spacing: Theme.spacingS
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "close"
                                 size: Theme.iconSize
                                 color: Theme.surfaceText

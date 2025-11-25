@@ -71,7 +71,7 @@ Item {
             }
             
             // Fallback icon
-            DankIcon {
+            DarkIcon {
                 anchors.centerIn: parent
                 size: 64
                 name: "window"
@@ -89,7 +89,7 @@ Item {
                 radius: 12
                 color: Qt.rgba(1, 0.5, 0, 0.8)
                 
-                DankIcon {
+                DarkIcon {
                     anchors.centerIn: parent
                     size: 16
                     name: "minimize"
@@ -147,7 +147,7 @@ Item {
                         }
                     }
                     
-                    DankIcon {
+                    DarkIcon {
                         anchors.centerIn: parent
                         size: 12
                         name: "open_in_full"
@@ -181,7 +181,7 @@ Item {
                         }
                     }
                     
-                    DankIcon {
+                    DarkIcon {
                         anchors.centerIn: parent
                         size: 12
                         name: "close"

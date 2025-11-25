@@ -9,7 +9,7 @@ import qs.Modules.AppDrawer
 import qs.Services
 import qs.Widgets
 
-DankModal {
+DarkModal {
     id: spotlightModal
 
     property bool spotlightOpen: false

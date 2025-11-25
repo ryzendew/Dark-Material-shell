@@ -44,7 +44,7 @@ Rectangle {
             width: parent.width
             spacing: Theme.spacingS
 
-            DankIcon {
+            DarkIcon {
                 name: "volume_up"
                 size: Theme.iconSize
                 color: Theme.primary
@@ -202,7 +202,7 @@ Rectangle {
                 spacing: Theme.spacingS
 
                 // Application icon
-                DankIcon {
+                DarkIcon {
                     name: ApplicationAudioService.getApplicationIcon(node)
                     size: compact ? Theme.iconSizeS : Theme.iconSize
                     color: node && node.audio && !node.audio.muted && node.audio.volume > 0 ? Theme.primary : Theme.surfaceText
@@ -222,7 +222,7 @@ Rectangle {
                 Item { width: 1; height: 1 } // Spacer
 
                 // Volume slider
-                DankSlider {
+                DarkSlider {
                     id: slider
                     width: compact ? 80 : 120
                     height: parent.height

@@ -20,7 +20,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.spacingM
 
-        DankIcon {
+        DarkIcon {
             name: "content_paste"
             size: Theme.iconSize - 4
             color: Theme.primary
@@ -41,21 +41,21 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.spacingS
 
-        DankActionButton {
+        DarkActionButton {
             iconName: "info"
             iconSize: Theme.iconSize - 4
             iconColor: showKeyboardHints ? Theme.primary : Theme.surfaceText
             onClicked: keyboardHintsToggled()
         }
 
-        DankActionButton {
+        DarkActionButton {
             iconName: "delete_sweep"
             iconSize: Theme.iconSize - 4
             iconColor: Theme.surfaceText
             onClicked: clearAllClicked()
         }
 
-        DankActionButton {
+        DarkActionButton {
             iconName: "close"
             iconSize: Theme.iconSize - 4
             iconColor: Theme.surfaceText

@@ -116,7 +116,7 @@ Rectangle {
         height: 92
         visible: !expanded
 
-        DankCircularImage {
+        DarkCircularImage {
             id: iconContainer
             readonly property bool hasNotificationImage: notificationGroup?.latestNotification?.image && notificationGroup.latestNotification.image !== ""
 
@@ -377,7 +377,7 @@ Rectangle {
                         anchors.margins: 12
                         anchors.bottomMargin: 8
 
-                        DankCircularImage {
+                        DarkCircularImage {
                             id: messageIcon
 
                             readonly property bool hasNotificationImage: modelData?.image && modelData.image !== ""
@@ -690,7 +690,7 @@ Rectangle {
         width: 60
         height: 28
 
-        DankActionButton {
+        DarkActionButton {
             anchors.left: parent.left
             anchors.top: parent.top
             visible: (notificationGroup?.count || 0) > 1
@@ -703,7 +703,7 @@ Rectangle {
             }
         }
 
-        DankActionButton {
+        DarkActionButton {
             anchors.right: parent.right
             anchors.top: parent.top
             iconName: "close"

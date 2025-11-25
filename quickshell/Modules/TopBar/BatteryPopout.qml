@@ -8,7 +8,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-DankPopout {
+DarkPopout {
     id: root
 
     property string triggerSection: "right"
@@ -133,7 +133,7 @@ DankPopout {
                     height: 48
                     spacing: Theme.spacingM
 
-                    DankIcon {
+                    DarkIcon {
                         name: {
                             if (!BatteryService.batteryAvailable)
                                 return "power";
@@ -276,7 +276,7 @@ DankPopout {
                         color: closeBatteryArea.containsMouse ? Theme.errorHover : "transparent"
                         anchors.verticalCenter: parent.verticalCenter
 
-                        DankIcon {
+                        DarkIcon {
                             anchors.centerIn: parent
                             name: "close"
                             size: Theme.iconSize - 4
@@ -367,7 +367,7 @@ DankPopout {
                     }
                 }
 
-                DankButtonGroup {
+                DarkButtonGroup {
                     property var profileModel: (typeof PowerProfiles !== "undefined") ? [PowerProfile.PowerSaver, PowerProfile.Balanced].concat(PowerProfiles.hasPerformanceProfile ? [PowerProfile.Performance] : []) : [PowerProfile.PowerSaver, PowerProfile.Balanced, PowerProfile.Performance]
                     property int currentProfileIndex: {
                         if (typeof PowerProfiles === "undefined") return 1
@@ -405,7 +405,7 @@ DankPopout {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DankIcon {
+                            DarkIcon {
                                 name: "warning"
                                 size: Theme.iconSize
                                 color: Theme.error

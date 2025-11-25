@@ -101,7 +101,7 @@ PanelWindow {
                 width: parent.width
                 height: Theme.iconSize + 8
 
-                DankIcon {
+                DarkIcon {
                     id: statusIcon
                     name: {
                         switch (ToastService.currentLevel) {
@@ -152,7 +152,7 @@ PanelWindow {
                     elide: Text.ElideRight
                 }
 
-                DankActionButton {
+                DarkActionButton {
                     id: expandButton
                     iconName: toast.expanded ? "expand_less" : "expand_more"
                     iconSize: Theme.iconSize
@@ -181,7 +181,7 @@ PanelWindow {
                     }
                 }
 
-                DankActionButton {
+                DarkActionButton {
                     id: closeButton
                     iconName: "close"
                     iconSize: Theme.iconSize
@@ -235,7 +235,7 @@ PanelWindow {
                     wrapMode: Text.Wrap
                 }
 
-                DankActionButton {
+                DarkActionButton {
                     id: copyButton
                     iconName: "content_copy"
                     iconSize: Theme.iconSizeSmall
