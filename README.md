@@ -276,3 +276,10 @@ sudo pacman -S noto-fonts noto-fonts-emoji
 ```bash
 xdg-user-dirs-update
 ```
+
+## License
+This project was inspired by DankMaterialShell (https://github.com/AvengeMedia/DankMaterialShell),
+but now stands on it's own and is no longer a fork and has been rewritten.
+Design will also be changing as well.
+
+You are free to fork, modify, and use this code in any way you wish. Attribution is not required.
