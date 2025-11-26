@@ -42,7 +42,6 @@ Rectangle {
         anchors.rightMargin: Theme.spacingS
         spacing: Theme.spacingL
 
-        // Index indicator
         Rectangle {
             width: 24
             height: 24
@@ -59,13 +58,11 @@ Rectangle {
             }
         }
 
-        // Content area
         Row {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width - 68
             spacing: Theme.spacingM
 
-            // Thumbnail/Icon
             ClipboardThumbnail {
                 width: entryType === "image" ? ClipboardConstants.thumbnailSize : Theme.iconSize
                 height: entryType === "image" ? ClipboardConstants.thumbnailSize : Theme.iconSize
@@ -77,7 +74,6 @@ Rectangle {
                 itemIndex: entry.itemIndex
             }
 
-            // Text content
             Column {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - (entryType === "image" ? ClipboardConstants.thumbnailSize : Theme.iconSize) - Theme.spacingM
@@ -114,7 +110,6 @@ Rectangle {
         }
     }
 
-    // Delete button
     DarkActionButton {
         anchors.right: parent.right
         anchors.rightMargin: Theme.spacingM
@@ -125,7 +120,6 @@ Rectangle {
         onClicked: deleteRequested()
     }
 
-    // Click area
     MouseArea {
         id: mouseArea
         anchors.fill: parent

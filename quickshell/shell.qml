@@ -1,5 +1,3 @@
-//@ pragma Env QSG_RENDER_LOOP=threaded
-//@ pragma UseQApplication
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -34,23 +32,16 @@ ShellRoot {
 
     Component.onCompleted: {
         PortalService.init()
-        // Initialize DisplayService night mode functionality
         DisplayService.nightModeEnabled
-        // Initialize WallpaperCyclingService
         WallpaperCyclingService.cyclingActive
-        // Initialize ColorPaletteService
         ColorPaletteService.extractedColors
-        // Initialize AwwwService
         AwwwService.awwwAvailable
     }
 
-    // Force refresh entire shell when custom theme is created
     Connections {
         target: ColorPaletteService
         function onCustomThemeCreated(themeData) {
-            // Force refresh all UI components
             Qt.callLater(() => {
-                // The visibility toggles in TopBar and Dock should handle the refresh
             })
         }
     }
@@ -58,7 +49,6 @@ ShellRoot {
     WallpaperBackground {}
 
 
-    // Desktop Widgets
     Variants {
         model: SettingsData.getFilteredScreens("desktopWidgets")
 
@@ -67,7 +57,6 @@ ShellRoot {
             property string screenName: modelData ? modelData.name : ""
 
 
-            // Desktop widget settings - controlled by SettingsData
             property bool showCpuTemp: SettingsData.desktopWidgetsEnabled && SettingsData.desktopCpuTempEnabled
             property bool showGpuTemp: SettingsData.desktopWidgetsEnabled && SettingsData.desktopGpuTempEnabled
             property bool showSystemMonitor: SettingsData.desktopWidgetsEnabled && SettingsData.desktopSystemMonitorEnabled
@@ -75,7 +64,6 @@ ShellRoot {
             property bool showWeather: SettingsData.desktopWidgetsEnabled && SettingsData.desktopWeatherEnabled
             property bool showTerminal: SettingsData.desktopWidgetsEnabled && SettingsData.desktopTerminalEnabled
 
-            // Desktop positioning system
             DesktopPositioning {
                 id: positioning
                 screen: modelData
@@ -83,7 +71,6 @@ ShellRoot {
 
 
 
-            // CPU Temperature Widget
             Loader {
                 id: cpuTempLoader
                 visible: parent.showCpuTemp
@@ -96,7 +83,6 @@ ShellRoot {
                 }
             }
 
-            // GPU Temperature Widget
             Loader {
                 id: gpuTempLoader
                 visible: parent.showGpuTemp
@@ -109,7 +95,6 @@ ShellRoot {
                 }
             }
 
-            // System Monitor Widget
             Loader {
                 id: systemMonitorLoader
                 visible: parent.showSystemMonitor
@@ -122,7 +107,6 @@ ShellRoot {
                 }
             }
 
-            // Desktop Clock Widget
             Loader {
                 id: clockLoader
                 visible: parent.showClock
@@ -135,7 +119,6 @@ ShellRoot {
                 }
             }
 
-            // Desktop Weather Widget
             Loader {
                 id: weatherLoader
                 visible: parent.showWeather
@@ -147,7 +130,6 @@ ShellRoot {
                 }
             }
 
-            // Desktop Terminal Widget
             Loader {
                 id: terminalLoader
                 visible: parent.showTerminal
@@ -168,7 +150,6 @@ ShellRoot {
         anchors.fill: parent
     }
 
-    // TopBar enabled
     Variants {
         model: SettingsData.getFilteredScreens("topBar")
 
@@ -179,20 +160,12 @@ ShellRoot {
         }
     }
 
-    // Simple Bar disabled
-    // Variants {
-    //     model: SettingsData.getFilteredScreens("topBar")
 
-    //     delegate: Bar {
-    //         modelData: item
-    //     }
-    // }
 
     Variants {
         model: SettingsData.getFilteredScreens("dock")
         
         Component.onCompleted: {
-            // Dock variants completed
         }
 
         delegate: Dock {
@@ -395,7 +368,6 @@ ShellRoot {
         id: spotlightModal
     }
 
-    // Overview modal on all screens
     Variants {
         id: overviewModalVariants
         model: Quickshell.screens
@@ -421,13 +393,11 @@ ShellRoot {
         }
     }
     
-    // Global overview control - toggle all instances
     function toggleOverview() {
         Qt.callLater(() => {
             const instances = overviewModalVariants.instances || []
             
             if (instances.length === 0) {
-                // Try again after a short delay if instances not ready
                 Qt.callLater(() => {
                     const retryInstances = overviewModalVariants.instances || []
                     if (retryInstances.length > 0) {
@@ -460,9 +430,6 @@ ShellRoot {
         })
     }
     
-    // Basic Alt+Tab keyboard handler
-    // Note: This only works when shell has focus. For global shortcut,
-    // configure in Hyprland: bind = ALT, TAB, exec, qs ipc call overview toggle
     Item {
         id: globalKeyHandler
         focus: true
@@ -474,7 +441,6 @@ ShellRoot {
         }
     }
     
-    // Function to hide all overview modals (accessible from content)
     function hideAllOverviewModals() {
         const instances = overviewModalVariants.instances || []
         instances.forEach(instance => {
@@ -484,7 +450,6 @@ ShellRoot {
         })
     }
     
-    // IPC handler for overview
     IpcHandler {
         function open(): string {
             toggleOverview()

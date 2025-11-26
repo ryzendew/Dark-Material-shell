@@ -67,7 +67,6 @@ Singleton {
         const sizes = ["B", "KB", "MB", "GB", "TB"]
         const i = Math.floor(Math.log(bytes) / Math.log(k))
         const value = bytes / Math.pow(k, i)
-        // For GB and above, show 2 decimal places for better precision
         if (i >= 3) {
             return value.toFixed(2) + " " + sizes[i]
         }
@@ -78,7 +77,6 @@ Singleton {
         refreshAll()
     }
 
-    // Process to get CPU information
     Process {
         id: cpuProcess
         running: false
@@ -132,7 +130,6 @@ Singleton {
         }
     }
 
-    // Process to get memory information
     Process {
         id: memoryProcess
         running: false
@@ -167,14 +164,12 @@ Singleton {
         }
     }
 
-    // Process to get GPU information
     Process {
         id: gpuProcess
         running: false
         command: ["sh", "-c", "lspci | grep -i vga || lspci | grep -i 3d || lspci | grep -i display || echo 'No GPU found'"]
 
         onExited: exitCode => {
-            // GPU detection may fail, that's okay
         }
 
         stdout: StdioCollector {
@@ -183,21 +178,16 @@ Singleton {
                 if (lines.length > 0) {
                     const gpuLine = lines[0]
                     
-                    // Try to get proper model name based on vendor
                     if (gpuLine.toLowerCase().includes('nvidia')) {
-                        // For NVIDIA, use nvidia-smi to get the proper model name
                         nvidiaModelProcess.running = true
                         nvidiaDriverProcess.running = true
                     } else if (gpuLine.toLowerCase().includes('amd') || gpuLine.toLowerCase().includes('radeon')) {
-                        // For AMD, try to get better info from lspci -v
                         amdModelProcess.running = true
                         amdDriverProcess.running = true
                     } else if (gpuLine.toLowerCase().includes('intel')) {
-                        // For Intel, try to get better info from lspci -v
                         intelModelProcess.running = true
                         intelDriverProcess.running = true
                     } else {
-                        // Fallback: Extract GPU model from lspci output
                         const match = gpuLine.match(/:\s+(.+?)(?:\s+\[|$)/)
                         if (match) {
                             root.gpuModel = match[1].trim()
@@ -212,7 +202,6 @@ Singleton {
         }
     }
 
-    // Process to get NVIDIA GPU model name
     Process {
         id: nvidiaModelProcess
         running: false
@@ -228,7 +217,6 @@ Singleton {
         }
     }
 
-    // Process to get AMD GPU model name
     Process {
         id: amdModelProcess
         running: false
@@ -238,9 +226,7 @@ Singleton {
             onStreamFinished: {
                 let model = text.trim()
                 if (model && model.length > 0 && model !== "No GPU found") {
-                    // Try to clean up the model name
                     model = model.replace(/\[.*?\]/g, "").trim()
-                    // Remove common prefixes
                     model = model.replace(/^(AMD|Advanced Micro Devices|ATI Technologies|ATI)\s+/i, "").trim()
                     root.gpuModel = model
                 }
@@ -248,7 +234,6 @@ Singleton {
         }
     }
 
-    // Process to get Intel GPU model name
     Process {
         id: intelModelProcess
         running: false
@@ -258,9 +243,7 @@ Singleton {
             onStreamFinished: {
                 let model = text.trim()
                 if (model && model.length > 0 && model !== "No GPU found") {
-                    // Try to clean up the model name
                     model = model.replace(/\[.*?\]/g, "").trim()
-                    // Remove common prefixes
                     model = model.replace(/^(Intel Corporation|Intel)\s+/i, "").trim()
                     root.gpuModel = model
                 }
@@ -268,7 +251,6 @@ Singleton {
         }
     }
 
-    // Process to get NVIDIA driver info
     Process {
         id: nvidiaDriverProcess
         running: false
@@ -284,7 +266,6 @@ Singleton {
         }
     }
 
-    // Process to get AMD/Intel driver info
     Process {
         id: amdDriverProcess
         running: false
@@ -307,7 +288,6 @@ Singleton {
         }
     }
 
-    // Process to get Intel driver info
     Process {
         id: intelDriverProcess
         running: false
@@ -330,7 +310,6 @@ Singleton {
         }
     }
 
-    // Process to get disk information
     Process {
         id: diskProcess
         running: false
@@ -360,7 +339,6 @@ Singleton {
         }
     }
 
-    // Process to get system information
     Process {
         id: systemProcess
         running: false
@@ -382,13 +360,11 @@ Singleton {
                     root.kernelVersion = parts[2]
                 }
                 
-                // Get OS name
                 osNameProcess.running = true
             }
         }
     }
 
-    // Process to get OS name
     Process {
         id: osNameProcess
         running: false

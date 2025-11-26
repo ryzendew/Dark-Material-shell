@@ -19,7 +19,6 @@ Rectangle {
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
     border.width: 1
     
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -69,7 +68,6 @@ Rectangle {
             radius: (Theme.iconSize + Theme.spacingS * 2) / 2
             color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -170,7 +168,6 @@ Rectangle {
                     border.color: modelData === AudioService.sink ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
                     border.width: modelData === AudioService.sink ? 2 : 1
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0

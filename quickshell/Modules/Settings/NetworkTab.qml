@@ -13,26 +13,20 @@ Item {
 
     property var parentModal: null
     
-    // DNS Configuration properties
     property bool dnsMethodAuto: true
     
-    // IP Configuration properties
     property int ipv4MethodIndex: 0
     property int ipv6MethodIndex: 0
     
-    // Proxy Configuration properties
     property int proxyMethodIndex: 0
     
-    // Advanced Settings properties
     property int macAddressIndex: 0
 
-    // Connection Edit Modal
     ConnectionEditModal {
         id: connectionEditModal
     }
 
     Component.onCompleted: {
-        // Refresh network state when tab is opened
         if (NetworkService) {
             NetworkService.refreshNetworkState()
             if (NetworkService.wifiEnabled) {
@@ -53,7 +47,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // WiFi Section
             StyledRect {
                 width: parent.width
                 height: wifiColumn.implicitHeight + Theme.spacingL * 2
@@ -68,7 +61,6 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    // Header
                     RowLayout {
                         width: parent.width
                         spacing: Theme.spacingM
@@ -90,7 +82,6 @@ Item {
 
                         Item { Layout.fillWidth: true }
 
-                        // WiFi Toggle
                         Rectangle {
                             width: 48
                             height: 28
@@ -121,7 +112,6 @@ Item {
                         }
                     }
 
-                    // Current Connection Info
                     Rectangle {
                         width: parent.width
                         height: currentWifiInfo.visible ? currentWifiInfo.implicitHeight + Theme.spacingM * 2 : 0
@@ -198,7 +188,6 @@ Item {
                         }
                     }
 
-                    // Available Networks
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -252,7 +241,6 @@ Item {
                             }
                         }
 
-                        // Network List
                         Column {
                             width: parent.width
                             spacing: Theme.spacingXS
@@ -273,7 +261,6 @@ Item {
                                         anchors.margins: Theme.spacingS
                                         spacing: Theme.spacingM
 
-                                        // Security Icon
                                         DarkIcon {
                                             name: modelData.secured ? "lock" : "lock_open"
                                             size: 20
@@ -281,7 +268,6 @@ Item {
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
-                                        // Network Info
                                         Column {
                                             anchors.verticalCenter: parent.verticalCenter
                                             spacing: 2
@@ -296,7 +282,6 @@ Item {
                                             Row {
                                                 spacing: Theme.spacingXS
 
-                                                // Signal Strength Bars
                                                 Repeater {
                                                     model: 4
                                                     Rectangle {
@@ -323,7 +308,6 @@ Item {
                                         }
 
 
-                                        // Connect Button
                                         Rectangle {
                                             width: 70
                                             height: 28
@@ -345,13 +329,9 @@ Item {
                                                 cursorShape: Qt.PointingHandCursor
                                                 onClicked: {
                                                     if (modelData.ssid !== NetworkService.currentWifiSSID) {
-                                                        // Trigger password dialog or connect if open
                                                         if (modelData.secured) {
-                                                            // Show password dialog - need to access via shell or IPC
-                                                            // For now, try to connect which will trigger password dialog
                                                             NetworkService.connectToWifi(modelData.ssid, "")
                                                         } else {
-                                                            // Connect to open network
                                                             NetworkService.connectToWifi(modelData.ssid, "")
                                                         }
                                                     }
@@ -372,7 +352,6 @@ Item {
                             }
                         }
 
-                        // Refresh Button
                         Rectangle {
                             width: parent.width
                             height: 36
@@ -410,7 +389,6 @@ Item {
                         }
                     }
 
-                    // Saved Networks
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -518,7 +496,6 @@ Item {
                                         hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: {
-                                            // Connect to saved network
                                             const ssid = typeof modelData === 'string' ? modelData : modelData.ssid
                                             NetworkService.connectToWifi(ssid, "")
                                         }
@@ -530,7 +507,6 @@ Item {
                 }
             }
 
-            // Ethernet Section (Placeholder for now)
             StyledRect {
                 width: parent.width
                 height: ethernetColumn.implicitHeight + Theme.spacingL * 2
@@ -631,7 +607,6 @@ Item {
                                             if (NetworkService.ethernetConnectionUuid) {
                                                 connectionEditModal.show("", NetworkService.ethernetConnectionUuid)
                                             } else {
-                                                // Try to find ethernet connection - use Process instead
                                                 findEthernetConnection.running = true
                                             }
                                         }
@@ -674,7 +649,6 @@ Item {
                 }
             }
 
-            // VPN Section
             StyledRect {
                 width: parent.width
                 height: vpnColumn.implicitHeight + Theme.spacingL * 2
@@ -710,7 +684,6 @@ Item {
 
                         Item { width: 1; height: 1 }
 
-                        // Add VPN Button
                         Rectangle {
                             width: 100
                             height: 32
@@ -743,14 +716,11 @@ Item {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    // TODO: Show VPN add dialog
-                                    console.log("Add VPN clicked")
                                 }
                             }
                         }
                     }
 
-                    // Active VPN Connections
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -837,7 +807,6 @@ Item {
                         }
                     }
 
-                    // VPN Profiles List
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -981,7 +950,6 @@ Item {
                 }
             }
 
-            // DNS Configuration Section
             StyledRect {
                 width: parent.width
                 height: dnsColumn.implicitHeight + Theme.spacingL * 2
@@ -1016,7 +984,6 @@ Item {
                         }
                     }
 
-                    // DNS Method Toggle
                     Row {
                         width: parent.width
                         spacing: Theme.spacingM
@@ -1057,7 +1024,6 @@ Item {
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: {
                                             networkTab.dnsMethodAuto = true
-                                            // TODO: Apply DNS method
                                         }
                                     }
                                 }
@@ -1089,7 +1055,6 @@ Item {
                         Item { width: 1; height: 1 }
                     }
 
-                    // Manual DNS Servers
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -1102,7 +1067,6 @@ Item {
                             
                         }
 
-                        // Primary DNS
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -1137,7 +1101,6 @@ Item {
                             }
                         }
 
-                        // Secondary DNS
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -1172,7 +1135,6 @@ Item {
                             }
                         }
 
-                        // DNS Presets
                         Row {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -1214,14 +1176,12 @@ Item {
                                         onClicked: {
                                             primaryDnsInput.text = modelData.primary
                                             secondaryDnsInput.text = modelData.secondary
-                                            // TODO: Apply DNS settings
                                         }
                                     }
                                 }
                             }
                         }
 
-                        // Apply Button
                         Rectangle {
                             width: 100
                             height: 32
@@ -1245,7 +1205,6 @@ Item {
                                     if (primaryDnsInput.text.trim()) {
                                         NetworkService.setDnsServers("", primaryDnsInput.text.trim(), secondaryDnsInput.text.trim())
                                     } else {
-                                        // Reset to automatic
                                         const connectionName = NetworkService.networkStatus === "wifi" ? NetworkService.wifiConnectionUuid : 
                                                                NetworkService.networkStatus === "ethernet" ? NetworkService.ethernetConnectionUuid : ""
                                         if (connectionName) {
@@ -1260,7 +1219,6 @@ Item {
                 }
             }
 
-            // IPv4/IPv6 Configuration Section
             StyledRect {
                 width: parent.width
                 height: ipConfigColumn.implicitHeight + Theme.spacingL * 2
@@ -1295,7 +1253,6 @@ Item {
                         }
                     }
 
-                    // IPv4 Configuration
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -1307,7 +1264,6 @@ Item {
                             
                         }
 
-                        // IPv4 Method
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -1362,7 +1318,6 @@ Item {
                             Item { width: 1; height: 1 }
                         }
 
-                        // Static IP Settings (when Manual selected)
                         Column {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -1437,7 +1392,6 @@ Item {
                                 }
                             }
 
-                            // Apply IPv4 Button
                             Rectangle {
                                 width: 100
                                 height: 32
@@ -1469,7 +1423,6 @@ Item {
                         }
                     }
 
-                    // IPv6 Configuration
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -1486,7 +1439,6 @@ Item {
                             
                         }
 
-                        // IPv6 Method
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -1541,7 +1493,6 @@ Item {
                             Item { width: 1; height: 1 }
                         }
 
-                        // Static IPv6 Settings (when Manual selected)
                         Column {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -1617,7 +1568,6 @@ Item {
                                 }
                             }
 
-                            // Apply IPv6 Button
                             Rectangle {
                                 width: 100
                                 height: 32
@@ -1651,7 +1601,6 @@ Item {
                 }
             }
 
-            // Proxy Configuration Section
             StyledRect {
                 width: parent.width
                 height: proxyColumn.implicitHeight + Theme.spacingL * 2
@@ -1686,7 +1635,6 @@ Item {
                         }
                     }
 
-                    // Proxy Method
                     Row {
                         width: parent.width
                         spacing: Theme.spacingM
@@ -1740,7 +1688,6 @@ Item {
                             Item { width: 1; height: 1 }
                         }
 
-                        // Manual Proxy Settings
                         Column {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -1925,7 +1872,6 @@ Item {
                         }
                     }
 
-                    // Automatic Proxy Settings
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -1973,7 +1919,6 @@ Item {
                             }
                         }
 
-                        // Apply Proxy Button
                         Rectangle {
                             width: 100
                             height: 32
@@ -2014,7 +1959,6 @@ Item {
                 }
             }
 
-            // Advanced Settings Section
             StyledRect {
                 width: parent.width
                 height: advancedColumn.implicitHeight + Theme.spacingL * 2
@@ -2049,7 +1993,6 @@ Item {
                         }
                     }
 
-                    // MTU Configuration
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -2097,7 +2040,6 @@ Item {
                             Item { width: 1; height: 1 }
                         }
 
-                        // Apply MTU Button
                         Rectangle {
                             width: 100
                             height: 32
@@ -2131,7 +2073,6 @@ Item {
                         }
                     }
 
-                    // MAC Address Configuration
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -2195,7 +2136,6 @@ Item {
                             Item { width: 1; height: 1 }
                         }
 
-                        // Cloned MAC Input
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -2232,7 +2172,6 @@ Item {
                             }
                         }
 
-                        // Apply MAC Button
                         Rectangle {
                             width: 100
                             height: 32
@@ -2254,10 +2193,8 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     if (networkTab.macAddressIndex === 0) {
-                                        // Default MAC
                                         NetworkService.setClonedMac("", "")
                                     } else if (networkTab.macAddressIndex === 1 && clonedMacInput.text.trim()) {
-                                        // Cloned MAC
                                         NetworkService.setClonedMac("", clonedMacInput.text.trim())
                                     }
                                 }
@@ -2269,7 +2206,6 @@ Item {
         }
     }
 
-    // Process to find ethernet connection for editing
     Process {
         id: findEthernetConnection
         running: false

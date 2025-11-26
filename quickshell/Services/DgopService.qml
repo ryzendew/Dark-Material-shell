@@ -25,7 +25,6 @@ Singleton {
     property string processSort: "cpu"
     property bool noCpu: false
 
-    // Cursor data for accurate CPU calculations
     property string cpuCursor: ""
     property string procCursor: ""
     property int cpuSampleCount: 0
@@ -94,12 +93,9 @@ Singleton {
         if (modules) {
             const modulesToAdd = Array.isArray(modules) ? modules : [modules]
             for (const module of modulesToAdd) {
-                // Increment reference count for this module
                 const currentCount = moduleRefCounts[module] || 0
                 moduleRefCounts[module] = currentCount + 1
-                // // console.log("Adding ref for module:", module, "count:", moduleRefCounts[module])
 
-                // Add to enabled modules if not already there
                 if (enabledModules.indexOf(module) === -1) {
                     enabledModules.push(module)
                     modulesChanged = true
@@ -112,8 +108,6 @@ Singleton {
             moduleRefCounts = Object.assign({}, moduleRefCounts) // Force property change
             updateAllStats()
         } else if (gpuPciIds.length > 0 && refCount > 0) {
-            // If we have GPU PCI IDs and active modules, make sure to update
-            // This handles the case where PCI IDs were loaded after modules were added
             updateAllStats()
         }
     }
@@ -127,17 +121,13 @@ Singleton {
             for (const module of modulesToRemove) {
                 const currentCount = moduleRefCounts[module] || 0
                 if (currentCount > 1) {
-                    // Decrement reference count
                     moduleRefCounts[module] = currentCount - 1
-                    // // console.log("Removing ref for module:", module, "count:", moduleRefCounts[module])
                 } else if (currentCount === 1) {
-                    // Remove completely when count reaches 0
                     delete moduleRefCounts[module]
                     const index = enabledModules.indexOf(module)
                     if (index > -1) {
                         enabledModules.splice(index, 1)
                         modulesChanged = true
-                        // // console.log("Disabling module:", module, "(no more refs)")
                     }
                 }
             }
@@ -147,7 +137,6 @@ Singleton {
             enabledModules = enabledModules.slice() // Force property change
             moduleRefCounts = Object.assign({}, moduleRefCounts) // Force property change
 
-            // Clear cursor data when CPU or process modules are no longer active
             if (!enabledModules.includes("cpu")) {
                 cpuCursor = ""
                 cpuSampleCount = 0
@@ -167,24 +156,18 @@ Singleton {
         const currentCount = gpuPciIdRefCounts[pciId] || 0
         gpuPciIdRefCounts[pciId] = currentCount + 1
 
-        // Add to gpuPciIds array if not already there
         if (!gpuPciIds.includes(pciId)) {
             gpuPciIds = gpuPciIds.concat([pciId])
         }
 
-        // // console.log("Adding GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
-        // Force property change notification
         gpuPciIdRefCounts = Object.assign({}, gpuPciIdRefCounts)
     }
 
     function removeGpuPciId(pciId) {
         const currentCount = gpuPciIdRefCounts[pciId] || 0
         if (currentCount > 1) {
-            // Decrement reference count
             gpuPciIdRefCounts[pciId] = currentCount - 1
-            // // console.log("Removing GPU PCI ID ref:", pciId, "count:", gpuPciIdRefCounts[pciId])
         } else if (currentCount === 1) {
-            // Remove completely when count reaches 0
             delete gpuPciIdRefCounts[pciId]
             const index = gpuPciIds.indexOf(pciId)
             if (index > -1) {
@@ -192,7 +175,6 @@ Singleton {
                 gpuPciIds.splice(index, 1)
             }
 
-            // Clear temperature data for this GPU when no longer monitored
             if (availableGpus && availableGpus.length > 0) {
                 const updatedGpus = availableGpus.slice()
                 for (var i = 0; i < updatedGpus.length; i++) {
@@ -205,10 +187,8 @@ Singleton {
                 availableGpus = updatedGpus
             }
 
-            // // console.log("Removing GPU PCI ID completely:", pciId)
         }
 
-        // Force property change notification
         gpuPciIdRefCounts = Object.assign({}, gpuPciIdRefCounts)
     }
 
@@ -223,9 +203,7 @@ Singleton {
             isUpdating = true
             dgopProcess.running = true
         } else if (!dgopAvailable && refCount > 0 && enabledModules.length > 0) {
-            // Fallback to standard Linux commands when dgop is not available
             isUpdating = true
-            console.log("DgopService: updateAllStats() called, calling updateStatsFallback()")
             updateStatsFallback()
         } else {
             isUpdating = false
@@ -233,22 +211,18 @@ Singleton {
     }
     
     function updateStatsFallback() {
-        // Use standard Linux commands available on both Arch and Fedora
-        console.log("DgopService: updateStatsFallback() called, enabledModules:", enabledModules)
         if (enabledModules.includes("cpu") || enabledModules.includes("all")) {
             fallbackCpuProcess.running = true
             fallbackCpuFreqProcess.running = true
             fallbackCpuTempProcess.running = true
         }
         if (enabledModules.includes("memory") || enabledModules.includes("all")) {
-            console.log("DgopService: Starting fallbackMemoryProcess")
             fallbackMemoryProcess.running = true
         }
         if (enabledModules.includes("network") || enabledModules.includes("all")) {
             fallbackNetworkProcess.running = true
         }
         if (enabledModules.includes("gpu") || enabledModules.includes("all")) {
-            // Make sure GPU is initialized before trying to read temperature
             if (availableGpus.length === 0) {
                 initializeFallbackGpu()
             }
@@ -257,10 +231,8 @@ Singleton {
     }
     
     function initializeFallbackGpu() {
-        // Initialize GPU list from /sys/class/drm if available
         if (availableGpus.length === 0) {
             fallbackGpuInitProcess.running = true
-            // Also try to get GPU name
             fallbackGpuNameProcess.running = true
         }
     }
@@ -268,14 +240,12 @@ Singleton {
     function initializeGpuMetadata() {
         if (!dgopAvailable)
             return
-        // Load GPU metadata once at startup for basic info
         gpuInitProcess.running = true
     }
 
     function initializeGpuMetadataWithNVML() {
         if (!nvmlAvailable)
             return
-        // Load GPU metadata using NVML
         nvmlGpuProcess.running = true
     }
 
@@ -283,11 +253,9 @@ Singleton {
         const cmd = ["dgop", "meta", "--json"]
 
         if (enabledModules.length === 0) {
-            // Don't run if no modules are needed
             return []
         }
 
-        // Replace 'gpu' with 'gpu-temp' when we have PCI IDs to monitor
         const finalModules = []
         for (const module of enabledModules) {
             if (module === "gpu" && gpuPciIds.length > 0) {
@@ -297,7 +265,6 @@ Singleton {
             }
         }
 
-        // Add gpu-temp module automatically when we have PCI IDs to monitor
         if (gpuPciIds.length > 0 && finalModules.indexOf("gpu-temp") === -1) {
             finalModules.push("gpu-temp")
         }
@@ -311,7 +278,6 @@ Singleton {
             return []
         }
 
-        // Add cursor data if available for accurate CPU percentages
         if ((enabledModules.includes("cpu") || enabledModules.includes("all")) && cpuCursor) {
             cmd.push("--cpu-cursor", cpuCursor)
         }
@@ -454,14 +420,11 @@ Singleton {
 
         const gpuData = (data.gpu && data.gpu.gpus) || data.gpus
         if (gpuData && Array.isArray(gpuData)) {
-            // Check if this is temperature update data (has PCI IDs being monitored)
             if (gpuPciIds.length > 0 && availableGpus && availableGpus.length > 0) {
-                // This is temperature data - merge with existing GPU metadata
                 const updatedGpus = availableGpus.slice()
                 for (var i = 0; i < updatedGpus.length; i++) {
                     const existingGpu = updatedGpus[i]
                     const tempGpu = gpuData.find(g => g.pciId === existingGpu.pciId)
-                    // Only update temperature if this GPU's PCI ID is being monitored
                     if (tempGpu && gpuPciIds.includes(existingGpu.pciId)) {
                         updatedGpus[i] = Object.assign({}, existingGpu, {
                                                            "temperature": tempGpu.temperature || 0
@@ -470,7 +433,6 @@ Singleton {
                 }
                 availableGpus = updatedGpus
             } else {
-                // This is initial GPU metadata - set the full list
                 const gpuList = []
                 for (const gpu of gpuData) {
                     let displayName = gpu.displayName || gpu.name || "Unknown GPU"
@@ -642,11 +604,9 @@ Singleton {
         running: false
         onCommandChanged: {
 
-            //// // console.log("DgopService command:", JSON.stringify(command))
         }
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("Dgop process failed with exit code:", exitCode)
                 isUpdating = false
             }
         }
@@ -657,8 +617,6 @@ Singleton {
                         const data = JSON.parse(text.trim())
                         parseData(data)
                     } catch (e) {
-                        console.warn("Failed to parse dgop JSON:", e)
-                        console.warn("Raw text was:", text.substring(0, 200))
                         isUpdating = false
                     }
                 }
@@ -672,7 +630,6 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("GPU init process failed with exit code:", exitCode)
             }
         }
         stdout: StdioCollector {
@@ -682,7 +639,6 @@ Singleton {
                         const data = JSON.parse(text.trim())
                         parseData(data)
                     } catch (e) {
-                        console.warn("Failed to parse GPU init JSON:", e)
                     }
                 }
             }
@@ -697,27 +653,20 @@ Singleton {
             dgopAvailable = (exitCode === 0)
             if (dgopAvailable) {
                 initializeGpuMetadata()
-                // Load persisted GPU PCI IDs from session state
                 if (SessionData.enabledGpuPciIds && SessionData.enabledGpuPciIds.length > 0) {
                     for (const pciId of SessionData.enabledGpuPciIds) {
                         addGpuPciId(pciId)
                     }
-                    // Trigger update if we already have active modules
                     if (refCount > 0 && enabledModules.length > 0) {
                         updateAllStats()
                     }
                 }
             } else {
-                console.warn("dgop is not installed or not in PATH - using fallback methods")
-                // Initialize fallback GPU detection
                 initializeFallbackGpu()
-                // Initialize CPU info
                 fallbackCpuInfoProcess.running = true
-                // Trigger immediate memory update if memory module is enabled
                 if (refCount > 0 && (enabledModules.includes("memory") || enabledModules.includes("all"))) {
                     fallbackMemoryProcess.running = true
                 }
-                // Trigger update if we already have active modules
                 if (refCount > 0 && enabledModules.length > 0) {
                     updateAllStats()
                 }
@@ -736,13 +685,10 @@ Singleton {
         onExited: exitCode => {
             nvmlAvailable = (exitCode === 0)
             if (nvmlAvailable) {
-                // // console.log("NVML is available for GPU temperature monitoring")
-                // Initialize GPU metadata using NVML if dgop is not available
                 if (!dgopAvailable) {
                     initializeGpuMetadataWithNVML()
                 }
             } else {
-                console.warn("NVML is not available")
             }
         }
     }
@@ -753,7 +699,6 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("NVML GPU process failed with exit code:", exitCode)
             }
         }
         stdout: StdioCollector {
@@ -763,7 +708,6 @@ Singleton {
                         const data = JSON.parse(text.trim())
                         if (data.gpus && Array.isArray(data.gpus)) {
                             if (availableGpus && availableGpus.length > 0) {
-                                // Update existing GPU temperature data using NVML
                                 const updatedGpus = availableGpus.slice()
                                 for (var i = 0; i < updatedGpus.length; i++) {
                                     const existingGpu = updatedGpus[i]
@@ -776,7 +720,6 @@ Singleton {
                                 }
                                 availableGpus = updatedGpus
                             } else {
-                                // Initial GPU metadata loading
                                 const gpuList = []
                                 for (const gpu of data.gpus) {
                                     gpuList.push({
@@ -790,7 +733,6 @@ Singleton {
                                 }
                                 availableGpus = gpuList
                                 
-                                // Add PCI IDs for monitoring
                                 for (const gpu of data.gpus) {
                                     if (gpu.pciId) {
                                         addGpuPciId(gpu.pciId)
@@ -798,11 +740,8 @@ Singleton {
                                 }
                             }
                         } else if (data.error) {
-                            console.warn("NVML error:", data.error)
                         }
                     } catch (e) {
-                        console.warn("Failed to parse NVML JSON:", e)
-                        console.warn("Raw text was:", text.substring(0, 200))
                     }
                 }
             }
@@ -815,7 +754,6 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("Failed to read /etc/os-release")
             }
         }
         stdout: StdioCollector {
@@ -835,12 +773,9 @@ Singleton {
                             }
                         }
 
-                        // Prefer PRETTY_NAME, fallback to NAME
                         const distroName = prettyName || name || "Linux"
                         distribution = distroName
-                        // // console.log("Detected distribution:", distroName)
                     } catch (e) {
-                        console.warn("Failed to parse /etc/os-release:", e)
                         distribution = "Linux"
                     }
                 }
@@ -848,7 +783,6 @@ Singleton {
         }
     }
 
-    // Fallback processes for when dgop is not available
     Process {
         id: fallbackCpuProcess
         command: ["sh", "-c", "head -n 1 /proc/stat"]
@@ -879,7 +813,6 @@ Singleton {
                         root.lastCpuStats = { total: total, used: used }
                     }
                 } catch (e) {
-                    console.warn("DgopService: Failed to parse CPU stats:", e)
                 }
             }
         }
@@ -899,7 +832,6 @@ Singleton {
                         root.cpuFrequency = freq / 1000000.0 // Convert from kHz to GHz
                     }
                 } catch (e) {
-                    // Ignore if frequency file not available
                 }
             }
         }
@@ -914,7 +846,6 @@ Singleton {
                 try {
                     const rawText = text.trim()
                     if (!rawText || rawText.length === 0) {
-                        // Fallback to /proc/meminfo if free command fails
                         fallbackMemoryProcessAlt.running = true
                         return
                     }
@@ -930,28 +861,21 @@ Singleton {
                     for (const line of lines) {
                         if (!line || line.trim().length === 0) continue
                         
-                        // Format: "Mem:    65374240   16723468    48650772           0     1234567     2345678"
-                        //         Label   total       used        free        shared    buff/cache   available
                         const parts = line.trim().split(/\s+/)
                         
                         if (parts[0] === "Mem:") {
-                            // free -k output: total, used, free, shared, buff/cache, available
-                            // Format: "Mem:    65374240    17156552    31912368     2407148    19446076    48217688"
                             if (parts.length >= 7) {
                                 memTotal = parseInt(parts[1]) || 0
                                 memUsed = parseInt(parts[2]) || 0
                                 memFree = parseInt(parts[3]) || 0
                                 memAvailable = parseInt(parts[6]) || memFree
                             } else if (parts.length >= 4) {
-                                // Fallback if available column is missing
                                 memTotal = parseInt(parts[1]) || 0
                                 memUsed = parseInt(parts[2]) || 0
                                 memFree = parseInt(parts[3]) || 0
                                 memAvailable = memFree
                             }
                         } else if (parts[0] === "Swap:") {
-                            // free -k output: total, used, free
-                            // Format: "Swap:       65374204     2832908    62541296"
                             if (parts.length >= 4) {
                                 swapTotal = parseInt(parts[1]) || 0
                                 const swapUsed = parseInt(parts[2]) || 0
@@ -961,14 +885,12 @@ Singleton {
                     }
                     
                     if (memTotal === 0) {
-                        // Fallback to /proc/meminfo if parsing failed
                         fallbackMemoryProcessAlt.running = true
                         return
                     }
                     
                     const memUsagePercent = memTotal > 0 ? (memUsed / memTotal) * 100 : 0
                     
-                    // Set all memory properties
                     const totalMB = memTotal / 1024
                     const usedMB = memUsed / 1024
                     const availableMB = (memAvailable || memFree) / 1024
@@ -987,14 +909,12 @@ Singleton {
                     
                     addToHistory(root.memoryHistory, root.memoryUsage)
                 } catch (e) {
-                    // Fallback to /proc/meminfo if free command parsing fails
                     fallbackMemoryProcessAlt.running = true
                 }
             }
         }
     }
     
-    // Fallback to /proc/meminfo if free command is not available
     Process {
         id: fallbackMemoryProcessAlt
         command: ["sh", "-c", "cat /proc/meminfo | grep -E '^(MemTotal|MemAvailable|MemFree|SwapTotal|SwapFree):'"]
@@ -1020,7 +940,6 @@ Singleton {
                         const parts = line.trim().split(/\s+/)
                         let value = 0
                         
-                        // Find the first numeric value in the line (skip the label)
                         for (let i = 1; i < parts.length; i++) {
                             const parsed = parseInt(parts[i])
                             if (!isNaN(parsed) && parsed > 0) {
@@ -1069,7 +988,6 @@ Singleton {
                     
                     addToHistory(root.memoryHistory, root.memoryUsage)
                 } catch (e) {
-                    // Ignore errors
                 }
             }
         }
@@ -1103,7 +1021,6 @@ Singleton {
                     }
                     root.lastNetworkStats = { rx: totalRx, tx: totalTx }
                 } catch (e) {
-                    console.warn("DgopService: Failed to parse network stats:", e)
                 }
             }
         }
@@ -1120,14 +1037,12 @@ Singleton {
                     if (tempText && tempText.length > 0) {
                         const temp = parseInt(tempText)
                         if (temp > 0) {
-                            // If temp is > 1000, it's in millidegrees, otherwise it's already in degrees
                             if (temp > 1000 && temp < 200000) {
                                 root.cpuTemperature = temp / 1000.0
                             } else if (temp > 0 && temp < 200) {
                                 root.cpuTemperature = temp
                             }
                             if (root.cpuTemperature > 0) {
-                                console.log("DgopService fallback: CPU temp found:", root.cpuTemperature)
                             } else {
                                 fallbackSensorsProcess.running = true
                             }
@@ -1138,7 +1053,6 @@ Singleton {
                         fallbackSensorsProcess.running = true
                     }
                 } catch (e) {
-                    console.warn("DgopService: Failed to parse CPU temp, trying sensors:", e)
                     fallbackSensorsProcess.running = true
                 }
             }
@@ -1157,17 +1071,13 @@ Singleton {
                         const temp = parseFloat(tempText)
                         if (temp > 0 && temp < 200) {
                             root.cpuTemperature = temp
-                            console.log("DgopService fallback: CPU temp from sensors (Tctl/Tdie):", root.cpuTemperature)
                         } else {
-                            // Fallback: try to find k10temp or coretemp adapter
                             fallbackCpuTempAltProcess.running = true
                         }
                     } else {
-                        // Fallback: try to find k10temp or coretemp adapter
                         fallbackCpuTempAltProcess.running = true
                     }
                 } catch (e) {
-                    // Fallback: try to find k10temp or coretemp adapter
                     fallbackCpuTempAltProcess.running = true
                 }
             }
@@ -1186,11 +1096,9 @@ Singleton {
                         const temp = parseFloat(tempText)
                         if (temp > 0 && temp < 200) {
                             root.cpuTemperature = temp
-                            console.log("DgopService fallback: CPU temp from sensors (k10temp/coretemp):", root.cpuTemperature)
                         }
                     }
                 } catch (e) {
-                    // Ignore if sensors not available
                 }
             }
         }
@@ -1208,13 +1116,11 @@ Singleton {
                         const temp = parseInt(tempText)
                         if (temp > 0 && temp < 200000) { // Sanity check
                             const tempC = temp / 1000.0
-                            console.log("DgopService fallback: GPU temp found:", tempC)
                             if (root.availableGpus.length > 0) {
                                 const updatedGpus = root.availableGpus.slice()
                                 updatedGpus[0].temperature = tempC
                                 root.availableGpus = updatedGpus
                             } else {
-                                // Initialize GPU if we found a temperature
                                 root.availableGpus = [{
                                     name: "GPU",
                                     temperature: tempC,
@@ -1223,16 +1129,12 @@ Singleton {
                                 }]
                             }
                         } else {
-                            // Try sensors for GPU
                             fallbackGpuSensorsProcess.running = true
                         }
                     } else {
-                        // Try sensors for GPU if no hwmon found
                         fallbackGpuSensorsProcess.running = true
                     }
                 } catch (e) {
-                    console.warn("DgopService: Failed to parse GPU temp, trying sensors:", e)
-                    // Try sensors for GPU
                     fallbackGpuSensorsProcess.running = true
                 }
             }
@@ -1260,7 +1162,6 @@ Singleton {
                         }]
                     }
                 } catch (e) {
-                    // Ignore if sensors not available
                 }
             }
         }
@@ -1274,9 +1175,7 @@ Singleton {
             onStreamFinished: {
                 try {
                     const gpuCount = parseInt(text.trim())
-                    console.log("DgopService fallback: Found", gpuCount, "GPU cards")
                     if (gpuCount > 0 && root.availableGpus.length === 0) {
-                        // Initialize GPU entries
                         const gpus = []
                         for (let i = 0; i < gpuCount; i++) {
                             gpus.push({
@@ -1287,10 +1186,8 @@ Singleton {
                             })
                         }
                         root.availableGpus = gpus
-                        console.log("DgopService fallback: Initialized", gpus.length, "GPUs")
                     }
                 } catch (e) {
-                    console.warn("DgopService: Failed to initialize GPUs:", e)
                 }
             }
         }
@@ -1303,10 +1200,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
-                    // Try to get GPU vendor/model info
-                    // This is optional, just for better naming
                 } catch (e) {
-                    // Ignore errors
                 }
             }
         }
@@ -1336,12 +1230,10 @@ Singleton {
                             processorCount++
                         }
                     }
-                    // If cores not found, use processor count
                     if (root.cpuCores === 1 && processorCount > 0) {
                         root.cpuCores = processorCount
                     }
                 } catch (e) {
-                    // Ignore errors
                 }
             }
         }

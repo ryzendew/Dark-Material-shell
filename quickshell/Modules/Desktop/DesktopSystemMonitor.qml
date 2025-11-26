@@ -17,7 +17,6 @@ DarkOSD {
     enableMouseInteraction: true
     autoHideInterval: 0
 
-    // Position based on individual widget settings
     property var positionAnchors: {
         switch(SettingsData.desktopSystemMonitorPosition) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -35,14 +34,9 @@ DarkOSD {
 
     Component.onCompleted: {
         DgopService.addRef(["cpu", "memory", "gpu"]);
-        // console.log("DesktopSystemMonitor: Component completed")
-        // console.log("DesktopSystemMonitor: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
-        // console.log("DesktopSystemMonitor: PerformanceService available:", typeof PerformanceService !== 'undefined')
         if (typeof CpuFrequencyService !== 'undefined') {
-            // console.log("DesktopSystemMonitor: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
         }
         if (typeof PerformanceService !== 'undefined') {
-            // console.log("DesktopSystemMonitor: Initial performance mode:", PerformanceService.currentMode)
         }
         show();
     }
@@ -59,7 +53,6 @@ DarkOSD {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Position based on settings
         anchors.left: positionAnchors.horizontal === "left" ? parent.left : undefined
         anchors.horizontalCenter: positionAnchors.horizontal === "center" ? parent.horizontalCenter : undefined
         anchors.right: positionAnchors.horizontal === "right" ? parent.right : undefined
@@ -67,7 +60,6 @@ DarkOSD {
         anchors.verticalCenter: positionAnchors.vertical === "center" ? parent.verticalCenter : undefined
         anchors.bottom: positionAnchors.vertical === "bottom" ? parent.bottom : undefined
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -82,7 +74,6 @@ DarkOSD {
             anchors.centerIn: parent
             spacing: Theme.spacingS
 
-            // CPU Row
             Row {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -101,7 +92,6 @@ DarkOSD {
                     }
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -146,7 +136,6 @@ DarkOSD {
                                 return Theme.surfaceText;
                             }
 
-                            // Drop shadow
                             layer.enabled: true
                             layer.effect: DropShadow {
                                 horizontalOffset: 0
@@ -177,7 +166,6 @@ DarkOSD {
                                 return Theme.surfaceText;
                             }
 
-                            // Drop shadow
                             layer.enabled: true
                             layer.effect: DropShadow {
                                 horizontalOffset: 0
@@ -196,7 +184,6 @@ DarkOSD {
                                         return CpuFrequencyService.currentFrequency.toFixed(1) + "GHz";
                                     }
                                 } catch (e) {
-                                    // console.log("DesktopSystemMonitor: Error accessing CpuFrequencyService:", e)
                                 }
                                 return "--GHz";
                             }
@@ -213,12 +200,10 @@ DarkOSD {
                                         }
                                     }
                                 } catch (e) {
-                                    // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                                 }
                                 return Theme.surfaceTextMedium;
                             }
 
-                            // Drop shadow
                             layer.enabled: true
                             layer.effect: DropShadow {
                                 horizontalOffset: 0
@@ -232,7 +217,6 @@ DarkOSD {
                     }
                 }
 
-                // Performance Mode
                 StyledText {
                     text: {
                         try {
@@ -240,7 +224,6 @@ DarkOSD {
                                 return PerformanceService.getCurrentModeInfo().name;
                             }
                         } catch (e) {
-                            // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                         }
                         return "Unknown";
                     }
@@ -257,13 +240,11 @@ DarkOSD {
                                 }
                             }
                         } catch (e) {
-                            // console.log("DesktopSystemMonitor: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -276,7 +257,6 @@ DarkOSD {
                 }
             }
 
-            // GPU Row
             Row {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -297,7 +277,6 @@ DarkOSD {
                     }
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -343,7 +322,6 @@ DarkOSD {
                             return Theme.surfaceText;
                         }
 
-                        // Drop shadow
                         layer.enabled: true
                         layer.effect: DropShadow {
                             horizontalOffset: 0
@@ -357,7 +335,6 @@ DarkOSD {
                 }
             }
 
-            // RAM Row
             Row {
                 spacing: Theme.spacingS
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -376,7 +353,6 @@ DarkOSD {
                     }
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -418,7 +394,6 @@ DarkOSD {
                             return Theme.surfaceText;
                         }
 
-                        // Drop shadow
                         layer.enabled: true
                         layer.effect: DropShadow {
                             horizontalOffset: 0
@@ -433,7 +408,6 @@ DarkOSD {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true

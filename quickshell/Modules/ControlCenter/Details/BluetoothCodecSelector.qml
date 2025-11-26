@@ -129,7 +129,6 @@ Item {
         opacity: modalVisible ? 1 : 0
         scale: modalVisible ? 1 : 0.9
         
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0

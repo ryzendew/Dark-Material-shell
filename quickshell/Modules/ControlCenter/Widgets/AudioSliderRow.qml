@@ -23,7 +23,6 @@ Row {
         radius: (Theme.iconSize + Theme.spacingS * 2) / 2
         color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -82,7 +81,13 @@ Row {
         unit: "%"
         valueOverride: actualVolumePercent
         thumbOutlineColor: Theme.surfaceContainer
-        trackColor: root.sliderTrackColor.a > 0 ? root.sliderTrackColor : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, Theme.getContentBackgroundAlpha() * 0.60)
+        trackColor: {
+            if (root.sliderTrackColor.a > 0) {
+                return root.sliderTrackColor
+            }
+            const alpha = Theme.getContentBackgroundAlpha() * 0.60
+            return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, alpha)
+        }
         onSliderValueChanged: function(newValue) {
             if (defaultSink) {
                 defaultSink.audio.volume = newValue / 100.0

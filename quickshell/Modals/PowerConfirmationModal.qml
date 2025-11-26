@@ -108,7 +108,6 @@ DarkModal {
                     width: parent.width
                 }
 
-                // Countdown display
                 Rectangle {
                     width: parent.width
                     height: 60
@@ -138,7 +137,6 @@ DarkModal {
                     }
                 }
 
-                // Progress bar
                 Rectangle {
                     width: parent.width
                     height: 4
@@ -159,7 +157,6 @@ DarkModal {
                     }
                 }
 
-                // Action buttons
                 Row {
                     width: parent.width
                     spacing: Theme.spacingM

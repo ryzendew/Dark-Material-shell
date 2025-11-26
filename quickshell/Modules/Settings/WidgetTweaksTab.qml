@@ -22,7 +22,6 @@ Item {
 
 
 
-            // Widget Transparency Section
             StyledRect {
                 width: parent.width
                 height: widgetTransparencySection.implicitHeight + Theme.spacingL * 2
@@ -511,7 +510,6 @@ Item {
                 }
             }
 
-            // Desktop Widgets Section
             StyledRect {
                 width: parent.width
                 height: desktopWidgetsSection.implicitHeight + Theme.spacingL * 2
@@ -562,7 +560,6 @@ Item {
                         }
                     }
 
-                    // Master Toggle
                     Row {
                         width: parent.width
                         spacing: Theme.spacingM
@@ -590,9 +587,7 @@ Item {
                         }
                     }
 
-                    // Display selection is now handled in Settings → Displays tab
 
-        // Individual Widget Controls
         Column {
             width: parent.width
             spacing: Theme.spacingM
@@ -606,13 +601,11 @@ Item {
             }
         }
 
-                    // Individual Widget Controls (only visible when master is enabled)
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
                         visible: SettingsData.desktopWidgetsEnabled
 
-                        // CPU Temperature Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -664,7 +657,6 @@ Item {
                             }
                         }
 
-                        // GPU Temperature Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -716,7 +708,6 @@ Item {
                             }
                         }
 
-                        // System Monitor Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -768,7 +759,6 @@ Item {
                             }
                         }
 
-                        // Desktop Clock Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -820,7 +810,6 @@ Item {
                             }
                         }
 
-                        // Desktop Weather Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -872,7 +861,6 @@ Item {
                             }
                         }
 
-                        // Desktop Terminal Widget
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -924,7 +912,6 @@ Item {
                             }
                         }
                         
-                        // Clock Background Opacity
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -965,7 +952,6 @@ Item {
                 }
             }
 
-            // GPU Selection
             StyledRect {
                 width: parent.width
                 height: gpuSelectionSection.implicitHeight + Theme.spacingL * 2
@@ -1038,7 +1024,6 @@ Item {
                 }
             }
 
-            // Desktop Widget Width
             StyledRect {
                 width: parent.width
                 height: desktopWidgetWidthSection.implicitHeight + Theme.spacingL * 2
@@ -1092,7 +1077,6 @@ Item {
                 }
             }
 
-            // Desktop Widget Height
             StyledRect {
                 width: parent.width
                 height: desktopWidgetHeightSection.implicitHeight + Theme.spacingL * 2
@@ -1146,7 +1130,6 @@ Item {
                 }
             }
 
-            // Desktop Widget Font Size
             StyledRect {
                 width: parent.width
                 height: desktopWidgetFontSizeSection.implicitHeight + Theme.spacingL * 2
@@ -1200,7 +1183,6 @@ Item {
                 }
             }
 
-            // Desktop Widget Icon Size
             StyledRect {
                 width: parent.width
                 height: desktopWidgetIconSizeSection.implicitHeight + Theme.spacingL * 2
@@ -1254,7 +1236,6 @@ Item {
                 }
             }
 
-            // System Monitor Widget Size
             StyledRect {
                 width: parent.width
                 height: systemMonitorSizeSection.implicitHeight + Theme.spacingL * 2
@@ -1298,7 +1279,6 @@ Item {
                         color: Theme.surfaceTextMedium
                     }
 
-                    // Width slider
                     Column {
                         width: parent.width
                         spacing: Theme.spacingXS
@@ -1324,7 +1304,6 @@ Item {
                         }
                     }
 
-                    // Height slider
                     Column {
                         width: parent.width
                         spacing: Theme.spacingXS

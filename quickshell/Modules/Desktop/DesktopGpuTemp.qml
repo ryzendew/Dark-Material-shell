@@ -18,7 +18,6 @@ DarkOSD {
     enableMouseInteraction: true
     autoHideInterval: 0
 
-    // Position based on individual widget settings
     property var positionAnchors: {
         switch(SettingsData.desktopGpuTempPosition) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -61,7 +60,6 @@ DarkOSD {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Position based on settings
         anchors.left: positionAnchors.horizontal === "left" ? parent.left : undefined
         anchors.horizontalCenter: positionAnchors.horizontal === "center" ? parent.horizontalCenter : undefined
         anchors.right: positionAnchors.horizontal === "right" ? parent.right : undefined
@@ -69,7 +67,6 @@ DarkOSD {
         anchors.verticalCenter: positionAnchors.vertical === "center" ? parent.verticalCenter : undefined
         anchors.bottom: positionAnchors.vertical === "bottom" ? parent.bottom : undefined
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -98,7 +95,6 @@ DarkOSD {
                 }
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -140,7 +136,6 @@ DarkOSD {
                         return Theme.surfaceText;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -154,7 +149,6 @@ DarkOSD {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true

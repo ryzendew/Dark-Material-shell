@@ -19,7 +19,6 @@ Card {
         anchors.margins: Theme.spacingS
         spacing: Theme.spacingM
 
-        // CPU Bar
         Column {
             width: (parent.width - 2 * Theme.spacingM) / 3
             height: parent.height
@@ -71,7 +70,6 @@ Card {
             }
         }
 
-        // Temperature Bar
         Column {
             width: (parent.width - 2 * Theme.spacingM) / 3
             height: parent.height
@@ -123,7 +121,6 @@ Card {
             }
         }
 
-        // RAM Bar
         Column {
             width: (parent.width - 2 * Theme.spacingM) / 3
             height: parent.height

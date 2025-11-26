@@ -79,7 +79,6 @@ QtObject {
             }
         }
 
-        // If not found, try to find the same group but select the group header instead
         if (selectedItemType === "notification") {
             for (let j = 0; j < flatNavigation.length; j++) {
                 const groupItem = flatNavigation[j]
@@ -93,7 +92,6 @@ QtObject {
             }
         }
 
-        // If still not found, clamp to valid range and update
         if (flatNavigation.length > 0) {
             selectedFlatIndex = Math.min(selectedFlatIndex, flatNavigation.length - 1)
             selectedFlatIndex = Math.max(selectedFlatIndex, 0)
@@ -115,7 +113,6 @@ QtObject {
         selectedFlatIndex = 0
         keyboardNavigationActive = false
         showKeyboardHints = false
-        // Reset keyboardActive when modal is reset
         if (listView) {
             listView.keyboardActive = false
         }
@@ -127,7 +124,6 @@ QtObject {
         if (flatNavigation.length === 0)
             return
 
-        // Re-enable auto-scrolling when arrow keys are used
         if (listView && listView.enableAutoScroll) {
             listView.enableAutoScroll()
         }
@@ -143,7 +139,6 @@ QtObject {
         if (flatNavigation.length === 0)
             return
 
-        // Re-enable auto-scrolling when arrow keys are used
         if (listView && listView.enableAutoScroll) {
             listView.enableAutoScroll()
         }
@@ -159,7 +154,6 @@ QtObject {
         if (flatNavigation.length === 0)
             return
 
-        // Re-enable auto-scrolling when arrow keys are used
         if (listView && listView.enableAutoScroll) {
             listView.enableAutoScroll()
         }
@@ -180,7 +174,6 @@ QtObject {
         if (!group)
             return
 
-        // Prevent expanding groups with < 2 notifications
         const notificationCount = group.notifications ? group.notifications.length : 0
         if (notificationCount < 2)
             return
@@ -192,9 +185,7 @@ QtObject {
         NotificationService.toggleGroupExpansion(group.key)
         rebuildFlatNavigation()
 
-        // Smart selection after toggle
         if (!wasExpanded) {
-            // Just expanded - move to first notification in the group
             for (let i = 0; i < flatNavigation.length; i++) {
                 if (flatNavigation[i].type === "notification" && flatNavigation[i].groupIndex === groupIndex) {
                     selectedFlatIndex = i
@@ -202,7 +193,6 @@ QtObject {
                 }
             }
         } else {
-            // Just collapsed - stay on the group header
             for (let i = 0; i < flatNavigation.length; i++) {
                 if (flatNavigation[i].type === "group" && flatNavigation[i].groupIndex === groupIndex) {
                     selectedFlatIndex = i
@@ -326,17 +316,12 @@ QtObject {
         const currentItem = flatNavigation[selectedFlatIndex]
 
         if (keyboardNavigationActive && currentItem && currentItem.groupIndex >= 0) {
-            // Always center the selected item for better visibility
-            // This ensures the selected item stays in view even when new notifications arrive
             if (currentItem.type === "notification") {
-                // For individual notifications, center on the group but bias towards the notification
                 listView.positionViewAtIndex(currentItem.groupIndex, ListView.Center)
             } else {
-                // For group headers, center on the group
                 listView.positionViewAtIndex(currentItem.groupIndex, ListView.Center)
             }
 
-            // Force immediate update
             listView.forceLayout()
         }
     }
@@ -374,7 +359,6 @@ QtObject {
                 rebuildFlatNavigation() // Ensure we have fresh navigation data
                 selectedFlatIndex = 0
                 updateSelectedIdFromIndex()
-                // Set keyboardActive on listView to show highlight
                 if (listView) {
                     listView.keyboardActive = true
                 }
@@ -391,7 +375,6 @@ QtObject {
                 rebuildFlatNavigation() // Ensure we have fresh navigation data
                 selectedFlatIndex = 0
                 updateSelectedIdFromIndex()
-                // Set keyboardActive on listView to show highlight
                 if (listView) {
                     listView.keyboardActive = true
                 }
@@ -400,7 +383,6 @@ QtObject {
                 event.accepted = true
             } else if (selectedFlatIndex === 0) {
                 keyboardNavigationActive = false
-                // Reset keyboardActive when navigation is disabled
                 if (listView) {
                     listView.keyboardActive = false
                 }
@@ -440,7 +422,6 @@ QtObject {
         }
     }
 
-    // Get current selection info for UI
     function getCurrentSelection() {
         if (!keyboardNavigationActive || selectedFlatIndex < 0 || selectedFlatIndex >= flatNavigation.length) {
             return {

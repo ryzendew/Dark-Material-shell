@@ -6,9 +6,7 @@ import qs.Services
 
 ColumnLayout {
     id: processesTab
-
     property var contextMenu: null
-
     anchors.fill: parent
     spacing: Theme.spacingM
 

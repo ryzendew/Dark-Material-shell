@@ -22,7 +22,6 @@ PanelWindow {
                 shouldBeVisible = true
                 visible = true
             } else {
-                // Freeze the width before starting exit animation
                 frozenWidth = toast.width
                 shouldBeVisible = false
                 closeTimer.restart()

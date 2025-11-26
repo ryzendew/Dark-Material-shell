@@ -14,7 +14,7 @@ Item {
     Column {
         anchors.centerIn: parent
         spacing: Theme.spacingL
-        visible: !WeatherService.weather.available || WeatherService.weather.temp === 0
+        visible: !WeatherService.weather.available
 
         DarkIcon {
             name: "cloud_off"
@@ -34,7 +34,7 @@ Item {
     Column {
         anchors.fill: parent
         spacing: Theme.spacingM
-        visible: WeatherService.weather.available && WeatherService.weather.temp !== 0
+        visible: WeatherService.weather.available
 
         Item {
             width: parent.width
@@ -638,5 +638,13 @@ Item {
                 }
             }
         }
+    }
+
+    Component.onCompleted: {
+        WeatherService.addRef()
+    }
+
+    Component.onDestruction: {
+        WeatherService.removeRef()
     }
 }

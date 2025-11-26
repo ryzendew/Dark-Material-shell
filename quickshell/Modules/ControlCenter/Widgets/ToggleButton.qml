@@ -35,7 +35,6 @@ Rectangle {
     border.width: isActive ? 1 : 1
     opacity: enabled ? 1.0 : 0.6
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

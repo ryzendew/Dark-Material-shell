@@ -39,7 +39,6 @@ Item {
         target: PowerService
         function onLastErrorChanged() {
             if (PowerService.lastError && PowerService.lastError.length > 0) {
-                console.warn("PowerService error:", PowerService.lastError)
             }
         }
     }
@@ -57,7 +56,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Battery Status Section
             StyledRect {
                 width: parent.width
                 height: batterySection.implicitHeight + Theme.spacingL * 2
@@ -123,7 +121,6 @@ Item {
                 }
             }
 
-            // Power Profiles Section
             StyledRect {
                 width: parent.width
                 height: profilesSection.implicitHeight + Theme.spacingL * 2
@@ -186,7 +183,6 @@ Item {
                 }
             }
 
-            // Button Actions Section
             StyledRect {
                 width: parent.width
                 height: buttonActionsSection.implicitHeight + Theme.spacingL * 2
@@ -277,7 +273,6 @@ Item {
                 }
             }
 
-            // Lid Close Actions Section
             StyledRect {
                 width: parent.width
                 height: lidActionsSection.implicitHeight + Theme.spacingL * 2
@@ -354,7 +349,6 @@ Item {
                 }
             }
 
-            // Sleep & Hibernate Timers Section
             StyledRect {
                 width: parent.width
                 height: sleepTimersSection.implicitHeight + Theme.spacingL * 2
@@ -456,7 +450,6 @@ Item {
                 }
             }
 
-            // Display Timers Section
             StyledRect {
                 width: parent.width
                 height: displayTimersSection.implicitHeight + Theme.spacingL * 2
@@ -557,7 +550,6 @@ Item {
                 }
             }
 
-            // Battery Settings Section
             StyledRect {
                 width: parent.width
                 height: batterySettingsSection.implicitHeight + Theme.spacingL * 2
@@ -625,7 +617,6 @@ Item {
                                 maximum: 30
                                 value: Math.round(PowerService.lowBatteryThreshold / 5) * 5
                                 onSliderValueChanged: newValue => {
-                                    // Snap to steps of 5
                                     const steppedValue = Math.round(newValue / 5) * 5
                                     PowerService.lowBatteryThreshold = steppedValue
                                 }
@@ -696,7 +687,6 @@ Item {
                 }
             }
 
-            // Error Display
             StyledRect {
                 width: parent.width
                 height: errorSection.implicitHeight + Theme.spacingL * 2

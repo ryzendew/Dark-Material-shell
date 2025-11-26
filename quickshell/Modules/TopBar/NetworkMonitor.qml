@@ -64,7 +64,6 @@ Rectangle {
             color: Theme.surfaceText
             anchors.verticalCenter: parent.verticalCenter
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -85,7 +84,6 @@ Rectangle {
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.info
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -107,7 +105,6 @@ Rectangle {
                 elide: Text.ElideNone
                 wrapMode: Text.NoWrap
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -146,7 +143,6 @@ Rectangle {
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.error
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -168,7 +164,6 @@ Rectangle {
                 elide: Text.ElideNone
                 wrapMode: Text.NoWrap
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0

@@ -27,7 +27,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position using anchors and margins like notifications
     anchors {
         left: position.includes("left") ? true : false
         right: position.includes("right") ? true : false
@@ -50,7 +49,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -72,7 +70,6 @@ PanelWindow {
                 color: Theme.surfaceText
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -90,7 +87,6 @@ PanelWindow {
                 color: Theme.surfaceTextMedium
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -103,26 +99,22 @@ PanelWindow {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             onPressed: {
                 if (alwaysVisible) {
-                    // Widget is always visible, no need to show/hide
                 }
             }
         }
     }
 
-    // Update time every second
     Timer {
         interval: 1000
         running: true
         repeat: true
         onTriggered: {
-            // Force update of time display
         }
     }
 }

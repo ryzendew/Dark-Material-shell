@@ -1,4 +1,3 @@
-// No external details import; content inlined for consistency
 
 import QtQuick
 import QtQuick.Controls
@@ -53,7 +52,6 @@ DarkPopout {
                 }
             }
 
-            // Outer subtle shadow rings to match BatteryPopout
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: -3
@@ -104,7 +102,6 @@ DarkPopout {
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    // Close button (matches BatteryPopout)
                     Rectangle {
                         width: 32
                         height: 32
@@ -133,7 +130,6 @@ DarkPopout {
 
                 }
 
-                // Inlined VPN details
                 Rectangle {
                     id: vpnDetail
 
@@ -179,13 +175,11 @@ DarkPopout {
                                 height: 1
                             }
 
-                            // Removed Quick Connect for clarity
                             Item {
                                 width: 1
                                 height: 1
                             }
 
-                            // Disconnect all (shown only when any active)
                             Rectangle {
                                 height: 28
                                 radius: 14

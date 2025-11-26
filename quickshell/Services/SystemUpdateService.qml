@@ -35,10 +35,8 @@ Singleton {
                 if (distributionSupported) {
                     helperDetection.running = true
                 } else {
-                    console.warn("SystemUpdate: Unsupported distribution:", distribution)
                 }
             } else {
-                console.warn("SystemUpdate: Failed to detect distribution")
             }
         }
 
@@ -54,7 +52,6 @@ Singleton {
                 const helperPath = stdout.text.trim()
                 var detectedHelper = helperPath.split('/').pop()
                 
-                // Use SettingsData.aurHelper if set, otherwise use detected helper
                 if (SettingsData.aurHelper && SettingsData.aurHelper !== "") {
                     pkgManager = SettingsData.aurHelper
                 } else {
@@ -62,12 +59,10 @@ Singleton {
                 }
                 checkForUpdates()
             } else {
-                // Try to use SettingsData.aurHelper even if detection failed
                 if (SettingsData.aurHelper && SettingsData.aurHelper !== "") {
                     pkgManager = SettingsData.aurHelper
                     checkForUpdates()
                 } else {
-                    console.warn("SystemUpdate: No package manager found")
                 }
             }
         }
@@ -75,7 +70,6 @@ Singleton {
         stdout: StdioCollector {}
     }
     
-    // Also listen for changes to aurHelper in SettingsData
     Connections {
         target: SettingsData
         function onAurHelperChanged() {
@@ -94,14 +88,12 @@ Singleton {
         onExited: (exitCode) => {
             isChecking = false
             if (exitCode === 0 || exitCode === 1) {
-                // Exit code 0 = updates available, 1 = no updates
                 parseUpdates(stdout.text)
                 hasError = false
                 errorMessage = ""
             } else {
                 hasError = true
                 errorMessage = "Failed to check for updates"
-                console.warn("SystemUpdate: Update check failed with code:", exitCode)
             }
         }
 

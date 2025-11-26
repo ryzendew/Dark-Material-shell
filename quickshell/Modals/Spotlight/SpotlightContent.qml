@@ -215,7 +215,6 @@ Item {
 
         MouseArea {
 
-            // Prevent closing when clicking on the menu itself
             x: contextMenu.x
             y: contextMenu.y
             width: contextMenu.width

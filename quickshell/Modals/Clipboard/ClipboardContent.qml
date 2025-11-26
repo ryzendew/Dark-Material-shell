@@ -22,7 +22,6 @@ Item {
         spacing: Theme.spacingL
         focus: false
 
-        // Header
         ClipboardHeader {
             id: header
             width: parent.width
@@ -38,7 +37,6 @@ Item {
             onCloseClicked: modal.hide()
         }
 
-        // Search Field
         DarkTextField {
             id: searchField
             width: parent.width
@@ -72,7 +70,6 @@ Item {
             }
         }
 
-        // List Container
         Rectangle {
             width: parent.width
             height: parent.height - ClipboardConstants.headerHeight - 70
@@ -144,7 +141,6 @@ Item {
             }
         }
 
-        // Spacer for keyboard hints
         Item {
             width: parent.width
             height: modal.showKeyboardHints ? ClipboardConstants.keyboardHintsHeight + Theme.spacingL : 0
@@ -158,7 +154,6 @@ Item {
         }
     }
 
-    // Keyboard Hints Overlay
     ClipboardKeyboardHints {
         anchors.bottom: parent.bottom
         anchors.left: parent.left

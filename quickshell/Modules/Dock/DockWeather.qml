@@ -40,6 +40,14 @@ Item {
             }
         }
     }
+
+    Component.onCompleted: {
+        WeatherService.addRef()
+    }
+
+    Component.onDestruction: {
+        WeatherService.removeRef()
+    }
 }
 
 

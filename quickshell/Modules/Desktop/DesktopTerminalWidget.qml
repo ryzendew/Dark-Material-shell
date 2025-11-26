@@ -19,7 +19,6 @@ PanelWindow {
     property string position: SettingsData.desktopTerminalPosition
     property var positioningBox: null
     
-    // Terminal state
     property var outputLines: []
     property var commandHistory: []
     property int historyIndex: -1
@@ -38,7 +37,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position using anchors and margins
     anchors {
         left: position.includes("left") ? true : false
         right: position.includes("right") ? true : false
@@ -60,7 +58,6 @@ PanelWindow {
         updateDirectory()
     }
 
-    // Update widget when settings change
     Connections {
         target: SettingsData
         function onDesktopTerminalPositionChanged() {
@@ -73,11 +70,9 @@ PanelWindow {
             widgetHeight = SettingsData.desktopTerminalHeight
         }
         function onDesktopTerminalEnabledChanged() {
-            // Visibility is controlled by Loader in shell.qml
         }
     }
 
-    // Process for running commands
     Process {
         id: commandProcess
         running: false
@@ -89,13 +84,11 @@ PanelWindow {
             var output = stdout.text.trim()
             var errorOutput = stderr.text.trim()
             
-            // Extract directory from last line (from pwd command)
             var lines = output.split('\n')
             if (lines.length > 1) {
                 var lastLine = lines[lines.length - 1]
                 if (lastLine.startsWith('/') || lastLine.startsWith('~')) {
                     currentDirectory = lastLine
-                    // Remove pwd output from display
                     lines = lines.slice(0, -1)
                     output = lines.join('\n')
                 }
@@ -119,7 +112,6 @@ PanelWindow {
         }
     }
 
-    // Process for getting current directory
     Process {
         id: pwdProcess
         command: ["pwd"]
@@ -133,7 +125,6 @@ PanelWindow {
         stdout: StdioCollector {}
     }
 
-    // Process for cd commands
     Process {
         id: cdProcess
         command: ["sh", "-c", ""]
@@ -176,7 +167,6 @@ PanelWindow {
                 timestamp: new Date()
             })
         }
-        // Limit output lines to prevent memory issues
         if (outputLines.length > 1000) {
             outputLines = outputLines.slice(-500)
         }
@@ -188,7 +178,6 @@ PanelWindow {
         
         const trimmedCommand = command.trim()
         
-        // Handle built-in commands
         if (trimmedCommand === "clear" || trimmedCommand === "cls") {
             outputLines = []
             updatePrompt()
@@ -207,17 +196,14 @@ PanelWindow {
             return
         }
         
-        // Add command to output
         addOutput(prompt + trimmedCommand)
         
-        // Add to history
         commandHistory.push(trimmedCommand)
         historyIndex = commandHistory.length
         if (commandHistory.length > 100) {
             commandHistory = commandHistory.slice(-100)
         }
         
-        // Handle cd command separately to update directory
         if (trimmedCommand.startsWith("cd ")) {
             const targetDir = trimmedCommand.substring(3).trim()
             commandRunning = true
@@ -226,14 +212,12 @@ PanelWindow {
             return
         }
         
-        // Execute regular command
         commandRunning = true
         var fullCommand = trimmedCommand + "; pwd"
         commandProcess.command = ["sh", "-c", fullCommand]
         commandProcess.running = true
     }
 
-    // Main widget container
     Rectangle {
         width: widgetWidth
         height: widgetHeight
@@ -242,7 +226,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -258,7 +241,6 @@ PanelWindow {
             anchors.margins: Theme.spacingM
             spacing: Theme.spacingS
 
-            // Header
             Rectangle {
                 width: parent.width
                 height: 30
@@ -287,7 +269,6 @@ PanelWindow {
                 }
             }
 
-            // Output area
             Rectangle {
                 width: parent.width
                 height: parent.height - 30 - 50
@@ -319,7 +300,6 @@ PanelWindow {
                 }
             }
 
-            // Input area
             Rectangle {
                 width: parent.width
                 height: 40

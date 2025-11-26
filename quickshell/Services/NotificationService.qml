@@ -662,14 +662,12 @@ Singleton {
         target: SessionData
         function onDoNotDisturbChanged() {
             if (SessionData.doNotDisturb) {
-                // Hide all current popups when DND is enabled
                 for (const notif of visibleNotifications) {
                     notif.popup = false
                 }
                 visibleNotifications = []
                 notificationQueue = []
             } else {
-                // Re-enable popup processing when DND is disabled
                 processQueue()
             }
         }

@@ -214,7 +214,6 @@ Singleton {
         ddcInitialBrightnessProcess.running = true
     }
 
-    // Night Mode Functions - Simplified
     function enableNightMode() {
         if (!automationAvailable) {
             gammaStepTestProcess.running = true
@@ -224,7 +223,6 @@ Singleton {
         nightModeEnabled = true
         SessionData.setNightModeEnabled(true)
 
-        // Apply immediately or start automation
         if (SessionData.nightModeAutoEnabled) {
             startAutomation()
         } else {
@@ -236,11 +234,9 @@ Singleton {
         nightModeEnabled = false
         SessionData.setNightModeEnabled(false)
         stopAutomation()
-        // Nuclear approach - kill ALL gammastep processes multiple times
         Quickshell.execDetached(["pkill", "-f", "gammastep"])
         Quickshell.execDetached(["pkill", "-9", "gammastep"])
         Quickshell.execDetached(["killall", "gammastep"])
-        // Also stop all related processes
         gammaStepProcess.running = false
         automationProcess.running = false
         gammaStepTestProcess.running = false
@@ -261,7 +257,6 @@ Singleton {
     }
 
     function resetToNormalMode() {
-        // Just kill gammastep to return to normal display temperature
         Quickshell.execDetached(["pkill", "gammastep"])
     }
 
@@ -286,7 +281,6 @@ Singleton {
         automationProcess.running = false
         gammaStepProcess.running = false
         isAutomaticNightTime = false
-        // Nuclear approach - kill ALL gammastep processes multiple times
         Quickshell.execDetached(["pkill", "-f", "gammastep"])
         Quickshell.execDetached(["pkill", "-9", "gammastep"])
         Quickshell.execDetached(["killall", "gammastep"])
@@ -312,7 +306,6 @@ Singleton {
             return
         }
 
-        console.warn("DisplayService: Location mode selected but no coordinates or geoclue provider set")
     }
 
     function checkTimeBasedMode() {
@@ -353,7 +346,6 @@ Singleton {
     }
 
     function evaluateNightMode() {
-        // Always stop all processes first to clean slate
         stopAutomation()
 
         if (!nightModeEnabled) {
@@ -394,7 +386,6 @@ Singleton {
         refreshDevices()
         checkNightModeAvailability()
 
-        // Initialize night mode state from session
         nightModeEnabled = SessionData.nightModeEnabled
     }
 
@@ -424,7 +415,6 @@ Singleton {
             if (ddcAvailable) {
                 ddcDisplayDetectionProcess.running = true
             } else {
-                // // console.log("DisplayService: ddcutil not available")
             }
         }
     }
@@ -460,23 +450,17 @@ Singleton {
                     }
 
                     ddcDevices = newDdcDevices
-                    // // console.log("DisplayService: Found", ddcDevices.length, "DDC displays")
 
-                    // Queue initial brightness readings for DDC devices
                     ddcInitQueue = []
                     for (const device of ddcDevices) {
                         ddcInitQueue.push(device.ddcDisplay)
-                        // Mark DDC device as pending initialization
                         ddcPendingInit[device.name] = true
                     }
 
-                    // Start processing the queue
                     processNextDdcInit()
 
-                    // Refresh device list to include DDC devices
                     refreshDevicesInternal()
 
-                    // Retry setting last device now that DDC devices are available
                     const lastDevice = SessionData.lastBrightnessDevice || ""
                     if (lastDevice) {
                         const deviceExists = devices.some(d => d.name === lastDevice)
@@ -485,7 +469,6 @@ Singleton {
                         }
                     }
                 } catch (error) {
-                    console.warn("DisplayService: Failed to parse DDC devices:", error)
                     ddcDevices = []
                 }
             }
@@ -493,7 +476,6 @@ Singleton {
 
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to detect DDC displays:", exitCode)
                 ddcDevices = []
             }
         }
@@ -505,7 +487,6 @@ Singleton {
         command: ["brightnessctl", "-m", "-l"]
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to list devices:", exitCode)
                 brightnessAvailable = false
             }
         }
@@ -513,7 +494,6 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 if (!text.trim()) {
-                    console.warn("DisplayService: No devices found")
                     return
                 }
                 const lines = text.trim().split("\n")
@@ -530,10 +510,8 @@ Singleton {
                                         })
                     }
                 }
-                // Store brightnessctl devices separately
                 devices = newDevices
 
-                // Always refresh to combine with DDC devices and set up device selection
                 refreshDevicesInternal()
             }
         }
@@ -545,7 +523,6 @@ Singleton {
         running: false
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to set brightness:", exitCode)
             }
         }
     }
@@ -556,7 +533,6 @@ Singleton {
         running: false
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to set DDC brightness:", exitCode)
             }
         }
     }
@@ -567,7 +543,6 @@ Singleton {
         running: false
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to get initial DDC brightness:", exitCode)
             }
 
             processNextDdcInit()
@@ -597,7 +572,6 @@ Singleton {
                         delete newPending[deviceName]
                         ddcPendingInit = newPending
 
-                        // // console.log("DisplayService: Initial DDC Device", deviceName, "brightness:", brightness + "%")
                     }
                 }
             }
@@ -610,7 +584,6 @@ Singleton {
         running: false
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to get brightness:", exitCode)
             }
         }
 
@@ -626,7 +599,6 @@ Singleton {
                     maxBrightness = max
                     const brightness = Math.round((current / max) * 100)
 
-                    // Update the device brightness cache
                     if (currentDevice) {
                         var newBrightness = Object.assign({}, deviceBrightness)
                         newBrightness[currentDevice] = brightness
@@ -634,7 +606,6 @@ Singleton {
                     }
 
                     brightnessInitialized = true
-                    // // console.log("DisplayService: Device", currentDevice, "brightness:", brightness + "%")
                     brightnessChanged()
                 }
             }
@@ -647,7 +618,6 @@ Singleton {
         running: false
         onExited: function (exitCode) {
             if (exitCode !== 0) {
-                console.warn("DisplayService: Failed to get DDC brightness:", exitCode)
             }
         }
 
@@ -656,7 +626,6 @@ Singleton {
                 if (!text.trim())
                 return
 
-                // Parse ddcutil getvcp output format: "VCP 10 C 50 100"
                 const parts = text.trim().split(" ")
                 if (parts.length >= 5) {
                     const current = parseInt(parts[3]) || 50
@@ -664,7 +633,6 @@ Singleton {
                     maxBrightness = max
                     const brightness = Math.round((current / max) * 100)
 
-                    // Update the device brightness cache
                     if (currentDevice) {
                         var newBrightness = Object.assign({}, deviceBrightness)
                         newBrightness[currentDevice] = brightness
@@ -672,7 +640,6 @@ Singleton {
                     }
 
                     brightnessInitialized = true
-                    // // console.log("DisplayService: DDC Device", currentDevice, "brightness:", brightness + "%")
                     brightnessChanged()
                 }
             }
@@ -689,14 +656,12 @@ Singleton {
             if (automationAvailable) {
                 detectLocationProviders()
 
-                // If night mode should be enabled on startup
                 if (nightModeEnabled && SessionData.nightModeAutoEnabled) {
                     startAutomation()
                 } else if (nightModeEnabled) {
                     applyNightModeDirectly()
                 }
             } else {
-                // // console.log("DisplayService: gammastep not available")
             }
         }
     }
@@ -708,7 +673,6 @@ Singleton {
 
         onExited: function (exitCode) {
             geoclueAvailable = (exitCode === 0)
-            // // console.log("DisplayService: geoclue available:", geoclueAvailable)
         }
     }
 
@@ -729,7 +693,6 @@ Singleton {
                     applyNightModeDirectly()
                 }
             } else {
-                console.warn("DisplayService: gammastep not found")
                 ToastService.showWarning("Night mode failed: gammastep not found")
             }
         }
@@ -741,7 +704,6 @@ Singleton {
 
         onExited: function (exitCode) {
             if (nightModeEnabled && exitCode !== 0 && exitCode !== 15) {
-                console.warn("DisplayService: Night mode process failed:", exitCode)
             }
         }
     }
@@ -753,14 +715,10 @@ Singleton {
 
         onExited: function (exitCode) {
             if (nightModeEnabled && SessionData.nightModeAutoEnabled && exitCode !== 0 && exitCode !== 15) {
-                console.warn("DisplayService: Night mode automation failed:", exitCode)
-                // Location mode failed
-                console.warn("DisplayService: Location-based night mode failed")
             }
         }
     }
 
-    // Session Data Connections
     Connections {
         target: SessionData
 
@@ -801,7 +759,6 @@ Singleton {
         }
     }
 
-    // IPC Handler for external control
     IpcHandler {
         function set(percentage: string, device: string): string {
             if (!root.brightnessAvailable) {
@@ -816,7 +773,6 @@ Singleton {
             const clampedValue = Math.max(1, Math.min(100, value))
             const targetDevice = device || ""
 
-            // Ensure device exists if specified
             if (targetDevice && !root.devices.some(d => d.name === targetDevice)) {
                 return "Device not found: " + targetDevice
             }
@@ -842,7 +798,6 @@ Singleton {
             const targetDevice = device || ""
             const actualDevice = targetDevice === "" ? root.getDefaultDevice() : targetDevice
 
-            // Ensure device exists
             if (actualDevice && !root.devices.some(d => d.name === actualDevice)) {
                 return "Device not found: " + actualDevice
             }
@@ -872,7 +827,6 @@ Singleton {
             const targetDevice = device || ""
             const actualDevice = targetDevice === "" ? root.getDefaultDevice() : targetDevice
 
-            // Ensure device exists
             if (actualDevice && !root.devices.some(d => d.name === actualDevice)) {
                 return "Device not found: " + actualDevice
             }
@@ -917,7 +871,6 @@ Singleton {
         target: "brightness"
     }
 
-    // IPC Handler for night mode control
     IpcHandler {
         function toggle(): string {
             root.toggleNightMode()
@@ -948,17 +901,14 @@ Singleton {
                 return "Invalid temperature. Use a value between 2500 and 6000 (in steps of 500)"
             }
 
-            // Validate temperature is in valid range and steps
             if (temp < 2500 || temp > 6000) {
                 return "Temperature must be between 2500K and 6000K"
             }
 
-            // Round to nearest 500
             const rounded = Math.round(temp / 500) * 500
 
             SessionData.setNightModeTemperature(rounded)
 
-            // Restart night mode with new temperature if active
             if (root.nightModeEnabled) {
                 if (SessionData.nightModeAutoEnabled) {
                     root.startAutomation()

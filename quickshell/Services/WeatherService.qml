@@ -11,6 +11,11 @@ Singleton {
     id: root
 
     property int refCount: 0
+    onRefCountChanged: {
+        if (refCount === 1 && !weather.available && SettingsData.weatherEnabled) {
+            fetchWeather()
+        }
+    }
 
     property var weather: ({
                                "available": false,
@@ -75,7 +80,7 @@ Singleton {
                                     "96": "thunderstorm",
                                     "99": "thunderstorm"
                                 })
-    
+
     property var nightWeatherIcons: ({
                                         "0": "clear_night",
                                         "1": "clear_night",
@@ -114,7 +119,7 @@ Singleton {
         const iconMap = isDay ? weatherIcons : nightWeatherIcons
         return iconMap[String(code)] || "cloud"
     }
-    
+
     function getWeatherCondition(code) {
         const conditions = {
             "0": "Clear",
@@ -148,10 +153,10 @@ Singleton {
         }
         return conditions[String(code)] || "Unknown"
     }
-    
+
     function formatTime(isoString) {
         if (!isoString) return "--"
-        
+
         try {
             const date = new Date(isoString)
             const format = SettingsData.use24HourClock ? "HH:mm" : "h:mm AP"
@@ -160,15 +165,15 @@ Singleton {
             return "--"
         }
     }
-    
+
     function formatForecastDay(isoString, index) {
         if (!isoString) return "--"
-        
+
         try {
             const date = new Date(isoString)
-            if (index === 0) return qsTr("Today")
-            if (index === 1) return qsTr("Tomorrow")
-            
+            if (index === 0) return I18n.tr("Today")
+            if (index === 1) return I18n.tr("Tomorrow")
+
             const locale = Qt.locale()
             return locale.dayName(date.getDay(), Locale.ShortFormat)
         } catch (e) {
@@ -180,7 +185,7 @@ Singleton {
         if (!location) {
             return null
         }
-        
+
         const params = [
             "latitude=" + location.latitude,
             "longitude=" + location.longitude,
@@ -189,14 +194,11 @@ Singleton {
             "timezone=auto",
             "forecast_days=7"
         ]
-        
-        if (SettingsData.useFahrenheit) {
-            params.push("temperature_unit=fahrenheit")
-        }
-        
-        return "https://api.open-meteo.com/v1/forecast?" + params.join('&')
+
+        const url = "https://api.open-meteo.com/v1/forecast?" + params.join('&')
+        return url
     }
-    
+
     function getGeocodingUrl(query) {
         return "https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(query) + "&count=1&language=en&format=json"
     }
@@ -205,12 +207,7 @@ Singleton {
         refCount++
 
         if (refCount === 1 && !weather.available && SettingsData.weatherEnabled) {
-            // If location isn't set, update it first, then fetch weather
-            if (!location) {
-                updateLocation()
-            } else {
-                fetchWeather()
-            }
+            fetchWeather()
         }
     }
 
@@ -219,9 +216,8 @@ Singleton {
     }
 
     function updateLocation() {
+        
         if (SettingsData.useAutoLocation) {
-            // Clear any cached location when using auto location
-            root.location = null
             getLocationFromIP()
         } else {
             const coords = SettingsData.weatherCoordinates
@@ -233,33 +229,53 @@ Singleton {
                     if (!isNaN(lat) && !isNaN(lon)) {
                         getLocationFromCoords(lat, lon)
                         return
+                    } else {
                     }
+                } else {
                 }
+            } else {
             }
-            
+
             const cityName = SettingsData.weatherLocation
             if (cityName) {
                 getLocationFromCity(cityName)
+            } else {
             }
         }
     }
-    
+
     function getLocationFromCoords(lat, lon) {
+        
+
+
+        root.location = {
+            city: "Loading...",
+            country: "",
+            latitude: lat,
+            longitude: lon
+        }
+        
+
+        fetchWeather()
+        
+
         const url = "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lon + "&format=json&addressdetails=1&accept-language=en"
-        reverseGeocodeFetcher.command = lowPriorityCmd.concat(curlBaseCmd).concat(["-H", "User-Agent: DarkMaterialShell Weather Widget", url])
+        reverseGeocodeFetcher.command = lowPriorityCmd.concat(curlBaseCmd).concat(["-H", "User-Agent: DankMaterialShell Weather Widget", url])
         reverseGeocodeFetcher.running = true
     }
-    
+
     function getLocationFromCity(city) {
-        cityGeocodeFetcher.command = lowPriorityCmd.concat(curlBaseCmd).concat([getGeocodingUrl(city)])
+        const url = getGeocodingUrl(city)
+        cityGeocodeFetcher.command = lowPriorityCmd.concat(curlBaseCmd).concat([url])
         cityGeocodeFetcher.running = true
     }
-    
+
     function getLocationFromIP() {
         ipLocationFetcher.running = true
     }
 
     function fetchWeather() {
+        
         if (root.refCount === 0 || !SettingsData.weatherEnabled) {
             return
         }
@@ -274,7 +290,8 @@ Singleton {
         }
 
         const now = Date.now()
-        if (now - root.lastFetchTime < root.minFetchInterval) {
+        const timeSinceLastFetch = now - root.lastFetchTime
+        if (timeSinceLastFetch < root.minFetchInterval) {
             return
         }
 
@@ -285,8 +302,12 @@ Singleton {
 
         root.lastFetchTime = now
         root.weather.loading = true
-        const weatherCmd = lowPriorityCmd.concat(["curl", "-sS", "--fail", "--connect-timeout", "3", "--max-time", "6", "--limit-rate", "150k", "--compressed"])
-        weatherFetcher.command = weatherCmd.concat([apiUrl])
+        
+
+
+        weatherFetcher.command = ["curl", "-sS", "--fail", "--connect-timeout", "5", "--max-time", "10", "--compressed", apiUrl]
+        
+
         weatherFetcher.running = true
     }
 
@@ -294,7 +315,7 @@ Singleton {
         root.lastFetchTime = 0 // Reset throttle
         fetchWeather()
     }
-    
+
     function nextInterval() {
         const jitter = Math.floor(Math.random() * 15000) - 7500
         return Math.max(60000, root.updateInterval + jitter)
@@ -313,6 +334,7 @@ Singleton {
 
     function handleWeatherFailure() {
         root.retryAttempts++
+        
         if (root.retryAttempts < root.maxRetryAttempts) {
             retryTimer.start()
         } else {
@@ -329,13 +351,14 @@ Singleton {
 
     Process {
         id: ipLocationFetcher
-        // Try ip-api.com first (more accurate), fallback to ipinfo.io
-        command: lowPriorityCmd.concat(curlBaseCmd).concat(["http://ip-api.com/json/?fields=status,message,lat,lon,city,regionName,country"])
+
+        command: lowPriorityCmd.concat(curlBaseCmd).concat(["http://ip-api.com/json/?fields=status,message,lat,lon,city,regionName,country,countryCode,zip,timezone"])
         running: false
-        
+
         stdout: StdioCollector {
             onStreamFinished: {
                 const raw = text.trim()
+                
                 if (!raw || raw[0] !== "{") {
                     root.handleWeatherFailure()
                     return
@@ -343,118 +366,148 @@ Singleton {
 
                 try {
                     const data = JSON.parse(raw)
-                    
-                    // Try ip-api.com format first
-                    let lat, lon
-                    if (data.status === "success" && data.lat && data.lon) {
-                        lat = parseFloat(data.lat)
-                        lon = parseFloat(data.lon)
-                    } else if (data.loc) {
-                        // Fallback to ipinfo.io format
-                        const coordsParts = data.loc.split(",")
-                        if (coordsParts.length !== 2) {
-                            throw new Error("Invalid coordinates format")
-                        }
-                        lat = parseFloat(coordsParts[0])
-                        lon = parseFloat(coordsParts[1])
-                    } else {
-                        throw new Error("Missing coordinates")
-                    }
-                    
-                    if (isNaN(lat) || isNaN(lon)) {
-                        throw new Error("Invalid coordinate values")
-                    }
-                    
-                    // Use coordinates to get accurate location via reverse geocoding
-                    // This ensures we get the correct city name based on coordinates
-                    // rather than relying on the IP service's potentially incorrect city name
-                    // The reverse geocoding will set the location and fetch weather
-                    getLocationFromCoords(lat, lon)
-                } catch (e) {
-                    root.handleWeatherFailure()
-                }
-            }
-        }
-        
-        onExited: exitCode => {
-            if (exitCode !== 0) {
-                root.handleWeatherFailure()
-            }
-        }
-    }
-    
-    Process {
-        id: reverseGeocodeFetcher
-        running: false
-        
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const raw = text.trim()
-                if (!raw || raw[0] !== "{") {
-                    root.handleWeatherFailure()
-                    return
-                }
 
-                try {
-                    const data = JSON.parse(raw)
-                    const address = data.address || {}
-                    
+                    if (data.status === "fail") {
+                        const errorMsg = "IP location lookup failed: " + (data.message || "Unknown error")
+                        throw new Error(errorMsg)
+                    }
+
                     const lat = parseFloat(data.lat)
                     const lon = parseFloat(data.lon)
-                    
-                    // Prioritize city, then town, then other settlement types
-                    // This helps get the correct city name (e.g., Halifax instead of a suburb)
-                    const city = address.city || address.town || address.municipality || address.hamlet || address.village || address.suburb || "Unknown"
-                    const state = address.state || address.region || address.province || ""
-                    const country = address.country || "Unknown"
-                    
+                    const city = data.city || ""
+                    const region = data.regionName || ""
+                    const country = data.country || ""
+
+
+
+                    if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+                        throw new Error("Invalid coordinates from IP location")
+                    }
+
+
+                    let locationName = city
+                    if (region && region !== city) {
+                        locationName += ", " + region
+                    }
+                    if (country) {
+                        locationName += ", " + country
+                    }
+                    if (!locationName) {
+                        locationName = "Unknown Location"
+                    }
+
+
+                    const coordsString = lat.toFixed(6) + "," + lon.toFixed(6)
+
+
+                    SettingsData.weatherCoordinates = coordsString
+                    SettingsData.weatherLocation = locationName
+                    SettingsData.saveSettings()
+
+
                     root.location = {
-                        city: city,
-                        country: country,
+                        city: city || locationName,
+                        country: country || "",
                         latitude: lat,
                         longitude: lon
                     }
-                    
-                    // Save coordinates to settings for reference (only if auto location is enabled)
-                    if (SettingsData.useAutoLocation) {
-                        const coordsString = lat + "," + lon
-                        if (SettingsData.weatherCoordinates !== coordsString) {
-                            SettingsData.weatherCoordinates = coordsString
-                        }
-                        // Build location display name and update if different
-                        let locationName = city
-                        if (state) {
-                            locationName += ", " + state
-                        }
-                        if (country && country !== "Unknown") {
-                            locationName += ", " + country
-                        }
-                        if (SettingsData.weatherLocation !== locationName) {
-                            SettingsData.weatherLocation = locationName
-                        }
-                    }
-                    
                     fetchWeather()
                 } catch (e) {
                     root.handleWeatherFailure()
                 }
             }
         }
-        
+
         onExited: exitCode => {
             if (exitCode !== 0) {
                 root.handleWeatherFailure()
             }
         }
     }
-    
+
     Process {
-        id: cityGeocodeFetcher
+        id: reverseGeocodeFetcher
         running: false
-        
+
         stdout: StdioCollector {
             onStreamFinished: {
                 const raw = text.trim()
+                
+                if (!raw || raw[0] !== "{") {
+
+
+                    if (root.location) {
+                        root.location.city = root.location.city === "Loading..." ? "Unknown" : root.location.city
+                    }
+                    return
+                }
+
+                try {
+                    const data = JSON.parse(raw)
+                    const address = data.address || {}
+
+
+
+                    if (root.location) {
+                        const oldCity = root.location.city
+                        root.location.city = address.hamlet || address.city || address.town || address.village || "Unknown"
+                        root.location.country = address.country || root.location.country || "Unknown"
+                        
+
+                        const lat = parseFloat(data.lat)
+                        const lon = parseFloat(data.lon)
+                        if (!isNaN(lat) && !isNaN(lon)) {
+                            root.location.latitude = lat
+                            root.location.longitude = lon
+                        } else {
+                        }
+                        
+
+                        if (root.weather && root.weather.available) {
+                            const updatedWeather = Object.assign({}, root.weather, {
+                                "city": root.location.city,
+                                "country": root.location.country
+                            })
+                            root.weather = updatedWeather
+                        }
+                    } else {
+
+                        root.location = {
+                            city: address.hamlet || address.city || address.town || address.village || "Unknown",
+                            country: address.country || "Unknown",
+                            latitude: parseFloat(data.lat),
+                            longitude: parseFloat(data.lon)
+                        }
+                        fetchWeather()
+                    }
+                } catch (e) {
+
+                    if (root.location) {
+                        root.location.city = root.location.city === "Loading..." ? "Unknown" : root.location.city
+                    }
+                }
+            }
+        }
+
+        onExited: exitCode => {
+            if (exitCode !== 0) {
+
+
+                if (root.location && root.location.city === "Loading...") {
+                    root.location.city = "Unknown"
+                }
+            }
+        }
+    }
+
+    Process {
+        id: cityGeocodeFetcher
+        running: false
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const raw = text.trim()
+                
                 if (!raw || raw[0] !== "{") {
                     root.handleWeatherFailure()
                     return
@@ -463,27 +516,26 @@ Singleton {
                 try {
                     const data = JSON.parse(raw)
                     const results = data.results
-                    
+
                     if (!results || results.length === 0) {
                         throw new Error("No results found")
                     }
-                    
+
                     const result = results[0]
-                    
+
                     root.location = {
                         city: result.name,
                         country: result.country,
                         latitude: result.latitude,
                         longitude: result.longitude
                     }
-                    
                     fetchWeather()
                 } catch (e) {
                     root.handleWeatherFailure()
                 }
             }
         }
-        
+
         onExited: exitCode => {
             if (exitCode !== 0) {
                 root.handleWeatherFailure()
@@ -494,10 +546,14 @@ Singleton {
     Process {
         id: weatherFetcher
         running: false
+        
+        onRunningChanged: {
+        }
 
         stdout: StdioCollector {
             onStreamFinished: {
                 const raw = text.trim()
+                
                 if (!raw || raw[0] !== "{") {
                     root.handleWeatherFailure()
                     return
@@ -505,7 +561,7 @@ Singleton {
 
                 try {
                     const data = JSON.parse(raw)
-                    
+
                     if (!data.current || !data.daily) {
                         throw new Error("Required weather data fields missing")
                     }
@@ -514,19 +570,20 @@ Singleton {
                     const daily = data.daily
                     const currentUnits = data.current_units || {}
                     
+
                     const tempC = current.temperature_2m || 0
-                    const tempF = SettingsData.useFahrenheit ? tempC : (tempC * 9/5 + 32)
+                    const tempF = (tempC * 9/5 + 32)
                     const feelsLikeC = current.apparent_temperature || tempC
-                    const feelsLikeF = SettingsData.useFahrenheit ? feelsLikeC : (feelsLikeC * 9/5 + 32)
-                    
+                    const feelsLikeF = (feelsLikeC * 9/5 + 32)
+
                     const forecast = []
                     if (daily.time && daily.time.length > 0) {
                         for (let i = 0; i < Math.min(daily.time.length, 7); i++) {
                             const tempMinC = daily.temperature_2m_min?.[i] || 0
                             const tempMaxC = daily.temperature_2m_max?.[i] || 0
-                            const tempMinF = SettingsData.useFahrenheit ? tempMinC : (tempMinC * 9/5 + 32)
-                            const tempMaxF = SettingsData.useFahrenheit ? tempMaxC : (tempMaxC * 9/5 + 32)
-                            
+                            const tempMinF = (tempMinC * 9/5 + 32)
+                            const tempMaxF = (tempMaxC * 9/5 + 32)
+
                             forecast.push({
                                 "day": formatForecastDay(daily.time[i], i),
                                 "wCode": daily.weather_code?.[i] || 0,
@@ -539,9 +596,11 @@ Singleton {
                                 "sunset": daily.sunset?.[i] ? formatTime(daily.sunset[i]) : ""
                             })
                         }
+                    } else {
                     }
-                    
-                    root.weather = {
+
+
+                    const newWeather = {
                         "available": true,
                         "loading": false,
                         "temp": Math.round(tempC),
@@ -557,10 +616,17 @@ Singleton {
                         "sunset": formatTime(daily.sunset?.[0]) || "18:00",
                         "uv": 0,
                         "pressure": Math.round(current.surface_pressure || 0),
-                        "precipitationProbability": Math.round(current.precipitation || 0),
+                        "precipitationProbability": Math.round(daily.precipitation_probability_max?.[0] || 0),
                         "isDay": Boolean(current.is_day),
                         "forecast": forecast
                     }
+
+                    root.weather = newWeather
+
+                    Qt.callLater(() => {
+
+                        const _ = root.weather.available && root.weather.temp
+                    })
 
                     const displayTemp = SettingsData.useFahrenheit ? root.weather.tempF : root.weather.temp
                     const unit = SettingsData.useFahrenheit ? "°F" : "°C"
@@ -575,6 +641,7 @@ Singleton {
         onExited: exitCode => {
             if (exitCode !== 0) {
                 root.handleWeatherFailure()
+            } else {
             }
         }
     }
@@ -615,42 +682,7 @@ Singleton {
     }
 
     Component.onCompleted: {
-        // Initialize location if weather is enabled
-        if (SettingsData.weatherEnabled) {
-            Qt.callLater(() => {
-                updateLocation()
-            })
-        }
-        
-        SettingsData.useAutoLocationChanged.connect(() => {
-                                                        // Clear location and force refresh when auto location changes
-                                                        root.location = null
-                                                        root.weather = {
-                                                            "available": false,
-                                                            "loading": true,
-                                                            "temp": 0,
-                                                            "tempF": 0,
-                                                            "feelsLike": 0,
-                                                            "feelsLikeF": 0,
-                                                            "city": "",
-                                                            "country": "",
-                                                            "wCode": 0,
-                                                            "humidity": 0,
-                                                            "wind": "",
-                                                            "sunrise": "06:00",
-                                                            "sunset": "18:00",
-                                                            "uv": 0,
-                                                            "pressure": 0,
-                                                            "precipitationProbability": 0,
-                                                            "isDay": true,
-                                                            "forecast": []
-                                                        }
-                                                        root.lastFetchTime = 0
-                                                        if (SettingsData.useAutoLocation && SettingsData.weatherEnabled) {
-                                                            root.forceRefresh()
-                                                        }
-                                                    })
-        
+
         SettingsData.weatherCoordinatesChanged.connect(() => {
                                                            root.location = null
                                                            root.weather = {
@@ -708,11 +740,6 @@ Singleton {
                                                         root.lastFetchTime = 0
                                                         root.forceRefresh()
                                                     })
-                                                    
-        SettingsData.useFahrenheitChanged.connect(() => {
-                                                       root.lastFetchTime = 0
-                                                       root.forceRefresh()
-                                                   })
 
         SettingsData.weatherEnabledChanged.connect(() => {
                                                        if (SettingsData.weatherEnabled && root.refCount > 0 && !root.weather.available) {

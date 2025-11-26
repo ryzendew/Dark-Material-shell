@@ -11,7 +11,6 @@ Item {
     id: recentAppsTab
 
     Component.onCompleted: {
-        // Sync logo color when auto-sync is enabled and theme changes
         if (SettingsData.launcherLogoAutoSync) {
             SettingsData.syncLauncherLogoWithWallpaper()
         }
@@ -20,9 +19,7 @@ Item {
     Connections {
         target: Theme
         function onColorUpdateTriggerChanged() {
-            // When colorUpdateTrigger changes, it means matugen colors were updated
             if (SettingsData.launcherLogoAutoSync) {
-                // Use a small delay to ensure Theme.primary has been updated
                 Qt.callLater(() => {
                     SettingsData.syncLauncherLogoWithWallpaper()
                 })
@@ -42,9 +39,7 @@ Item {
     Connections {
         target: ColorPaletteService
         function onColorsExtracted() {
-            // When colors are extracted from wallpaper, sync if auto-sync is enabled
             if (SettingsData.launcherLogoAutoSync) {
-                // Use a small delay to ensure Theme.primary has been updated
                 Qt.callLater(() => {
                     SettingsData.syncLauncherLogoWithWallpaper()
                 })
@@ -55,9 +50,7 @@ Item {
     Connections {
         target: typeof SessionData !== "undefined" ? SessionData : null
         function onWallpaperPathChanged() {
-            // When wallpaper changes, wait for colors to be extracted
             if (SettingsData.launcherLogoAutoSync) {
-                // Use a longer delay to allow matugen to extract colors
                 Qt.callLater(() => {
                     Qt.callLater(() => {
                         SettingsData.syncLauncherLogoWithWallpaper()
@@ -136,7 +129,6 @@ Item {
             }
 
 
-            // Launcher Position Settings
             StyledRect {
                 width: parent.width
                 height: launcherPositionSection.implicitHeight + Theme.spacingL * 2
@@ -231,7 +223,6 @@ Item {
                 }
             }
 
-            // Launcher Button Settings
             StyledRect {
                 width: parent.width
                 height: launcherButtonSection.implicitHeight + Theme.spacingL * 2
@@ -295,7 +286,6 @@ Item {
                         }
                     }
 
-                    // RGB Color Sliders
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -519,7 +509,6 @@ Item {
                 }
             }
 
-            // Custom Launcher Image Section
             StyledRect {
                 width: parent.width
                 height: customLauncherSection.implicitHeight + Theme.spacingL * 2
@@ -599,7 +588,6 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                     smooth: true
 
-                                    // Color overlay preview
                                     layer.enabled: SettingsData.launcherLogoRed !== 1.0 || SettingsData.launcherLogoGreen !== 1.0 || SettingsData.launcherLogoBlue !== 1.0
                                     layer.effect: ColorOverlay {
                                         color: Qt.rgba(SettingsData.launcherLogoRed, SettingsData.launcherLogoGreen, SettingsData.launcherLogoBlue, 0.8)
@@ -667,7 +655,6 @@ Item {
                 }
             }
 
-            // App Launcher View Mode
             StyledRect {
                 width: parent.width
                 height: viewModeSection.implicitHeight + Theme.spacingL * 2
@@ -738,7 +725,6 @@ Item {
                 }
             }
 
-            // Recently Used Apps Section
             StyledRect {
                 width: parent.width
                 height: recentlyUsedSection.implicitHeight + Theme.spacingL * 2

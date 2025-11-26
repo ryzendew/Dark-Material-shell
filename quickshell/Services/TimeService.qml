@@ -42,7 +42,6 @@ Singleton {
     }
 
     function setTime(dateTime) {
-        // Format: YYYY-MM-DD HH:MM:SS
         const timeStr = Qt.formatDateTime(dateTime, "yyyy-MM-dd HH:mm:ss")
         setTimeProcess.command = ["timedatectl", "set-time", timeStr]
         setTimeProcess.running = true
@@ -58,7 +57,6 @@ Singleton {
         listTimezones()
     }
 
-    // Process to get current time status
     Process {
         id: statusProcess
         running: false
@@ -113,7 +111,6 @@ Singleton {
         }
     }
 
-    // Process to list available timezones
     Process {
         id: timezoneListProcess
         running: false
@@ -135,7 +132,6 @@ Singleton {
         }
     }
 
-    // Process to set timezone
     Process {
         id: setTimezoneProcess
         running: false
@@ -144,7 +140,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting timezone
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set timezone (exit code: " + exitCode + ")"
@@ -152,7 +147,6 @@ Singleton {
         }
     }
 
-    // Process to set NTP
     Process {
         id: setNTPProcess
         running: false
@@ -161,7 +155,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting NTP
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set NTP (exit code: " + exitCode + ")"
@@ -169,7 +162,6 @@ Singleton {
         }
     }
 
-    // Process to set time
     Process {
         id: setTimeProcess
         running: false
@@ -178,7 +170,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting time
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set time (exit code: " + exitCode + ")"
@@ -186,7 +177,6 @@ Singleton {
         }
     }
 
-    // Process to set local RTC
     Process {
         id: setLocalRTCProcess
         running: false
@@ -195,7 +185,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting RTC
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set RTC mode (exit code: " + exitCode + ")"

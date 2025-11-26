@@ -413,7 +413,6 @@ Item {
     }
 
     function handleControlCenterSettingChanged(sectionId, widgetIndex, settingName, value) {
-        // Control Center settings are global, not per-widget instance
         if (settingName === "showNetworkIcon") {
             SettingsData.setControlCenterShowNetworkIcon(value)
         } else if (settingName === "showBluetoothIcon") {
@@ -472,7 +471,6 @@ Item {
     }
 
     Component.onCompleted: {
-        // Only set defaults if widgets have never been configured (null/undefined, not empty array)
         if (!SettingsData.topBarLeftWidgets)
             SettingsData.setTopBarLeftWidgets(defaultLeftWidgets)
 
@@ -526,7 +524,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // TopBar Auto-hide Section
             StyledRect {
                 width: parent.width
                 height: topBarAutoHideSection.implicitHeight + Theme.spacingL * 2
@@ -697,12 +694,10 @@ Item {
                 }
             }
 
-            // TopBar Widgets Sections (moved directly under toggles)
             Column {
                 width: parent.width
                 spacing: Theme.spacingL
 
-                // Widget Management Section
                 StyledRect {
                     width: parent.width
                     height: widgetManagementSection.implicitHeight + Theme.spacingL * 2
@@ -822,7 +817,6 @@ Item {
                     }
                 }
 
-                // Left Section
                 StyledRect {
                     width: parent.width
                     height: leftSection.implicitHeight + Theme.spacingL * 2
@@ -892,7 +886,6 @@ Item {
                     }
                 }
 
-                // Center Section
                 StyledRect {
                     width: parent.width
                     height: centerSection.implicitHeight + Theme.spacingL * 2
@@ -962,7 +955,6 @@ Item {
                     }
                 }
 
-                // Right Section
                 StyledRect {
                     width: parent.width
                     height: rightSection.implicitHeight + Theme.spacingL * 2
@@ -1038,7 +1030,6 @@ Item {
             
 
 
-            // Opacity Controls
             StyledRect {
                 width: parent.width
                 height: topBarOpacitySection.implicitHeight + Theme.spacingL * 2
@@ -1107,7 +1098,6 @@ Item {
                 }
             }
 
-            // Spacing
             StyledRect {
                 width: parent.width
                 height: topBarSpacingSection.implicitHeight + Theme.spacingL * 2
@@ -1265,9 +1255,7 @@ Item {
                 }
             }
 
-            // Removed duplicate widgets sections (now placed under toggles)
 
-            // TopBar Border Settings
             StyledRect {
                 width: parent.width
                 height: topBarBorderSection.implicitHeight + Theme.spacingL * 2
@@ -1630,7 +1618,6 @@ Item {
                 }
             }
 
-            // TopBar Floating and Appearance Settings
             StyledRect {
                 width: parent.width
                 height: topBarAppearanceSection.implicitHeight + Theme.spacingL * 2

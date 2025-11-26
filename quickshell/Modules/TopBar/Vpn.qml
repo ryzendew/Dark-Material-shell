@@ -7,7 +7,6 @@ import qs.Widgets
 Rectangle {
     id: root
 
-    // Passed in by TopBar
     property int widgetHeight: 28
     property int barHeight: 32
     property string section: "right"

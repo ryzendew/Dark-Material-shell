@@ -70,7 +70,7 @@ Item {
     }
 
     Component.onCompleted: {
-        // Access WallpaperCyclingService to ensure it's initialized
+
         WallpaperCyclingService.cyclingActive
         if (!fontsEnumerated) {
             enumerateFonts()
@@ -91,7 +91,7 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Wallpaper Section
+
             StyledRect {
                 width: parent.width
                 height: wallpaperSection.implicitHeight + Theme.spacingL * 2
@@ -160,7 +160,7 @@ Item {
                                     if (currentWallpaper && currentWallpaper.startsWith("we:") && status === Image.Error) {
                                         if (weExtIndex < weExtensions.length - 1) {
                                             weExtIndex++
-                                            // Force update by clearing and setting imagePath again
+
                                             imagePath = ""
                                             Qt.callLater(() => {
                                                 imagePath = StandardPaths.writableLocation(StandardPaths.HomeLocation)
@@ -173,7 +173,16 @@ Item {
                                         }
                                     }
                                 }
-                                fillMode: Image.PreserveAspectCrop
+                                fillMode: {
+                                    switch (SessionData.wallpaperFillMode) {
+                                    case "center": return Image.Pad
+                                    case "crop": return Image.PreserveAspectCrop
+                                    case "fit": return Image.PreserveAspectFit
+                                    case "stretch": return Image.Stretch
+                                    case "tile": return Image.Tile
+                                    default: return Image.PreserveAspectCrop
+                                    }
+                                }
                                 visible: {
                                     var currentWallpaper = SessionData.perMonitorWallpaper ? SessionData.getMonitorWallpaper(selectedMonitorName) : SessionData.wallpaperPath
                                     return currentWallpaper !== "" && !currentWallpaper.startsWith("#")
@@ -419,7 +428,7 @@ Item {
                         }
                     }
 
-                    // Per-Monitor Wallpaper Section - Full Width
+
                     Rectangle {
                         width: parent.width
                         height: 1
@@ -510,7 +519,7 @@ Item {
                         }
                     }
 
-                    // Wallpaper Cycling Section - Full Width
+
                     Rectangle {
                         width: parent.width
                         height: 1
@@ -579,7 +588,7 @@ Item {
                             }
                         }
 
-                        // Cycling mode and settings
+
                         Column {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -645,7 +654,7 @@ Item {
                                 }
                             }
 
-                            // Interval settings
+
                             DarkDropdown {
                                 id: intervalDropdown
                                 property var intervalOptions: ["1 minute", "5 minutes", "15 minutes", "30 minutes", "1 hour", "1.5 hours", "2 hours", "3 hours", "4 hours", "6 hours", "8 hours", "12 hours"]
@@ -686,7 +695,7 @@ Item {
                                 Connections {
                                     target: personalizationTab
                                     function onSelectedMonitorNameChanged() {
-                                        // Force dropdown to refresh its currentValue
+
                                         Qt.callLater(() => {
                                             var currentSeconds
                                             if (SessionData.perMonitorWallpaper) {
@@ -701,7 +710,7 @@ Item {
                                 }
                             }
 
-                            // Time settings
+
                             Row {
                                 spacing: Theme.spacingM
                                 visible: {
@@ -776,7 +785,7 @@ Item {
                                     Connections {
                                         target: personalizationTab
                                         function onSelectedMonitorNameChanged() {
-                                            // Force text field to refresh its value
+
                                             Qt.callLater(() => {
                                                 if (SessionData.perMonitorWallpaper) {
                                                     timeTextField.text = SessionData.getMonitorCyclingSettings(selectedMonitorName).time
@@ -816,9 +825,9 @@ Item {
                         onToggled: checked => {
                             SessionData.setUseAwwwBackend(checked)
                             if (checked) {
-                                ToastService.show("Switched to awww backend", 2000)
+                                ToastService.showInfo("Switched to awww backend")
                             } else {
-                                ToastService.show("Switched to QML Image backend", 2000)
+                                ToastService.showInfo("Switched to QML Image backend")
                             }
                         }
                     }
@@ -830,6 +839,29 @@ Item {
                         color: Theme.surfaceVariantText
                         wrapMode: Text.WordWrap
                         width: parent.width
+                    }
+
+                    DarkDropdown {
+                        width: parent.width
+                        text: "Wallpaper Fill Mode"
+                        description: "How the wallpaper should be displayed on screen"
+                        currentValue: {
+                            switch (SessionData.wallpaperFillMode) {
+                            case "center": return "Center"
+                            case "crop": return "Fill (Crop)"
+                            case "fit": return "Fit (Contain)"
+                            case "stretch": return "Stretch"
+                            case "tile": return "Tile"
+                            default: return "Fill (Crop)"
+                            }
+                        }
+                        options: ["Center", "Fill (Crop)", "Fit (Contain)", "Stretch", "Tile"]
+                        onValueChanged: value => {
+                            var mode = value.toLowerCase()
+                            if (mode === "fill (crop)") mode = "crop"
+                            else if (mode === "fit (contain)") mode = "fit"
+                            SessionData.setWallpaperFillMode(mode)
+                        }
                     }
 
                     DarkDropdown {
@@ -896,7 +928,7 @@ Item {
                 }
             }
 
-            // Dynamic Theme Section
+
             StyledRect {
                 width: parent.width
                 height: dynamicThemeSection.implicitHeight + Theme.spacingL * 2
@@ -970,7 +1002,7 @@ Item {
                 }
             }
 
-            // Display Settings
+
             StyledRect {
                 width: parent.width
                 height: displaySection.implicitHeight + Theme.spacingL * 2
@@ -1121,7 +1153,6 @@ Item {
                                 }
 
                                 onTabClicked: index => {
-                                                  // console.log("Tab clicked:", index, "Setting mode to:", index === 1 ? "location" : "time")
                                                   DisplayService.setNightModeAutomationMode(index === 1 ? "location" : "time")
                                                   currentIndex = index
                                               }
@@ -1141,7 +1172,7 @@ Item {
                             visible: isTimeMode
                             spacing: Theme.spacingM
 
-                            // Header row
+
                             Row {
                                 spacing: Theme.spacingM
                                 height: 20
@@ -1166,7 +1197,7 @@ Item {
                                 }
                             }
 
-                            // Start time row
+
                             Row {
                                 spacing: Theme.spacingM
                                 height: 32
@@ -1215,7 +1246,7 @@ Item {
                                 }
                             }
 
-                            // End time row
+
                             Row {
                                 spacing: Theme.spacingM
                                 height: 32
@@ -1357,7 +1388,7 @@ Item {
                 }
             }
 
-            // Lock Screen Settings
+
             StyledRect {
                 width: parent.width
                 height: lockScreenSection.implicitHeight + Theme.spacingL * 2
@@ -1405,7 +1436,7 @@ Item {
                 }
             }
 
-            // Font Settings
+
             StyledRect {
                 width: parent.width
                 height: fontSection.implicitHeight + Theme.spacingL * 2

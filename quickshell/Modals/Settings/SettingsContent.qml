@@ -9,12 +9,8 @@ Item {
     property var parentModal: null
 
     Component.onCompleted: {
-        // Ensure settings are refreshed when the content is loaded
-        // // console.log("SettingsContent loaded, refreshing settings...")
         
-        // Force initialization of all services
         Qt.callLater(function() {
-            // // console.log("SettingsContent: Delayed initialization starting...")
             refreshAllSettings()
         })
     }
@@ -29,41 +25,30 @@ Item {
             if (typeof ColorPaletteService !== 'undefined' && 
                 typeof SettingsData !== 'undefined' && 
                 typeof Theme !== 'undefined') {
-                // // console.log("SettingsContent: All services available, initializing...")
                 running = false
                 refreshAllSettings()
             } else {
-                // // console.log("SettingsContent: Waiting for services to be available...")
             }
         }
     }
 
     function refreshAllSettings() {
-        // // console.log("SettingsContent: Refreshing all settings...")
         
-        // Force refresh ColorPaletteService
         if (typeof ColorPaletteService !== 'undefined') {
             ColorPaletteService.updateAvailableThemes()
-            // // console.log("SettingsContent: ColorPaletteService refreshed")
         }
         
-        // Force refresh SettingsData
         if (typeof SettingsData !== 'undefined') {
             SettingsData.loadSettings()
-            // // console.log("SettingsContent: SettingsData refreshed")
         }
         
-        // Force refresh Theme
         if (typeof Theme !== 'undefined') {
             Theme.generateSystemThemesFromCurrentTheme()
-            // // console.log("SettingsContent: Theme refreshed")
         }
         
-        // // console.log("SettingsContent: All settings refreshed")
     }
 
     function forceInitialize() {
-        // // console.log("SettingsContent: Force initialization requested")
         settingsInitTimer.running = true
     }
 
@@ -120,7 +105,6 @@ Item {
             }
 
             onLoaded: {
-                // Ensure the dock tab is properly initialized when loaded
                 if (item) {
                     item.forceActiveFocus()
                 }

@@ -31,7 +31,6 @@ Rectangle {
     }
 
     function updateWidgetPciId(pciId) {
-        // Find and update this widget's pciId in the settings
         const sections = ["left", "center", "right"];
         for (let s = 0; s < sections.length; s++) {
             const sectionId = sections[s];
@@ -78,20 +77,14 @@ Rectangle {
     }
     Component.onCompleted: {
         DgopService.addRef(["gpu"]);
-        // console.log("GpuTemperature widget - pciId:", widgetData ? widgetData.pciId : "no widgetData", "selectedGpuIndex:", widgetData ? widgetData.selectedGpuIndex : "no widgetData");
-        // Add this widget's PCI ID to the service
         if (widgetData && widgetData.pciId) {
-            // console.log("Adding GPU PCI ID to service:", widgetData.pciId);
             DgopService.addGpuPciId(widgetData.pciId);
         } else {
-            // console.log("No PCI ID in widget data, starting auto-detection");
-            // No PCI ID saved, auto-detect and save the first GPU
             autoSaveTimer.running = true;
         }
     }
     Component.onDestruction: {
         DgopService.removeRef(["gpu"]);
-        // Remove this widget's PCI ID from the service
         if (widgetData && widgetData.pciId) {
             DgopService.removeGpuPciId(widgetData.pciId);
         }
@@ -100,7 +93,6 @@ Rectangle {
 
     Connections {
         function onWidgetDataChanged() {
-            // Force property re-evaluation by triggering change detection
             root.selectedGpuIndex = Qt.binding(() => {
                 return (root.widgetData && root.widgetData.selectedGpuIndex !== undefined) ? root.widgetData.selectedGpuIndex : 0;
             });
@@ -197,7 +189,6 @@ Rectangle {
             if (DgopService.availableGpus && DgopService.availableGpus.length > 0) {
                 const firstGpu = DgopService.availableGpus[0];
                 if (firstGpu && firstGpu.pciId) {
-                    // Save the first GPU's PCI ID to this widget's settings
                     updateWidgetPciId(firstGpu.pciId);
                     DgopService.addGpuPciId(firstGpu.pciId);
                 }

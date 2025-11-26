@@ -21,12 +21,14 @@ Rectangle {
     width: parent ? parent.width : 200
     height: 60
     radius: Theme.cornerRadius
-    color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, Theme.getContentBackgroundAlpha() * 0.6)
+    color: {
+        const alpha = Theme.getContentBackgroundAlpha() * 0.6
+        return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, alpha)
+    }
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
     border.width: 1
     opacity: enabled ? 1.0 : 0.6
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

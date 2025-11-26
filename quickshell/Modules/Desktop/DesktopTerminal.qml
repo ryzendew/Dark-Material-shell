@@ -19,7 +19,6 @@ DarkOSD {
     enableMouseInteraction: true
     autoHideInterval: 0
 
-    // Position based on individual widget settings
     property var positionAnchors: {
         switch(SettingsData.desktopTerminalPosition) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -35,7 +34,6 @@ DarkOSD {
         }
     }
 
-    // Terminal state
     property var outputLines: []
     property var commandHistory: []
     property int historyIndex: -1
@@ -51,7 +49,6 @@ DarkOSD {
         show()
     }
 
-    // Process for running commands
     Process {
         id: commandProcess
         running: false
@@ -63,13 +60,11 @@ DarkOSD {
             var output = stdout.text.trim()
             var errorOutput = stderr.text.trim()
             
-            // Extract directory from last line (from pwd command)
             var lines = output.split('\n')
             if (lines.length > 1) {
                 var lastLine = lines[lines.length - 1]
                 if (lastLine.startsWith('/') || lastLine.startsWith('~')) {
                     currentDirectory = lastLine
-                    // Remove pwd output from display
                     lines = lines.slice(0, -1)
                     output = lines.join('\n')
                 }
@@ -93,7 +88,6 @@ DarkOSD {
         }
     }
 
-    // Process for getting current directory
     Process {
         id: pwdProcess
         command: ["pwd"]
@@ -107,7 +101,6 @@ DarkOSD {
         stdout: StdioCollector {}
     }
 
-    // Process for cd commands
     Process {
         id: cdProcess
         command: ["sh", "-c", ""]
@@ -150,11 +143,9 @@ DarkOSD {
                 timestamp: new Date()
             })
         }
-        // Limit output lines to prevent memory issues
         if (outputLines.length > 1000) {
             outputLines = outputLines.slice(-500)
         }
-        // Use Qt.callLater to ensure outputView exists
         Qt.callLater(function() {
             if (outputView) {
                 outputView.positionViewAtEnd()
@@ -167,7 +158,6 @@ DarkOSD {
         
         const trimmedCommand = command.trim()
         
-        // Handle built-in commands
         if (trimmedCommand === "clear" || trimmedCommand === "cls") {
             outputLines = []
             updatePrompt()
@@ -186,17 +176,14 @@ DarkOSD {
             return
         }
         
-        // Add command to output
         addOutput(prompt + trimmedCommand)
         
-        // Add to history
         commandHistory.push(trimmedCommand)
         historyIndex = commandHistory.length
         if (commandHistory.length > 100) {
             commandHistory = commandHistory.slice(-100)
         }
         
-        // Handle cd command separately to update directory
         if (trimmedCommand.startsWith("cd ")) {
             const targetDir = trimmedCommand.substring(3).trim()
             commandRunning = true
@@ -205,7 +192,6 @@ DarkOSD {
             return
         }
         
-        // Execute regular command
         commandRunning = true
         var fullCommand = trimmedCommand + "; pwd"
         commandProcess.command = ["sh", "-c", fullCommand]
@@ -220,7 +206,6 @@ DarkOSD {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Position based on settings
         anchors.left: positionAnchors.horizontal === "left" ? parent.left : undefined
         anchors.horizontalCenter: positionAnchors.horizontal === "center" ? parent.horizontalCenter : undefined
         anchors.right: positionAnchors.horizontal === "right" ? parent.right : undefined
@@ -228,10 +213,8 @@ DarkOSD {
         anchors.verticalCenter: positionAnchors.vertical === "center" ? parent.verticalCenter : undefined
         anchors.bottom: positionAnchors.vertical === "bottom" ? parent.bottom : undefined
         
-        // Add margins for positioning (simplified like DesktopClock)
         anchors.margins: 20
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -247,7 +230,6 @@ DarkOSD {
             anchors.margins: Theme.spacingM
             spacing: Theme.spacingS
 
-            // Header
             Rectangle {
                 width: parent.width
                 height: 30
@@ -276,7 +258,6 @@ DarkOSD {
                 }
             }
 
-            // Output area
             Rectangle {
                 width: parent.width
                 height: parent.height - 30 - 50
@@ -309,7 +290,6 @@ DarkOSD {
                 }
             }
 
-            // Input area
             Rectangle {
                 width: parent.width
                 height: 40
@@ -373,7 +353,6 @@ DarkOSD {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true

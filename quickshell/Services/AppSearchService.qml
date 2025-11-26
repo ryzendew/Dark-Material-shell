@@ -72,15 +72,18 @@ Singleton {
                 score = 3000
                 matched = true
             } else if (!matched) {
-                const nameFinder = new Fzf.Finder([app], {
+                try {
+                    const nameFinder = Fzf.Finder([app], {
                                                       "selector": a => a.name || "",
                                                       "casing": "case-insensitive",
                                                       "fuzzy": "v2"
                                                   })
-                const fuzzyResults = nameFinder.find(query)
-                if (fuzzyResults.length > 0 && fuzzyResults[0].score > 0) {
-                    score = Math.min(fuzzyResults[0].score, 2000)
-                    matched = true
+                    const fuzzyResults = nameFinder.find(query)
+                    if (fuzzyResults.length > 0 && fuzzyResults[0].score > 0) {
+                        score = Math.min(fuzzyResults[0].score, 2000)
+                        matched = true
+                    }
+                } catch (e) {
                 }
             }
 

@@ -6,16 +6,17 @@ TextMetrics {
     property bool isMonospace: false
 
     readonly property string resolvedFontFamily: {
-        const requestedFont = isMonospace ? SettingsData.monoFontFamily : SettingsData.fontFamily
-        const defaultFont = isMonospace ? SettingsData.defaultMonoFontFamily : SettingsData.defaultFontFamily
+        const mono = isMonospace
+        const requested = mono ? SettingsData.monoFontFamily : SettingsData.fontFamily
+        const defaultFont = mono ? SettingsData.defaultMonoFontFamily : SettingsData.defaultFontFamily
 
-        if (requestedFont === defaultFont) {
-            const availableFonts = Qt.fontFamilies()
-            if (!availableFonts.includes(requestedFont)) {
-                return isMonospace ? "Monospace" : "DejaVu Sans"
+        if (requested === defaultFont) {
+            const fonts = Qt.fontFamilies()
+            if (!fonts.includes(requested)) {
+                return mono ? "Monospace" : "DejaVu Sans"
             }
         }
-        return requestedFont
+        return requested
     }
 
     font.pixelSize: Appearance.fontSize.normal

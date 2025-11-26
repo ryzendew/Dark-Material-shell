@@ -37,7 +37,6 @@ Rectangle {
         size: Theme.iconSize - 6
         color: notepadArea.containsMouse || root.isActive ? Theme.primary : Theme.surfaceText
         
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0

@@ -13,17 +13,14 @@ Rectangle {
 
     height: 34
     radius: Theme.cornerRadius
-    color: mouseArea.containsMouse ? Qt.rgba(
-                                        Theme.primary.r,
-                                        Theme.primary.g,
-                                        Theme.primary.b,
-                                        0.12) : Qt.rgba(
-                                        Theme.surfaceVariant.r,
-                                        Theme.surfaceVariant.g,
-                                        Theme.surfaceVariant.b,
-                                        SettingsData.controlCenterWidgetBackgroundOpacity)
     
-    // Drop shadow
+    color: {
+        if (mouseArea.containsMouse) {
+            return Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
+        }
+        return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, SettingsData.controlCenterWidgetBackgroundOpacity)
+    }
+    
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

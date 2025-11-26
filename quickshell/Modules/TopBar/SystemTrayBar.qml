@@ -151,10 +151,8 @@ Item {
                             }
                             if (delegateRoot.trayItem.hasMenu) {
                                 if (root.isAtBottom) {
-                                    // When in dock, use the new advanced menu system
                                     root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
                                 } else {
-                                    // When in top bar, use the original simple QsMenuAnchor approach
                                     const globalPos = mapToGlobal(0, 0);
                                     const currentScreen = parentScreen || Screen;
                                     const screenX = currentScreen.x || 0;
@@ -259,10 +257,8 @@ Item {
                         }
                             if (delegateRoot.trayItem.hasMenu) {
                                 if (root.isAtBottom) {
-                                    // When in dock, use the new advanced menu system
                                     root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
                                 } else {
-                                    // When in top bar, use the original simple QsMenuAnchor approach
                             const globalPos = mapToGlobal(0, 0);
                             const currentScreen = parentScreen || Screen;
                             const screenX = currentScreen.x || 0;
@@ -396,7 +392,6 @@ Item {
                     } else {
                         let targetY
                         if (menuRoot.isAtBottom) {
-                            // Position above the dock like control center
                             const dockHeight = 80 // Approximate dock height
                             const dockGap = 16 // Dock bottom gap
                             const availableHeight = screen.height - dockHeight - dockGap - 20 // Extra margin
@@ -679,7 +674,6 @@ Item {
 
     property var currentTrayMenu: null
 
-    // QsMenuAnchor for top bar context
     QsMenuAnchor {
         id: menuAnchor
     }

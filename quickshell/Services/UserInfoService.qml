@@ -97,7 +97,6 @@ Singleton {
                     root.uptime = `up ${seconds} seconds`
                 }
 
-                // Create short uptime format
                 let shortUptime = "up"
                 if (days > 0) {
                     shortUptime += ` ${days}d`

@@ -9,7 +9,7 @@ Singleton {
     signal closeAllModalsExcept(var excludedModal)
 
     function openModal(modal) {
-        if (!modal.allowStacking) {
+        if (modal && !modal.allowStacking) {
             closeAllModalsExcept(modal)
         }
     }

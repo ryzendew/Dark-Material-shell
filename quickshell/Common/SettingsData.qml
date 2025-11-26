@@ -12,8 +12,6 @@ import qs.Services
 Singleton {
     id: root
 
-    // Theme settings
-    // Audio routing persistence
     property var audioRoutesOutput: ({}) // map appKey -> deviceId
     property var audioRoutesInput: ({})  // map appKey -> deviceId
     property string currentThemeName: "blue"
@@ -56,7 +54,6 @@ Singleton {
     property string desktopWidgetsDisplay: "primary"
     property string desktopWidgetsPosition: "top-left"
     
-    // Individual widget positions
     property string desktopCpuTempPosition: "top-left"
     property string desktopGpuTempPosition: "top-center"
     property string desktopSystemMonitorPosition: "top-right"
@@ -64,7 +61,6 @@ Singleton {
     property string desktopWeatherPosition: "top-left"
     property string desktopTerminalPosition: "bottom-left"
     
-    // Desktop widget opacity settings
     property real desktopCpuTempOpacity: 0.9
     property real desktopGpuTempOpacity: 0.9
     property real desktopSystemMonitorOpacity: 0.9
@@ -73,13 +69,11 @@ Singleton {
     property real desktopWeatherOpacity: 0.9
     property real desktopTerminalOpacity: 0.9
     
-    // Desktop widget sizing
     property real desktopWidgetWidth: 180
     property real desktopWidgetHeight: 80
     property real desktopWidgetFontSize: 14
     property real desktopWidgetIconSize: 20
     
-    // System Monitor Widget specific sizing
     property real desktopSystemMonitorWidth: 320
     property real desktopSystemMonitorHeight: 200
     property real desktopWeatherWidth: 800
@@ -99,7 +93,6 @@ Singleton {
     property string desktopGpuSelection: "auto"
     property real dockTransparency: 1
     
-    // Dock border settings
     property bool dockBorderEnabled: false
     property real dockBorderWidth: 2
     property real dockBorderRadius: 8
@@ -109,7 +102,6 @@ Singleton {
     property real dockBorderBlue: 0.0
     property real dockBorderAlpha: 1.0
     
-    // TopBar border settings
     property bool topBarBorderEnabled: false
     property real topBarBorderWidth: 2
     property real topBarBorderRadius: 8
@@ -124,7 +116,6 @@ Singleton {
     property real topBarBorderBottomLeftInset: 1
     property real topBarBorderBottomRightInset: 1
     
-    // TopBar floating and appearance settings
     property bool topBarFloat: true
     property bool topBarRoundedCorners: true
     property real topBarCornerRadius: 12
@@ -196,17 +187,14 @@ Singleton {
     property alias topBarCenterWidgetsModel: centerWidgetsModel
     property alias topBarRightWidgetsModel: rightWidgetsModel
     
-    // Dock widgets
     property var dockLeftWidgets: ["launcherButton", "music", "clock"]
     property var dockRightWidgets: ["systemTray", "controlCenterButton", "settingsButton"]
     
-    // Widget positioning settings
     property string controlCenterPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
     property string notificationCenterPosition: "top-right" // "top-right", "bottom-right", "top-left", "bottom-left", "center"
     property string appDrawerPosition: "center" // "center", "top-left", "top-right", "bottom-left", "bottom-right"
     property string clipboardPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
     
-    // Start Menu and Control Center positioning
     property real startMenuXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
     property real startMenuYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
     property real controlCenterXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
@@ -224,24 +212,20 @@ Singleton {
     property bool qt6ctAvailable: false
     property bool gtkAvailable: false
     
-    // GTK Theme Properties
     property var availableGtkThemes: ["System Default"]
     property string systemDefaultGtkTheme: ""
     property string gtkTheme: "System Default"
     
-    // QT Theme Properties  
     property var availableQtThemes: ["System Default"]
     property string systemDefaultQtTheme: ""
     property string qtTheme: "System Default"
     
-    // GNOME Shell Theme Properties
     property var availableShellThemes: ["System Default"]
     property string systemDefaultShellTheme: ""
     property string shellTheme: "System Default"
     property bool userThemeExtensionAvailable: false
     property bool userThemeExtensionEnabled: false
     
-    // Cursor Theme Properties
     property var availableCursorThemes: ["System Default"]
     property string systemDefaultCursorTheme: ""
     property string cursorTheme: "System Default"
@@ -301,7 +285,6 @@ Singleton {
     property bool dockTooltipsEnabled: true
     property real dockIconSize: 40
     property real dockIconSpacing: 2
-    // Dock advanced customization
     property real dockWidgetAreaOpacity: 0.30
     property real dockBackgroundTintOpacity: 0.04
     property real dockCollapsedHeight: 20
@@ -312,7 +295,6 @@ Singleton {
     property real cornerRadius: 12
     property bool notificationOverlayEnabled: false
     
-    // Hyprland blur settings
     property real hyprlandBlurSize: 2
     property int hyprlandBlurPasses: 2
     property bool topBarAutoHide: false
@@ -360,8 +342,6 @@ Singleton {
     }
 
     function initializeListModels() {
-        // ! Hack-ish to add all properties to the listmodel once
-        // ! allows the properties to be bound on new widget addtions
         var dummyItem = {
             "widgetId": "dummy",
             "enabled": true,
@@ -389,7 +369,6 @@ Singleton {
         try {
             if (content && content.trim()) {
                 var settings = JSON.parse(content)
-                // Auto-migrate from old theme system
                 if (settings.themeIndex !== undefined || settings.themeIsDynamic !== undefined) {
                     const themeNames = ["blue", "deepBlue", "purple", "green", "orange", "red", "cyan", "pink", "amber", "coral"]
                     if (settings.themeIsDynamic) {
@@ -397,7 +376,6 @@ Singleton {
                     } else if (settings.themeIndex >= 0 && settings.themeIndex < themeNames.length) {
                         currentThemeName = themeNames[settings.themeIndex]
                     }
-                    // console.log("Auto-migrated theme from index", settings.themeIndex, "to", currentThemeName)
                 } else {
                     currentThemeName = settings.currentThemeName !== undefined ? settings.currentThemeName : "blue"
                 }
@@ -477,7 +455,6 @@ Singleton {
         desktopGpuSelection = settings.desktopGpuSelection !== undefined ? settings.desktopGpuSelection : "auto"
                 dockTransparency = settings.dockTransparency !== undefined ? (settings.dockTransparency > 1 ? settings.dockTransparency / 100 : settings.dockTransparency) : 1
                 
-                // Dock border settings
                 dockBorderEnabled = settings.dockBorderEnabled !== undefined ? settings.dockBorderEnabled : false
                 dockBorderWidth = settings.dockBorderWidth !== undefined ? settings.dockBorderWidth : 2
                 dockBorderRadius = settings.dockBorderRadius !== undefined ? settings.dockBorderRadius : 8
@@ -487,7 +464,6 @@ Singleton {
                 dockBorderBlue = settings.dockBorderBlue !== undefined ? settings.dockBorderBlue : 0.0
                 dockBorderAlpha = settings.dockBorderAlpha !== undefined ? settings.dockBorderAlpha : 1.0
                 
-                // TopBar border settings
                 topBarBorderEnabled = settings.topBarBorderEnabled !== undefined ? settings.topBarBorderEnabled : false
                 topBarBorderWidth = settings.topBarBorderWidth !== undefined ? settings.topBarBorderWidth : 2
                 topBarBorderRadius = settings.topBarBorderRadius !== undefined ? settings.topBarBorderRadius : 8
@@ -588,19 +564,16 @@ Singleton {
                     updateListModel(rightWidgetsModel, rightWidgets)
                 }
                 
-                // Load dock widgets
                 dockLeftWidgets = settings.dockLeftWidgets !== undefined ? settings.dockLeftWidgets : ["launcherButton", "music", "clock"]
                 dockRightWidgets = settings.dockRightWidgets !== undefined ? settings.dockRightWidgets : ["systemTray", "controlCenterButton"]
                 updateListModel(dockLeftWidgetsModel, dockLeftWidgets)
                 updateListModel(dockRightWidgetsModel, dockRightWidgets)
                 
-                // Load widget positioning settings
                 controlCenterPosition = settings.controlCenterPosition !== undefined ? settings.controlCenterPosition : "bottom-right"
                 notificationCenterPosition = settings.notificationCenterPosition !== undefined ? settings.notificationCenterPosition : "top-right"
                 appDrawerPosition = settings.appDrawerPosition !== undefined ? settings.appDrawerPosition : "center"
                 clipboardPosition = settings.clipboardPosition !== undefined ? settings.clipboardPosition : "bottom-right"
                 
-                // Load Start Menu and Control Center positioning
                 startMenuXOffset = settings.startMenuXOffset !== undefined ? settings.startMenuXOffset : 0.0
                 startMenuYOffset = settings.startMenuYOffset !== undefined ? settings.startMenuYOffset : 0.0
                 controlCenterXOffset = settings.controlCenterXOffset !== undefined ? settings.controlCenterXOffset : 0.0
@@ -701,11 +674,8 @@ Singleton {
 
     function saveSettings() {
         if (_loading) {
-            // console.log("SettingsData: saveSettings called but _loading is true, skipping")
             return
         }
-        // console.log("SettingsData: saveSettings called, saving color themes:", savedColorThemes)
-        // console.log("SettingsData: currentColorTheme:", currentColorTheme)
         settingsFile.setText(JSON.stringify({
                                                 "currentThemeName": currentThemeName,
                                                 "customThemeFile": customThemeFile,
@@ -1097,19 +1067,13 @@ Singleton {
     }
 
     function setSavedColorThemes(themes) {
-        // console.log("SettingsData: setSavedColorThemes called with:", themes)
         savedColorThemes = themes
-        // console.log("SettingsData: savedColorThemes set to:", savedColorThemes)
         saveSettings()
-        // console.log("SettingsData: saveSettings called after setSavedColorThemes")
     }
 
     function setCurrentColorTheme(themeName) {
-        // console.log("SettingsData: setCurrentColorTheme called with:", themeName)
         currentColorTheme = themeName
-        // console.log("SettingsData: currentColorTheme set to:", currentColorTheme)
         saveSettings()
-        // console.log("SettingsData: saveSettings called after setCurrentColorTheme")
     }
 
     function setTopBarTransparency(transparency) {
@@ -1195,7 +1159,6 @@ Singleton {
     function syncLauncherLogoWithWallpaper() {
         if (launcherLogoAutoSync && typeof Theme !== 'undefined' && Theme.primary) {
             const primaryColor = Theme.primary
-            // Only update if the color actually changed to avoid unnecessary saves
             if (Math.abs(launcherLogoRed - primaryColor.r) > 0.001 ||
                 Math.abs(launcherLogoGreen - primaryColor.g) > 0.001 ||
                 Math.abs(launcherLogoBlue - primaryColor.b) > 0.001) {
@@ -1471,7 +1434,6 @@ Singleton {
         saveSettings()
     }
 
-    // Function to get GPU dropdown options based on detected GPUs
     function getGpuDropdownOptions() {
         if (!DgopService.availableGpus || DgopService.availableGpus.length === 0) {
             return ["No GPUs detected"];
@@ -1482,7 +1444,6 @@ Singleton {
             const gpu = DgopService.availableGpus[i];
             let vendorName = "Unknown";
             
-            // Map vendor strings to display names
             if (gpu.vendor) {
                 const vendor = gpu.vendor.toLowerCase();
                 if (vendor.includes("nvidia")) {
@@ -1496,7 +1457,6 @@ Singleton {
                 }
             }
             
-            // Use display name if available, otherwise use vendor
             const displayName = gpu.displayName || gpu.fullName || vendorName;
             options.push(`${vendorName} (${displayName})`);
         }
@@ -1504,7 +1464,6 @@ Singleton {
         return options;
     }
 
-    // Dock border setters
     function setDockBorderEnabled(enabled) {
         dockBorderEnabled = enabled
         saveSettings()
@@ -1545,7 +1504,6 @@ Singleton {
         saveSettings()
     }
 
-    // TopBar border setters
     function setTopBarBorderEnabled(enabled) {
         topBarBorderEnabled = enabled
         saveSettings()
@@ -1611,7 +1569,6 @@ Singleton {
         saveSettings()
     }
 
-    // TopBar floating and appearance setters
     function setTopBarFloat(enabled) {
         topBarFloat = enabled
         saveSettings()
@@ -1652,7 +1609,6 @@ Singleton {
         saveSettings()
     }
 
-    // New preference setters
     function setClockFormat(use24Hour) {
         use24HourClock = use24Hour
         saveSettings()
@@ -1668,7 +1624,6 @@ Singleton {
         saveSettings()
     }
 
-    // Widget visibility setters
     function setShowLauncherButton(enabled) {
         showLauncherButton = enabled
         saveSettings()
@@ -1813,7 +1768,6 @@ Singleton {
         saveSettings()
     }
 
-    // Audio routing helpers
     function setAudioRoute(appKey, deviceId, isInput) {
         if (!appKey || !deviceId)
             return
@@ -1851,7 +1805,6 @@ Singleton {
 
             listModel.append(item)
         }
-        // Emit signal to notify widgets that data has changed
         widgetDataChanged()
     }
 
@@ -1883,7 +1836,6 @@ Singleton {
         saveSettings()
     }
 
-    // View mode setters
     function setAppLauncherViewMode(mode) {
         appLauncherViewMode = mode
         saveSettings()
@@ -1894,7 +1846,6 @@ Singleton {
         saveSettings()
     }
 
-    // Weather location setter
     function setWeatherLocation(displayName, coordinates) {
         weatherLocation = displayName
         weatherCoordinates = coordinates
@@ -1911,14 +1862,12 @@ Singleton {
         saveSettings()
     }
 
-    // Network preference setter
     function setNetworkPreference(preference) {
         networkPreference = preference
         saveSettings()
     }
 
     function detectAvailableIconThemes() {
-        // First detect system default, then available themes
         systemDefaultDetectionProcess.running = true
     }
 
@@ -1954,8 +1903,6 @@ Singleton {
         var qtThemeName = (themeName === "System Default") ? "" : themeName
         var home = _shq(Paths.strip(root._homeUrl))
         if (!qtThemeName) {
-            // When "System Default" is selected, don't modify the config files at all
-            // This preserves the user's existing qt6ct configuration
             return
         }
         var script = "mkdir -p " + _configDir + "/qt5ct " + _configDir + "/qt6ct " + _configDir + "/environment.d 2>/dev/null || true\n" + "update_qt_icon_theme() {\n" + "  local config_file=\"$1\"\n"
@@ -1970,7 +1917,6 @@ Singleton {
         updateQtIconTheme(iconTheme)
     }
 
-    // GTK Theme Functions
     function detectAvailableGtkThemes() {
         systemDefaultGtkThemeProcess.running = true
     }
@@ -1984,7 +1930,6 @@ Singleton {
     function updateGtkTheme(themeName) {
         var gtkThemeName = (themeName === "System Default") ? systemDefaultGtkTheme : themeName
         if (gtkThemeName !== "System Default" && gtkThemeName !== "") {
-            // Use _shq for proper shell escaping
             var escapedTheme = _shq(gtkThemeName)
             var script = "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.desktop.interface; then\n"
                     + "    gsettings set org.gnome.desktop.interface gtk-theme " + escapedTheme + "\n"
@@ -2041,7 +1986,6 @@ Singleton {
         updateGtkTheme(gtkTheme)
     }
 
-    // QT Theme Functions
     function detectAvailableQtThemes() {
         systemDefaultQtThemeProcess.running = true
     }
@@ -2055,12 +1999,9 @@ Singleton {
     function updateQtTheme(themeName) {
         var qtThemeName = (themeName === "System Default") ? systemDefaultQtTheme : themeName
         if (!qtThemeName || qtThemeName === "System Default" || qtThemeName === "") {
-            // When "System Default" is selected, don't modify the config files at all
-            // This preserves the user's existing qt5ct/qt6ct configuration
             return
         }
         
-        // Use _shq for proper shell escaping
         var escapedTheme = _shq(qtThemeName)
         var home = _shq(Paths.strip(root._homeUrl))
         
@@ -2093,7 +2034,6 @@ Singleton {
         updateQtTheme(qtTheme)
     }
 
-    // GNOME Shell Theme Functions
     function detectAvailableShellThemes() {
         userThemeExtensionCheckProcess.running = true
     }
@@ -2109,7 +2049,6 @@ Singleton {
         var home = _shq(Paths.strip(root._homeUrl))
         
         if (shellThemeName !== "System Default" && shellThemeName !== "") {
-            // Use _shq for proper shell escaping
             var escapedTheme = _shq(shellThemeName)
             
             var script = "# Try extension method first (preferred)\n"
@@ -2150,7 +2089,6 @@ Singleton {
                 }
             }
         } else if (themeName === "System Default") {
-            // Reset to default
             var script = "# Try extension method first\n"
                     + "if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -q org.gnome.shell.extensions.user-theme; then\n"
                     + "    gsettings reset org.gnome.shell.extensions.user-theme name\n"
@@ -2178,7 +2116,6 @@ Singleton {
         updateShellTheme(shellTheme)
     }
 
-    // Cursor Theme Functions
     function detectAvailableCursorThemes() {
         systemDefaultCursorThemeProcess.running = true
     }
@@ -2195,7 +2132,6 @@ Singleton {
         var cursorSizeValue = size || 24
         
         if (cursorThemeName !== "System Default" && cursorThemeName !== "" && cursorSizeValue > 0) {
-            // Use _shq for proper shell escaping
             var escapedTheme = _shq(cursorThemeName)
             var home = _shq(Paths.strip(root._homeUrl))
             
@@ -2486,7 +2422,6 @@ Singleton {
     function setHyprlandBlurSize(size) {
         hyprlandBlurSize = size
         saveSettings()
-        // Apply blur settings to Hyprland if available
         if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
             CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
         }
@@ -2495,7 +2430,6 @@ Singleton {
     function setHyprlandBlurPasses(passes) {
         hyprlandBlurPasses = passes
         saveSettings()
-        // Apply blur settings to Hyprland if available
         if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
             CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
         }
@@ -2621,20 +2555,16 @@ Singleton {
         detectAvailableShellThemes()
         detectAvailableCursorThemes()
         
-        // Set desktop widgets to DP-2 if not already configured
         if (!screenPreferences || !screenPreferences["desktopWidgets"]) {
-            // console.log("SettingsData: Setting desktop widgets to DP-2");
             setDesktopWidgetsScreen("DP-2");
         }
         
-        // Apply Hyprland blur settings on startup
         Qt.callLater(function() {
             if (typeof CompositorService !== 'undefined' && CompositorService.isHyprland) {
                 CompositorService.applyBlurSettings(hyprlandBlurSize, hyprlandBlurPasses)
             }
         })
         
-        // Initialize launcher logo auto-sync if enabled
         if (launcherLogoAutoSync) {
             Qt.callLater(() => {
                 syncLauncherLogoWithWallpaper()
@@ -2645,9 +2575,7 @@ Singleton {
     Connections {
         target: typeof Theme !== "undefined" ? Theme : null
         function onColorUpdateTriggerChanged() {
-            // When colorUpdateTrigger changes, it means matugen colors were updated
             if (launcherLogoAutoSync) {
-                // Use a small delay to ensure Theme.primary has been updated
                 Qt.callLater(() => {
                     syncLauncherLogoWithWallpaper()
                 })
@@ -2658,9 +2586,7 @@ Singleton {
     Connections {
         target: typeof ColorPaletteService !== "undefined" ? ColorPaletteService : null
         function onColorsExtracted() {
-            // When colors are extracted from wallpaper, sync if auto-sync is enabled
             if (launcherLogoAutoSync) {
-                // Use a small delay to ensure Theme.primary has been updated
                 Qt.callLater(() => {
                     syncLauncherLogoWithWallpaper()
                 })
@@ -2671,9 +2597,7 @@ Singleton {
     Connections {
         target: typeof SessionData !== "undefined" ? SessionData : null
         function onWallpaperPathChanged() {
-            // When wallpaper changes, wait for colors to be extracted
             if (launcherLogoAutoSync) {
-                // Use a longer delay to allow matugen to extract colors
                 Qt.callLater(() => {
                     Qt.callLater(() => {
                         syncLauncherLogoWithWallpaper()
@@ -2814,7 +2738,6 @@ Singleton {
         }
     }
 
-    // GTK Theme Detection Processes
     Process {
         id: systemDefaultGtkThemeProcess
         
@@ -2832,7 +2755,6 @@ Singleton {
     Process {
         id: gtkThemeDetectionProcess
         
-        // Find themes with gtk-3.0 or gtk-4.0 subdirectories (validates theme structure)
         command: ["sh", "-c", "for dir in /usr/share/themes ~/.local/share/themes ~/.themes; do [ -d \"$dir\" ] && find \"$dir\" -maxdepth 1 -type d -exec sh -c 'test -d \"$1/gtk-3.0\" || test -d \"$1/gtk-4.0\"' _ {} \\; -print 2>/dev/null; done | sed 's|.*/||' | sort -u"]
         running: false
         
@@ -2843,7 +2765,6 @@ Singleton {
                     var themes = text.trim().split('\n')
                     for (var i = 0; i < themes.length; i++) {
                         var theme = themes[i].trim()
-                        // Filter out invalid entries
                         if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor") {
                             detectedThemes.push(theme)
                         }
@@ -2854,7 +2775,6 @@ Singleton {
         }
     }
 
-    // QT Theme Detection Processes
     Process {
         id: systemDefaultQtThemeProcess
         
@@ -2964,7 +2884,6 @@ Singleton {
         }
     }
 
-    // GNOME Shell Theme Detection Processes
     Process {
         id: userThemeExtensionCheckProcess
         
@@ -2980,7 +2899,6 @@ Singleton {
                     } else {
                         systemDefaultShellTheme = ""
                     }
-                    // Check if extension is enabled
                     extensionEnabledCheckProcess.running = true
                 } else {
                     userThemeExtensionAvailable = false
@@ -3015,8 +2933,6 @@ Singleton {
     Process {
         id: shellThemeDetectionProcess
         
-        // Find themes with gnome-shell subdirectory containing gnome-shell.css
-        // Use -exec to avoid subshell issues with while read loops
         command: ["sh", "-c", "for dir in /usr/share/themes ~/.local/share/themes ~/.themes; do [ -d \"$dir\" ] && find \"$dir\" -maxdepth 1 -type d -exec sh -c 'test -f \"$1/gnome-shell/gnome-shell.css\"' _ {} \\; -print 2>/dev/null; done | sed 's|.*/||' | sort -u"]
         running: false
         
@@ -3027,7 +2943,6 @@ Singleton {
                     var themes = text.trim().split('\n')
                     for (var i = 0; i < themes.length; i++) {
                         var theme = themes[i].trim()
-                        // Filter out invalid entries
                         if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor")
                             detectedThemes.push(theme)
                     }
@@ -3037,7 +2952,6 @@ Singleton {
         }
     }
 
-    // Cursor Theme Detection Processes
     Process {
         id: systemDefaultCursorThemeProcess
         
@@ -3055,7 +2969,6 @@ Singleton {
     Process {
         id: cursorThemeDetectionProcess
         
-        // Find cursor themes by checking for cursors/left_ptr file
         command: ["sh", "-c", "find /usr/share/icons ~/.local/share/icons ~/.icons -maxdepth 1 -type d -exec test -f {}/cursors/left_ptr \\; -print 2>/dev/null | sed 's|.*/||' | sort -u"]
         running: false
         
@@ -3066,7 +2979,6 @@ Singleton {
                     var themes = text.trim().split('\n')
                     for (var i = 0; i < themes.length; i++) {
                         var theme = themes[i].trim()
-                        // Filter out invalid entries (same as icon theme detection)
                         if (theme && theme !== "" && theme !== "default" && theme !== "hicolor" && theme !== "locolor")
                             detectedThemes.push(theme)
                     }
@@ -3084,10 +2996,8 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {
-                // console.log("Copied default-settings.json to settings.json")
                 settingsFile.reload()
             } else {
-                // No default settings file found, just apply stored theme
                 applyStoredTheme()
             }
         }
@@ -3111,19 +3021,16 @@ Singleton {
                         }
                     }
                 }
-                // Fallback to common terminals if none detected
                 if (terminals.length === 0) {
                     terminals = ["xterm", "gnome-terminal", "konsole"]
                 }
                 availableTerminals = terminals
                 
-                // Set default if not already set
                 if (!terminalEmulator || terminalEmulator === "") {
                     var envTerminal = Quickshell.env("TERMINAL") || ""
                     if (envTerminal && terminals.includes(envTerminal)) {
                         terminalEmulator = envTerminal
                     } else if (terminals.length > 0) {
-                        // Prefer common terminals
                         var preferred = ["alacritty", "foot", "kitty", "wezterm", "xterm"]
                         for (var j = 0; j < preferred.length; j++) {
                             if (terminals.includes(preferred[j])) {
@@ -3131,7 +3038,6 @@ Singleton {
                                 break
                             }
                         }
-                        // If no preferred found, use first available
                         if (!terminalEmulator || terminalEmulator === "") {
                             terminalEmulator = terminals[0]
                         }
@@ -3161,7 +3067,6 @@ Singleton {
                 }
                 availableAurHelpers = helpers
                 
-                // Set default if not already set (prefer yay, then paru)
                 if (!aurHelper || aurHelper === "") {
                     if (helpers.length > 0) {
                         var preferred = ["yay", "paru", "pikaur"]
@@ -3171,7 +3076,6 @@ Singleton {
                                 break
                             }
                         }
-                        // If no preferred found, use first available
                         if (!aurHelper || aurHelper === "") {
                             aurHelper = helpers[0]
                         }

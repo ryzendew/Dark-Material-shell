@@ -28,7 +28,6 @@ Singleton {
         if (typeof SessionData === "undefined") return ""
         
         if (SessionData.perMonitorWallpaper) {
-            // Use first monitor's wallpaper for dynamic theming
             var screens = Quickshell.screens
             if (screens.length > 0) {
                 var firstMonitorWallpaper = SessionData.getMonitorWallpaper(screens[0].name)
@@ -54,7 +53,6 @@ Singleton {
         if (typeof SessionData === "undefined") return ""
         
         if (SessionData.perMonitorWallpaper) {
-            // Use first monitor's wallpaper for dynamic theming
             var screens = Quickshell.screens
             if (screens.length > 0) {
                 var firstMonitorWallpaper = SessionData.getMonitorWallpaper(screens[0].name)
@@ -92,15 +90,10 @@ Singleton {
         colorUpdateTrigger
         const colorMode = (typeof SessionData !== "undefined" && SessionData.isLightMode) ? "light" : "dark"
         
-        // Matugen v3.0.0+ uses a different JSON structure:
-        // Old: colors.light.primary or colors.dark.primary
-        // New: colors.primary.light or colors.primary.dark
         if (!matugenColors || !matugenColors.colors) {
             return fallback
         }
         
-        // In v3.0.0+, the path is the color name (e.g., "primary", "surface")
-        // Access it as colors[path][colorMode]
         const colorName = path
         if (matugenColors.colors[colorName] && matugenColors.colors[colorName][colorMode]) {
             return matugenColors.colors[colorName][colorMode]
@@ -276,7 +269,6 @@ Singleton {
             }
         } else {
             currentTheme = themeName
-            // Determine category based on theme name
             if (StockThemes.isCatppuccinVariant(themeName)) {
                 currentThemeCategory = "catppuccin"
             } else {
@@ -438,8 +430,6 @@ Singleton {
     }
 
     function applyVibrance(color) {
-        // Apply vibrance adjustment to colors
-        // Vibrance ranges from 0 (grayscale) to 1 (full saturation)
         if (typeof color === 'string') {
             return color
         }
@@ -450,10 +440,8 @@ Singleton {
             return color
         }
         
-        // Convert RGB to grayscale using luminance formula
         const gray = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
         
-        // Interpolate between grayscale and original color
         return Qt.rgba(
             gray + (color.r - gray) * vibrance,
             gray + (color.g - gray) * vibrance,
@@ -576,7 +564,6 @@ Singleton {
 
     function setDesiredTheme(kind, value, isLight, iconTheme, matugenType) {
         if (!matugenAvailable) {
-            console.warn("matugen not available - cannot set system theme")
             return
         }
 
@@ -598,7 +585,6 @@ Singleton {
         Quickshell.execDetached(["sh", "-c", `mkdir -p '${stateDir}' && cat > '${desiredPath}' << 'EOF'\n${json}\nEOF`])
         workerRunning = true
         if (rawWallpaperPath.startsWith("we:")) {
-            // console.log("calling matugen worker")
             systemThemeGenerator.command = [
                 "sh", "-c",
                 `sleep 1 && ${shellDir}/scripts/matugen-worker.sh '${stateDir}' '${shellDir}' --run`
@@ -630,7 +616,6 @@ Singleton {
             let matugenType
             if (currentTheme === "custom") {
                 if (!customThemeData || !customThemeData.primary) {
-                    console.warn("Custom theme data not available for system theme generation")
                     return
                 }
                 primaryColor = customThemeData.primary
@@ -641,7 +626,6 @@ Singleton {
             }
 
             if (!primaryColor) {
-                console.warn("No primary color available for theme:", currentTheme)
                 return
             }
             setDesiredTheme("hex", primaryColor, isLight, iconTheme, matugenType)
@@ -805,7 +789,6 @@ Singleton {
 
     Process {
         id: matugenProcess
-        // Matugen v3.0.0+ requires --json flag before the command
         command: ["matugen", "--json", "hex", "image", wallpaperPath]
 
         stdout: StdioCollector {
@@ -824,7 +807,6 @@ Singleton {
                         ToastService.wallpaperErrorStatus = "error"
                         ToastService.showError("Wallpaper Processing Failed: Invalid JSON extracted from matugen output.")
                     }
-                    // console.log("Raw matugen output:", matugenCollector.text)
                     return
                 }
                 try {
@@ -854,7 +836,6 @@ Singleton {
 
     Process {
         id: colorMatugenProcess
-        // Matugen v3.0.0+ requires --json flag before the command
         command: ["matugen", "--json", "hex", "color", "hex", wallpaperPath]
 
         stdout: StdioCollector {
@@ -873,7 +854,6 @@ Singleton {
                         ToastService.wallpaperErrorStatus = "error"
                         ToastService.showError("Color Processing Failed: Invalid JSON extracted from matugen output.")
                     }
-                    // console.log("Raw matugen output:", colorMatugenCollector.text)
                     return
                 }
                 try {
@@ -913,13 +893,10 @@ Singleton {
             workerRunning = false
 
             if (exitCode === 2) {
-                // Exit code 2 means wallpaper/color not found - this is expected on first run
-                // console.log("Theme worker: wallpaper/color not found, skipping theme generation")
             } else if (exitCode !== 0) {
                 if (typeof ToastService !== "undefined") {
                     ToastService.showError("Theme worker failed (" + exitCode + ")")
                 }
-                console.warn("Theme worker failed with exit code:", exitCode)
             }
         }
     }

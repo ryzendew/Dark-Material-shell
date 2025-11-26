@@ -208,7 +208,6 @@ Singleton {
         const wallpaperDir = currentWallpaper.substring(0, currentWallpaper.lastIndexOf('/'))
 
         if (screenName && monitorProcessComponent && monitorProcessComponent.status === Component.Ready) {
-            // Use per-monitor process
             var process = monitorProcesses[screenName]
             if (!process) {
                 var newProcesses = Object.assign({}, monitorProcesses)
@@ -218,222 +217,103 @@ Singleton {
             }
 
             if (process) {
-                process.command = ["sh", "-c", `ls -1 "${wallpaperDir}"/*.jpg "${wallpaperDir}"/*.jpeg "${wallpaperDir}"/*.png "${wallpaperDir}"/*.bmp "${wallpaperDir}"/*.gif "${wallpaperDir}"/*.webp 2>/dev/null | sort`]
                 process.targetScreenName = screenName
                 process.currentWallpaper = currentWallpaper
                 process.goToPrevious = false
+                process.command = ["find", wallpaperDir, "-maxdepth", "1", "-type", "f", "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png", "-o", "-iname", "*.webp", "-o", "-iname", "*.gif", "-o", "-iname", "*.bmp", ")"]
                 process.running = true
             }
         } else {
-            // Use global process for fallback
-            cyclingProcess.command = ["sh", "-c", `ls -1 "${wallpaperDir}"/*.jpg "${wallpaperDir}"/*.jpeg "${wallpaperDir}"/*.png "${wallpaperDir}"/*.bmp "${wallpaperDir}"/*.gif "${wallpaperDir}"/*.webp 2>/dev/null | sort`]
-            cyclingProcess.targetScreenName = screenName || ""
-            cyclingProcess.currentWallpaper = currentWallpaper
-            cyclingProcess.running = true
-        }
-    }
-
-    function cycleToPrevWallpaper(screenName, wallpaperPath) {
-        const currentWallpaper = wallpaperPath || SessionData.wallpaperPath
-        if (!currentWallpaper) return
-
-        const wallpaperDir = currentWallpaper.substring(0, currentWallpaper.lastIndexOf('/'))
-
-        if (screenName && monitorProcessComponent && monitorProcessComponent.status === Component.Ready) {
-            // Use per-monitor process (same as next, but with prev flag)
-            var process = monitorProcesses[screenName]
-            if (!process) {
-                var newProcesses = Object.assign({}, monitorProcesses)
-                newProcesses[screenName] = monitorProcessComponent.createObject(root)
-                monitorProcesses = newProcesses
-                process = monitorProcesses[screenName]
-            }
-
-            if (process) {
-                process.command = ["sh", "-c", `ls -1 "${wallpaperDir}"/*.jpg "${wallpaperDir}"/*.jpeg "${wallpaperDir}"/*.png "${wallpaperDir}"/*.bmp "${wallpaperDir}"/*.gif "${wallpaperDir}"/*.webp 2>/dev/null | sort`]
-                process.targetScreenName = screenName
-                process.currentWallpaper = currentWallpaper
-                process.goToPrevious = true
-                process.running = true
-            }
-        } else {
-            // Use global process for fallback
-            prevCyclingProcess.command = ["sh", "-c", `ls -1 "${wallpaperDir}"/*.jpg "${wallpaperDir}"/*.jpeg "${wallpaperDir}"/*.png "${wallpaperDir}"/*.bmp "${wallpaperDir}"/*.gif "${wallpaperDir}"/*.webp 2>/dev/null | sort`]
-            prevCyclingProcess.targetScreenName = screenName || ""
-            prevCyclingProcess.currentWallpaper = currentWallpaper
-            prevCyclingProcess.running = true
+            cycleNextManually()
         }
     }
 
     function cycleNextManually() {
-        if (SessionData.wallpaperPath) {
-            cycleToNextWallpaper()
-            // Restart timers if cycling is active
-            if (cyclingActive && SessionData.wallpaperCyclingEnabled) {
-                if (SessionData.wallpaperCyclingMode === "interval") {
-                    intervalTimer.interval = cachedCyclingInterval * 1000
-                    intervalTimer.restart()
-                }
-            }
-        }
+        cycleToNextWallpaper(null, null)
     }
 
     function cyclePrevManually() {
-        if (SessionData.wallpaperPath) {
-            cycleToPrevWallpaper()
-            // Restart timers if cycling is active
-            if (cyclingActive && SessionData.wallpaperCyclingEnabled) {
-                if (SessionData.wallpaperCyclingMode === "interval") {
-                    intervalTimer.interval = cachedCyclingInterval * 1000
-                    intervalTimer.restart()
-                }
-            }
+        const currentWallpaper = SessionData.wallpaperPath
+        if (!currentWallpaper) return
+        const wallpaperDir = currentWallpaper.substring(0, currentWallpaper.lastIndexOf('/'))
+        const process = monitorProcessComponent.createObject(root)
+        if (process) {
+            process.targetScreenName = ""
+            process.currentWallpaper = currentWallpaper
+            process.goToPrevious = true
+            process.command = ["find", wallpaperDir, "-maxdepth", "1", "-type", "f", "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png", "-o", "-iname", "*.webp", "-o", "-iname", "*.gif", "-o", "-iname", "*.bmp", ")"]
+            process.running = true
         }
     }
 
     function cycleNextForMonitor(screenName) {
-        if (!screenName) return
-
-        var currentWallpaper = SessionData.getMonitorWallpaper(screenName)
-        if (currentWallpaper) {
-            cycleToNextWallpaper(screenName, currentWallpaper)
-        }
+        const wallpaper = SessionData.getMonitorWallpaper(screenName)
+        cycleToNextWallpaper(screenName, wallpaper)
     }
 
     function cyclePrevForMonitor(screenName) {
-        if (!screenName) return
-        
-        var currentWallpaper = SessionData.getMonitorWallpaper(screenName)
-        if (currentWallpaper) {
-            cycleToPrevWallpaper(screenName, currentWallpaper)
-        }
-    }
-
-    function checkTimeBasedCycling() {
-        const currentTime = Qt.formatTime(systemClock.date, "hh:mm")
-
-        if (!SessionData.perMonitorWallpaper) {
-            if (currentTime === cachedCyclingTime && currentTime !== lastTimeCheck) {
-                lastTimeCheck = currentTime
-                cycleToNextWallpaper()
-            } else if (currentTime !== cachedCyclingTime) {
-                lastTimeCheck = ""
+        const currentWallpaper = SessionData.getMonitorWallpaper(screenName)
+        if (!currentWallpaper) return
+        const wallpaperDir = currentWallpaper.substring(0, currentWallpaper.lastIndexOf('/'))
+        if (monitorProcessComponent && monitorProcessComponent.status === Component.Ready) {
+            var process = monitorProcesses[screenName]
+            if (!process) {
+                var newProcesses = Object.assign({}, monitorProcesses)
+                newProcesses[screenName] = monitorProcessComponent.createObject(root)
+                monitorProcesses = newProcesses
+                process = monitorProcesses[screenName]
             }
-        } else {
-            checkPerMonitorTimeBasedCycling(currentTime)
-        }
-    }
-
-    function checkPerMonitorTimeBasedCycling(currentTime) {
-        if (typeof Quickshell === "undefined") return
-
-        var screens = Quickshell.screens
-        for (var i = 0; i < screens.length; i++) {
-            var screenName = screens[i].name
-            var settings = SessionData.getMonitorCyclingSettings(screenName)
-            var wallpaper = SessionData.getMonitorWallpaper(screenName)
-
-            if (settings.enabled && settings.mode === "time" && wallpaper && !wallpaper.startsWith("#") && !wallpaper.startsWith("we:")) {
-                var lastCheck = monitorLastTimeChecks[screenName] || ""
-
-                if (currentTime === settings.time && currentTime !== lastCheck) {
-                    var newChecks = Object.assign({}, monitorLastTimeChecks)
-                    newChecks[screenName] = currentTime
-                    monitorLastTimeChecks = newChecks
-                    cycleNextForMonitor(screenName)
-                } else if (currentTime !== settings.time) {
-                    var newChecks = Object.assign({}, monitorLastTimeChecks)
-                    newChecks[screenName] = ""
-                    monitorLastTimeChecks = newChecks
-                }
+            if (process) {
+                process.targetScreenName = screenName
+                process.currentWallpaper = currentWallpaper
+                process.goToPrevious = true
+                process.command = ["find", wallpaperDir, "-maxdepth", "1", "-type", "f", "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png", "-o", "-iname", "*.webp", "-o", "-iname", "*.gif", "-o", "-iname", "*.bmp", ")"]
+                process.running = true
             }
         }
     }
 
     Timer {
         id: intervalTimer
-        interval: cachedCyclingInterval * 1000
         running: false
         repeat: true
-        onTriggered: cycleToNextWallpaper()
-    }
-
-    SystemClock {
-        id: systemClock
-        precision: SystemClock.Minutes
-        onDateChanged: {
-            if ((SessionData.wallpaperCyclingMode === "time" && cyclingActive) || SessionData.perMonitorWallpaper) {
-                checkTimeBasedCycling()
-            }
+        onTriggered: {
+            cycleNextManually()
         }
     }
 
-    Process {
-        id: cyclingProcess
-        
-        property string targetScreenName: ""
-        property string currentWallpaper: ""
-        
-        running: false
+    Timer {
+        id: timeCheckTimer
+        interval: 60000
+        running: cyclingActive && SessionData.wallpaperCyclingMode === "time"
+        repeat: true
+        onTriggered: {
+            checkTimeBasedCycling()
+        }
+    }
 
-        stdout: StdioCollector {
-            onStreamFinished: {
-                if (text && text.trim()) {
-                    const files = text.trim().split('\n').filter(file => file.length > 0)
-                    if (files.length <= 1) return
-
-                    const wallpaperList = files.sort()
-                    const currentPath = cyclingProcess.currentWallpaper
-                    let currentIndex = wallpaperList.findIndex(path => path === currentPath)
-                    if (currentIndex === -1) currentIndex = 0
-
-                    const nextIndex = (currentIndex + 1) % wallpaperList.length
-                    const nextWallpaper = wallpaperList[nextIndex]
-
-                    if (nextWallpaper && nextWallpaper !== currentPath) {
-                        if (cyclingProcess.targetScreenName) {
-                            SessionData.setMonitorWallpaper(cyclingProcess.targetScreenName, nextWallpaper)
-                        } else {
-                            SessionData.setWallpaper(nextWallpaper)
-                        }
+    function checkTimeBasedCycling() {
+        if (!SessionData.wallpaperCyclingEnabled || SessionData.wallpaperCyclingMode !== "time") return
+        const currentTime = Qt.formatDateTime(new Date(), "HH:mm")
+        if (currentTime === cachedCyclingTime && currentTime !== lastTimeCheck) {
+            cycleNextManually()
+            lastTimeCheck = currentTime
+        }
+        if (SessionData.perMonitorWallpaper) {
+            var screens = Quickshell.screens
+            for (var i = 0; i < screens.length; i++) {
+                var screenName = screens[i].name
+                var settings = SessionData.getMonitorCyclingSettings(screenName)
+                if (settings.enabled && settings.mode === "time") {
+                    var lastCheck = monitorLastTimeChecks[screenName] || ""
+                    if (currentTime === settings.time && currentTime !== lastCheck) {
+                        cycleNextForMonitor(screenName)
+                        var newChecks = Object.assign({}, monitorLastTimeChecks)
+                        newChecks[screenName] = currentTime
+                        monitorLastTimeChecks = newChecks
                     }
                 }
             }
         }
     }
-
-    Process {
-        id: prevCyclingProcess
-        
-        property string targetScreenName: ""
-        property string currentWallpaper: ""
-        
-        running: false
-
-        stdout: StdioCollector {
-            onStreamFinished: {
-                if (text && text.trim()) {
-                    const files = text.trim().split('\n').filter(file => file.length > 0)
-                    if (files.length <= 1) return
-
-                    const wallpaperList = files.sort()
-                    const currentPath = prevCyclingProcess.currentWallpaper
-                    let currentIndex = wallpaperList.findIndex(path => path === currentPath)
-                    if (currentIndex === -1) currentIndex = 0
-
-                    const prevIndex = currentIndex === 0 ? wallpaperList.length - 1 : currentIndex - 1
-                    const prevWallpaper = wallpaperList[prevIndex]
-
-                    if (prevWallpaper && prevWallpaper !== currentPath) {
-                        if (prevCyclingProcess.targetScreenName) {
-                            SessionData.setMonitorWallpaper(prevCyclingProcess.targetScreenName, prevWallpaper)
-                        } else {
-                            SessionData.setWallpaper(prevWallpaper)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
 }

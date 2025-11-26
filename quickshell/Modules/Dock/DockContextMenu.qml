@@ -21,7 +21,6 @@ PanelWindow {
     property bool workspaceOptionsVisible: false
 
     function showForButton(button, data, dockHeight) {
-        // If the menu is already open for the same button, close it
         if (showContextMenu && anchorItem === button) {
             close()
             return
@@ -50,50 +49,31 @@ PanelWindow {
     }
 
     function getToplevelObject() {
-        // console.log("=== getToplevelObject called ===")
-        // console.log("appData:", appData)
-        // console.log("appData type:", appData ? appData.type : "null")
         
         if (!appData || (appData.type !== "window" && appData.type !== "pinned")) {
-            // console.log("No valid appData or wrong type")
             return null
         }
         
-        // For pinned apps with running windows, get the first or focused window
         if (appData.type === "pinned" && appData.windows && appData.windows.length > 0) {
-            // console.log("Processing pinned app with", appData.windows.length, "windows")
-            // Try to find a focused window first
             for (var i = 0; i < appData.windows.length; i++) {
-                // console.log("Window", i, ":", appData.windows[i])
                 if (appData.windows[i].toplevel && appData.windows[i].toplevel.activated) {
-                    // console.log("Found focused window:", appData.windows[i].toplevel)
                     return appData.windows[i].toplevel
                 }
             }
-            // If no focused window, return the first one
-            // console.log("No focused window found, using first window:", appData.windows[0].toplevel)
             return appData.windows[0].toplevel
         }
         
-        // For regular windows
-        // console.log("Processing regular window")
         const sortedToplevels = CompositorService.sortedToplevels
-        // console.log("sortedToplevels:", sortedToplevels)
-        // console.log("appData.windowId:", appData.windowId)
         
         if (!sortedToplevels) {
-            // console.log("No sortedToplevels available")
             return null
         }
         if (appData.windowId !== undefined && appData.windowId !== null && appData.windowId >= 0) {
             if (appData.windowId < sortedToplevels.length) {
-                // console.log("Found toplevel at index", appData.windowId, ":", sortedToplevels[appData.windowId])
                 return sortedToplevels[appData.windowId]
             } else {
-                // console.log("windowId", appData.windowId, "out of range, sortedToplevels length:", sortedToplevels.length)
             }
         }
-        // console.log("No toplevel found")
         return null
     }
 
@@ -249,7 +229,6 @@ PanelWindow {
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
-            // Grouped apps and pinned apps with multiple windows section
             Repeater {
                 visible: root.appData && ((root.appData.type === "grouped" && root.appData.windows && root.appData.windows.length > 0) || 
                                          (root.appData.type === "pinned" && root.appData.isRunning && root.appData.windows && root.appData.windows.length > 1))
@@ -297,7 +276,6 @@ PanelWindow {
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
-            // New Window option
             Rectangle {
                 visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
                 width: parent.width
@@ -350,7 +328,6 @@ PanelWindow {
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
-            // Move to Workspace toggle option
             Rectangle {
                 visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
                 width: parent.width
@@ -383,7 +360,6 @@ PanelWindow {
                 }
             }
 
-            // Workspace options - shown when Move to Workspace is clicked
             Repeater {
                 visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned") && root.workspaceOptionsVisible
                 model: SettingsData.maxWorkspaces
@@ -414,70 +390,37 @@ PanelWindow {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            // console.log("=== WORKSPACE CLICKED ===")
-                            // console.log("Workspace clicked:", index + 1)
-                            // console.log("CompositorService.isHyprland:", CompositorService.isHyprland)
-                            // console.log("CompositorService.isNiri:", CompositorService.isNiri)
                             
                             if (root.appData) {
-                                // console.log("appData exists:", root.appData)
                                 const toplevel = root.getToplevelObject()
-                                // console.log("Toplevel found:", toplevel)
                                 
                                 if (toplevel) {
-                                    // Move window to workspace using Hyprland dispatch
                                     const workspaceId = index + 1
-                                    // console.log("Moving to workspace:", workspaceId)
-                                    // console.log("Toplevel properties:")
-                                    // console.log("- address:", toplevel.address)
-                                    // console.log("- id:", toplevel.id)
-                                    // console.log("- title:", toplevel.title)
-                                    // console.log("- appId:", toplevel.appId)
                                     
                                     if (CompositorService.isHyprland) {
-                                        // Use Hyprland dispatch to move window to workspace
-                                        // Get the Hyprland toplevel that corresponds to this Wayland toplevel
                                         const hyprlandToplevels = Array.from(Hyprland.toplevels?.values || [])
-                                        // console.log("Hyprland toplevels:", hyprlandToplevels.length)
                                         
                                         const hyprToplevel = hyprlandToplevels.find(ht => ht.wayland === toplevel)
-                                        // console.log("Found Hyprland toplevel:", hyprToplevel)
                                         
                                         if (hyprToplevel) {
                                             const windowAddress = hyprToplevel.address || hyprToplevel.id
-                                            // console.log("Hyprland window address:", windowAddress)
                                             
                                             if (windowAddress) {
-                                                // Format the address properly - add 0x prefix if it doesn't have one
                                                 const formattedAddress = windowAddress.toString().startsWith('0x') ? windowAddress : `0x${windowAddress}`
                                                 const command = `movetoworkspace ${workspaceId},address:${formattedAddress}`
-                                                // console.log("Sending Hyprland command:", command)
                                                 Hyprland.dispatch(command)
-                                                // console.log("Hyprland dispatch completed")
                                             } else {
-                                                // console.log("ERROR: No address found in Hyprland toplevel")
-                                                // console.log("Hyprland toplevel properties:", Object.keys(hyprToplevel))
                                             }
                                         } else {
-                                            // console.log("ERROR: Could not find corresponding Hyprland toplevel")
-                                            // console.log("Wayland toplevel:", toplevel)
-                                            // console.log("Available Hyprland toplevels:", hyprlandToplevels.map(ht => ({ wayland: ht.wayland, address: ht.address, id: ht.id })))
                                         }
                                     } else if (CompositorService.isNiri) {
-                                        // For Niri, use the workspace property
-                                        // console.log("Using Niri workspace assignment")
                                         toplevel.workspace = workspaceId
-                                        // console.log("Niri workspace set to:", workspaceId)
                                     } else {
-                                        // console.log("ERROR: Unknown compositor type")
                                     }
                                 } else {
-                                    // console.log("ERROR: No toplevel found for appData:", root.appData)
                                 }
                             } else {
-                                // console.log("ERROR: No appData found")
                             }
-                            // console.log("=== END WORKSPACE CLICK ===")
                             root.close()
                         }
                     }
@@ -491,7 +434,6 @@ PanelWindow {
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
-            // Minimize/Restore option for individual windows
             Rectangle {
                 visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
                 width: parent.width
@@ -527,7 +469,6 @@ PanelWindow {
                         if (root.appData) {
                             const toplevel = getToplevelObject()
                             if (toplevel) {
-                                // Minimize functionality removed
                             }
                         }
                         root.close()
@@ -539,19 +480,15 @@ PanelWindow {
                         return null
                     }
                     
-                    // For pinned apps with running windows, get the first or focused window
                     if (root.appData.type === "pinned" && root.appData.windows && root.appData.windows.length > 0) {
-                        // Try to find a focused window first
                         for (var i = 0; i < root.appData.windows.length; i++) {
                             if (root.appData.windows[i].toplevel && root.appData.windows[i].toplevel.activated) {
                                 return root.appData.windows[i].toplevel
                             }
                         }
-                        // If no focused window, return the first one
                         return root.appData.windows[0].toplevel
                     }
                     
-                    // For regular windows
                     const sortedToplevels = CompositorService.sortedToplevels
                     if (!sortedToplevels) {
                         return null
@@ -613,19 +550,15 @@ PanelWindow {
                             return null
                         }
                         
-                        // For pinned apps with running windows, get the first or focused window
                         if (root.appData.type === "pinned" && root.appData.windows && root.appData.windows.length > 0) {
-                            // Try to find a focused window first
                             for (var i = 0; i < root.appData.windows.length; i++) {
                                 if (root.appData.windows[i].toplevel && root.appData.windows[i].toplevel.activated) {
                                     return root.appData.windows[i].toplevel
                                 }
                             }
-                            // If no focused window, return the first one
                             return root.appData.windows[0].toplevel
                         }
                         
-                        // For regular windows
                         const sortedToplevels = CompositorService.sortedToplevels
                         if (!sortedToplevels) {
                             return null
@@ -640,7 +573,6 @@ PanelWindow {
                 }
             }
 
-            // Minimize all windows for grouped apps and pinned apps with multiple windows
             Rectangle {
                 visible: root.appData && ((root.appData.type === "grouped" && root.appData.windows && root.appData.windows.length > 1) ||
                                          (root.appData.type === "pinned" && root.appData.isRunning && root.appData.windows && root.appData.windows.length > 1))
@@ -672,7 +604,6 @@ PanelWindow {
                         if (root.appData && root.appData.windows) {
                             for (var i = 0; i < root.appData.windows.length; i++) {
                                 if (root.appData.windows[i].toplevel) {
-                                    // Minimize functionality removed
                                 }
                             }
                         }
@@ -681,7 +612,6 @@ PanelWindow {
                 }
             }
 
-            // Close all windows for grouped apps and pinned apps with multiple windows
             Rectangle {
                 visible: root.appData && ((root.appData.type === "grouped" && root.appData.windows && root.appData.windows.length > 1) ||
                                          (root.appData.type === "pinned" && root.appData.isRunning && root.appData.windows && root.appData.windows.length > 1))

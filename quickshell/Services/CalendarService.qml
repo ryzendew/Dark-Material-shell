@@ -39,7 +39,6 @@ Singleton {
         let today = new Date()
         let firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
         let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-        // Add padding
         let startDate = new Date(firstDay)
         startDate.setDate(startDate.getDate() - firstDay.getDay() - 7)
         let endDate = new Date(lastDay)
@@ -54,11 +53,9 @@ Singleton {
         if (eventsProcess.running) {
             return
         }
-        // Store last requested date range for refresh timer
         root.lastStartDate = startDate
         root.lastEndDate = endDate
         root.isLoading = true
-        // Format dates for khal using detected format
         let startDateStr = Qt.formatDate(startDate, root.khalDateFormat)
         let endDateStr = Qt.formatDate(endDate, root.khalDateFormat)
         eventsProcess.requestStartDate = startDate
@@ -77,12 +74,10 @@ Singleton {
         return events.length > 0
     }
 
-    // Initialize on component completion
     Component.onCompleted: {
         detectKhalDateFormat()
     }
 
-    // Process for detecting khal date format
     Process {
         id: khalFormatProcess
 
@@ -110,7 +105,6 @@ Singleton {
         }
     }
 
-    // Process for checking khal configuration
     Process {
         id: khalCheckProcess
 
@@ -124,7 +118,6 @@ Singleton {
         }
     }
 
-    // Process for loading events
     Process {
         id: eventsProcess
 
@@ -147,14 +140,11 @@ Singleton {
                     if (!line || line === "[]")
                     continue
 
-                    // Parse JSON line
                     let dayEvents = JSON.parse(line)
-                    // Process each event in this day's array
                     for (let event of dayEvents) {
                         if (!event.title)
                         continue
 
-                        // Parse start and end dates using detected format
                         let startDate, endDate
                         if (event['start-date']) {
                             startDate = Date.fromLocaleString(Qt.locale(), event['start-date'], root.khalDateFormat)
@@ -166,12 +156,10 @@ Singleton {
                         } else {
                             endDate = new Date(startDate)
                         }
-                        // Create start/end times
                         let startTime = new Date(startDate)
                         let endTime = new Date(endDate)
                         if (event['start-time']
                             && event['all-day'] !== "True") {
-                            // Parse time if available and not all-day
                             let timeStr = event['start-time']
                             if (timeStr) {
                                 let timeParts = timeStr.match(/(\d+):(\d+)/)
@@ -186,7 +174,6 @@ Singleton {
                                             parseInt(endTimeParts[1]),
                                             parseInt(endTimeParts[2]))
                                     } else {
-                                        // Default to 1 hour duration on same day
                                         endTime = new Date(startTime)
                                         endTime.setHours(
                                             startTime.getHours() + 1)
@@ -194,10 +181,8 @@ Singleton {
                                 }
                             }
                         }
-                        // Create unique ID for this event (to track multi-day events)
                         let eventId = event.title + "_" + event['start-date']
                         + "_" + (event['start-time'] || 'allday')
-                        // Create event object template
                         let eventTemplate = {
                             "id": eventId,
                             "title": event.title || "Untitled Event",
@@ -212,7 +197,6 @@ Singleton {
                             "isMultiDay": startDate.toDateString(
                                               ) !== endDate.toDateString()
                         }
-                        // Add event to each day it spans
                         let currentDate = new Date(startDate)
                         while (currentDate <= endDate) {
                             let dateKey = Qt.formatDate(currentDate,
@@ -220,44 +204,34 @@ Singleton {
                             if (!newEventsByDate[dateKey])
                             newEventsByDate[dateKey] = []
 
-                            // Check if this exact event is already added to this date (prevent duplicates)
                             let existingEvent = newEventsByDate[dateKey].find(
                                 e => {
                                     return e.id === eventId
                                 })
                             if (existingEvent) {
-                                // Move to next day without adding duplicate
                                 currentDate.setDate(currentDate.getDate() + 1)
                                 continue
                             }
-                            // Create a copy of the event for this date
                             let dayEvent = Object.assign({}, eventTemplate)
-                            // For multi-day events, adjust the display time for this specific day
                             if (currentDate.getTime() === startDate.getTime()) {
-                                // First day - use original start time
                                 dayEvent.start = new Date(startTime)
                             } else {
-                                // Subsequent days - start at beginning of day for all-day events
                                 dayEvent.start = new Date(currentDate)
                                 if (!dayEvent.allDay)
                                 dayEvent.start.setHours(0, 0, 0, 0)
                             }
                             if (currentDate.getTime() === endDate.getTime()) {
-                                // Last day - use original end time
                                 dayEvent.end = new Date(endTime)
                             } else {
-                                // Earlier days - end at end of day for all-day events
                                 dayEvent.end = new Date(currentDate)
                                 if (!dayEvent.allDay)
                                 dayEvent.end.setHours(23, 59, 59, 999)
                             }
                             newEventsByDate[dateKey].push(dayEvent)
-                            // Move to next day
                             currentDate.setDate(currentDate.getDate() + 1)
                         }
                     }
                 }
-                // Sort events by start time within each date
                 for (let dateKey in newEventsByDate) {
                     newEventsByDate[dateKey].sort((a, b) => {
                                                       return a.start.getTime(
@@ -270,7 +244,6 @@ Singleton {
                 root.lastError = "Failed to parse events JSON: " + error.toString()
                 root.eventsByDate = {}
             }
-            // Reset for next run
             eventsProcess.rawOutput = ""
         }
 

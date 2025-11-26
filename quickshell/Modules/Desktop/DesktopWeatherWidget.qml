@@ -13,7 +13,6 @@ PanelWindow {
     property var modelData: null
     property var screen: modelData
 
-    // Widget properties
     property real widgetWidth: SettingsData.desktopWeatherWidth || 600
     property real widgetHeight: SettingsData.desktopWeatherHeight || 300
     property real widgetOpacity: SettingsData.desktopWeatherOpacity
@@ -21,7 +20,6 @@ PanelWindow {
     property bool alwaysVisible: SettingsData.desktopWeatherEnabled
     property var positioningBox: null
 
-    // Dynamic scaling
     property real scaleFactor: Math.min(widgetWidth / 100, widgetHeight / 450)
     property real baseFontSize: SettingsData.desktopWeatherFontSize
     property real scaledFontSize: baseFontSize * scaleFactor
@@ -41,7 +39,6 @@ PanelWindow {
     implicitHeight: widgetHeight
     visible: alwaysVisible
 
-    // Position using anchors and margins like other desktop widgets
     anchors {
         left: position.includes("left") ? true : false
         right: position.includes("right") ? true : false
@@ -56,7 +53,6 @@ PanelWindow {
         bottom: position.includes("bottom") ? (SettingsData.dockExclusiveZone + SettingsData.dockBottomGap + 20) : 0
     }
 
-    // Main container
     Rectangle {
         anchors.fill: parent
         radius: Theme.cornerRadius
@@ -65,11 +61,10 @@ PanelWindow {
         border.width: 1
 
 
-        // No weather data state
         Column {
             anchors.centerIn: parent
             spacing: scaledSpacing * 2
-            visible: !WeatherService.weather.available || WeatherService.weather.temp === 0
+            visible: !WeatherService.weather.available
 
             DarkIcon {
                 name: "cloud_off"
@@ -86,14 +81,12 @@ PanelWindow {
             }
         }
 
-        // Weather data content
         Column {
             anchors.fill: parent
             anchors.margins: scaledPadding
             spacing: scaledSpacing
-            visible: WeatherService.weather.available && WeatherService.weather.temp !== 0
+            visible: WeatherService.weather.available
 
-            // Header with refresh button
             Item {
                 width: parent.width
                 height: 50 * scaleFactor
@@ -136,7 +129,6 @@ PanelWindow {
                     }
                 }
 
-                // Main weather info
                 Row {
                     anchors.left: parent.left
                     anchors.top: parent.top
@@ -194,7 +186,6 @@ PanelWindow {
                     }
                 }
 
-                // City name on the right side
                 StyledText {
                     text: WeatherService.weather.city || ""
                     font.pixelSize: scaledFontSize * SettingsData.desktopWeatherCitySize
@@ -207,14 +198,12 @@ PanelWindow {
                 }
             }
 
-            // Divider
             Rectangle {
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
             }
 
-            // Weather details grid
             GridLayout {
                 width: parent.width
                 height: 120 * scaleFactor
@@ -222,7 +211,6 @@ PanelWindow {
                 columnSpacing: scaledSpacing
                 rowSpacing: scaledSpacing
 
-                // Feels Like
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -265,7 +253,6 @@ PanelWindow {
                     }
                 }
 
-                // Humidity
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -308,7 +295,6 @@ PanelWindow {
                     }
                 }
 
-                // Wind
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -352,14 +338,12 @@ PanelWindow {
                 }
             }
 
-            // Divider
             Rectangle {
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
             }
 
-            // 7-Day Forecast
             Column {
                 width: parent.width
                 spacing: scaledSpacing
@@ -439,12 +423,10 @@ PanelWindow {
     }
 
     Component.onCompleted: {
-        // Initialize weather service
         WeatherService.addRef()
     }
     
     Component.onDestruction: {
-        // Clean up weather service reference
         WeatherService.removeRef()
     }
 }

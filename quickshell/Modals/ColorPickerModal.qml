@@ -20,7 +20,6 @@ Item {
     function copyColorToClipboard(colorValue) {
         Quickshell.execDetached(["sh", "-c", `echo "${colorValue}" | wl-copy`])
         ToastService.showInfo(`Color ${colorValue} copied to clipboard`)
-        // console.log("Copied color to clipboard:", colorValue)
     }
 
     ColorDialog {

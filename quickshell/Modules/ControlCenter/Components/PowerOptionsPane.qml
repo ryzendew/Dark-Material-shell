@@ -29,7 +29,6 @@ Item {
         opacity: root.expanded ? 1 : 0
         clip: true
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0

@@ -24,7 +24,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position based on settings
     property var positionAnchors: {
         switch(position) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -50,10 +49,6 @@ PanelWindow {
     }
 
     Component.onCompleted: {
-        // console.log("DesktopCpuTempNew: Component.onCompleted");
-        // console.log("DesktopCpuTempNew: position =", position);
-        // console.log("DesktopCpuTempNew: positionAnchors =", positionAnchors);
-        // console.log("DesktopCpuTempNew: WlrLayershell.anchors =", WlrLayershell.anchors);
         DgopService.addRef(["cpu"]);
     }
     
@@ -69,7 +64,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -98,7 +92,6 @@ PanelWindow {
                 }
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -140,7 +133,6 @@ PanelWindow {
                         return Theme.surfaceText;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -154,24 +146,20 @@ PanelWindow {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             onPressed: {
                 if (alwaysVisible) {
-                    // Widget is always visible, no need to show/hide
                 }
             }
         }
     }
 
-    // Auto-refresh when temperature changes
     Connections {
         target: DgopService
         function onCpuTemperatureChanged() {
-            // Widget is always visible, no need to show/hide
         }
     }
 }

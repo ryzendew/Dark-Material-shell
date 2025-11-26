@@ -15,7 +15,6 @@ Item {
     width: 220
     height: 180
     
-    // Background
     Rectangle {
         anchors.fill: parent
         radius: Theme.cornerRadius
@@ -23,7 +22,6 @@ Item {
         border.width: 1
         border.color: Theme.outline
         
-        // Shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -35,7 +33,6 @@ Item {
         }
     }
     
-    // Preview content
     Rectangle {
         id: previewContent
         anchors.fill: parent
@@ -43,7 +40,6 @@ Item {
         radius: Theme.cornerRadius - 2
         color: Theme.surface
         
-        // Window preview placeholder
         Rectangle {
             id: windowPreview
             anchors.fill: parent
@@ -51,7 +47,6 @@ Item {
             color: Theme.surfaceVariant
             radius: parent.radius
             
-            // App icon
             Image {
                 id: appIcon
                 anchors.centerIn: parent
@@ -70,7 +65,6 @@ Item {
                 visible: status === Image.Ready
             }
             
-            // Fallback icon
             DarkIcon {
                 anchors.centerIn: parent
                 size: 64
@@ -79,7 +73,6 @@ Item {
                 visible: appIcon.status !== Image.Ready
             }
             
-            // Minimized indicator
             Rectangle {
                 anchors.top: parent.top
                 anchors.right: parent.right
@@ -98,7 +91,6 @@ Item {
             }
         }
         
-        // Window title and controls
         Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
@@ -112,7 +104,6 @@ Item {
                 anchors.margins: 8
                 spacing: 8
                 
-                // Window title
                 StyledText {
                     width: parent.width - restoreButton.width - closeButton.width - parent.spacing * 2
                     text: root.minimizedWindow ? root.minimizedWindow.title : ""
@@ -122,7 +113,6 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                 }
                 
-                // Restore button
                 Rectangle {
                     id: restoreButton
                     width: 20
@@ -142,7 +132,6 @@ Item {
                         
                         onClicked: {
                             if (root.minimizedWindow && root.minimizedWindow.toplevel) {
-                                // Minimize functionality removed
                             }
                         }
                     }
@@ -155,7 +144,6 @@ Item {
                     }
                 }
                 
-                // Close button
                 Rectangle {
                     id: closeButton
                     width: 20
@@ -176,7 +164,6 @@ Item {
                         onClicked: {
                             if (root.minimizedWindow && root.minimizedWindow.toplevel) {
                                 root.minimizedWindow.toplevel.close()
-                                // Minimize functionality removed
                             }
                         }
                     }
@@ -192,7 +179,6 @@ Item {
         }
     }
     
-    // Animation
     scale: isVisible ? 1.0 : 0.8
     opacity: isVisible ? 1.0 : 0.0
     

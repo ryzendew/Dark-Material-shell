@@ -1,5 +1,3 @@
-// Stock theme definitions for DarkMaterialShell
-// Separated from Theme.qml to keep that file clean
 
 const CatppuccinMocha = {
     surface: "#45475a",

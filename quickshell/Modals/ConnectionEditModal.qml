@@ -15,7 +15,6 @@ DarkModal {
     property string connectionUuid: ""
     property string connectionType: "" // wifi, ethernet, vpn, etc.
     
-    // Connection settings
     property string currentIpv4Method: "auto"
     property string currentIpv4Address: ""
     property string currentIpv4Gateway: ""
@@ -63,7 +62,6 @@ DarkModal {
                 anchors.margins: Theme.spacingL
                 spacing: Theme.spacingM
 
-                // Header
                 Row {
                     width: parent.width
                     spacing: Theme.spacingM
@@ -112,7 +110,6 @@ DarkModal {
                     color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                 }
 
-                // Content
                 DarkFlickable {
                     width: parent.width
                     height: parent.height - 120
@@ -125,7 +122,6 @@ DarkModal {
                         width: parent.width
                         spacing: Theme.spacingL
 
-                        // Loading indicator
                         Rectangle {
                             width: parent.width
                             height: 200
@@ -166,13 +162,11 @@ DarkModal {
                             }
                         }
 
-                        // Settings sections (hidden while loading)
                         Column {
                             width: parent.width
                             spacing: Theme.spacingL
                             visible: !loading
 
-                            // IPv4 Configuration
                             StyledRect {
                                 width: parent.width
                                 height: ipv4Column.implicitHeight + Theme.spacingL * 2
@@ -194,7 +188,6 @@ DarkModal {
                                         color: Theme.surfaceText
                                     }
 
-                                    // IPv4 Method
                                     Row {
                                         width: parent.width
                                         spacing: Theme.spacingM
@@ -254,7 +247,6 @@ DarkModal {
                                         }
                                     }
 
-                                    // Static IP Settings
                                     Column {
                                         width: parent.width
                                         spacing: Theme.spacingS
@@ -333,7 +325,6 @@ DarkModal {
                                 }
                             }
 
-                            // IPv6 Configuration
                             StyledRect {
                                 width: parent.width
                                 height: ipv6Column.implicitHeight + Theme.spacingL * 2
@@ -355,7 +346,6 @@ DarkModal {
                                         color: Theme.surfaceText
                                     }
 
-                                    // IPv6 Method
                                     Row {
                                         width: parent.width
                                         spacing: Theme.spacingM
@@ -415,7 +405,6 @@ DarkModal {
                                         }
                                     }
 
-                                    // Static IPv6 Settings
                                     Column {
                                         width: parent.width
                                         spacing: Theme.spacingS
@@ -494,7 +483,6 @@ DarkModal {
                                 }
                             }
 
-                            // DNS Configuration
                             StyledRect {
                                 width: parent.width
                                 height: dnsEditColumn.implicitHeight + Theme.spacingL * 2
@@ -588,7 +576,6 @@ DarkModal {
                                 }
                             }
 
-                            // Advanced Settings
                             StyledRect {
                                 width: parent.width
                                 height: advancedEditColumn.implicitHeight + Theme.spacingL * 2
@@ -686,7 +673,6 @@ DarkModal {
                     }
                 }
 
-                // Footer buttons
                 Row {
                     width: parent.width
                     spacing: Theme.spacingM
@@ -746,7 +732,6 @@ DarkModal {
         }
     }
 
-    // Load connection settings
     function loadConnectionSettings() {
         const connId = connectionUuid || connectionName
         if (!connId) {
@@ -754,7 +739,6 @@ DarkModal {
             return
         }
 
-        // Use -g all to get all properties, or use show without -g to get key:value format
         const cmd = connectionUuid ? ["nmcli", "connection", "show", "uuid", connId] : 
                                       ["nmcli", "connection", "show", "id", connId]
         
@@ -773,7 +757,6 @@ DarkModal {
                 const settings = {}
                 
                 lines.forEach(line => {
-                    // Handle both "KEY: value" and "KEY = value" formats
                     let parts
                     if (line.includes(':')) {
                         parts = line.split(':')
@@ -790,23 +773,19 @@ DarkModal {
                     }
                 })
 
-                // Parse IPv4 settings
                 root.currentIpv4Method = settings["ipv4.method"] || settings["IP4.ADDRESS[1]"] ? "manual" : "auto"
                 root.currentIpv4Address = settings["ipv4.addresses"] || settings["IP4.ADDRESS[1]"] || ""
                 root.currentIpv4Gateway = settings["ipv4.gateway"] || settings["IP4.GATEWAY"] || ""
 
-                // Parse IPv6 settings
                 root.currentIpv6Method = settings["ipv6.method"] || settings["IP6.ADDRESS[1]"] ? "manual" : "auto"
                 root.currentIpv6Address = settings["ipv6.addresses"] || settings["IP6.ADDRESS[1]"] || ""
                 root.currentIpv6Gateway = settings["ipv6.gateway"] || settings["IP6.GATEWAY"] || ""
 
-                // Parse DNS settings
                 const dnsValue = settings["ipv4.dns"] || settings["IP4.DNS[1]"] || ""
                 const dnsServers = dnsValue.split(/\s+/).filter(s => s)
                 root.currentDnsPrimary = dnsServers[0] || ""
                 root.currentDnsSecondary = dnsServers[1] || ""
 
-                // Parse advanced settings
                 root.currentMtu = settings["802-3-ethernet.mtu"] || settings["802-11-wireless.mtu"] || settings["GENERAL.MTU"] || ""
                 root.currentMacAddress = settings["802-3-ethernet.cloned-mac-address"] || settings["802-11-wireless.cloned-mac-address"] || ""
 
@@ -822,7 +801,6 @@ DarkModal {
         }
     }
 
-    // Save connection settings
     function saveConnectionSettings() {
         const connId = connectionUuid || connectionName
         if (!connId) {
@@ -832,7 +810,6 @@ DarkModal {
 
         let cmd = ["nmcli", "connection", "modify", connId]
 
-        // IPv4 settings
         cmd.push("ipv4.method", root.currentIpv4Method)
         if (root.currentIpv4Method === "manual") {
             if (editIpv4Address.text.trim()) {
@@ -843,7 +820,6 @@ DarkModal {
             }
         }
 
-        // IPv6 settings
         cmd.push("ipv6.method", root.currentIpv6Method)
         if (root.currentIpv6Method === "manual") {
             if (editIpv6Address.text.trim()) {
@@ -854,7 +830,6 @@ DarkModal {
             }
         }
 
-        // DNS settings
         const dnsServers = []
         if (editDnsPrimary.text.trim()) {
             dnsServers.push(editDnsPrimary.text.trim())
@@ -864,7 +839,6 @@ DarkModal {
         }
         cmd.push("ipv4.dns", dnsServers.join(" ") || "")
 
-        // Advanced settings
         if (editMtu.text.trim()) {
             cmd.push("802-3-ethernet.mtu", editMtu.text.trim())
         }
@@ -885,7 +859,6 @@ DarkModal {
             if (exitCode === 0) {
                 ToastService.showInfo("Connection settings saved")
                 close()
-                // Refresh network state
                 if (NetworkService) {
                     NetworkService.refreshNetworkState()
                 }

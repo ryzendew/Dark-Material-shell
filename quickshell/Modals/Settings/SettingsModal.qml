@@ -20,7 +20,6 @@ DarkModal {
 
     function show() {
         open();
-        // Trigger settings initialization when modal opens
         Qt.callLater(function() {
             if (settingsContent && settingsContent.forceInitialize) {
                 settingsContent.forceInitialize()
@@ -72,14 +71,10 @@ DarkModal {
 
     IpcHandler {
         function browse(type: string) {
-            // console.log("SettingsModal: IPC browse called with type:", type)
             if (type === "wallpaper") {
-                // console.log("SettingsModal: Opening wallpaper browser...")
                 wallpaperBrowser.allowStacking = false;
                 wallpaperBrowser.open();
-                // console.log("SettingsModal: Wallpaper browser open() called")
             } else if (type === "profile") {
-                // console.log("SettingsModal: Opening profile browser...")
                 profileBrowser.allowStacking = false;
                 profileBrowser.open();
             }
@@ -121,17 +116,14 @@ DarkModal {
         fileExtensions: ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.gif", "*.webp"]
         
         onOpened: {
-            // console.log("SettingsModal: Wallpaper browser opened successfully")
         }
         
         onFileSelected: (path) => {
-            // console.log("SettingsModal: Wallpaper selected:", path)
             SessionData.setWallpaper(path);
             close();
         }
         
         onDialogClosed: () => {
-            // console.log("SettingsModal: Wallpaper browser closed")
             allowStacking = true;
         }
     }

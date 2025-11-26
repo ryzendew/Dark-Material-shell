@@ -4,42 +4,39 @@ pragma Singleton
 Singleton {
     id: root
 
-    // Clear all image cache
     function clearImageCache() {
-        Quickshell.execDetached(["rm", "-rf", Paths.stringify(
-                                     Paths.imagecache)])
+        const cachePath = Paths.stringify(Paths.imagecache)
+        Quickshell.execDetached(["rm", "-rf", cachePath])
         Paths.mkdir(Paths.imagecache)
     }
 
-    // Clear cache older than specified minutes
     function clearOldCache(ageInMinutes) {
-        Quickshell.execDetached(
-                    ["find", Paths.stringify(
-                         Paths.imagecache), "-name", "*.png", "-mmin", `+${ageInMinutes}`, "-delete"])
+        const cachePath = Paths.stringify(Paths.imagecache)
+        Quickshell.execDetached(["find", cachePath, "-name", "*.png", "-mmin", `+${ageInMinutes}`, "-delete"])
     }
 
-    // Clear cache for specific size
     function clearCacheForSize(size) {
-        Quickshell.execDetached(
-                    ["find", Paths.stringify(
-                         Paths.imagecache), "-name", `*@${size}x${size}.png`, "-delete"])
+        const cachePath = Paths.stringify(Paths.imagecache)
+        const pattern = `*@${size}x${size}.png`
+        Quickshell.execDetached(["find", cachePath, "-name", pattern, "-delete"])
     }
 
-    // Get cache size in MB
     function getCacheSize(callback) {
-        var process = Qt.createQmlObject(`
-                                         import Quickshell.Io
-                                         Process {
-                                         command: ["du", "-sm", "${Paths.stringify(
-                                             Paths.imagecache)}"]
-                                         running: true
-                                         stdout: StdioCollector {
-                                         onStreamFinished: {
-                                         var sizeMB = parseInt(text.split("\\t")[0]) || 0
-                                         callback(sizeMB)
-                                         }
-                                         }
-                                         }
-                                         `, root)
+        const cachePath = Paths.stringify(Paths.imagecache)
+        const processCode = `
+            import Quickshell.Io
+            Process {
+                command: ["du", "-sm", "${cachePath}"]
+                running: true
+                stdout: StdioCollector {
+                    onStreamFinished: {
+                        const parts = text.split("\\t")
+                        const sizeMB = parseInt(parts[0]) || 0
+                        callback(sizeMB)
+                    }
+                }
+            }
+        `
+        Qt.createQmlObject(processCode, root)
     }
 }

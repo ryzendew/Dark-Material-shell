@@ -44,7 +44,6 @@ Rectangle {
             color: Theme.surfaceText
             anchors.verticalCenter: parent.verticalCenter
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -63,7 +62,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: !SettingsData.clockCompactMode
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -88,7 +86,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: !SettingsData.clockCompactMode
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

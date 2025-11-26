@@ -29,12 +29,10 @@ Item {
         const movedApp = currentPinned.splice(fromIndex, 1)[0]
         currentPinned.splice(toIndex, 0, movedApp)
 
-        // Update with animation - the ListView will handle the move animation
         SessionData.setPinnedApps(currentPinned)
     }
 
     function updateAllDropTargets() {
-        // Find the dragging button
         var draggingButton = null
         var draggingIndex = -1
         for (var i = 0; i < listView.count; i++) {
@@ -47,13 +45,10 @@ Item {
         }
         
         if (!draggingButton) {
-            // console.log("No dragging button found")
             return
         }
         
-        // console.log("Dragging button found, targetIndex:", draggingButton.targetIndex, "originalIndex:", draggingButton.originalIndex)
         
-        // Clear all drop targets first
         for (var i = 0; i < listView.count; i++) {
             var item = listView.itemAtIndex(i)
             if (item) {
@@ -61,23 +56,17 @@ Item {
             }
         }
         
-        // Set drop target based on dragging button's target index
         var targetIndex = draggingButton.targetIndex
         var originalIndex = draggingButton.originalIndex
         
-        // console.log("Target index:", targetIndex, "original index:", originalIndex)
         
         if (targetIndex >= 0 && targetIndex < listView.count && targetIndex !== originalIndex) {
-            // Show green glow on the icon that will be replaced
             var targetItem = listView.itemAtIndex(targetIndex)
             if (targetItem) {
                 targetItem.isDropTarget = true
-                // console.log("Set drop target at index:", targetIndex)
             } else {
-                // console.log("No target item found at index:", targetIndex)
             }
         } else {
-            // console.log("Invalid target index or same as original:", targetIndex)
         }
     }
     
@@ -99,7 +88,6 @@ Item {
         width: contentWidth
         interactive: false
         
-        // Add move transition for smooth animations
         move: Transition {
             NumberAnimation {
                 properties: "x,y"
@@ -121,6 +109,35 @@ Item {
 
                 Component.onCompleted: updateModel()
 
+                function normalizeAppId(appId) {
+                    if (!appId) return ""
+                    var normalized = appId.toString()
+                    if (normalized.endsWith(".desktop")) {
+                        normalized = normalized.substring(0, normalized.length - 8)
+                    }
+                    return normalized.toLowerCase()
+                }
+                
+                function isPinnedApp(appId, pinnedApps) {
+                    if (!appId || !pinnedApps || pinnedApps.length === 0) return false
+                    const normalizedAppId = normalizeAppId(appId)
+                    for (var i = 0; i < pinnedApps.length; i++) {
+                        const normalizedPinned = normalizeAppId(pinnedApps[i])
+                        if (normalizedAppId === normalizedPinned) return true
+                    }
+                    return false
+                }
+                
+                function findMatchingPinnedAppId(appId, pinnedApps) {
+                    if (!appId || !pinnedApps || pinnedApps.length === 0) return null
+                    const normalizedAppId = normalizeAppId(appId)
+                    for (var i = 0; i < pinnedApps.length; i++) {
+                        const normalizedPinned = normalizeAppId(pinnedApps[i])
+                        if (normalizedAppId === normalizedPinned) return pinnedApps[i]
+                    }
+                    return null
+                }
+
                 function updateModel() {
                     clear()
 
@@ -129,17 +146,29 @@ Item {
                     const sortedToplevels = CompositorService.sortedToplevels
 
                     if (SettingsData.dockGroupApps) {
-                        // Grouping enabled - handle pinned apps with running windows
                         const groupedApps = {}
                         const unpinnedRunningApps = new Set()
+                        const appIdToPinnedId = {}
                         
-                        // First, collect all running windows by appId
                         sortedToplevels.forEach((toplevel, index) => {
                             const appId = toplevel.appId || "unknown"
-                            if (!groupedApps[appId]) {
-                                groupedApps[appId] = {
-                                    isPinned: pinnedApps.includes(appId),
-                                    windows: []
+                            const matchingPinnedId = findMatchingPinnedAppId(appId, pinnedApps)
+                            const effectiveAppId = matchingPinnedId || normalizeAppId(appId)
+                            
+                            if (!groupedApps[effectiveAppId]) {
+                                groupedApps[effectiveAppId] = {
+                                    isPinned: !!matchingPinnedId,
+                                    windows: [],
+                                    actualAppId: appId, // Store the actual appId from toplevel
+                                    pinnedAppId: matchingPinnedId // Store the pinned appId for reference
+                                }
+                                if (matchingPinnedId) {
+                                    appIdToPinnedId[effectiveAppId] = matchingPinnedId
+                                }
+                            } else {
+                                if (matchingPinnedId && !groupedApps[effectiveAppId].pinnedAppId) {
+                                    groupedApps[effectiveAppId].pinnedAppId = matchingPinnedId
+                                    groupedApps[effectiveAppId].isPinned = true
                                 }
                             }
                             
@@ -147,7 +176,7 @@ Item {
                             const truncatedTitle = title.length > 50 ? title.substring(0, 47) + "..." : title
                             const uniqueId = toplevel.title + "|" + (toplevel.appId || "") + "|" + index
                             
-                            groupedApps[appId].windows.push({
+                            groupedApps[effectiveAppId].windows.push({
                                 toplevel: toplevel,
                                 title: title,
                                 truncatedTitle: truncatedTitle,
@@ -155,19 +184,45 @@ Item {
                                 index: index
                             })
                             
-                            if (!pinnedApps.includes(appId)) {
-                                unpinnedRunningApps.add(appId)
+                            if (!matchingPinnedId) {
+                                unpinnedRunningApps.add(effectiveAppId)
                             }
                         })
                         
-                        // Add pinned apps (with or without running windows)
-                        pinnedApps.forEach(appId => {
-                            const app = groupedApps[appId]
+                        const pinnedAppMap = {}
+                        pinnedApps.forEach(pinnedAppId => {
+                            let matchedApp = null
+                            let matchedKey = null
+                            for (const key in groupedApps) {
+                                const app = groupedApps[key]
+                                if (findMatchingPinnedAppId(key, [pinnedAppId])) {
+                                    matchedApp = app
+                                    matchedKey = key
+                                    break
+                                }
+                            }
+                            
+                            if (!matchedApp) {
+                                for (const key in groupedApps) {
+                                    const app = groupedApps[key]
+                                    for (var i = 0; i < app.windows.length; i++) {
+                                        const windowAppId = app.windows[i].toplevel.appId || "unknown"
+                                        if (findMatchingPinnedAppId(windowAppId, [pinnedAppId])) {
+                                            matchedApp = app
+                                            matchedKey = key
+                                            break
+                                        }
+                                    }
+                                    if (matchedApp) break
+                                }
+                            }
+                            
+                            const app = matchedApp
                             const isGrouped = app && app.windows.length > 1
                             
                             items.push({
                                 "type": isGrouped ? "grouped" : (app && app.windows && app.windows.length > 0 ? "window" : "pinned"),
-                                "appId": appId || "",
+                                "appId": pinnedAppId || "",
                                 "windowId": isGrouped ? -1 : (app && app.windows && app.windows.length > 0 ? app.windows[0].index : -1),
                                 "windowTitle": isGrouped ? "" : (app && app.windows && app.windows.length > 0 ? app.windows[0].truncatedTitle : ""),
                                 "workspaceId": -1,
@@ -177,11 +232,14 @@ Item {
                                 "isGrouped": !!isGrouped,
                                 "windowCount": app && app.windows ? app.windows.length : 0,
                                 "windows": app && app.windows ? app.windows : [],
-                                "uniqueId": isGrouped ? appId + "_group" : (app && app.windows && app.windows.length > 0 ? app.windows[0].uniqueId : appId + "_pinned")
+                                "uniqueId": isGrouped ? pinnedAppId + "_group" : (app && app.windows && app.windows.length > 0 ? app.windows[0].uniqueId : pinnedAppId + "_pinned")
                             })
+                            
+                            if (matchedKey) {
+                                pinnedAppMap[matchedKey] = true
+                            }
                         })
                         
-                        // Add separator if we have both pinned and unpinned apps
                         if (pinnedApps.length > 0 && unpinnedRunningApps.size > 0) {
                             items.push({
                                 "type": "separator",
@@ -199,14 +257,17 @@ Item {
                             })
                         }
                         
-                        // Add unpinned running apps
                         unpinnedRunningApps.forEach(appId => {
+                            if (pinnedAppMap[appId]) return
+                            
                             const app = groupedApps[appId]
+                            if (!app) return
+                            
                             const isGrouped = app.windows.length > 1
                             
                             items.push({
                                 "type": isGrouped ? "grouped" : "window",
-                                "appId": appId || "",
+                                "appId": app.actualAppId || appId || "",
                                 "windowId": isGrouped ? -1 : (app.windows && app.windows[0] ? app.windows[0].index : -1),
                                 "windowTitle": isGrouped ? "" : (app.windows && app.windows[0] ? app.windows[0].truncatedTitle : ""),
                                 "workspaceId": -1,
@@ -216,13 +277,12 @@ Item {
                                 "isGrouped": !!isGrouped,
                                 "windowCount": app.windows ? app.windows.length : 0,
                                 "windows": app.windows || [],
-                                "uniqueId": isGrouped ? appId + "_group" : (app.windows && app.windows[0] ? app.windows[0].uniqueId : appId + "_window")
+                                "uniqueId": isGrouped ? (app.actualAppId || appId) + "_group" : (app.windows && app.windows[0] ? app.windows[0].uniqueId : (app.actualAppId || appId) + "_window")
                             })
                         })
                         
                         root.pinnedAppCount = pinnedApps.length
                     } else {
-                        // Original behavior - no grouping
                         pinnedApps.forEach(appId => {
                             items.push({
                                 "type": "pinned",
@@ -295,7 +355,6 @@ Item {
                 width: model.type === "separator" ? 16 : SettingsData.dockIconSize
                 height: SettingsData.dockIconSize
 
-                // Drop target indicator - shows green glow on the icon being replaced
                 Rectangle {
                     anchors.fill: parent
                     radius: Theme.cornerRadius
@@ -305,7 +364,6 @@ Item {
                     visible: isDropTarget
                     z: 5
                     
-                    // Glow effect
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: -3
@@ -315,7 +373,6 @@ Item {
                         border.color: Qt.rgba(0, 1, 0, 0.6)
                     }
                     
-                    // Pulsing animation
                     SequentialAnimation on opacity {
                         running: isDropTarget
                         loops: Animation.Infinite
@@ -323,7 +380,6 @@ Item {
                         NumberAnimation { to: 1.0; duration: 500; easing.type: Easing.InOutQuad }
                     }
                     
-                    // Scale animation
                     scale: isDropTarget ? 1.05 : 1.0
                     Behavior on scale {
                         NumberAnimation {
@@ -355,12 +411,10 @@ Item {
                     dockApps: root
                     index: model.index
 
-                    // Override tooltip for windows to show window title
                     showWindowTitle: model.type === "window"
                     windowTitle: model.windowTitle || ""
                 }
                 
-                // Update drop target based on any button's dragging state
                 Connections {
                     target: button
                     function onDraggingChanged() {

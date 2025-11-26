@@ -3,13 +3,11 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Common
 
-// Invisible positioning boxes for desktop widgets
 Item {
     id: root
     
     property var screen: null
     
-    // 9 invisible positioning boxes for all positions
     Item {
         id: topLeft
         anchors.left: parent.left
@@ -91,7 +89,6 @@ Item {
         visible: false
     }
     
-    // Function to get positioning box by name
     function getPositionBox(position) {
         switch(position) {
             case "top-left": return topLeft

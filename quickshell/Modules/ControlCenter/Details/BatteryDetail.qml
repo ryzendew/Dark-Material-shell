@@ -14,7 +14,6 @@ Rectangle {
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
     border.width: 1
     
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -168,7 +167,6 @@ Rectangle {
                     }
                 }
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -209,7 +207,6 @@ Rectangle {
                     }
                 }
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -248,7 +245,6 @@ Rectangle {
             border.width: 1
             visible: (typeof PowerProfiles !== "undefined") && PowerProfiles.degradationReason !== PerformanceDegradationReason.None
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

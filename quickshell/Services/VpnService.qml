@@ -5,36 +5,26 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Minimal VPN controller backed by NetworkManager (nmcli + D-Bus monitor)
 Singleton {
     id: root
 
-    // State
     property bool available: true
     property bool isBusy: false
     property string errorMessage: ""
 
-    // Profiles discovered on the system
-    // [{ name, uuid, type }]
     property var profiles: []
 
-    // Allow multiple active VPNs (set true to allow concurrent connections)
-    // Default: allow multiple, to align with NetworkManager capability
     property bool singleActive: false
 
-    // Active VPN connections (may be multiple)
-    // Full list and convenience projections
     property var activeConnections: [] // [{ name, uuid, device, state }]
     property var activeUuids: []
     property var activeNames: []
-    // Back-compat single values (first active if present)
     property string activeUuid: activeUuids.length > 0 ? activeUuids[0] : ""
     property string activeName: activeNames.length > 0 ? activeNames[0] : ""
     property string activeDevice: activeConnections.length > 0 ? (activeConnections[0].device || "") : ""
     property string activeState: activeConnections.length > 0 ? (activeConnections[0].state || "") : ""
     property bool connected: activeUuids.length > 0
 
-    // Use implicit property notify signals (profilesChanged, activeUuidChanged, etc.)
 
     Component.onCompleted: initialize()
 
@@ -43,7 +33,6 @@ Singleton {
     }
 
     function initialize() {
-        // Start monitoring NetworkManager for changes
         nmMonitor.running = true
         refreshAll()
     }
@@ -53,7 +42,6 @@ Singleton {
         refreshActive()
     }
 
-    // Monitor NetworkManager changes and refresh on activity
     Process {
         id: nmMonitor
         command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.NetworkManager"]
@@ -69,7 +57,6 @@ Singleton {
         }
     }
 
-    // Query all VPN profiles
     function listProfiles() {
         getProfiles.running = true
     }
@@ -94,7 +81,6 @@ Singleton {
         }
     }
 
-    // Query active VPN connection
     function refreshActive() {
         getActive.running = true
     }
@@ -125,7 +111,6 @@ Singleton {
     }
 
     function _looksLikeUuid(s) {
-        // Very loose check for UUID pattern
         return s && s.indexOf('-') !== -1 && s.length >= 8
     }
 
@@ -134,7 +119,6 @@ Singleton {
         root.isBusy = true
         root.errorMessage = ""
         if (root.singleActive) {
-            // Bring down all active VPNs, then bring up the requested one
             const isUuid = _looksLikeUuid(uuidOrName)
             const escaped = ('' + uuidOrName).replace(/'/g, "'\\''")
             const upCmd = isUuid ? `nmcli connection up uuid '${escaped}'` : `nmcli connection up id '${escaped}'`
@@ -224,7 +208,6 @@ Singleton {
         vpnSwitch.running = true
     }
 
-    // Sequenced down/up using a single shell for exclusive switch
     Process {
         id: vpnSwitch
         running: false

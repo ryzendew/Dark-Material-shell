@@ -16,7 +16,6 @@ Item {
         KeyboardService.refreshStatus()
         KeyboardService.listLayouts()
         KeyboardService.listLocales()
-        // Initialize filtered lists
         filteredLayouts = KeyboardService.availableLayouts
         filteredLocales = KeyboardService.availableLocales
     }
@@ -30,10 +29,8 @@ Item {
             updateFilteredLocales()
         }
         function onCurrentLayoutChanged() {
-            // Update UI when layout changes
         }
         function onCurrentLocaleChanged() {
-            // Update UI when locale changes
         }
     }
 
@@ -72,7 +69,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Current Keyboard Layout Section
             StyledRect {
                 width: parent.width
                 height: currentLayoutSection.implicitHeight + Theme.spacingL * 2
@@ -123,7 +119,6 @@ Item {
                 }
             }
 
-            // Keyboard Layout Selection Section
             StyledRect {
                 width: parent.width
                 height: layoutSection.implicitHeight + Theme.spacingL * 2
@@ -191,7 +186,6 @@ Item {
                         onValueChanged: value => {
                             if (value && value.length > 0) {
                                 KeyboardService.setLayout(value, KeyboardService.currentVariant)
-                                // Load variants for this layout
                                 KeyboardService.listVariants(value)
                             }
                         }
@@ -223,7 +217,6 @@ Item {
                         }
                     }
 
-                    // Error display
                     Rectangle {
                         width: parent.width
                         height: errorLayoutInfo.implicitHeight + Theme.spacingM * 2
@@ -254,7 +247,6 @@ Item {
                 }
             }
 
-            // Language and Region Section
             StyledRect {
                 width: parent.width
                 height: localeSection.implicitHeight + Theme.spacingL * 2
@@ -300,7 +292,6 @@ Item {
                         width: parent.width
                     }
 
-                    // Current Locale Display
                     Rectangle {
                         width: parent.width
                         height: currentLocaleInfo.implicitHeight + Theme.spacingM * 2
@@ -368,7 +359,6 @@ Item {
                         width: parent.width
                     }
 
-                    // Error display
                     Rectangle {
                         width: parent.width
                         height: errorLocaleInfo.implicitHeight + Theme.spacingM * 2

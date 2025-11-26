@@ -347,7 +347,6 @@ Column {
             }
             enabled: (widgetDef?.enabled ?? true)
             onToggled: {
-                // console.log("Widget toggled:", widgetData.id)
                 if (root.editMode) return
                 switch (widgetData.id || "") {
                 case "wifi": {
@@ -375,13 +374,9 @@ Column {
                     break
                 }
                 case "volumeMixer": {
-                    // Volume mixer doesn't have a simple toggle action
-                    // This could be used to mute all applications or show detail view
                     break
                 }
                 case "hdrToggle": {
-                    // Use the HDR service to toggle
-                    // console.log("HDR Toggle clicked - toggling via service")
                     HdrService.toggleHdr()
                     break
                 }

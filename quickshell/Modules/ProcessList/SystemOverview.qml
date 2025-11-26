@@ -328,7 +328,6 @@ Row {
                         return "No GPU";
                     }
                     const gpu = DgopService.availableGpus[Math.min(SessionData.selectedGpuIndex, DgopService.availableGpus.length - 1)];
-                    // Check if temperature monitoring is enabled for this GPU
                     const tempEnabled = SessionData.enabledGpuPciIds && SessionData.enabledGpuPciIds.indexOf(gpu.pciId) !== -1;
                     const temp = gpu.temperature;
                     const hasTemp = tempEnabled && temp !== undefined && temp !== null && temp !== 0;

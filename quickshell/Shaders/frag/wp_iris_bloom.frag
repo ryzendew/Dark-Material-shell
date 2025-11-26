@@ -1,4 +1,3 @@
-// ===== wp_iris_bloom.frag =====
 #version 450
 
 layout(location = 0) in vec2 qt_TexCoord0;
@@ -48,11 +47,21 @@ vec2 calculateUV(vec2 uv, float imgWidth, float imgHeight) {
         vec2 imagePixel = (screenPixel - offset) / scale;
         transformedUV = imagePixel / vec2(imgWidth, imgHeight);
     }
+    else if (ubuf.fillMode < 3.5) {
+        transformedUV = uv;
+    }
+    else if (ubuf.fillMode < 4.5) {
+        vec2 screenPixel = uv * vec2(ubuf.screenWidth, ubuf.screenHeight);
+        transformedUV = mod(screenPixel, vec2(imgWidth, imgHeight)) / vec2(imgWidth, imgHeight);
+    }
     return transformedUV;
 }
 
 vec4 sampleWithFillMode(sampler2D tex, vec2 uv, float imgWidth, float imgHeight) {
     vec2 tuv = calculateUV(uv, imgWidth, imgHeight);
+    if (ubuf.fillMode >= 4.5) {
+        return texture(tex, tuv);
+    }
     if (tuv.x < 0.0 || tuv.x > 1.0 || tuv.y < 0.0 || tuv.y > 1.0) {
         return ubuf.fillColor;
     }
@@ -80,7 +89,6 @@ void main() {
 
     float radius = p * maxDist;
 
-    // squash factor for the "eye" slit
     float squash = mix(0.2, 1.0, p); 
     q.y /= squash;
 

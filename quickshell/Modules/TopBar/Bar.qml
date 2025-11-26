@@ -27,7 +27,6 @@ PanelWindow {
     implicitHeight: 32
     implicitWidth: 32
 
-    // The actual bar content - dark mode
     Rectangle {
         id: bar
         anchors.fill: parent

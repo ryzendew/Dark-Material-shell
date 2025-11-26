@@ -19,7 +19,6 @@ DarkPopout {
 
     WlrLayershell.namespace: "quickshell:appDrawerPopout:blur"
 
-    // Setting to Exclusive, so virtual keyboards can send input to app drawer
     WlrLayershell.keyboardFocus: shouldBeVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None 
 
     function show() {
@@ -67,7 +66,6 @@ DarkPopout {
         }
     }
 
-    // Power Confirmation Modal
     PowerConfirmationModal {
         id: powerConfirmationModal
         
@@ -86,21 +84,16 @@ DarkPopout {
         }
         
         onCancelled: {
-            // User cancelled, do nothing
         }
     }
 
-    // Function to get app data from app ID
     function getAppDataFromId(appId) {
         if (!appId) {
-            console.log("getAppDataFromId: appId is null/undefined")
             return null
         }
         
-        // Use the same approach as the dock - DesktopEntries.heuristicLookup
         const desktopEntry = DesktopEntries.heuristicLookup(appId)
         if (desktopEntry) {
-            console.log("getAppDataFromId: Found app", appId, "->", desktopEntry.name)
             return {
                 name: desktopEntry.name || "",
                 exec: desktopEntry.execString || desktopEntry.exec || "",
@@ -110,7 +103,6 @@ DarkPopout {
                 desktopEntry: desktopEntry
             }
         }
-        console.log("getAppDataFromId: No desktop entry found for", appId)
         return null
     }
 
@@ -126,7 +118,6 @@ DarkPopout {
             smooth: true
             clip: true // Ensure all content is clipped to panel bounds
 
-            // Multi-layer border effect
             Repeater {
                 model: [{
                         "margin": -3,
@@ -193,7 +184,6 @@ DarkPopout {
                     spacing: 0
                     clip: true // Ensure row content is clipped to bounds
 
-                    // Left Panel - Pinned Apps & Power Controls
                     Rectangle {
                         width: parent.width * 0.4 + 2
                         height: parent.height
@@ -208,7 +198,6 @@ DarkPopout {
                             spacing: Theme.spacingL
                             clip: true // Ensure column content is clipped
 
-                            // Pinned Apps Section
                             Column {
                                 id: pinnedAppsColumn
                                 width: parent.width
@@ -222,7 +211,6 @@ DarkPopout {
                                     color: Theme.surfaceText
                                 }
 
-                                // Pinned Apps Grid (3x5 = 15 apps)
                                 Grid {
                                     width: parent.width
                                     columns: 3
@@ -323,7 +311,6 @@ DarkPopout {
                                 }
                             }
 
-                            // Recent Documents Section
                             Column {
                                 width: parent.width
                                 spacing: Theme.spacingM
@@ -336,38 +323,31 @@ DarkPopout {
                                     color: Theme.surfaceText
                                 }
 
-                                // Recent documents would go here
                             }
 
-                            // Spacer to push power controls to bottom
                             Item {
                                 width: parent.width
                                 height: parent.height - pinnedAppsColumn.height - powerControlsColumn.height - Theme.spacingL * 2
                             }
 
-                            // Power Controls Section
                             Column {
                                 id: powerControlsColumn
                                 width: parent.width
                                 spacing: Theme.spacingM
                                 clip: true // Ensure content is clipped to section bounds
 
-                                // User Profile and System Controls
                     Row {
                         width: parent.width
                                     height: 60
                                     spacing: Theme.spacingM
 
-                                    // User Profile
                                     Row {
                                         spacing: Theme.spacingS
 
-                                        // Profile Picture
                                         Item {
                                             width: 40
                                             height: 40
 
-                                            // Profile Image with circular mask
                                             Rectangle {
                                                 id: profileImageContainer
                                                 anchors.fill: parent
@@ -396,7 +376,6 @@ DarkPopout {
                                                 }
                                             }
 
-                                            // Fallback circle with initial
                                             Rectangle {
                                                 anchors.fill: parent
                                                 radius: 20
@@ -425,17 +404,14 @@ DarkPopout {
                                         }
                                     }
 
-                                    // Spacer to push system controls to the right
                                     Item {
                                         width: parent.width - 200 // Adjust as needed
                                         height: 1
                                     }
 
-                                    // System Controls
                                     Row {
                                         spacing: Theme.spacingS
 
-                                        // Folder, Settings buttons
                                         Repeater {
                                             model: [
                                                 {icon: "folder", tooltip: "Files"},
@@ -468,17 +444,14 @@ DarkPopout {
                                                     hoverEnabled: true
                                                     onClicked: {
                                                         if (modelData.icon === "settings") {
-                                                            // Open settings modal
                                                             settingsModal.show()
                                                         } else if (modelData.icon === "folder") {
-                                                            // Open Nautilus file manager
                                                             Quickshell.execDetached(["nautilus"])
                                                         }
                                                         appDrawerPopout.close()
                                                     }
                                                 }
 
-                                                // Tooltip
                                                 Rectangle {
                                                     anchors.bottom: parent.top
                                                     anchors.bottomMargin: 8
@@ -509,12 +482,10 @@ DarkPopout {
                                     }
                                 }
 
-                                // Power buttons row
                                 Row {
                                     width: parent.width
                                     spacing: Theme.spacingS
 
-                                    // Idle Inhibitor Button
                                     Rectangle {
                                         id: idleInhibitorButton
                                         width: 36
@@ -564,7 +535,6 @@ DarkPopout {
                                         }
                                     }
 
-                                    // Night Light Button
                                     Rectangle {
                                         id: nightLightButton
                                         width: 36
@@ -608,7 +578,6 @@ DarkPopout {
                                         }
                                     }
 
-                                    // System buttons
                                     Repeater {
                                         model: [
                                             {icon: "refresh", tooltip: "Reload", command: ["pkill", "-f", "quickshell"], action: "reload"},
@@ -650,7 +619,6 @@ DarkPopout {
                                                         Quickshell.reload(true)
                                                         appDrawerPopout.close()
                                                     } else if (modelData.needsConfirmation) {
-                                                        // Show confirmation modal for power actions
                                                         const actions = {
                                                             "logout": {
                                                                 "title": "Log Out",
@@ -683,7 +651,6 @@ DarkPopout {
                         }
                     }
 
-                    // Right Panel - All Apps
                     Rectangle {
                         width: parent.width * 0.6
                         height: parent.height
@@ -696,7 +663,6 @@ DarkPopout {
                             spacing: Theme.spacingL
                             clip: true // Ensure column content is clipped
 
-                            // Header
                             Row {
                                 width: parent.width
                                 height: 40
@@ -714,7 +680,6 @@ DarkPopout {
                             height: 1
                         }
 
-                                // Hamburger menu icon
                                 Rectangle {
                                     width: 36
                                     height: 36
@@ -728,14 +693,12 @@ DarkPopout {
                                         anchors.fill: parent
                                         hoverEnabled: true
                                         onClicked: {
-                                            // Toggle view mode or show options
                                             appLauncher.setViewMode(appLauncher.viewMode === "grid" ? "list" : "grid")
                                         }
                                     }
                                 }
                             }
 
-                            // Search Bar
                     DarkTextField {
                         id: searchField
 
@@ -796,7 +759,6 @@ DarkPopout {
                     }
 
 
-                            // All Apps List
                             Rectangle {
                                 width: parent.width
                                 height: parent.height - 80 // Adjust based on header and search
@@ -1234,12 +1196,10 @@ DarkPopout {
             height: contextMenu.height
             onClicked: {
 
-                // Prevent closing when clicking on the menu itself
             }
         }
     }
 
-    // Context menu for pinned apps
     Rectangle {
         id: pinnedContextMenu
 
@@ -1424,7 +1384,6 @@ DarkPopout {
             width: pinnedContextMenu.width
             height: pinnedContextMenu.height
             onClicked: {
-                // Prevent closing when clicking on the menu itself
             }
         }
     }

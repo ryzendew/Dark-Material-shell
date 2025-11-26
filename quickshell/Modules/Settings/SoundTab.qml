@@ -24,9 +24,7 @@ Item {
             width: parent.width
             spacing: Theme.spacingM
 
-            // Header removed per request
 
-            // Output applications
             StyledRect {
                 width: parent.width
                 height: outputColumn.implicitHeight + (Theme.spacingL || 16) * 2
@@ -67,7 +65,6 @@ Item {
                             }
                         }
 
-                        // Device routing sections for outputs
                         Repeater {
                             model: ApplicationAudioService.applicationStreams || []
                             delegate: Loader {
@@ -91,7 +88,6 @@ Item {
                 }
             }
 
-            // Input applications
             StyledRect {
                 width: parent.width
                 height: inputColumn.implicitHeight + (Theme.spacingL || 16) * 2
@@ -132,7 +128,6 @@ Item {
                             }
                         }
 
-                        // Device routing sections for inputs
                         Repeater {
                             model: ApplicationAudioService.applicationInputStreams || []
                             delegate: Loader {
@@ -156,7 +151,6 @@ Item {
                 }
             }
 
-            // Output Devices
             StyledRect {
                 width: parent.width
                 height: outputDevicesCol.implicitHeight + (Theme.spacingL || 16) * 2
@@ -193,7 +187,6 @@ Item {
                 }
             }
 
-            // Input Devices
             StyledRect {
                 width: parent.width
                 height: inputDevicesCol.implicitHeight + (Theme.spacingL || 16) * 2
@@ -230,7 +223,6 @@ Item {
                 }
             }
 
-            // No applications at all
             StyledText {
                 text: "No applications with audio"
                 font.pixelSize: (Theme.fontSizeS || 12)
@@ -241,7 +233,6 @@ Item {
         }
     }
 
-    // Application volume row styled like other settings lists
     Component {
         id: applicationVolumeControlRow
 
@@ -258,45 +249,26 @@ Item {
             border.width: 1
 
             PwObjectTracker { objects: rowRoot.node ? [rowRoot.node] : [] }
-            MouseArea { id: mouseArea; anchors.fill: parent; hoverEnabled: true; onClicked: { /* no-op */ } }
+
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+            }
 
             Row {
                 anchors.fill: parent
-                anchors.margins: (Theme.spacingM || 12)
-                spacing: (Theme.spacingM || 12)
-
-                CachingImage {
-                    id: appIcon
-                    width: (Theme.iconSize || 24)
-                    height: (Theme.iconSize || 24)
-                    maxCacheSize: (Theme.iconSize || 24)
-                    source: {
-                        const n = rowRoot.node
-                        const props = n && n.properties ? n.properties : {}
-                        const hintName = props["application.name"] || props["node.name"] || n?.name || ""
-                        if (hintName && hintName !== "") {
-                            const apps = AppSearchService.searchApplications(hintName)
-                            if (apps && apps.length > 0 && apps[0].icon) {
-                                return Quickshell.iconPath(apps[0].icon, true)
-                            }
-                        }
-                        const pwIcon = ApplicationAudioService.getApplicationIconName(rowRoot.node)
-                        return pwIcon && pwIcon !== "" ? `image://icon/${pwIcon}` : ""
-                    }
-                    fillMode: Image.PreserveAspectFit
-                    visible: source !== ""
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+                anchors.margins: Theme.spacingM
+                spacing: Theme.spacingM
 
                 Column {
-                    // Reserve space for device/app name so it doesn't collapse
-                    width: 300
+                    width: parent.width - volumeSliderRow.width - Theme.spacingM
+                    spacing: Theme.spacingXS
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 2
 
                     StyledText {
-                        text: ApplicationAudioService.getApplicationName(rowRoot.node)
-                        font.pixelSize: (Theme.fontSizeM || 16)
+                        text: rowRoot.node ? (rowRoot.node.name || "Unknown") : "Unknown"
+                        font.pixelSize: Theme.fontSizeM
                         font.weight: Font.Medium
                         color: Theme.surfaceText
                         elide: Text.ElideRight
@@ -304,275 +276,102 @@ Item {
                     }
 
                     StyledText {
-                        text: isInput ? "Input" : "Output"
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceText
-                        width: parent.width
+                        text: rowRoot.isInput ? "Input" : "Output"
+                        font.pixelSize: Theme.fontSizeS
+                        color: Theme.surfaceVariantText
                     }
                 }
 
-                // Controls row fills remaining width to the right
                 Row {
-                    id: appControlsRow
-                    spacing: (Theme.spacingS || 8)
+                    id: volumeSliderRow
+                    width: 200
+                    spacing: Theme.spacingS
                     anchors.verticalCenter: parent.verticalCenter
-                    width: Math.max(160,
-                                     parent.width - appIcon.width - 300 - (Theme.spacingM || 12) * 3)
 
-                    StyledText {
-                        id: pctLabel
-                        text: `${rowRoot.node && rowRoot.node.audio ? Math.round(rowRoot.node.audio.volume * 100) : 0}%`
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceText
+                    Rectangle {
+                        width: Theme.iconSize + Theme.spacingS * 2
+                        height: Theme.iconSize + Theme.spacingS * 2
                         anchors.verticalCenter: parent.verticalCenter
-                    }
+                        radius: (Theme.iconSize + Theme.spacingS * 2) / 2
+                        color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
-                    DarkSlider {
-                        id: slider
-                        width: Math.max(80, appControlsRow.width - pctLabel.implicitWidth - 40 - (Theme.spacingS || 8) * 2)
-                        enabled: rowRoot.node && rowRoot.node.audio
-                        minimum: 0
-                        maximum: 100
-                        value: rowRoot.node && rowRoot.node.audio ? Math.round(rowRoot.node.audio.volume * 100) : 0
-                        showValue: true
-                        unit: "%"
-                        thumbOutlineColor: Theme.surfaceContainer
-                        trackColor: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, (Theme.getContentBackgroundAlpha ? Theme.getContentBackgroundAlpha() : 1) * 0.50)
-                        anchors.verticalCenter: parent.verticalCenter
-                        onSliderValueChanged: function(newValue) {
-                            if (rowRoot.node && rowRoot.node.audio) {
-                                rowRoot.node.audio.volume = Math.max(0, Math.min(100, newValue)) / 100
+                        MouseArea {
+                            id: iconArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (rowRoot.node && rowRoot.node.audio) {
+                                    rowRoot.node.audio.muted = !rowRoot.node.audio.muted
+                                }
                             }
+                        }
+
+                        DarkIcon {
+                            anchors.centerIn: parent
+                            name: {
+                                if (!rowRoot.node || !rowRoot.node.audio) return rowRoot.isInput ? "mic_off" : "volume_off"
+                                const volume = rowRoot.node.audio.volume
+                                const muted = rowRoot.node.audio.muted
+                                if (rowRoot.isInput) {
+                                    return (muted || volume === 0.0) ? "mic_off" : "mic"
+                                } else {
+                                    if (muted || volume === 0.0) return "volume_off"
+                                    if (volume <= 0.33) return "volume_down"
+                                    if (volume <= 0.66) return "volume_up"
+                                    return "volume_up"
+                                }
+                            }
+                            size: Theme.iconSize
+                            color: rowRoot.node && rowRoot.node.audio && !rowRoot.node.audio.muted && rowRoot.node.audio.volume > 0 ? Theme.primary : Theme.surfaceText
                         }
                     }
 
-                    DarkActionButton {
-                        buttonSize: 32
-                        iconName: rowRoot.node && rowRoot.node.audio && rowRoot.node.audio.muted ? "volume_off" : (rowRoot.isInput ? "mic" : "volume_up")
-                        iconSize: 18
-                        iconColor: rowRoot.node && rowRoot.node.audio && rowRoot.node.audio.muted ? Theme.error : Theme.outline
+                    DarkSlider {
+                        readonly property real actualVolumePercent: rowRoot.node && rowRoot.node.audio ? Math.round(rowRoot.node.audio.volume * 100) : 0
+
                         anchors.verticalCenter: parent.verticalCenter
-                        onClicked: { if (rowRoot.node && rowRoot.node.audio) { rowRoot.node.audio.muted = !rowRoot.node.audio.muted } }
+                        width: parent.width - (Theme.iconSize + Theme.spacingS * 2) - Theme.spacingS
+                        enabled: rowRoot.node !== null && rowRoot.node.audio !== null
+                        minimum: 0
+                        maximum: 100
+                        value: rowRoot.node && rowRoot.node.audio ? Math.min(100, Math.round(rowRoot.node.audio.volume * 100)) : 0
+                        showValue: true
+                        unit: "%"
+                        valueOverride: actualVolumePercent
+                        onSliderValueChanged: function(newValue) {
+                            if (rowRoot.node && rowRoot.node.audio) {
+                                rowRoot.node.audio.volume = newValue / 100.0
+                                if (newValue > 0 && rowRoot.node.audio.muted) {
+                                    rowRoot.node.audio.muted = false
+                                }
+                            }
+                        }
                     }
                 }
             }
-
-            // routing UI moved to a separate section below the app row
         }
     }
 
-    // Device volume row (similar layout but labeled as device)
+    Component {
+        id: applicationRoutingSection
+
+        Rectangle {
+            property var node: null
+            property bool isInput: false
+            height: (Theme.iconSize || 24) + (Theme.spacingL || 16) * 2
+            visible: false
+        }
+    }
+
     Component {
         id: deviceVolumeRow
 
         Rectangle {
-            id: devRow
-
             property var node: null
             property bool isInput: false
-
-            height: 65
-            radius: Theme.cornerRadius
-            color: mouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.06) : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.16)
-            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-            border.width: 1
-
-            PwObjectTracker { objects: devRow.node ? [devRow.node] : [] }
-            MouseArea { id: mouseArea; anchors.fill: parent; hoverEnabled: true }
-
-            Row {
-                anchors.fill: parent
-                anchors.margins: (Theme.spacingM || 12)
-                spacing: (Theme.spacingM || 12)
-
-                DarkIcon {
-                    name: isInput ? "mic" : "volume_up"
-                    size: (Theme.iconSize || 24)
-                    color: Theme.surfaceText
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Column {
-                    width: 300
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 2
-
-                    StyledText {
-                        text: node && node.description ? node.description : (node && node.name ? node.name : "Audio Device")
-                        font.pixelSize: (Theme.fontSizeM || 16)
-                        font.weight: Font.Medium
-                        color: Theme.surfaceText
-                        elide: Text.ElideRight
-                        width: parent.width
-                    }
-
-                    StyledText {
-                        text: isInput ? "Input Device" : "Output Device"
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceVariantText
-                        width: parent.width
-                    }
-                }
-
-                Row {
-                    id: devControlsRow
-                    spacing: (Theme.spacingS || 8)
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: Math.max(200,
-                                     parent.width - (Theme.iconSize || 24) - 300 - (Theme.spacingM || 12) * 3)
-
-                    StyledText {
-                        text: `${devRow.node && devRow.node.audio ? Math.round(devRow.node.audio.volume * 100) : 0}%`
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceVariantText
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    DarkSlider {
-                        width: Math.max(120, devControlsRow.width - 40 - (Theme.spacingS || 8) * 2 - (parent.children[0].implicitWidth || 36))
-                        enabled: devRow.node && devRow.node.audio
-                        minimum: 0
-                        maximum: 100
-                        value: devRow.node && devRow.node.audio ? Math.round(devRow.node.audio.volume * 100) : 0
-                        showValue: true
-                        unit: "%"
-                        thumbOutlineColor: Theme.surfaceContainer
-                        trackColor: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, (Theme.getContentBackgroundAlpha ? Theme.getContentBackgroundAlpha() : 1) * 0.50)
-                        anchors.verticalCenter: parent.verticalCenter
-                        onSliderValueChanged: function(newValue) {
-                            if (devRow.node && devRow.node.audio) {
-                                devRow.node.audio.volume = Math.max(0, Math.min(100, newValue)) / 100
-                            }
-                        }
-                    }
-
-                    DarkActionButton {
-                        buttonSize: 32
-                        iconName: devRow.node && devRow.node.audio && devRow.node.audio.muted ? "volume_off" : (devRow.isInput ? "mic" : "volume_up")
-                        iconSize: 18
-                        iconColor: devRow.node && devRow.node.audio && devRow.node.audio.muted ? Theme.error : Theme.outline
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: { if (devRow.node && devRow.node.audio) { devRow.node.audio.muted = !devRow.node.audio.muted } }
-                    }
-                }
-            }
-        }
-    }
-
-    // Per-application routing section shown as its own category card
-    Component {
-        id: applicationRoutingSection
-
-        StyledRect {
-            id: routeCard
-            width: parent ? parent.width : 0
-            height: routeRow.implicitHeight + (Theme.spacingL || 16) * 2
-            radius: Theme.cornerRadius
-            color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
-            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-            border.width: 1
-
-            property var node
-            property bool isInput
-
-            Row {
-                id: routeRow
-                anchors.fill: parent
-                anchors.margins: (Theme.spacingL || 16)
-                spacing: (Theme.spacingM || 12)
-
-                CachingImage {
-                    id: routeIcon
-                    width: (Theme.iconSize || 24)
-                    height: (Theme.iconSize || 24)
-                    maxCacheSize: (Theme.iconSize || 24)
-                    source: {
-                        const n = routeCard.node
-                        const props = n && n.properties ? n.properties : {}
-                        const hintName = props["application.name"] || props["node.name"] || n?.name || ""
-                        if (hintName && hintName !== "") {
-                            const apps = AppSearchService.searchApplications(hintName)
-                            if (apps && apps.length > 0 && apps[0].icon) {
-                                return Quickshell.iconPath(apps[0].icon, true)
-                            }
-                        }
-                        const pwIcon = ApplicationAudioService.getApplicationIconName(routeCard.node)
-                        return pwIcon && pwIcon !== "" ? `image://icon/${pwIcon}` : ""
-                    }
-                    fillMode: Image.PreserveAspectFit
-                    visible: source !== ""
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Column {
-                    width: 300
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 2
-
-                    StyledText {
-                        text: ApplicationAudioService.getApplicationName(routeCard.node)
-                        font.pixelSize: (Theme.fontSizeM || 16)
-                        font.weight: Font.Medium
-                        color: Theme.surfaceText
-                        elide: Text.ElideRight
-                        width: parent.width
-                    }
-
-                    StyledText {
-                        text: routeCard.isInput ? "Route input to device" : "Route output to device"
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceText
-                        width: parent.width
-                    }
-                }
-
-                Item { width: 1; height: 1 }
-
-                DarkDropdown {
-                    id: routeDropdown
-                    width: 320
-                    height: 44
-                    text: routeCard.isInput ? "Input" : "Output"
-                    description: ""
-                    property var optionIds: (routeCard.isInput ? (ApplicationAudioService.inputDevices||[]) : (ApplicationAudioService.outputDevices||[])).map(d => d.id)
-                    options: (routeCard.isInput ? (ApplicationAudioService.inputDevices||[]) : (ApplicationAudioService.outputDevices||[])).map(d => d.description || d.name || d.id)
-                    currentValue: {
-                        const appKey = (routeCard.node?.properties?.["application.name"]) || routeCard.node?.name || ""
-                        const savedId = SettingsData.getAudioRoute(appKey, routeCard.isInput)
-                        const ids = routeDropdown.optionIds
-                        if (savedId) {
-                            const idxSaved = ids.indexOf(savedId)
-                            if (idxSaved >= 0) return routeDropdown.options[idxSaved]
-                        }
-                        const curId = (routeCard.node && (routeCard.node.audio?.deviceId || routeCard.node.audio?.target?.id || routeCard.node.audio?.device?.id || routeCard.node.deviceId)) || ""
-                        const idx2 = curId ? ids.indexOf(curId) : -1
-                        if (idx2 >= 0) return routeDropdown.options[idx2]
-                        return routeDropdown.options[0] || ""
-                    }
-                    onValueChanged: function(value) {
-                        const devs = routeCard.isInput ? (ApplicationAudioService.inputDevices||[]) : (ApplicationAudioService.outputDevices||[])
-                        const idx = options.indexOf(value)
-                        const dev = idx >= 0 ? devs[idx] : null
-                        if (!dev || !routeCard.node) return
-                        try {
-                            if (routeCard.node.audio && routeCard.node.audio.setDevice) {
-                                routeCard.node.audio.setDevice(dev)
-                            } else if (routeCard.node.setDevice) {
-                                routeCard.node.setDevice(dev)
-                            } else if (routeCard.node.audio) {
-                                routeCard.node.audio.target = dev
-                            }
-                            const appKey = (routeCard.node?.properties?.["application.name"]) || routeCard.node?.name || ""
-                            if (appKey) SettingsData.setAudioRoute(appKey, routeDropdown.optionIds[idx], routeCard.isInput)
-                        } catch (e) {
-                            // ignore backend that doesn't support routing
-                        }
-                    }
-                }
-            }
+            height: 56
+            visible: false
         }
     }
 }
-
-
-

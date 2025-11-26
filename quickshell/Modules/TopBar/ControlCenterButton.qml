@@ -65,7 +65,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showNetworkIcon
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -86,7 +85,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showBluetoothIcon && BluetoothService.available && BluetoothService.enabled
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -124,7 +122,6 @@ Rectangle {
                 color: Theme.surfaceText
                 anchors.centerIn: parent
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -187,7 +184,6 @@ Rectangle {
                 }
                 anchors.centerIn: parent
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -213,7 +209,6 @@ Rectangle {
             }
         }
 
-        // Fallback settings icon when all other icons are hidden
         DarkIcon {
             name: "settings"
             size: Theme.iconSize - 8
@@ -221,7 +216,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: !root.showNetworkIcon && !root.showBluetoothIcon && !root.showAudioIcon && (!root.showMicIcon || !PrivacyService.microphoneActive)
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

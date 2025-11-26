@@ -77,22 +77,18 @@ Item {
         }
 
         if (appData.type === "grouped") {
-            // For grouped apps, return the first window or the focused one
             if (appData.windows && appData.windows.length > 0) {
-                // Try to find a focused window first
                 for (var i = 0; i < appData.windows.length; i++) {
                     if (appData.windows[i].toplevel && appData.windows[i].toplevel.activated) {
                         return appData.windows[i].toplevel
                     }
                 }
-                // If no focused window, return the first one
                 return appData.windows[0].toplevel
             }
             return null
         }
 
         if (appData.type === "pinned" && appData.windows && appData.windows.length > 0) {
-            // Pinned app with running windows - return the focused or first window
             for (var i = 0; i < appData.windows.length; i++) {
                 if (appData.windows[i].toplevel && appData.windows[i].toplevel.activated) {
                     return appData.windows[i].toplevel
@@ -182,7 +178,6 @@ Item {
         z: -1
     }
 
-    // Enhanced drag visual feedback
     Rectangle {
         id: dragIndicator
         anchors.fill: parent
@@ -193,7 +188,6 @@ Item {
         visible: dragging
         z: 10
         
-        // Glow effect
         Rectangle {
             anchors.fill: parent
             anchors.margins: -3
@@ -203,7 +197,6 @@ Item {
             border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.4)
         }
         
-        // Scale animation
         scale: dragging ? 1.15 : 1.0
         Behavior on scale {
             NumberAnimation {
@@ -212,7 +205,6 @@ Item {
             }
         }
         
-        // Opacity animation
         opacity: dragging ? 0.85 : 1.0
         Behavior on opacity {
             NumberAnimation {
@@ -221,7 +213,6 @@ Item {
             }
         }
         
-        // Pulsing animation for the dragged item
         SequentialAnimation on opacity {
             running: dragging
             loops: Animation.Infinite
@@ -238,7 +229,6 @@ Item {
         onTriggered: {
             if (appData && appData.isPinned) {
                 longPressing = true
-                // console.log("Long press triggered for pinned app")
             }
         }
     }
@@ -278,7 +268,6 @@ Item {
                                        dragging = true
                                        targetIndex = index
                                        originalIndex = index
-                                       // console.log("Started dragging, index:", index, "targetIndex:", targetIndex)
                                    }
                                }
                                if (dragging) {
@@ -287,7 +276,6 @@ Item {
                                        const threshold = SettingsData.dockIconSize * 0.6
                                        let newTargetIndex = targetIndex
                                        
-                                       // Calculate new target based on drag direction
                                        if (dragOffset.x > threshold && targetIndex < dockApps.pinnedAppCount - 1) {
                                            newTargetIndex = targetIndex + 1
                                        } else if (dragOffset.x < -threshold && targetIndex > 0) {
@@ -297,7 +285,6 @@ Item {
                                        if (newTargetIndex !== targetIndex) {
                                            targetIndex = newTargetIndex
                                            dragStartPos = Qt.point(mouse.x, mouse.y)
-                                           // console.log("Target index changed to:", targetIndex, "dragOffset.x:", dragOffset.x)
                                        }
                                    }
                                }
@@ -310,13 +297,11 @@ Item {
                        if (mouse.button === Qt.LeftButton) {
                            if (appData.type === "pinned") {
                                if (appData.isRunning && appData.windows && appData.windows.length > 0) {
-                                   // Pinned app with running windows - activate the focused or first window
                                    const toplevel = getToplevelObject()
                                    if (toplevel) {
                                        toplevel.activate()
                                    }
                                } else {
-                                   // Pinned app without running windows - launch new instance
                                    if (appData && appData.appId) {
                                        const desktopEntry = DesktopEntries.heuristicLookup(appData.appId)
                                        if (desktopEntry) {
@@ -337,7 +322,6 @@ Item {
                                    toplevel.activate()
                                }
                            } else if (appData.type === "grouped") {
-                               // For grouped apps, cycle through windows or activate the focused one
                                const toplevel = getToplevelObject()
                                if (toplevel) {
                                    toplevel.activate()
@@ -362,7 +346,6 @@ Item {
                                contextMenu.showForButton(root, appData, 40)
                            }
                        } else if (mouse.button === Qt.MiddleButton) {
-                           // Middle click to minimize/restore
                            if (appData.type === "window" || appData.type === "grouped") {
                                const toplevel = getToplevelObject()
                                if (toplevel) {
@@ -405,7 +388,6 @@ Item {
             asynchronous: true
             visible: status === Image.Ready
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -436,7 +418,6 @@ Item {
             return moddedId.toLowerCase().includes("steam_app")
         }
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -478,7 +459,6 @@ Item {
         }
     }
 
-    // Indicator for running/focused/minimized state
     Rectangle {
         anchors.horizontalCenter: iconContainer.horizontalCenter
         anchors.top: iconContainer.bottom
@@ -508,7 +488,6 @@ Item {
         }
     }
 
-    // Window count indicator for grouped apps and pinned apps with multiple windows
     Rectangle {
         visible: false // Disabled number badge
         anchors.top: parent.top

@@ -23,7 +23,6 @@ Item {
 
     signal unlockRequested
 
-    // Internal power dialog state
     property bool powerDialogVisible: false
     property string powerDialogTitle: ""
     property string powerDialogMessage: ""
@@ -323,7 +322,6 @@ Item {
                         }
                         onAccepted: {
                             if (!demoMode && !pam.active) {
-                                // console.log("Enter pressed, starting PAM authentication")
                                 pam.start()
                             }
                         }
@@ -333,7 +331,6 @@ Item {
                                             }
 
                                             if (pam.active) {
-                                                // console.log("PAM is active, ignoring input")
                                                 event.accepted = true
                                                 return
                                             }
@@ -570,7 +567,6 @@ Item {
                         enabled: !demoMode
                         onClicked: {
                             if (!demoMode) {
-                                // console.log("Enter button clicked, starting PAM authentication")
                                 pam.start()
                             }
                         }
@@ -1021,7 +1017,6 @@ Item {
                 buttonSize: 40
                 onClicked: {
                     if (demoMode) {
-                        // console.log("Demo: Power")
                     } else {
                         showPowerDialog("Power Off", "Power off this computer?", "Power Off", Theme.error, function () {
                             SessionService.poweroff()
@@ -1035,7 +1030,6 @@ Item {
                 buttonSize: 40
                 onClicked: {
                     if (demoMode) {
-                        // console.log("Demo: Reboot")
                     } else {
                         showPowerDialog("Restart", "Restart this computer?", "Restart", Theme.primary, function () {
                             SessionService.reboot()
@@ -1049,7 +1043,6 @@ Item {
                 buttonSize: 40
                 onClicked: {
                     if (demoMode) {
-                        // console.log("Demo: Logout")
                     } else {
                         showPowerDialog("Log Out", "End this session?", "Log Out", Theme.primary, function () {
                             SessionService.logout()
@@ -1089,27 +1082,22 @@ Item {
             if (demoMode)
                 return
 
-            // console.log("PAM response required:", responseRequired)
             if (!responseRequired)
                 return
 
-            // console.log("Responding to PAM with password buffer length:", root.passwordBuffer.length)
             respond(root.passwordBuffer)
         }
         onCompleted: res => {
                          if (demoMode)
                          return
 
-                         // console.log("PAM authentication completed with result:", res)
                          if (res === PamResult.Success) {
-                             // console.log("Authentication successful, unlocking")
                              root.unlocking = true
                              passwordField.text = ""
                              root.passwordBuffer = ""
                              root.unlockRequested()
                              return
                          }
-                         // console.log("Authentication failed:", res)
                          if (res === PamResult.Error)
                          root.pamState = "error"
                          else if (res === PamResult.MaxTries)
@@ -1133,7 +1121,6 @@ Item {
         onClicked: root.unlockRequested()
     }
 
-    // Internal power dialog
     Rectangle {
         anchors.fill: parent
         color: Qt.rgba(0, 0, 0, 0.8)

@@ -14,7 +14,6 @@ ScrollView {
         width: parent.width
         spacing: Theme.spacingL
 
-        // Desktop Widgets Header
         Column {
             width: parent.width
             spacing: Theme.spacingS
@@ -35,7 +34,6 @@ ScrollView {
             }
         }
 
-        // Master Toggle
         Column {
             width: parent.width
             spacing: Theme.spacingS
@@ -63,13 +61,11 @@ ScrollView {
             }
         }
 
-        // Individual Widget Toggles
         Column {
             width: parent.width
             spacing: Theme.spacingL
             visible: SettingsData.desktopWidgetsEnabled
 
-            // CPU Temperature Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -96,7 +92,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -121,7 +116,6 @@ ScrollView {
                 }
             }
 
-            // GPU Temperature Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -148,7 +142,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -173,7 +166,6 @@ ScrollView {
                 }
             }
 
-            // System Monitor Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -200,7 +192,6 @@ ScrollView {
                     }
                 }
                 
-                // Size sliders - moved up for visibility
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -212,7 +203,6 @@ ScrollView {
                         color: Theme.surfaceTextMedium
                     }
                     
-                    // Width slider
                     Column {
                         width: parent.width
                         spacing: 4
@@ -235,7 +225,6 @@ ScrollView {
                         }
                     }
                     
-                    // Height slider
                     Column {
                         width: parent.width
                         spacing: 4
@@ -259,7 +248,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -284,7 +272,6 @@ ScrollView {
                 }
             }
 
-            // Desktop Clock Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -311,7 +298,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -336,7 +322,6 @@ ScrollView {
                 }
             }
 
-            // Desktop Terminal Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -363,7 +348,6 @@ ScrollView {
                     }
                 }
                 
-                // Size sliders
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -375,7 +359,6 @@ ScrollView {
                         color: Theme.surfaceTextMedium
                     }
                     
-                    // Width slider
                     Column {
                         width: parent.width
                         spacing: 4
@@ -398,7 +381,6 @@ ScrollView {
                         }
                     }
                     
-                    // Height slider
                     Column {
                         width: parent.width
                         spacing: 4
@@ -421,7 +403,6 @@ ScrollView {
                         }
                     }
                     
-                    // Font size slider
                     Column {
                         width: parent.width
                         spacing: 4
@@ -445,7 +426,6 @@ ScrollView {
                     }
                 }
                 
-                // Position dropdown
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -470,7 +450,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -495,7 +474,6 @@ ScrollView {
                 }
             }
 
-            // Desktop Weather Widget
             Column {
                 width: parent.width
                 spacing: Theme.spacingS
@@ -519,7 +497,6 @@ ScrollView {
                     width: parent.width
                     spacing: Theme.spacingM
                     
-                    // Position dropdown
                     Column {
                         spacing: Theme.spacingXS
                         
@@ -542,7 +519,6 @@ ScrollView {
                         }
                     }
                     
-                    // Toggle switch
                     Column {
                         spacing: Theme.spacingXS
                         
@@ -561,7 +537,6 @@ ScrollView {
                     }
                 }
                 
-                // Opacity slider
                 Column {
                     width: parent.width
                     spacing: Theme.spacingXS
@@ -587,7 +562,6 @@ ScrollView {
             }
         }
 
-        // Usage Instructions
         Column {
             width: parent.width
             spacing: Theme.spacingS

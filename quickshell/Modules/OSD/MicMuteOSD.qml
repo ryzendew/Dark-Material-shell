@@ -20,8 +20,16 @@ DarkOSD {
 
     content: DarkIcon {
         anchors.centerIn: parent
-        name: AudioService.source && AudioService.source.audio && AudioService.source.audio.muted ? "mic_off" : "mic"
+        name: {
+            const source = AudioService.source
+            const audio = source && source.audio
+            return audio && audio.muted ? "mic_off" : "mic"
+        }
         size: Theme.iconSize
-        color: AudioService.source && AudioService.source.audio && AudioService.source.audio.muted ? Theme.error : Theme.primary
+        color: {
+            const source = AudioService.source
+            const audio = source && source.audio
+            return audio && audio.muted ? Theme.error : Theme.primary
+        }
     }
 }

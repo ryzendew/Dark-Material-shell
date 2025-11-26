@@ -53,19 +53,16 @@ Singleton {
                 try {
                     const outputsData = JSON.parse(text)
                     outputs = outputsData
-                    // console.log("NiriService: Loaded", Object.keys(outputsData).length, "outputs")
                     if (windows.length > 0) {
                         windows = sortWindowsByLayout(windows)
                     }
                 } catch (e) {
-                    console.warn("NiriService: Failed to parse outputs:", e)
                 }
             }
         }
 
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("NiriService: Failed to fetch outputs, exit code:", exitCode)
             }
         }
     }
@@ -87,7 +84,6 @@ Singleton {
                     const event = JSON.parse(line)
                     handleNiriEvent(event)
                 } catch (e) {
-                    console.warn("NiriService: Failed to parse event:", line, e)
                 }
             }
         }

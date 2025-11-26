@@ -17,7 +17,6 @@ Rectangle {
     property var topBar: null
     property real widgetHeight: 30
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
-    // The visual root for this window
     property Item windowRoot: (Window.window ? Window.window.contentItem : null)
     readonly property var sortedToplevels: {
         if (SettingsData.runningAppsCurrentWorkspace) {
@@ -75,7 +74,6 @@ Rectangle {
             }
             
             if (isMouseWheel) {
-                // Direct mouse wheel action
                 let currentIndex = -1;
                 for (let i = 0; i < windows.length; i++) {
                     if (windows[i].activated) {
@@ -104,7 +102,6 @@ Rectangle {
                     nextWindow.activate();
                 }
             } else {
-                // Touchpad - accumulate small deltas
                 scrollAccumulator += deltaY;
                 
                 if (Math.abs(scrollAccumulator) >= touchpadThreshold) {
@@ -200,7 +197,6 @@ Rectangle {
 
                 }
 
-                // App icon
                 IconImage {
                     id: iconImg
                     anchors.left: parent.left
@@ -220,7 +216,6 @@ Rectangle {
                     asynchronous: true
                     visible: status === Image.Ready
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -244,7 +239,6 @@ Rectangle {
                         return moddedId.toLowerCase().includes("steam_app")
                     }
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -256,7 +250,6 @@ Rectangle {
                     }
                 }
 
-                // Fallback text if no icon found
                 Text {
                     anchors.centerIn: parent
                     visible: {
@@ -280,7 +273,6 @@ Rectangle {
                     color: Theme.surfaceText
                     font.weight: Font.Medium
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -292,7 +284,6 @@ Rectangle {
                     }
                 }
 
-                // Window title text (only visible in expanded mode)
                 StyledText {
                     anchors.left: iconImg.right
                     anchors.leftMargin: Theme.spacingXS
@@ -307,7 +298,6 @@ Rectangle {
                     elide: Text.ElideRight
                     maximumLineCount: 1
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0

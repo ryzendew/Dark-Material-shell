@@ -6,9 +6,19 @@ MouseArea {
 
     property bool disabled: false
     property color stateColor: Theme.surfaceText
-    property real cornerRadius: parent && parent.radius !== undefined ? parent.radius : Theme.cornerRadius
+    property real cornerRadius: {
+        if (parent && parent.radius !== undefined) {
+            return parent.radius
+        }
+        return Theme.cornerRadius
+    }
 
-    readonly property real stateOpacity: disabled ? 0 : pressed ? 0.12 : containsMouse ? 0.08 : 0
+    readonly property real stateOpacity: {
+        if (disabled) return 0
+        if (pressed) return 0.12
+        if (containsMouse) return 0.08
+        return 0
+    }
 
     anchors.fill: parent
     cursorShape: disabled ? undefined : Qt.PointingHandCursor
@@ -17,6 +27,6 @@ MouseArea {
     Rectangle {
         anchors.fill: parent
         radius: root.cornerRadius
-        color: Qt.rgba(stateColor.r, stateColor.g, stateColor.b, stateOpacity)
+        color: Qt.rgba(stateColor.r, stateColor.g, stateColor.b, root.stateOpacity)
     }
 }

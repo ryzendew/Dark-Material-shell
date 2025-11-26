@@ -12,11 +12,9 @@ Rectangle {
     readonly property bool playerAvailable: activePlayer !== null
     property bool compactMode: false
     readonly property int textWidth: {
-        // Return 0 since we're now using implicit width for text
         return 0;
     }
     readonly property int currentContentWidth: {
-        // Use implicit width of the mediaRow to get actual content width
         return mediaRow.implicitWidth + horizontalPadding * 2;
     }
     property string section: "center"
@@ -104,7 +102,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
         }
 
-        // Text and controls in a single flow
         Row {
             spacing: Theme.spacingXS
             anchors.verticalCenter: parent.verticalCenter
@@ -139,7 +136,6 @@ Rectangle {
                 wrapMode: Text.NoWrap
                 visible: SettingsData.mediaSize > 0
                 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -168,7 +164,6 @@ Rectangle {
                 }
             }
 
-            // Control buttons positioned right after text
 
             Rectangle {
                 width: 20
@@ -185,7 +180,6 @@ Rectangle {
                     size: 12
                     color: Theme.surfaceText
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -228,7 +222,6 @@ Rectangle {
                     size: 14
                     color: activePlayer && activePlayer.playbackState === 1 ? Theme.background : Theme.primary
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -269,7 +262,6 @@ Rectangle {
                     size: 12
                     color: Theme.surfaceText
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0

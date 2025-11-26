@@ -13,7 +13,6 @@ Item {
     Component.onCompleted: {
         TimeService.refreshStatus()
         TimeService.listTimezones()
-        // Initialize filtered list
         filteredTimezones = TimeService.availableTimezones
     }
 
@@ -44,7 +43,6 @@ Item {
         running: true
         repeat: true
         onTriggered: {
-            // Refresh time display every second
         }
     }
 
@@ -61,7 +59,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Current Time Display
             StyledRect {
                 width: parent.width
                 height: currentTimeSection.implicitHeight + Theme.spacingL * 2
@@ -119,7 +116,6 @@ Item {
                 }
             }
 
-            // Timezone Section
             StyledRect {
                 width: parent.width
                 height: timezoneSection.implicitHeight + Theme.spacingL * 2
@@ -225,7 +221,6 @@ Item {
                 }
             }
 
-            // NTP Synchronization Section
             StyledRect {
                 width: parent.width
                 height: ntpSection.implicitHeight + Theme.spacingL * 2
@@ -296,7 +291,6 @@ Item {
                 }
             }
 
-            // Calendar Settings Section
             StyledRect {
                 width: parent.width
                 height: calendarSection.implicitHeight + Theme.spacingL * 2
@@ -367,7 +361,6 @@ Item {
                 }
             }
 
-            // Time Format
             StyledRect {
                 width: parent.width
                 height: timeSection.implicitHeight + Theme.spacingL * 2
@@ -432,7 +425,6 @@ Item {
                 }
             }
 
-            // Date Format Section
             StyledRect {
                 width: parent.width
                 height: dateSection.implicitHeight + Theme.spacingL * 2
@@ -479,7 +471,6 @@ Item {
                             if (!SettingsData.clockDateFormat || SettingsData.clockDateFormat.length === 0) {
                                 return "System Default"
                             }
-                            // Find matching preset or show "Custom"
                             const presets = [{
                                                  "format": "ddd d",
                                                  "label": "Day Date"
@@ -543,7 +534,6 @@ Item {
                             if (!SettingsData.lockDateFormat || SettingsData.lockDateFormat.length === 0) {
                                 return "System Default"
                             }
-                            // Find matching preset or show "Custom"
                             const presets = [{
                                                  "format": "ddd d",
                                                  "label": "Day Date"

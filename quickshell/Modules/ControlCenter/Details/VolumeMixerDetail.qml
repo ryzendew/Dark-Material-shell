@@ -19,7 +19,6 @@ Rectangle {
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
     border.width: 1
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -36,7 +35,6 @@ Rectangle {
         anchors.margins: Theme.spacingM
         spacing: Theme.spacingM
 
-        // Header
         Row {
             width: parent.width
             spacing: Theme.spacingS
@@ -68,7 +66,6 @@ Rectangle {
 
             Item { width: 1; height: 1 } // Spacer
 
-            // Control buttons
             Row {
                 spacing: Theme.spacingS
                 anchors.verticalCenter: parent.verticalCenter
@@ -91,7 +88,6 @@ Rectangle {
                     onClicked: ApplicationAudioService.debugAllNodes()
                 }
 
-                // Tiny live counters to confirm PipeWire visibility
                 StyledText {
                     text: `${ApplicationAudioService.totalNodeCount} nodes | ${(ApplicationAudioService.applicationStreams||[]).length} out | ${(ApplicationAudioService.applicationInputStreams||[]).length} in`
                     font.pixelSize: Theme.fontSizeS
@@ -100,7 +96,6 @@ Rectangle {
             }
         }
 
-        // Output applications section
         Column {
             id: outputSection
             width: parent.width
@@ -146,7 +141,6 @@ Rectangle {
                 }
             }
 
-            // No applications message
             Rectangle {
                 width: parent.width
                 height: 60
@@ -165,7 +159,6 @@ Rectangle {
             }
         }
 
-        // Input applications section
         Column {
             id: inputSection
             width: parent.width
@@ -211,7 +204,6 @@ Rectangle {
                 }
             }
 
-            // No applications message
             Rectangle {
                 width: parent.width
                 height: 60
@@ -230,7 +222,6 @@ Rectangle {
             }
         }
 
-        // No applications at all
         Rectangle {
             width: parent.width
             height: 80
@@ -264,7 +255,6 @@ Rectangle {
     property bool showOutputs: true
     property bool showInputs: true
 
-    // Detailed application volume control component
     Component {
         id: detailedApplicationVolumeControlComponent
         
@@ -284,8 +274,6 @@ Rectangle {
                 id: mouseArea
                 anchors.fill: parent
                 hoverEnabled: true
-                // avoid toggling mute on entire row click to prevent event storms
-                onClicked: { /* no-op */ }
             }
 
             Row {
@@ -293,22 +281,13 @@ Rectangle {
                 anchors.margins: Theme.spacingM
                 spacing: Theme.spacingM
 
-                // Application icon
-                DarkIcon {
-                    name: ApplicationAudioService.getApplicationIcon(node)
-                    size: Theme.iconSizeL
-                    color: node && node.audio && !node.audio.muted && node.audio.volume > 0 ? Theme.primary : Theme.surfaceText
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                // Application info
                 Column {
-                    width: Math.min(implicitWidth, parent.width - icon.width - slider.width - Theme.spacingM * 3)
-                    anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - volumeSlider.width - Theme.spacingM
                     spacing: Theme.spacingXS
+                    anchors.verticalCenter: parent.verticalCenter
 
                     StyledText {
-                        text: ApplicationAudioService.getApplicationName(node)
+                        text: node.name || "Unknown"
                         font.pixelSize: Theme.fontSizeM
                         font.weight: Font.Medium
                         color: Theme.onSurface
@@ -317,78 +296,79 @@ Rectangle {
                     }
 
                     StyledText {
-                        text: isInput ? "Audio Input" : "Audio Output"
+                        text: isInput ? "Input" : "Output"
                         font.pixelSize: Theme.fontSizeS
                         color: Theme.onSurfaceVariant
-                        width: parent.width
                     }
                 }
 
-                Item { width: 1; height: 1 } // Spacer
-
-                // Volume controls
-                Column {
+                Row {
+                    id: volumeSlider
                     width: 200
+                    spacing: Theme.spacingS
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: Theme.spacingXS
 
-                    // Volume slider
-                    DarkSlider {
-                        id: slider
-                        width: parent.width
-                        enabled: node && node.audio
-                        minimum: 0
-                        maximum: 100
-                        value: node && node.audio ? Math.round(node.audio.volume * 100) : 0
-                        showValue: true
-                        unit: "%"
-                        thumbOutlineColor: Theme.surfaceContainer
-                        trackColor: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, Theme.getContentBackgroundAlpha() * 0.60)
+                    Rectangle {
+                        width: Theme.iconSize + Theme.spacingS * 2
+                        height: Theme.iconSize + Theme.spacingS * 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        radius: (Theme.iconSize + Theme.spacingS * 2) / 2
+                        color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
-                        onSliderValueChanged: function(newValue) {
-                            if (node && node.audio) {
-                                node.audio.volume = Math.max(0, Math.min(100, newValue)) / 100
-                            }
-                        }
-                    }
-
-                    // Mute button
-                    Row {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: Theme.spacingXS
-
-                        DarkActionButton {
-                            buttonSize: 28
-                            iconName: node && node.audio && node.audio.muted ? "volume_off" : (isInput ? "mic" : "volume_up")
-                            iconSize: 16
-                            iconColor: node && node.audio && node.audio.muted ? Theme.error : Theme.onSurfaceVariant
+                        MouseArea {
+                            id: iconArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                if (node && node.audio) {
-                                    node.audio.muted = !node.audio.muted
+                                if (control.node && control.node.audio) {
+                                    control.node.audio.muted = !control.node.audio.muted
                                 }
                             }
                         }
 
-                        StyledText {
-                            text: node && node.audio && node.audio.muted ? "Muted" : "Active"
-                            font.pixelSize: Theme.fontSizeS
-                            color: node && node.audio && node.audio.muted ? Theme.error : Theme.onSurfaceVariant
-                            anchors.verticalCenter: parent.verticalCenter
+                        DarkIcon {
+                            anchors.centerIn: parent
+                            name: {
+                                if (!control.node || !control.node.audio) return control.isInput ? "mic_off" : "volume_off"
+                                const volume = control.node.audio.volume
+                                const muted = control.node.audio.muted
+                                if (control.isInput) {
+                                    return (muted || volume === 0.0) ? "mic_off" : "mic"
+                                } else {
+                                    if (muted || volume === 0.0) return "volume_off"
+                                    if (volume <= 0.33) return "volume_down"
+                                    if (volume <= 0.66) return "volume_up"
+                                    return "volume_up"
+                                }
+                            }
+                            size: Theme.iconSize
+                            color: control.node && control.node.audio && !control.node.audio.muted && control.node.audio.volume > 0 ? Theme.primary : Theme.surfaceText
+                        }
+                    }
+
+                    DarkSlider {
+                        readonly property real actualVolumePercent: control.node && control.node.audio ? Math.round(control.node.audio.volume * 100) : 0
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.width - (Theme.iconSize + Theme.spacingS * 2) - Theme.spacingS
+                        enabled: control.node !== null && control.node.audio !== null
+                        minimum: 0
+                        maximum: 100
+                        value: control.node && control.node.audio ? Math.min(100, Math.round(control.node.audio.volume * 100)) : 0
+                        showValue: true
+                        unit: "%"
+                        valueOverride: actualVolumePercent
+                        onSliderValueChanged: function(newValue) {
+                            if (control.node && control.node.audio) {
+                                control.node.audio.volume = newValue / 100.0
+                                if (newValue > 0 && control.node.audio.muted) {
+                                    control.node.audio.muted = false
+                                }
+                            }
                         }
                     }
                 }
-            }
-
-            // Mute indicator
-            Rectangle {
-                width: 4
-                height: parent.height
-                radius: 2
-                color: node && node.audio && node.audio.muted ? Theme.error : "transparent"
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.leftMargin: 2
             }
         }
     }

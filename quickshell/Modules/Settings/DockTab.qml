@@ -10,8 +10,6 @@ Item {
     id: dockTab
 
     Component.onCompleted: {
-        // Ensure settings are properly loaded when the tab is created
-        // console.log("DockTab loaded, dockGroupApps:", SettingsData.dockGroupApps)
     }
 
     DarkFlickable {
@@ -26,7 +24,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Enable Dock
             StyledRect {
                 width: parent.width
                 height: enableDockSection.implicitHeight + Theme.spacingL * 2
@@ -96,7 +93,6 @@ Item {
 
             
 
-            // Tooltips Section
             StyledRect {
                 width: parent.width
                 height: tooltipsSection.implicitHeight + Theme.spacingL * 2
@@ -169,7 +165,6 @@ Item {
                 }
             }
 
-            // Group Apps
             StyledRect {
                 width: parent.width
                 height: groupAppsSection.implicitHeight + Theme.spacingL * 2
@@ -228,7 +223,6 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             checked: SettingsData.dockGroupApps
                             
-                            // Ensure the toggle updates when the setting changes
                             Binding {
                                 target: groupAppsToggle
                                 property: "checked"
@@ -251,7 +245,6 @@ Item {
                 }
             }
 
-            // Hide on Games Section
             StyledRect {
                 width: parent.width
                 height: hideOnGamesSection.implicitHeight + Theme.spacingL * 2
@@ -311,7 +304,6 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             checked: SettingsData.dockHideOnGames
                             
-                            // Ensure the toggle updates when the setting changes
                             Binding {
                                 target: hideOnGamesToggle
                                 property: "checked"
@@ -334,7 +326,6 @@ Item {
                 }
             }
 
-            // Auto-hide Dock
             StyledRect {
                 width: parent.width
                 height: autoHideSection.implicitHeight + Theme.spacingL * 2
@@ -407,7 +398,6 @@ Item {
                 }
             }
 
-            // Expand to Screen Section
             StyledRect {
                 width: parent.width
                 height: expandToScreenSection.implicitHeight + Theme.spacingL * 2
@@ -480,7 +470,6 @@ Item {
                 }
             }
 
-            // Center Apps Section
             StyledRect {
                 width: parent.width
                 height: centerAppsSection.implicitHeight + Theme.spacingL * 2
@@ -553,14 +542,12 @@ Item {
                 }
             }
 
-            // Dock Widgets Section (below center apps toggle)
             Column {
                 width: parent.width
                 spacing: Theme.spacingL
                 visible: SettingsData.showDock
                 opacity: visible ? 1 : 0
 
-                // Left Section
                 StyledRect {
                     width: parent.width
                     height: leftSection.implicitHeight + Theme.spacingL * 2
@@ -602,7 +589,6 @@ Item {
                     }
                 }
 
-                // Right Section
                 StyledRect {
                     width: parent.width
                     height: rightSection.implicitHeight + Theme.spacingL * 2
@@ -652,7 +638,6 @@ Item {
                 }
             }
 
-            // Customize Dock Section
             StyledRect {
                 width: parent.width
                 height: customizeDockSection.implicitHeight + Theme.spacingL * 2
@@ -692,7 +677,6 @@ Item {
                         }
                     }
 
-                    // Background
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -720,7 +704,6 @@ Item {
                         }
                     }
 
-                    // Widget Areas
                     Column {
                         width: parent.width
                         spacing: Theme.spacingS
@@ -807,7 +790,6 @@ Item {
                         }
                     }
 
-                    // Behavior
                     Row {
                         width: parent.width
                         spacing: Theme.spacingM
@@ -903,7 +885,6 @@ Item {
                 }
             }
 
-            // Dock Transparency Section
             StyledRect {
                 width: parent.width
                 height: transparencySection.implicitHeight + Theme.spacingL * 2
@@ -967,7 +948,6 @@ Item {
                 }
             }
 
-            // Dock Bottom Gap Section
             StyledRect {
                 width: parent.width
                 height: bottomGapSection.implicitHeight + Theme.spacingL * 2
@@ -1044,7 +1024,6 @@ Item {
                 }
             }
 
-            // Dock Icon Size and Spacing Section
             StyledRect {
                 width: parent.width
                 height: iconSettingsSection.implicitHeight + Theme.spacingL * 2
@@ -1177,7 +1156,6 @@ Item {
                 }
             }
 
-            // Dock Exclusive Zone Section
             StyledRect {
                 width: parent.width
                 height: dockExclusiveZoneSection.implicitHeight + Theme.spacingL * 2
@@ -1253,7 +1231,6 @@ Item {
                 }
             }
 
-            // Dock Padding Section
             StyledRect {
                 width: parent.width
                 height: dockPaddingSection.implicitHeight + Theme.spacingL * 2
@@ -1408,7 +1385,6 @@ Item {
 
             
 
-            // Dock Border Settings
             StyledRect {
                 width: parent.width
                 height: dockBorderSection.implicitHeight + Theme.spacingL * 2
@@ -1642,7 +1618,6 @@ Item {
         }
     }
 
-    // Use the same widget definitions as topbar
     property var dockWidgetDefinitions: [{
             "id": "launcherButton",
             "text": "App Launcher",
@@ -1953,7 +1928,6 @@ Item {
         return widgets
     }
 
-    // Widget Selection Popup
     WidgetSelectionPopup {
         id: widgetSelectionPopup
         

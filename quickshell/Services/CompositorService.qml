@@ -148,7 +148,6 @@ Singleton {
             isHyprland = true
             isNiri = false
             compositor = "hyprland"
-            // console.log("CompositorService: Detected Hyprland")
             return
         }
 
@@ -158,7 +157,6 @@ Singleton {
             isHyprland = false
             isNiri = false
             compositor = "unknown"
-            console.warn("CompositorService: No compositor detected")
         }
     }
 
@@ -169,7 +167,6 @@ Singleton {
         if (isHyprland) {
             return Hyprland.dispatch("dpms off")
         }
-        console.warn("CompositorService: Cannot power off monitors, unknown compositor")
     }
 
     function powerOnMonitors() {
@@ -179,12 +176,10 @@ Singleton {
         if (isHyprland) {
             return Hyprland.dispatch("dpms on")
         }
-        console.warn("CompositorService: Cannot power on monitors, unknown compositor")
     }
 
     function applyBlurSettings(blurSize, blurPasses) {
         if (!isHyprland) {
-            console.warn("CompositorService: Cannot apply blur settings, not running on Hyprland")
             return false
         }
 
@@ -193,26 +188,21 @@ Singleton {
             hyprKeyword1.startDetached()
             hyprKeyword2.command = ["hyprctl", "keyword", "blur:passes", String(blurPasses)]
             hyprKeyword2.startDetached()
-            console.log("CompositorService: Applied blur settings - size:", blurSize, "passes:", blurPasses)
             return true
         } catch (error) {
-            console.error("CompositorService: Failed to apply blur settings:", error)
             return false
         }
     }
 
     function reloadHyprlandConfig() {
         if (!isHyprland) {
-            console.warn("CompositorService: Cannot reload config, not running on Hyprland")
             return false
         }
 
         try {
             Hyprland.dispatch("reload")
-            console.log("CompositorService: Reloaded Hyprland configuration")
             return true
         } catch (error) {
-            console.error("CompositorService: Failed to reload Hyprland config:", error)
             return false
         }
     }
@@ -226,17 +216,14 @@ Singleton {
                 root.isNiri = true
                 root.isHyprland = false
                 root.compositor = "niri"
-                // console.log("CompositorService: Detected Niri with socket:", root.niriSocket)
             } else {
                 root.isHyprland = false
                 root.isNiri = true
                 root.compositor = "niri"
-                console.warn("CompositorService: Niri socket check failed, defaulting to Niri anyway")
             }
         }
     }
 
-    // Reusable hyprctl keyword processes
     Process { id: hyprKeyword1; command: ["true"] }
     Process { id: hyprKeyword2; command: ["true"] }
 }

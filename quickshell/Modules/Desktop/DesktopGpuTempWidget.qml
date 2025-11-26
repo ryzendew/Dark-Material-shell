@@ -19,7 +19,6 @@ PanelWindow {
     property string position: "top-center"
     property var positioningBox: null
     
-    // Reactive property that updates when GPU data changes
     property real currentGpuTemperature: getSelectedGpuTemperature()
 
     implicitWidth: widgetWidth
@@ -32,7 +31,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position using anchors and margins like notifications
     anchors {
         left: position.includes("left") ? true : false
         right: position.includes("right") ? true : false
@@ -52,7 +50,6 @@ PanelWindow {
         startNvmlMonitoring();
     }
 
-    // Update temperature when GPU data changes
     Connections {
         target: DgopService
         function onAvailableGpusChanged() {
@@ -60,7 +57,6 @@ PanelWindow {
         }
     }
 
-    // Update temperature when GPU selection changes
     Connections {
         target: SettingsData
         function onDesktopGpuSelectionChanged() {
@@ -68,7 +64,6 @@ PanelWindow {
         }
     }
 
-    // Function to start NVML monitoring
     function startNvmlMonitoring() {
         if (nvmlGpuProcess.running) {
             return;
@@ -76,25 +71,21 @@ PanelWindow {
         nvmlGpuProcess.running = true;
     }
 
-    // Function to get temperature for selected GPU
     function getSelectedGpuTemperature() {
         if (!DgopService.availableGpus || DgopService.availableGpus.length === 0) {
             return -1;
         }
         
         if (SettingsData.desktopGpuSelection === "auto") {
-            // Return first available GPU temperature
             const gpu = DgopService.availableGpus[0];
             const temp = gpu.temperature !== undefined ? gpu.temperature : -1;
             return temp;
         }
         
-        // Find GPU by matching the selection string with available GPUs
         const options = SettingsData.getGpuDropdownOptions();
         const selectedIndex = options.indexOf(SettingsData.desktopGpuSelection);
         
         if (selectedIndex > 0 && selectedIndex <= DgopService.availableGpus.length) {
-            // selectedIndex - 1 because options[0] is "auto"
             const gpuIndex = selectedIndex - 1;
             const gpu = DgopService.availableGpus[gpuIndex];
             const temp = gpu.temperature || -1;
@@ -112,14 +103,12 @@ PanelWindow {
     readonly property string nvmlPythonPath: "python3"
     readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
 
-    // NVML GPU temperature monitoring process
     Process {
         id: nvmlGpuProcess
         command: [nvmlPythonPath, nvmlScriptPath]
         running: false
         onExited: exitCode => {
             if (exitCode !== 0) {
-                console.warn("DesktopGpuTempWidget: NVML GPU process failed with exit code:", exitCode);
             }
         }
         stdout: StdioCollector {
@@ -128,7 +117,6 @@ PanelWindow {
                     try {
                         const data = JSON.parse(text.trim());
                         if (data.gpus && Array.isArray(data.gpus)) {
-                            // If no GPUs are available yet, initialize them
                             if (!DgopService.availableGpus || DgopService.availableGpus.length === 0) {
                                 const gpuList = [];
                                 for (const gpu of data.gpus) {
@@ -143,14 +131,11 @@ PanelWindow {
                                 }
                                 DgopService.availableGpus = gpuList;
                             } else {
-                                // Update existing GPU temperature data
                                 const updatedGpus = DgopService.availableGpus.slice();
                                 for (var i = 0; i < updatedGpus.length; i++) {
                                     const existingGpu = updatedGpus[i];
-                                    // Try to find matching GPU by PCI ID or by index if PCI IDs don't match
                                     let nvmlGpu = data.gpus.find(g => g.pciId === existingGpu.pciId);
                                     if (!nvmlGpu && i < data.gpus.length) {
-                                        // Fallback to index-based matching
                                         nvmlGpu = data.gpus[i];
                                     }
                                     if (nvmlGpu) {
@@ -162,17 +147,14 @@ PanelWindow {
                                 DgopService.availableGpus = updatedGpus;
                             }
                         } else if (data.error) {
-                            console.warn("DesktopGpuTempWidget: NVML error:", data.error);
                         }
                     } catch (e) {
-                        console.warn("DesktopGpuTempWidget: Failed to parse NVML JSON:", e);
                     }
                 }
             }
         }
     }
 
-    // Timer for regular NVML updates
     Timer {
         id: nvmlUpdateTimer
         interval: 2000  // Update every 2 seconds
@@ -191,7 +173,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -220,7 +201,6 @@ PanelWindow {
                 }
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -262,7 +242,6 @@ PanelWindow {
                         return Theme.surfaceText;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -276,14 +255,12 @@ PanelWindow {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             onPressed: {
                 if (alwaysVisible) {
-                    // Widget is always visible, no need to show/hide
                 }
             }
         }

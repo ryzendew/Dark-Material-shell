@@ -10,7 +10,7 @@ QtObject {
     property int topMargin: 0
     property int baseNotificationHeight: 120
     property int maxTargetNotifications: 4
-    property var popupWindows: [] // strong refs to windows (live until exitFinished)
+    property var popupWindows: []
     property var destroyingWindows: new Set()
     property Component popupComponent
 
@@ -24,11 +24,10 @@ QtObject {
     property Connections notificationConnections
 
     notificationConnections: Connections {
+        target: NotificationService
         function onVisibleNotificationsChanged() {
             manager._sync(NotificationService.visibleNotifications)
         }
-
-        target: NotificationService
     }
 
     property Timer sweeper
@@ -53,7 +52,6 @@ QtObject {
                         try {
                             p.destroy()
                         } catch (e) {
-
                         }
                     }
                 }
@@ -124,20 +122,20 @@ QtObject {
     function _selectPopupToRemove(activeWindows, incomingWrapper) {
         const incomingUrgency = (incomingWrapper && incomingWrapper.notification) ? incomingWrapper.notification.urgency || 0 : 0
         const sortedWindows = activeWindows.slice().sort((a, b) => {
-                                                             const aUrgency = (a.notificationData && a.notificationData.notification) ? a.notificationData.notification.urgency || 0 : 0
-                                                             const bUrgency = (b.notificationData && b.notificationData.notification) ? b.notificationData.notification.urgency || 0 : 0
-                                                             if (aUrgency !== bUrgency) {
-                                                                 return aUrgency - bUrgency
-                                                             }
-                                                             const aTimer = a.notificationData && a.notificationData.timer
-                                                             const bTimer = b.notificationData && b.notificationData.timer
-                                                             const aRunning = aTimer && aTimer.running
-                                                             const bRunning = bTimer && bTimer.running
-                                                             if (aRunning !== bRunning) {
-                                                                 return aRunning ? 1 : -1
-                                                             }
-                                                             return b.screenY - a.screenY
-                                                         })
+            const aUrgency = (a.notificationData && a.notificationData.notification) ? a.notificationData.notification.urgency || 0 : 0
+            const bUrgency = (b.notificationData && b.notificationData.notification) ? b.notificationData.notification.urgency || 0 : 0
+            if (aUrgency !== bUrgency) {
+                return aUrgency - bUrgency
+            }
+            const aTimer = a.notificationData && a.notificationData.timer
+            const bTimer = b.notificationData && b.notificationData.timer
+            const aRunning = aTimer && aTimer.running
+            const bRunning = bTimer && bTimer.running
+            if (aRunning !== bRunning) {
+                return aRunning ? 1 : -1
+            }
+            return b.screenY - a.screenY
+        })
         return sortedWindows[0]
     }
 
@@ -173,11 +171,11 @@ QtObject {
         }
         const notificationId = wrapper && wrapper.notification ? wrapper.notification.id : ""
         const win = popupComponent.createObject(null, {
-                                                    "notificationData": wrapper,
-                                                    "notificationId": notificationId,
-                                                    "screenY": topMargin,
-                                                    "screen": manager.modelData
-                                                })
+            "notificationData": wrapper,
+            "notificationId": notificationId,
+            "screenY": topMargin,
+            "screen": manager.modelData
+        })
         if (!win) {
             return
         }
@@ -227,15 +225,14 @@ QtObject {
             NotificationService.releaseWrapper(p.notificationData)
         }
         Qt.callLater(() => {
-                         if (p && p.destroy) {
-                             try {
-                                 p.destroy()
-                             } catch (e) {
-
-                             }
-                         }
-                         Qt.callLater(() => destroyingWindows.delete(windowId))
-                     })
+            if (p && p.destroy) {
+                try {
+                    p.destroy()
+                } catch (e) {
+                }
+            }
+            Qt.callLater(() => destroyingWindows.delete(windowId))
+        })
         const survivors = _active().sort((a, b) => a.screenY - b.screenY)
         for (let k = 0; k < survivors.length; ++k) {
             survivors[k].screenY = topMargin + k * baseNotificationHeight
@@ -253,7 +250,6 @@ QtObject {
                         p.destroy()
                     }
                 } catch (e) {
-
                 }
             }
         }

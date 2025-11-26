@@ -83,7 +83,6 @@ Rectangle {
             width: Math.min(implicitWidth, compactMode ? 80 : 180)
             visible: !compactMode && text.length > 0
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -102,7 +101,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: !compactMode && appText.text && titleText.text
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -124,7 +122,6 @@ Rectangle {
                     return title;
                 }
 
-                // Remove app name from end of title if it exists there
                 if (title.endsWith(" - " + appName)) {
                     return title.substring(0, title.length - (" - " + appName).length);
                 }
@@ -144,7 +141,6 @@ Rectangle {
             width: Math.min(implicitWidth, compactMode ? 280 : 250)
             visible: text.length > 0
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

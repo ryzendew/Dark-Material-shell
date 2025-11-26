@@ -62,7 +62,6 @@ Item {
             brightnessOverride: SettingsData.osLogoBrightness
             contrastOverride: SettingsData.osLogoContrast
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -88,14 +87,12 @@ Item {
                 smooth: true
                 mipmap: true
 
-                // Color overlay for custom images
                 layer.enabled: SettingsData.launcherLogoRed !== 1.0 || SettingsData.launcherLogoGreen !== 1.0 || SettingsData.launcherLogoBlue !== 1.0
                 layer.effect: ColorOverlay {
                     color: Qt.rgba(SettingsData.launcherLogoRed, SettingsData.launcherLogoGreen, SettingsData.launcherLogoBlue, 0.8)
                 }
             }
 
-            // Drop shadow for custom images
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -114,7 +111,6 @@ Item {
             size: SettingsData.launcherLogoSize > 0 ? SettingsData.launcherLogoSize - 6 : 0
             color: Qt.rgba(SettingsData.launcherLogoRed, SettingsData.launcherLogoGreen, SettingsData.launcherLogoBlue, 1.0)
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

@@ -16,7 +16,6 @@ Item {
     signal toggleWidgetSize(int index)
     signal moveWidget(int fromIndex, int toIndex)
 
-    // Delete button in top-right
     Rectangle {
         width: 16
         height: 16
@@ -28,7 +27,6 @@ Item {
         visible: editMode
         z: 10
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -52,7 +50,6 @@ Item {
         }
     }
 
-    // Size control buttons in bottom-right
     Row {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
@@ -70,7 +67,6 @@ Item {
             border.width: 1
             visible: !isSlider
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -110,7 +106,6 @@ Item {
             border.color: Theme.primary
             border.width: 1
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -151,7 +146,6 @@ Item {
             border.width: 1
             visible: !isSlider
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -191,7 +185,6 @@ Item {
             border.color: Theme.primary
             border.width: 1
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -224,7 +217,6 @@ Item {
         }
     }
 
-    // Arrow buttons for reordering in top-left
     Row {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -280,7 +272,6 @@ Item {
         }
     }
 
-    // Border highlight
     Rectangle {
         anchors.fill: parent
         color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.1)

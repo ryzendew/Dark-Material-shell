@@ -50,14 +50,15 @@ Singleton {
     property string wallpaperTransition: "fade"
     property int wallpaperTransitionFps: 60 // Default 60 for QML, 30 for awww (set based on backend)
     property bool useAwwwBackend: false
+    property string wallpaperFillMode: "crop" // "center", "crop", "fit", "stretch"
 
-    // Power management settings - AC Power
+
     property int acMonitorTimeout: 0 // Never
     property int acLockTimeout: 0 // Never
     property int acSuspendTimeout: 0 // Never
     property int acHibernateTimeout: 0 // Never
 
-    // Power management settings - Battery
+
     property int batteryMonitorTimeout: 0 // Never
     property int batteryLockTimeout: 0 // Never
     property int batterySuspendTimeout: 0 // Never
@@ -89,7 +90,7 @@ Singleton {
                 nightModeTemperature = settings.nightModeTemperature !== undefined ? settings.nightModeTemperature : 4500
                 nightModeAutoEnabled = settings.nightModeAutoEnabled !== undefined ? settings.nightModeAutoEnabled : false
                 nightModeAutoMode = settings.nightModeAutoMode !== undefined ? settings.nightModeAutoMode : "time"
-                // Handle legacy time format
+
                 if (settings.nightModeStartTime !== undefined) {
                     const parts = settings.nightModeStartTime.split(":")
                     nightModeStartHour = parseInt(parts[0]) || 18
@@ -125,6 +126,7 @@ Singleton {
                 wallpaperTransition = settings.wallpaperTransition !== undefined ? settings.wallpaperTransition : "fade"
                 wallpaperTransitionFps = settings.wallpaperTransitionFps !== undefined ? settings.wallpaperTransitionFps : 60
                 useAwwwBackend = settings.useAwwwBackend !== undefined ? settings.useAwwwBackend : false
+                wallpaperFillMode = settings.wallpaperFillMode !== undefined ? settings.wallpaperFillMode : "crop"
 
                 acMonitorTimeout = settings.acMonitorTimeout !== undefined ? settings.acMonitorTimeout : 0
                 acLockTimeout = settings.acLockTimeout !== undefined ? settings.acLockTimeout : 0
@@ -136,7 +138,7 @@ Singleton {
                 batteryHibernateTimeout = settings.batteryHibernateTimeout !== undefined ? settings.batteryHibernateTimeout : 0
                 lockBeforeSuspend = settings.lockBeforeSuspend !== undefined ? settings.lockBeforeSuspend : false
                 
-                // Generate system themes but don't override user's theme choice
+
                 if (typeof Theme !== "undefined") {
                     Theme.generateSystemThemesFromCurrentTheme()
                 }
@@ -182,6 +184,7 @@ Singleton {
                                                 "wallpaperTransition": wallpaperTransition,
                                                 "wallpaperTransitionFps": wallpaperTransitionFps,
                                                 "useAwwwBackend": useAwwwBackend,
+                                                "wallpaperFillMode": wallpaperFillMode,
                                                 "acMonitorTimeout": acMonitorTimeout,
                                                 "acLockTimeout": acLockTimeout,
                                                 "acSuspendTimeout": acSuspendTimeout,
@@ -215,7 +218,6 @@ Singleton {
     }
 
     function setNightModeAutoEnabled(enabled) {
-        // console.log("SessionData: Setting nightModeAutoEnabled to", enabled)
         nightModeAutoEnabled = enabled
         saveSettings()
     }
@@ -246,13 +248,11 @@ Singleton {
     }
 
     function setLatitude(lat) {
-        // console.log("SessionData: Setting latitude to", lat)
         latitude = lat
         saveSettings()
     }
 
     function setLongitude(lng) {
-        // console.log("SessionData: Setting longitude to", lng)
         longitude = lng
         saveSettings()
     }
@@ -459,7 +459,7 @@ Singleton {
         perMonitorWallpaper = enabled
         saveSettings()
 
-        // Refresh dynamic theming when per-monitor mode changes
+
         if (typeof Theme !== "undefined") {
             if (Theme.currentTheme === Theme.dynamic) {
                 Theme.extractColors()
@@ -478,7 +478,7 @@ Singleton {
         monitorWallpapers = newMonitorWallpapers
         saveSettings()
 
-        // Trigger dynamic theming if this is the first monitor and dynamic theming is enabled
+
         if (typeof Theme !== "undefined" && typeof Quickshell !== "undefined") {
             var screens = Quickshell.screens
             if (screens.length > 0 && screenName === screens[0].name) {
@@ -520,6 +520,11 @@ Singleton {
 
     function setUseAwwwBackend(enabled) {
         useAwwwBackend = enabled
+        saveSettings()
+    }
+
+    function setWallpaperFillMode(mode) {
+        wallpaperFillMode = mode
         saveSettings()
     }
 
@@ -595,7 +600,6 @@ Singleton {
         running: false
         onExited: exitCode => {
             if (exitCode === 0) {
-                // console.log("Copied default-session.json to session.json")
                 settingsFile.reload()
             }
         }

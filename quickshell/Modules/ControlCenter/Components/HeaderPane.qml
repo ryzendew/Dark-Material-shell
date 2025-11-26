@@ -16,15 +16,13 @@ Rectangle {
 
     implicitHeight: 70
     radius: Theme.cornerRadius
-    color: Qt.rgba(Theme.surfaceVariant.r,
-                   Theme.surfaceVariant.g,
-                   Theme.surfaceVariant.b,
-                   Theme.getContentBackgroundAlpha() * 0.4)
-    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                          Theme.outline.b, 0.08)
+    color: {
+        const alpha = Theme.getContentBackgroundAlpha() * 0.4
+        return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, alpha)
+    }
+    border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
     border.width: 1
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

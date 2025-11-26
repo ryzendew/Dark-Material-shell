@@ -151,7 +151,6 @@ Card {
                         testMetrics.destroy()
                         return result
                     }
-                    // Just using truncated is always true initially idk
                     property bool shouldUseShort: longTextWidth > availableWidth
                     
                     text: shouldUseShort ? UserInfoService.shortUptime : UserInfoService.uptime || "up 1h 23m"

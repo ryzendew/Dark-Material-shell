@@ -31,7 +31,6 @@ Rectangle {
     }
 
     MouseArea {
-        // Privacy indicator click handler
 
         id: privacyArea
 

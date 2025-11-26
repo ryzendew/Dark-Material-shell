@@ -15,7 +15,6 @@ DarkModal {
     required property var modelData
     property bool overviewOpen: false
     
-    // Set screen from modelData - this ensures each modal appears on its correct screen
     screen: modelData
     
     property string screenName: {
@@ -33,7 +32,6 @@ DarkModal {
         overviewOpen = true
         open()
         OverviewService.refreshWindows()
-        // Capture screenshots for all windows when overview opens
         OverviewService.captureAllScreenshots()
         Qt.callLater(() => {
             if (contentLoader.item) {

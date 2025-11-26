@@ -31,7 +31,6 @@ Singleton {
                 root.currentTabIndex = data.currentTabIndex || 0
                 validateTabs()
             } catch(e) {
-                console.warn("Failed to parse notepad metadata:", e)
                 createDefaultTab()
             }
         }
@@ -304,7 +303,6 @@ Singleton {
             }
 
             onSaveFailed: {
-                console.error("Failed to save tab content")
                 if (creationCallback) {
                     creationCallback()
                 }

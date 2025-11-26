@@ -191,7 +191,6 @@ Rectangle {
         ]
     }
 
-    //Here is the corresponding table between the ascii and the key event
     property var tableKeyEvent: {
         "_0": Qt.Key_0,
         "_1": Qt.Key_1,
@@ -262,7 +261,6 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 5
 
-        //One column which contains 5 rows
         Column {
             spacing: columnSpacing
 
@@ -339,12 +337,10 @@ Rectangle {
             } else if (text === 'ABC') {
                 root.symbols = false;
             } else {
-                // insert text into target
                 if (text === strBackspace) {
                     var current = keyboard_controller.target.text;
                     keyboard_controller.target.text = current.slice(0, current.length - 1);
                 } else {
-                    // normal character
                     var charToInsert = root.symbols ? text : (root.shift ? text.toUpperCase() : text);
                     var current = keyboard_controller.target.text;
                     var cursorPos = keyboard_controller.target.cursorPosition;
@@ -352,7 +348,6 @@ Rectangle {
                     keyboard_controller.target.cursorPosition = cursorPos + 1;
                 }
 
-                // shift is momentary
                 if (root.shift && text !== strShift)
                     root.shift = false;
             }

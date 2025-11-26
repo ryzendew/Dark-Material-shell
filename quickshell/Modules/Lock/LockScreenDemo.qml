@@ -23,13 +23,11 @@ PanelWindow {
 
     color: "transparent"
 
-    function showDemo(): void {
-        // console.log("Showing lock screen demo")
+    function showDemo() {
         demoActive = true
     }
 
-    function hideDemo(): void {
-        // console.log("Hiding lock screen demo")
+    function hideDemo() {
         demoActive = false
     }
 
@@ -38,7 +36,7 @@ PanelWindow {
         active: demoActive
         sourceComponent: LockScreenContent {
             demoMode: true
-            screenName: root.screen?.name ?? ""
+            screenName: root.screen ? root.screen.name : ""
             onUnlockRequested: root.hideDemo()
         }
     }

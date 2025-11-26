@@ -53,7 +53,6 @@ Singleton {
         setLayoutProcess.command = cmd
         setLayoutProcess.running = true
         
-        // Also apply immediately using setxkbmap for current session
         var xkbCmd = ["setxkbmap", layout]
         if (variant && variant.length > 0) {
             xkbCmd.push("-variant", variant)
@@ -69,7 +68,6 @@ Singleton {
     }
 
     function addLayout(layout, variant) {
-        // Add a layout to the active layouts list
         var layouts = activeLayouts.slice()
         layouts.push({
             layout: layout || "",
@@ -89,7 +87,6 @@ Singleton {
     }
 
     function applyLayouts() {
-        // Apply all active layouts using setxkbmap
         if (activeLayouts.length === 0) return
         
         var cmd = ["setxkbmap"]
@@ -121,7 +118,6 @@ Singleton {
         listLocales()
     }
 
-    // Process to get current keyboard status
     Process {
         id: statusProcess
         running: false
@@ -144,7 +140,6 @@ Singleton {
                         const match = line.match(/System Locale:\s+(.+)/)
                         if (match) {
                             root.currentLocale = match[1].trim()
-                            // Parse locale to get language and region
                             const parts = root.currentLocale.split('.')
                             if (parts.length > 0) {
                                 const langParts = parts[0].split('_')
@@ -163,14 +158,12 @@ Singleton {
                             root.currentVariant = match[1].trim()
                         }
                     } else if (line.startsWith('X11 Model:')) {
-                        // Model info if needed
                     }
                 }
             }
         }
     }
 
-    // Process to list available keyboard layouts
     Process {
         id: layoutListProcess
         running: false
@@ -192,7 +185,6 @@ Singleton {
         }
     }
 
-    // Process to list variants for a layout
     Process {
         id: variantListProcess
         running: false
@@ -215,7 +207,6 @@ Singleton {
         }
     }
 
-    // Process to list available locales
     Process {
         id: localeListProcess
         running: false
@@ -237,7 +228,6 @@ Singleton {
         }
     }
 
-    // Process to set keyboard layout
     Process {
         id: setLayoutProcess
         running: false
@@ -246,7 +236,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting layout
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set keyboard layout (exit code: " + exitCode + ")"
@@ -254,7 +243,6 @@ Singleton {
         }
     }
 
-    // Process to set locale
     Process {
         id: setLocaleProcess
         running: false
@@ -263,7 +251,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after setting locale
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to set locale (exit code: " + exitCode + ")"
@@ -271,7 +258,6 @@ Singleton {
         }
     }
 
-    // Process to apply layouts using setxkbmap
     Process {
         id: applyLayoutsProcess
         running: false
@@ -280,7 +266,6 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 0) {
                 root.lastError = ""
-                // Refresh status after applying layouts
                 Qt.callLater(() => refreshStatus())
             } else {
                 root.lastError = "Failed to apply keyboard layouts (exit code: " + exitCode + ")"
@@ -288,7 +273,6 @@ Singleton {
         }
     }
 
-    // Process to immediately apply layout using setxkbmap (for current session)
     Process {
         id: immediateLayoutProcess
         running: false
@@ -298,8 +282,6 @@ Singleton {
             if (exitCode === 0) {
                 root.lastError = ""
             } else {
-                // Don't set error for immediate application failures, just log
-                console.warn("Failed to immediately apply keyboard layout (exit code: " + exitCode + ")")
             }
         }
     }

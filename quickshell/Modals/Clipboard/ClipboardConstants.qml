@@ -5,6 +5,7 @@ import Quickshell
 
 Singleton {
     id: root
+    
     readonly property int previewLength: 100
     readonly property int longTextThreshold: 200
     readonly property int modalWidth: 650

@@ -8,7 +8,6 @@ QtObject {
     required property var clipboardModel
     required property var filteredClipboardModel
 
-    // Load clipboard entries
     property var loadProcess: Process {
         id: loadProcess
         command: ["cliphist", "list"]
@@ -30,7 +29,6 @@ QtObject {
         }
     }
 
-    // Delete single entry
     property var deleteProcess: Process {
         id: deleteProcess
         property string deletedEntry: ""
@@ -58,12 +56,10 @@ QtObject {
                               modal.selectedIndex = filteredClipboardModel.count - 1
                           }
                       } else {
-                          console.warn("Failed to delete clipboard entry")
                       }
                   }
     }
 
-    // Clear all entries
     property var clearProcess: Process {
         id: clearProcess
         command: ["cliphist", "wipe"]

@@ -5,7 +5,6 @@ import qs.Widgets
 Item {
     id: toggle
 
-    // API
     property bool checked: false
     property bool enabled: true
     property bool toggling: false

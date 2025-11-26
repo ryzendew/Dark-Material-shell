@@ -25,7 +25,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Start Menu Positioning
             StyledRect {
                 width: parent.width
                 height: startMenuSection.implicitHeight + Theme.spacingL * 2
@@ -175,7 +174,6 @@ Item {
                 }
             }
 
-            // Control Center Positioning
             StyledRect {
                 width: parent.width
                 height: controlCenterSection.implicitHeight + Theme.spacingL * 2
@@ -325,7 +323,6 @@ Item {
                 }
             }
 
-            // Reset Button
             StyledRect {
                 width: parent.width
                 height: resetSection.implicitHeight + Theme.spacingL * 2

@@ -71,7 +71,6 @@ Rectangle {
             onStreamFinished: {
                 try {
                     const data = JSON.parse(text)
-                    // Find the main keyboard and get its active keymap
                     const mainKeyboard = data.keyboards.find(kb => kb.main === true)
                     root.hyprlandKeyboard = mainKeyboard.name
                     if (mainKeyboard && mainKeyboard.active_keymap) {

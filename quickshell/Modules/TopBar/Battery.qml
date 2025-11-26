@@ -57,7 +57,6 @@ Rectangle {
             }
             anchors.verticalCenter: parent.verticalCenter
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -77,7 +76,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: BatteryService.batteryAvailable
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -124,7 +122,6 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         opacity: batteryArea.containsMouse ? 1 : 0
         
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0

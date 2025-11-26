@@ -25,9 +25,7 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // No anchors - position with margins only
 
-    // Position using margins based on position
     margins {
         left: position.includes("left") ? 20 : (position.includes("center") ? 0 : -1)
         right: position.includes("right") ? 20 : (position.includes("center") ? 0 : -1)
@@ -43,7 +41,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0

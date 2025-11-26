@@ -103,13 +103,11 @@ DarkModal {
     }
 
     function handleSaveFile(filePath) {
-        // Ensure the filePath has the correct file:// protocol format
         var normalizedPath = filePath
         if (!normalizedPath.startsWith("file://")) {
             normalizedPath = "file://" + filePath
         }
         
-        // Check if file exists by looking through the folder model
         var exists = false
         var fileName = filePath.split('/').pop()
         
@@ -206,10 +204,7 @@ DarkModal {
         folder: currentPath ? "file://" + currentPath : "file://" + homeDir
         
         onStatusChanged: {
-            // console.log("FileBrowserModal: FolderListModel status changed to:", status)
             if (status === FolderListModel.Ready) {
-                // console.log("FileBrowserModal: Folder loaded, count:", count)
-                // console.log("FileBrowserModal: Current folder:", folder)
             }
         }
     }
@@ -226,19 +221,16 @@ DarkModal {
                 event.accepted = true
                 return
             }
-            // F10 toggles keyboard hints
             if (event.key === Qt.Key_F10) {
                 showKeyboardHints = !showKeyboardHints
                 event.accepted = true
                 return
             }
-            // F1 or I key for file information
             if (event.key === Qt.Key_F1 || event.key === Qt.Key_I) {
                 showFileInfo = !showFileInfo
                 event.accepted = true
                 return
             }
-            // Alt+Left or Backspace to go back
             if ((event.modifiers & Qt.AltModifier && event.key === Qt.Key_Left) || event.key === Qt.Key_Backspace) {
                 if (currentPath !== homeDir) {
                     navigateUp()
@@ -313,14 +305,11 @@ DarkModal {
             case Qt.Key_Up:
                 if (backButtonFocused) {
                     backButtonFocused = false
-                    // Go to first row, appropriate column
                     var col = selectedIndex % gridColumns
                     selectedIndex = Math.min(col, totalItems - 1)
                 } else if (selectedIndex >= gridColumns) {
-                    // Move up one row
                     selectedIndex -= gridColumns
                 } else if (currentPath !== homeDir) {
-                    // At top row, go to back button
                     backButtonFocused = true
                     selectedIndex = -1
                 }
@@ -331,12 +320,10 @@ DarkModal {
                     backButtonFocused = false
                     selectedIndex = 0
                 } else {
-                    // Move down one row if possible
                     var newIndex = selectedIndex + gridColumns
                     if (newIndex < totalItems) {
                         selectedIndex = newIndex
                     } else {
-                        // If can't go down a full row, go to last item in the column if exists
                         var lastRowStart = Math.floor((totalItems - 1) / gridColumns) * gridColumns
                         var col = selectedIndex % gridColumns
                         var targetIndex = lastRowStart + col
@@ -353,7 +340,6 @@ DarkModal {
                 if (backButtonFocused)
                     navigateUp()
                 else if (selectedIndex >= 0 && selectedIndex < totalItems)
-                    // Trigger selection by setting the grid's current index and using signal
                     fileBrowserModal.keyboardFileSelection(selectedIndex)
                 event.accepted = true
                 break
@@ -368,8 +354,6 @@ DarkModal {
 
         interval: 1
         onTriggered: {
-            // Access the currently selected item through model role names
-            // This will work because QML models expose role data
             executeKeyboardSelection(targetIndex)
         }
     }
@@ -550,13 +534,11 @@ DarkModal {
                         }
                         border.color: keyboardNavigationActive && delegateRoot.index === selectedIndex ? Theme.primary : Theme.outline
                         border.width: (mouseArea.containsMouse || (keyboardNavigationActive && delegateRoot.index === selectedIndex)) ? 1 : 0
-                        // Update file info when this item gets selected via keyboard or initially
                         Component.onCompleted: {
                             if (keyboardNavigationActive && delegateRoot.index === selectedIndex)
                                 setSelectedFileData(delegateRoot.filePath, delegateRoot.fileName, delegateRoot.fileIsDir)
                         }
 
-                        // Watch for selectedIndex changes to update file info during keyboard navigation
                         Connections {
                             function onSelectedIndexChanged() {
                                 if (keyboardNavigationActive && selectedIndex === delegateRoot.index)
@@ -579,19 +561,16 @@ DarkModal {
                                     anchors.fill: parent
                                     property var weExtensions: [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tga"]
                                     property int weExtIndex: 0
-                                    source: {
+                                    imagePath: {
                                         if (weMode && delegateRoot.fileIsDir) {
-                                            return "file://" + delegateRoot.filePath + "/preview" + weExtensions[weExtIndex]
+                                            return delegateRoot.filePath + "/preview" + weExtensions[weExtIndex]
                                         }
-                                        return (!delegateRoot.fileIsDir && isImageFile(delegateRoot.fileName)) ? ("file://" + delegateRoot.filePath) : ""
+                                        return (!delegateRoot.fileIsDir && isImageFile(delegateRoot.fileName)) ? delegateRoot.filePath : ""
                                     }
                                     onStatusChanged: {
                                         if (weMode && delegateRoot.fileIsDir && status === Image.Error) {
                                             if (weExtIndex < weExtensions.length - 1) {
                                                 weExtIndex++
-                                                source = "file://" + delegateRoot.filePath + "/preview" + weExtensions[weExtIndex]
-                                            } else {
-                                                source = ""
                                             }
                                         }
                                     }
@@ -637,7 +616,6 @@ DarkModal {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                // Update selected file info and index first
                                 selectedIndex = delegateRoot.index
                                 setSelectedFileData(delegateRoot.filePath, delegateRoot.fileName, delegateRoot.fileIsDir)
                                 if (weMode && delegateRoot.fileIsDir) {
@@ -653,7 +631,6 @@ DarkModal {
                             }
                         }
 
-                        // Handle keyboard selection
                         Connections {
                             function onKeyboardSelectionRequestedChanged() {
                                 if (fileBrowserModal.keyboardSelectionRequested && fileBrowserModal.keyboardSelectionIndex === delegateRoot.index) {
@@ -709,10 +686,8 @@ DarkModal {
                     }
                     onAccepted: {
                         if (text.trim() !== "") {
-                            // Remove file:// protocol from currentPath if present for proper construction
                             var basePath = currentPath.replace(/^file:\/\//, '')
                             var fullPath = basePath + "/" + text.trim()
-                            // Ensure consistent path format - remove any double slashes and normalize
                             fullPath = fullPath.replace(/\/+/g, '/')
                             handleSaveFile(fullPath)
                         }
@@ -740,10 +715,8 @@ DarkModal {
                         enabled: fileNameInput.text.trim() !== ""
                         onClicked: {
                             if (fileNameInput.text.trim() !== "") {
-                                // Remove file:// protocol from currentPath if present for proper construction
                                 var basePath = currentPath.replace(/^file:\/\//, '')
                                 var fullPath = basePath + "/" + fileNameInput.text.trim()
-                                // Ensure consistent path format - remove any double slashes and normalize
                                 fullPath = fullPath.replace(/\/+/g, '/')
                                 handleSaveFile(fullPath)
                             }
@@ -784,7 +757,6 @@ DarkModal {
                 }
             }
 
-            // Overwrite confirmation dialog
             Item {
                 id: overwriteDialog
                 anchors.fill: parent

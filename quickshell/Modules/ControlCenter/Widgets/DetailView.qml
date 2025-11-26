@@ -24,6 +24,4 @@ Rectangle {
         sourceComponent: root.content
         asynchronous: true
     }
-
-
 }

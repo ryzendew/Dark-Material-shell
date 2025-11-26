@@ -26,9 +26,10 @@ Rectangle {
     }
 
     readonly property color _tileBgActive: Theme.primary
-    readonly property color _tileBgInactive:
-        Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b,
-                Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity)
+    readonly property color _tileBgInactive: {
+        const alpha = Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity
+        return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, alpha)
+    }
     readonly property color _tileRingActive:
         Qt.rgba(Theme.primaryText.r, Theme.primaryText.g, Theme.primaryText.b, 0.22)
     readonly property color _tileIconActive: Theme.primaryContainer
@@ -40,7 +41,6 @@ Rectangle {
     antialiasing: true
     opacity: enabled ? 1.0 : 0.6
     
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

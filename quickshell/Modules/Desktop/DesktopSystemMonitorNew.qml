@@ -24,7 +24,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position based on settings
     property var positionAnchors: {
         switch(position) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -69,7 +68,6 @@ PanelWindow {
         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
         border.width: 1
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -94,7 +92,6 @@ PanelWindow {
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -112,7 +109,6 @@ PanelWindow {
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -135,7 +131,6 @@ PanelWindow {
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -153,7 +148,6 @@ PanelWindow {
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -167,14 +161,12 @@ PanelWindow {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             onPressed: {
                 if (alwaysVisible) {
-                    // Widget is always visible, no need to show/hide
                 }
             }
         }

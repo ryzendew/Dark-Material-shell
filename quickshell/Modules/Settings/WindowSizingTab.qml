@@ -15,7 +15,6 @@ Item {
     property var parentModal: null
 
     Component.onCompleted: {
-        // Always set initial position
         if (parentModal) {
             parentModal.positioning = "custom"
             const x = SettingsData.settingsWindowX >= 0 ? SettingsData.settingsWindowX : getDefaultX()
@@ -37,7 +36,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Window Size Settings
             StyledRect {
                 width: parent.width
                 height: windowSizeSection.implicitHeight + Theme.spacingL * 2
@@ -304,11 +302,9 @@ Item {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    // Reset to auto sizing
                                     SettingsData.setSettingsWindowWidth(0) // 0 means auto
                                     SettingsData.setSettingsWindowHeight(0) // 0 means auto
                                     if (parentModal) {
-                                        // Reset to original auto-sizing logic
                                         parentModal.width = getDefaultWidth()
                                         parentModal.height = getDefaultHeight()
                                     }
@@ -327,7 +323,6 @@ Item {
                 }
             }
 
-            // Window Position Settings
             StyledRect {
                 width: parent.width
                 height: windowPositionSection.implicitHeight + Theme.spacingL * 2
@@ -385,7 +380,6 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        // Top row
                         Row {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -490,7 +484,6 @@ Item {
                             }
                         }
 
-                        // Bottom row
                         Row {
                             width: parent.width
                             spacing: Theme.spacingS
@@ -636,7 +629,6 @@ Item {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    // Reset to auto positioning (center)
                                     SettingsData.setSettingsWindowX(-1) // -1 means auto
                                     SettingsData.setSettingsWindowY(-1) // -1 means auto
                                     if (parentModal) {
@@ -658,7 +650,6 @@ Item {
                 }
             }
 
-            // Current Screen Info
             StyledRect {
                 width: parent.width
                 height: screenInfoSection.implicitHeight + Theme.spacingL * 2

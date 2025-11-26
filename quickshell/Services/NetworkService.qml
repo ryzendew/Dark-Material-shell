@@ -160,7 +160,6 @@ Singleton {
 
         onExited: exitCode => {
             if (exitCode !== 0 && !restartTimer.running) {
-                console.warn("NetworkManager monitor failed, restarting in 5s")
                 restartTimer.start()
             }
         }
@@ -476,10 +475,8 @@ Singleton {
                     const parts = root.splitNmcliFields(rest)
                     if (parts.length >= 2) {
                         const signal = parseInt(parts[1])
-                        // // console.log("Current WiFi signal strength:", signal)
                         root.wifiSignalStrength = isNaN(signal) ? 0 : signal
                         root.currentWifiSSID = parts.slice(1).join(":")
-                        // // console.log("Current WiFi SSID:", root.currentWifiSSID)
                     }
                     return
                 }
@@ -517,7 +514,6 @@ Singleton {
         }
     }
 
-    // Resolve SSID from active WiFi connection UUID when scans don't mark any row as ACTIVE.
     Process {
         id: resolveWifiSSID
         command: root.wifiConnectionUuid ? lowPriorityCmd.concat(["nmcli", "-g", "802-11-wireless.ssid", "connection", "show", "uuid", root.wifiConnectionUuid]) : []
@@ -533,7 +529,6 @@ Singleton {
         }
     }
 
-    // Fallback 2: Resolve SSID from device info (GENERAL.CONNECTION usually matches SSID for WiFi)
     Process {
         id: resolveWifiSSIDFromDevice
         command: root.wifiInterface ? lowPriorityCmd.concat(["nmcli", "-t", "-f", "GENERAL.CONNECTION", "device", "show", root.wifiInterface]) : []
@@ -586,7 +581,6 @@ Singleton {
             if (exitCode === 0) {
                 scanWifiNetworks()
             } else {
-                console.warn("WiFi scan request failed")
                 root.isScanning = false
             }
         }
@@ -874,7 +868,6 @@ Singleton {
         running: false
 
         onExited: exitCode => {
-            // // console.log("Set route metrics process exited with code:", exitCode)
             if (exitCode === 0) {
                 restartConnections.running = true
             }
@@ -1084,10 +1077,8 @@ Singleton {
         }
     }
 
-    // DNS Configuration
     function setDnsServers(connectionName, primaryDns, secondaryDns) {
         if (!connectionName) {
-            // Apply to active connection
             if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
                 connectionName = root.wifiConnectionUuid
             } else if (root.networkStatus === "ethernet" && root.ethernetConnectionUuid) {
@@ -1121,7 +1112,6 @@ Singleton {
         }
     }
 
-    // IP Configuration
     function setIpv4Config(connectionName, method, address, gateway) {
         if (!connectionName) {
             if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
@@ -1200,7 +1190,6 @@ Singleton {
         }
     }
 
-    // Proxy Configuration
     function setProxyConfig(connectionName, method, httpProxy, httpsProxy, ftpProxy, socksProxy, noProxy) {
         if (!connectionName) {
             if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {
@@ -1222,7 +1211,6 @@ Singleton {
             if (socksProxy) cmd.push("proxy.socks", socksProxy)
             if (noProxy) cmd.push("proxy.no-proxy", noProxy)
         } else if (method === "auto") {
-            // PAC URL would go here if needed
         }
         
         setProxyProcess.command = lowPriorityCmd.concat(cmd)
@@ -1243,7 +1231,6 @@ Singleton {
         }
     }
 
-    // Advanced Settings
     function setMtu(connectionName, mtu) {
         if (!connectionName) {
             if (root.networkStatus === "wifi" && root.wifiConnectionUuid) {

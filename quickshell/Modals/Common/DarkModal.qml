@@ -40,13 +40,11 @@ PanelWindow {
     signal backgroundClicked
 
     function open() {
-        // console.log("DarkModal: open() called for", objectName)
         ModalManager.openModal(root)
         closeTimer.stop()
         shouldBeVisible = true
         visible = true
         focusScope.forceActiveFocus()
-        // console.log("DarkModal: Modal opened, visible:", visible, "shouldBeVisible:", shouldBeVisible)
     }
 
     function close() {

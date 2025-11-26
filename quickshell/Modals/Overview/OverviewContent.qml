@@ -15,21 +15,17 @@ Item {
     
     anchors.fill: parent
     
-    // Get windows for this screen (reactive) - but include global index
     property var screenWindows: {
         if (!screenName) {
             return []
         }
         
-        // Get all windows globally first (for numbering)
         const allWindowsGlobal = OverviewService.getAllWindowsFlat()
         const allWindows = OverviewService.getAllWindowsByScreen()
         const allKeys = Object.keys(allWindows)
         
-        // Try exact match first
         let windows = allWindows[screenName] || []
         
-        // If no match, try case-insensitive matching
         if (windows.length === 0) {
             const screenLower = screenName.toLowerCase()
             const matchingKey = allKeys.find(key => {
@@ -40,7 +36,6 @@ Item {
             }
         }
         
-        // If still no match, try partial matching
         if (windows.length === 0) {
             const matchingKey = allKeys.find(key => {
                 const keyLower = key.toLowerCase()
@@ -53,7 +48,6 @@ Item {
             }
         }
         
-        // Last resort: if screenName contains a monitor identifier
         if (windows.length === 0 && screenName.includes("-")) {
             const parts = screenName.split("-")
             if (parts.length >= 2) {
@@ -67,7 +61,6 @@ Item {
             }
         }
         
-        // Add global index to each window
         const globalWindowMap = {}
         allWindowsGlobal.forEach((gw, idx) => {
             if (gw.toplevel) {
@@ -142,10 +135,8 @@ Item {
         })
     }
     
-    // Get all windows globally (for number key handling)
     property var allWindowsGlobal: OverviewService.getAllWindowsFlat()
     
-    // Top bar height
     readonly property real topBarHeight: Theme.barHeight || 40
     readonly property real topMargin: topBarHeight + Theme.spacingXL
     
@@ -230,7 +221,6 @@ Item {
             anchors.fill: parent
             spacing: 0
             
-            // Top search bar
             Rectangle {
                 Layout.fillWidth: true
                 Layout.topMargin: root.topMargin
@@ -280,7 +270,6 @@ Item {
                 }
             }
             
-            // Main content area
             RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -290,7 +279,6 @@ Item {
                 Layout.bottomMargin: Theme.spacingXL
                 spacing: Theme.spacingXL
                 
-                // Left sidebar - Workspaces
                 Rectangle {
                     Layout.preferredWidth: 320
                     Layout.fillHeight: true
@@ -394,7 +382,6 @@ Item {
                     }
                 }
                 
-                // Center - Window grid
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -463,7 +450,6 @@ Item {
                                         anchors.margins: Theme.spacingM
                                         spacing: Theme.spacingS
                                         
-                                        // Window preview area
                                         Rectangle {
                                             width: parent.width
                                             height: parent.height - 60
@@ -471,7 +457,6 @@ Item {
                                             color: Theme.surfaceVariant
                                             clip: true
                                             
-                                            // Window screenshot (if available)
                                             Image {
                                                 id: windowScreenshot
                                                 anchors.fill: parent
@@ -519,7 +504,6 @@ Item {
                                                 }
                                             }
                                             
-                                            // App icon as fallback
                                             Image {
                                                 id: appIcon
                                                 anchors.centerIn: parent
@@ -539,7 +523,6 @@ Item {
                                                          (appIcon.status !== Image.Ready || appIcon.source === "")
                                             }
                                             
-                                            // Number badge (1-10)
                                             Rectangle {
                                                 anchors {
                                                     top: parent.top
@@ -572,7 +555,6 @@ Item {
                                                 }
                                             }
                                             
-                                            // Active indicator
                                             Rectangle {
                                                 anchors {
                                                     left: parent.left
@@ -585,7 +567,6 @@ Item {
                                             }
                                         }
                                         
-                                        // Window title
                                         StyledText {
                                             width: parent.width
                                             text: windowData ? windowData.title : ""
@@ -615,7 +596,6 @@ Item {
                                     }
                                 }
                                 
-                                // Empty state
                                 Item {
                                     anchors.centerIn: parent
                                     width: 400

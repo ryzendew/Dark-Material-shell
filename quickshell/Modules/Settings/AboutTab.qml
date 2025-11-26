@@ -21,7 +21,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Hardware Information Section
             StyledRect {
                 width: parent.width
                 height: hardwareSection.implicitHeight + Theme.spacingL * 2
@@ -59,7 +58,6 @@ Item {
                         }
                     }
 
-                    // Processor Section
                     StyledRect {
                         width: parent.width
                         height: processorSection.implicitHeight + Theme.spacingM * 2
@@ -186,7 +184,6 @@ Item {
                         }
                     }
 
-                    // Memory Section
                     StyledRect {
                         width: parent.width
                         height: memorySection.implicitHeight + Theme.spacingM * 2
@@ -276,7 +273,6 @@ Item {
                         }
                     }
 
-                    // Graphics Section
                     StyledRect {
                         width: parent.width
                         height: graphicsSection.implicitHeight + Theme.spacingM * 2
@@ -358,7 +354,6 @@ Item {
                         }
                     }
 
-                    // Storage Section
                     StyledRect {
                         width: parent.width
                         height: storageSection.implicitHeight + Theme.spacingM * 2
@@ -463,7 +458,6 @@ Item {
                         }
                     }
 
-                    // System Section
                     StyledRect {
                         width: parent.width
                         height: systemSection.implicitHeight + Theme.spacingM * 2

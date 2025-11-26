@@ -22,7 +22,6 @@ Rectangle {
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
     border.width: 1
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -39,7 +38,6 @@ Rectangle {
         anchors.margins: Theme.spacingM
         spacing: Theme.spacingS
 
-        // Header
         Row {
             width: parent.width
             spacing: Theme.spacingS
@@ -61,7 +59,6 @@ Rectangle {
 
             Item { width: 1; height: 1 } // Spacer
 
-            // Toggle buttons for input/output visibility
             Row {
                 spacing: Theme.spacingXS
                 anchors.verticalCenter: parent.verticalCenter
@@ -80,7 +77,6 @@ Rectangle {
             }
         }
 
-        // Output applications
         Column {
             id: outputColumn
             width: parent.width
@@ -107,7 +103,6 @@ Rectangle {
                 }
             }
 
-            // No applications message
             StyledText {
                 text: "No applications with audio output"
                 font.pixelSize: Theme.fontSizeS
@@ -117,7 +112,6 @@ Rectangle {
             }
         }
 
-        // Input applications
         Column {
             id: inputColumn
             width: parent.width
@@ -144,7 +138,6 @@ Rectangle {
                 }
             }
 
-            // No applications message
             StyledText {
                 text: "No applications with audio input"
                 font.pixelSize: Theme.fontSizeS
@@ -154,7 +147,6 @@ Rectangle {
             }
         }
 
-        // No applications at all
         StyledText {
             text: "No applications with audio"
             font.pixelSize: Theme.fontSizeS
@@ -164,7 +156,6 @@ Rectangle {
         }
     }
 
-    // Individual application volume control component
     Component {
         id: applicationVolumeControlComponent
         
@@ -201,7 +192,6 @@ Rectangle {
                 anchors.margins: Theme.spacingS
                 spacing: Theme.spacingS
 
-                // Application icon
                 DarkIcon {
                     name: ApplicationAudioService.getApplicationIcon(node)
                     size: compact ? Theme.iconSizeS : Theme.iconSize
@@ -209,7 +199,6 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                // Application name
                 StyledText {
                     text: ApplicationAudioService.getApplicationName(node)
                     font.pixelSize: compact ? Theme.fontSizeS : Theme.fontSizeM
@@ -221,7 +210,6 @@ Rectangle {
 
                 Item { width: 1; height: 1 } // Spacer
 
-                // Volume slider
                 DarkSlider {
                     id: slider
                     width: compact ? 80 : 120
@@ -248,7 +236,6 @@ Rectangle {
                 }
             }
 
-            // Mute indicator
             Rectangle {
                 width: 4
                 height: parent.height

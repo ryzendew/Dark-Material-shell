@@ -1,38 +1,5 @@
 .pragma library
 
-/*
-https://github.com/ajitid/fzf-for-js
-
-BSD 3-Clause License
-
-Copyright (c) 2021, Ajit
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 
 const normalized = {
   216: "O",
@@ -305,210 +272,6 @@ function indexAt(index, max, forward) {
 const SCORE_MATCH = 16, SCORE_GAP_START = -3, SCORE_GAP_EXTENTION = -1, BONUS_BOUNDARY = SCORE_MATCH / 2, BONUS_NON_WORD = SCORE_MATCH / 2, BONUS_CAMEL_123 = BONUS_BOUNDARY + SCORE_GAP_EXTENTION, BONUS_CONSECUTIVE = -(SCORE_GAP_START + SCORE_GAP_EXTENTION), BONUS_FIRST_CHAR_MULTIPLIER = 2;
 function createPosSet(withPos) {
   if (withPos) {
-    return /* @__PURE__ */ new Set();
-  }
-  return null;
-}
-function alloc16(offset, slab2, size) {
-  if (slab2 !== null && slab2.i16.length > offset + size) {
-    const subarray = slab2.i16.subarray(offset, offset + size);
-    return [offset + size, subarray];
-  }
-  return [offset, new Int16Array(size)];
-}
-function alloc32(offset, slab2, size) {
-  if (slab2 !== null && slab2.i32.length > offset + size) {
-    const subarray = slab2.i32.subarray(offset, offset + size);
-    return [offset + size, subarray];
-  }
-  return [offset, new Int32Array(size)];
-}
-function charClassOfAscii(rune) {
-  if (rune >= SMALL_A_RUNE && rune <= SMALL_Z_RUNE) {
-    return 1;
-  } else if (rune >= CAPITAL_A_RUNE && rune <= CAPITAL_Z_RUNE) {
-    return 2;
-  } else if (rune >= NUMERAL_ZERO_RUNE && rune <= NUMERAL_NINE_RUNE) {
-    return 4;
-  } else {
-    return 0;
-  }
-}
-function charClassOfNonAscii(rune) {
-  const char = String.fromCodePoint(rune);
-  if (char !== char.toUpperCase()) {
-    return 1;
-  } else if (char !== char.toLowerCase()) {
-    return 2;
-  } else if (char.match(/\p{Number}/gu) !== null) {
-    return 4;
-  } else if (char.match(/\p{Letter}/gu) !== null) {
-    return 3;
-  }
-  return 0;
-}
-function charClassOf(rune) {
-  if (rune <= MAX_ASCII) {
-    return charClassOfAscii(rune);
-  }
-  return charClassOfNonAscii(rune);
-}
-function bonusFor(prevClass, currClass) {
-  if (prevClass === 0 && currClass !== 0) {
-    return BONUS_BOUNDARY;
-  } else if (prevClass === 1 && currClass === 2 || prevClass !== 4 && currClass === 4) {
-    return BONUS_CAMEL_123;
-  } else if (currClass === 0) {
-    return BONUS_NON_WORD;
-  }
-  return 0;
-}
-function bonusAt(input, idx) {
-  if (idx === 0) {
-    return BONUS_BOUNDARY;
-  }
-  return bonusFor(charClassOf(input[idx - 1]), charClassOf(input[idx]));
-}
-function trySkip(input, caseSensitive, char, from) {
-  let rest = input.slice(from);
-  let idx = rest.indexOf(char);
-  if (idx === 0) {
-    return from;
-  }
-  if (!caseSensitive && char >= SMALL_A_RUNE && char <= SMALL_Z_RUNE) {
-    if (idx > 0) {
-      rest = rest.slice(0, idx);
-    }
-    const uidx = rest.indexOf(char - 32);
-    if (uidx >= 0) {
-      idx = uidx;
-    }
-  }
-  if (idx < 0) {
-    return -1;
-  }
-  return from + idx;
-}
-function isAscii(runes) {
-  for (const rune of runes) {
-    if (rune >= 128) {
-      return false;
-    }
-  }
-  return true;
-}
-function asciiFuzzyIndex(input, pattern, caseSensitive) {
-  if (!isAscii(input)) {
-    return 0;
-  }
-  if (!isAscii(pattern)) {
-    return -1;
-  }
-  let firstIdx = 0, idx = 0;
-  for (let pidx = 0; pidx < pattern.length; pidx++) {
-    idx = trySkip(input, caseSensitive, pattern[pidx], idx);
-    if (idx < 0) {
-      return -1;
-    }
-    if (pidx === 0 && idx > 0) {
-      firstIdx = idx - 1;
-    }
-    idx++;
-  }
-  return firstIdx;
-}
-const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos, slab2) => {
-  const M = pattern.length;
-  if (M === 0) {
-    return [{ start: 0, end: 0, score: 0 }, createPosSet(withPos)];
-  }
-  const N = input.length;
-  if (slab2 !== null && N * M > slab2.i16.length) {
-    return fuzzyMatchV1(caseSensitive, normalize, forward, input, pattern, withPos);
-  }
-  const idx = asciiFuzzyIndex(input, pattern, caseSensitive);
-  if (idx < 0) {
-    return [{ start: -1, end: -1, score: 0 }, null];
-  }
-  let offset16 = 0, offset32 = 0, H0 = null, C0 = null, B = null, F = null;
-  [offset16, H0] = alloc16(offset16, slab2, N);
-  [offset16, C0] = alloc16(offset16, slab2, N);
-  [offset16, B] = alloc16(offset16, slab2, N);
-  [offset32, F] = alloc32(offset32, slab2, M);
-  const [, T] = alloc32(offset32, slab2, N);
-  for (let i = 0; i < T.length; i++) {
-    T[i] = input[i];
-  }
-  let maxScore = toShort(0), maxScorePos = 0;
-  let pidx = 0, lastIdx = 0;
-  const pchar0 = pattern[0];
-  let pchar = pattern[0], prevH0 = toShort(0), prevCharClass = 0, inGap = false;
-  let Tsub = T.subarray(idx);
-  let H0sub = H0.subarray(idx).subarray(0, Tsub.length), C0sub = C0.subarray(idx).subarray(0, Tsub.length), Bsub = B.subarray(idx).subarray(0, Tsub.length);
-  for (let [off, char] of Tsub.entries()) {
-    let charClass = null;
-    if (char <= MAX_ASCII) {
-      charClass = charClassOfAscii(char);
-      if (!caseSensitive && charClass === 2) {
-        char += 32;
-      }
-    } else {
-      charClass = charClassOfNonAscii(char);
-      if (!caseSensitive && charClass === 2) {
-        char = String.fromCodePoint(char).toLowerCase().codePointAt(0);
-      }
-      if (normalize) {
-        char = normalizeRune(char);
-      }
-    }
-    Tsub[off] = char;
-    const bonus = bonusFor(prevCharClass, charClass);
-    Bsub[off] = bonus;
-    prevCharClass = charClass;
-    if (char === pchar) {
-      if (pidx < M) {
-        F[pidx] = toInt(idx + off);
-        pidx++;
-        pchar = pattern[Math.min(pidx, M - 1)];
-      }
-      lastIdx = idx + off;
-    }
-    if (char === pchar0) {
-      const score = SCORE_MATCH + bonus * BONUS_FIRST_CHAR_MULTIPLIER;
-      H0sub[off] = score;
-      C0sub[off] = 1;
-      if (M === 1 && (forward && score > maxScore || !forward && score >= maxScore)) {
-        maxScore = score;
-        maxScorePos = idx + off;
-        if (forward && bonus === BONUS_BOUNDARY) {
-          break;
-        }
-      }
-      inGap = false;
-    } else {
-      if (inGap) {
-        H0sub[off] = maxInt16(prevH0 + SCORE_GAP_EXTENTION, 0);
-      } else {
-        H0sub[off] = maxInt16(prevH0 + SCORE_GAP_START, 0);
-      }
-      C0sub[off] = 0;
-      inGap = true;
-    }
-    prevH0 = H0sub[off];
-  }
-  if (pidx !== M) {
-    return [{ start: -1, end: -1, score: 0 }, null];
-  }
-  if (M === 1) {
-    const result = {
-      start: maxScorePos,
-      end: maxScorePos + 1,
-      score: maxScore
-    };
-    if (!withPos) {
-      return [result, null];
-    }
-    const pos2 = /* @__PURE__ */ new Set();
     pos2.add(maxScorePos);
     return [result, pos2];
   }
@@ -916,170 +679,6 @@ function makeSlab(size16, size32) {
   };
 }
 const slab = makeSlab(SLAB_16_SIZE, SLAB_32_SIZE);
-var TermType = /* @__PURE__ */ ((TermType2) => {
-  TermType2[TermType2["Fuzzy"] = 0] = "Fuzzy";
-  TermType2[TermType2["Exact"] = 1] = "Exact";
-  TermType2[TermType2["Prefix"] = 2] = "Prefix";
-  TermType2[TermType2["Suffix"] = 3] = "Suffix";
-  TermType2[TermType2["Equal"] = 4] = "Equal";
-  return TermType2;
-})(TermType || {});
-const termTypeMap = {
-  [0]: fuzzyMatchV2,
-  [1]: exactMatchNaive,
-  [2]: prefixMatch,
-  [3]: suffixMatch,
-  [4]: equalMatch
-};
-function buildPatternForExtendedMatch(fuzzy, caseMode, normalize, str) {
-  let cacheable = true;
-  str = str.trimLeft();
-  {
-    const trimmedAtRightStr = str.trimRight();
-    if (trimmedAtRightStr.endsWith("\\") && str[trimmedAtRightStr.length] === " ") {
-      str = trimmedAtRightStr + " ";
-    } else {
-      str = trimmedAtRightStr;
-    }
-  }
-  let sortable = false;
-  let termSets = [];
-  termSets = parseTerms(fuzzy, caseMode, normalize, str);
-  Loop:
-    for (const termSet of termSets) {
-      for (const [idx, term] of termSet.entries()) {
-        if (!term.inv) {
-          sortable = true;
-        }
-        if (!cacheable || idx > 0 || term.inv || fuzzy && term.typ !== 0 || !fuzzy && term.typ !== 1) {
-          cacheable = false;
-          if (sortable) {
-            break Loop;
-          }
-        }
-      }
-    }
-  return {
-    str,
-    termSets,
-    sortable,
-    cacheable,
-    fuzzy
-  };
-}
-function parseTerms(fuzzy, caseMode, normalize, str) {
-  str = str.replace(/\\ /g, "	");
-  const tokens = str.split(/ +/);
-  const sets = [];
-  let set = [];
-  let switchSet = false;
-  let afterBar = false;
-  for (const token of tokens) {
-    let typ = 0, inv = false, text = token.replace(/\t/g, " ");
-    const lowerText = text.toLowerCase();
-    const caseSensitive = caseMode === "case-sensitive" || caseMode === "smart-case" && text !== lowerText;
-    const normalizeTerm = normalize && lowerText === runesToStr(strToRunes(lowerText).map(normalizeRune));
-    if (!caseSensitive) {
-      text = lowerText;
-    }
-    if (!fuzzy) {
-      typ = 1;
-    }
-    if (set.length > 0 && !afterBar && text === "|") {
-      switchSet = false;
-      afterBar = true;
-      continue;
-    }
-    afterBar = false;
-    if (text.startsWith("!")) {
-      inv = true;
-      typ = 1;
-      text = text.substring(1);
-    }
-    if (text !== "$" && text.endsWith("$")) {
-      typ = 3;
-      text = text.substring(0, text.length - 1);
-    }
-    if (text.startsWith("'")) {
-      if (fuzzy && !inv) {
-        typ = 1;
-      } else {
-        typ = 0;
-      }
-      text = text.substring(1);
-    } else if (text.startsWith("^")) {
-      if (typ === 3) {
-        typ = 4;
-      } else {
-        typ = 2;
-      }
-      text = text.substring(1);
-    }
-    if (text.length > 0) {
-      if (switchSet) {
-        sets.push(set);
-        set = [];
-      }
-      let textRunes = strToRunes(text);
-      if (normalizeTerm) {
-        textRunes = textRunes.map(normalizeRune);
-      }
-      set.push({
-        typ,
-        inv,
-        text: textRunes,
-        caseSensitive,
-        normalize: normalizeTerm
-      });
-      switchSet = true;
-    }
-  }
-  if (set.length > 0) {
-    sets.push(set);
-  }
-  return sets;
-}
-const buildPatternForBasicMatch = (query, casing, normalize) => {
-  let caseSensitive = false;
-  switch (casing) {
-    case "smart-case":
-      if (query.toLowerCase() !== query) {
-        caseSensitive = true;
-      }
-      break;
-    case "case-sensitive":
-      caseSensitive = true;
-      break;
-    case "case-insensitive":
-      query = query.toLowerCase();
-      caseSensitive = false;
-      break;
-  }
-  let queryRunes = strToRunes(query);
-  if (normalize) {
-    queryRunes = queryRunes.map(normalizeRune);
-  }
-  return {
-    queryRunes,
-    caseSensitive
-  };
-};
-function iter(algoFn, tokens, caseSensitive, normalize, forward, pattern, slab2) {
-  for (const part of tokens) {
-    const [res, pos] = algoFn(caseSensitive, normalize, forward, part.text, pattern, true, slab2);
-    if (res.start >= 0) {
-      const sidx = res.start + part.prefixLength;
-      const eidx = res.end + part.prefixLength;
-      if (pos !== null) {
-        const newPos = /* @__PURE__ */ new Set();
-        pos.forEach((v) => newPos.add(part.prefixLength + v));
-        return [[sidx, eidx], res.score, newPos];
-      }
-      return [[sidx, eidx], res.score, pos];
-    }
-  }
-  return [[-1, -1], 0, null];
-}
 function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
   const input = [
     {
@@ -1089,196 +688,23 @@ function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
   ];
   const offsets = [];
   let totalScore = 0;
-  const allPos = /* @__PURE__ */ new Set();
-  for (const termSet of pattern.termSets) {
-    let offset = [0, 0];
-    let currentScore = 0;
-    let matched = false;
-    for (const term of termSet) {
-      let algoFn = termTypeMap[term.typ];
-      if (term.typ === TermType.Fuzzy) {
-        algoFn = fuzzyAlgo;
+  for (const part of input) {
+    const res = fuzzyAlgo(false, false, forward, part.text, pattern, true, slab);
+    if (res[0].start >= 0) {
+      const sidx = res[0].start + part.prefixLength;
+      const eidx = res[0].end + part.prefixLength;
+      totalScore += res[0].score;
+      offsets.push([sidx, eidx]);
+      if (res[1] !== null) {
+        const newPos = new Set();
+        res[1].forEach((v) => newPos.add(part.prefixLength + v));
+        return [[sidx, eidx], totalScore, newPos];
       }
-      const [off, score, pos] = iter(
-        algoFn,
-        input,
-        term.caseSensitive,
-        term.normalize,
-        forward,
-        term.text,
-        slab
-      );
-      const sidx = off[0];
-      if (sidx >= 0) {
-        if (term.inv) {
-          continue;
-        }
-        offset = off;
-        currentScore = score;
-        matched = true;
-        if (pos !== null) {
-          pos.forEach((v) => allPos.add(v));
-        } else {
-          for (let idx = off[0]; idx < off[1]; ++idx) {
-            allPos.add(idx);
-          }
-        }
-        break;
-      } else if (term.inv) {
-        offset = [0, 0];
-        currentScore = 0;
-        matched = true;
-        continue;
-      }
-    }
-    if (matched) {
-      offsets.push(offset);
-      totalScore += currentScore;
+      return [[sidx, eidx], totalScore, res[1]];
     }
   }
-  return { offsets, totalScore, allPos };
+  return [[-1, -1], 0, null];
 }
-function getResultFromScoreMap(scoreMap, limit) {
-  const scoresInDesc = Object.keys(scoreMap).map((v) => parseInt(v, 10)).sort((a, b) => b - a);
-  let result = [];
-  for (const score of scoresInDesc) {
-    result = result.concat(scoreMap[score]);
-    if (result.length >= limit) {
-      break;
-    }
-  }
-  return result;
-}
-function getBasicMatchIter(scoreMap, queryRunes, caseSensitive) {
-  return (idx) => {
-    const itemRunes = this.runesList[idx];
-    if (queryRunes.length > itemRunes.length)
-      return;
-    let [match, positions] = this.algoFn(
-      caseSensitive,
-      this.opts.normalize,
-      this.opts.forward,
-      itemRunes,
-      queryRunes,
-      true,
-      slab
-    );
-    if (match.start === -1)
-      return;
-    if (this.opts.fuzzy === false) {
-      positions = /* @__PURE__ */ new Set();
-      for (let position = match.start; position < match.end; ++position) {
-        positions.add(position);
-      }
-    }
-    const scoreKey = this.opts.sort ? match.score : 0;
-    if (scoreMap[scoreKey] === void 0) {
-      scoreMap[scoreKey] = [];
-    }
-    scoreMap[scoreKey].push(Object.assign({
-      item: this.items[idx],
-      positions: positions != null ? positions : /* @__PURE__ */ new Set()
-    }, match));
-  };
-}
-function getExtendedMatchIter(scoreMap, pattern) {
-  return (idx) => {
-    const runes = this.runesList[idx];
-    const match = computeExtendedMatch(runes, pattern, this.algoFn, this.opts.forward);
-    if (match.offsets.length !== pattern.termSets.length)
-      return;
-    let sidx = -1, eidx = -1;
-    if (match.allPos.size > 0) {
-      sidx = Math.min(...match.allPos);
-      eidx = Math.max(...match.allPos) + 1;
-    }
-    const scoreKey = this.opts.sort ? match.totalScore : 0;
-    if (scoreMap[scoreKey] === void 0) {
-      scoreMap[scoreKey] = [];
-    }
-    scoreMap[scoreKey].push({
-      score: match.totalScore,
-      item: this.items[idx],
-      positions: match.allPos,
-      start: sidx,
-      end: eidx
-    });
-  };
-}
-function basicMatch(query) {
-  const { queryRunes, caseSensitive } = buildPatternForBasicMatch(
-    query,
-    this.opts.casing,
-    this.opts.normalize
-  );
-  const scoreMap = {};
-  const iter2 = getBasicMatchIter.bind(this)(
-    scoreMap,
-    queryRunes,
-    caseSensitive
-  );
-  for (let i = 0, len = this.runesList.length; i < len; ++i) {
-    iter2(i);
-  }
-  return getResultFromScoreMap(scoreMap, this.opts.limit);
-}
-function extendedMatch(query) {
-  const pattern = buildPatternForExtendedMatch(
-    Boolean(this.opts.fuzzy),
-    this.opts.casing,
-    this.opts.normalize,
-    query
-  );
-  const scoreMap = {};
-  const iter2 = getExtendedMatchIter.bind(this)(scoreMap, pattern);
-  for (let i = 0, len = this.runesList.length; i < len; ++i) {
-    iter2(i);
-  }
-  return getResultFromScoreMap(scoreMap, this.opts.limit);
-}
-const defaultOpts = {
-  limit: Infinity,
-  selector: (v) => v,
-  casing: "smart-case",
-  normalize: true,
-  fuzzy: "v2",
-  tiebreakers: [],
-  sort: true,
-  forward: true,
-  match: basicMatch
-};
-class Finder {
-  constructor(list, ...optionsTuple) {
-    this.opts = Object.assign(defaultOpts, optionsTuple[0]);
-    this.items = list;
-    this.runesList = list.map((item) => strToRunes(this.opts.selector(item).normalize()));
-    this.algoFn = exactMatchNaive;
-    switch (this.opts.fuzzy) {
-      case "v2":
-        this.algoFn = fuzzyMatchV2;
-        break;
-      case "v1":
-        this.algoFn = fuzzyMatchV1;
-        break;
-    }
-  }
-  find(query) {
-    if (query.length === 0 || this.items.length === 0)
-      return this.items.slice(0, this.opts.limit).map(createResultItemWithEmptyPos);
-    query = query.normalize();
-    let result = this.opts.match.bind(this)(query);
-    return postProcessResultItems(result, this.opts);
-  }
-}
-function createResultItemWithEmptyPos(item) {
-  return ({
-    item,
-    start: -1,
-    end: -1,
-    score: 0,
-    positions: /* @__PURE__ */ new Set()
-  })
-};
 function postProcessResultItems(result, opts) {
   if (opts.sort) {
     const { selector } = opts;
@@ -1304,4 +730,59 @@ function byLengthAsc(a, b, selector) {
 }
 function byStartAsc(a, b) {
   return a.start - b.start;
+}
+function Finder(items, opts) {
+  this.items = items || []
+  this.opts = opts || {}
+  this.opts.selector = this.opts.selector || (item => item)
+  this.opts.casing = this.opts.casing || "case-insensitive"
+  this.opts.fuzzy = this.opts.fuzzy || "v2"
+  this.opts.limit = this.opts.limit || 50
+  this.opts.sort = this.opts.sort !== undefined ? this.opts.sort : true
+  this.opts.tiebreakers = this.opts.tiebreakers || []
+  this.find = function(query) {
+    if (!query || query.length === 0) {
+      return this.items.map((item, idx) => ({ item: item, score: 0, index: idx }))
+    }
+    const results = []
+    const selector = this.opts.selector
+    const caseSensitive = this.opts.casing === "case-sensitive"
+    const normalize = !caseSensitive
+    const fuzzyAlgo = this.opts.fuzzy === "v2" ? fuzzyMatchV2 : fuzzyMatchV1
+    for (let idx = 0; idx < this.items.length; idx++) {
+      const item = this.items[idx]
+      const text = selector(item)
+      if (!text) continue
+      const runes = strToRunes(text)
+      const pattern = strToRunes(query)
+      const res = fuzzyAlgo(caseSensitive, normalize, true, runes, pattern, false, slab)
+      if (res[0].start >= 0) {
+        results.push({
+          item: item,
+          score: res[0].score,
+          index: idx,
+          start: res[0].start,
+          end: res[0].end
+        })
+      }
+    }
+    if (this.opts.sort) {
+      results.sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score
+        }
+        for (const tiebreaker of this.opts.tiebreakers) {
+          const diff = tiebreaker(a, b, selector)
+          if (diff !== 0) {
+            return diff
+          }
+        }
+        return 0
+      })
+    }
+    if (Number.isFinite(this.opts.limit)) {
+      return results.slice(0, this.opts.limit)
+    }
+    return results
+  }
 }

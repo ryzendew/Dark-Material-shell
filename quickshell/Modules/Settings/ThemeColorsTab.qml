@@ -87,41 +87,24 @@ Item {
             fontsEnumerated = true
         }
         
-        // Debug ColorPaletteService availability
-        // // console.log("ThemeColorsTab: ColorPaletteService available:", typeof ColorPaletteService !== 'undefined')
         if (typeof ColorPaletteService !== 'undefined') {
-            // // console.log("ThemeColorsTab: Initial extracted colors:", ColorPaletteService.extractedColors.length)
             
-            // Connect to custom theme signal
             ColorPaletteService.customThemeCreated.connect(function(themeData) {
-                // // console.log("ThemeColorsTab: Custom theme created, applying directly...")
                 if (typeof Theme !== 'undefined') {
-                    // Set the custom theme data directly
                     Theme.customThemeData = themeData
-                    // // console.log("ThemeColorsTab: Custom theme data set directly")
                     
-                    // Switch to custom theme mode and save preference
                     Theme.switchTheme("custom", true, false) // Save prefs, no transition
-                    // // console.log("ThemeColorsTab: Switched to custom theme mode")
                     
-                    // Force theme regeneration
                     Theme.generateSystemThemesFromCurrentTheme()
-                    // // console.log("ThemeColorsTab: System themes regenerated")
                 } else {
-                    // // console.log("ThemeColorsTab: Theme is undefined, cannot apply")
                 }
             })
             
-            // Connect to colors extracted signal to refresh UI
             ColorPaletteService.colorsExtracted.connect(function() {
-                // // console.log("ThemeColorsTab: Colors extracted, refreshing UI...")
-                // Force UI refresh by triggering a property change
                 themeColorsTab.forceUpdate = !themeColorsTab.forceUpdate
             })
             
-            // Connect to themes updated signal
             ColorPaletteService.themesUpdated.connect(function() {
-                // // console.log("ThemeColorsTab: Available themes updated:", ColorPaletteService.availableThemes.length)
                 themeColorsTab.forceUpdate = !themeColorsTab.forceUpdate
             })
         }
@@ -141,7 +124,6 @@ Item {
             spacing: Theme.spacingXL
 
 
-            // Theme Color
             StyledRect {
                 width: parent.width
                 height: themeSection.implicitHeight + Theme.spacingL * 2
@@ -264,7 +246,6 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             visible: Theme.currentThemeCategory === "generic" && Theme.currentTheme !== Theme.dynamic && Theme.currentThemeName !== "custom"
 
-                            // Extract Colors button
                             Rectangle {
                                 width: 140
                                 height: 32
@@ -285,7 +266,6 @@ Item {
                                     enabled: !ColorPaletteService.isExtracting && Theme.wallpaperPath
                                     cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                     onClicked: {
-                                        // // console.log("ThemeColorsTab: Extract colors clicked")
                                         if (Theme.wallpaperPath && typeof ColorPaletteService !== 'undefined') {
                                             ColorPaletteService.extractColorsFromWallpaper(Theme.wallpaperPath)
                                         }
@@ -293,7 +273,6 @@ Item {
                                 }
                             }
 
-                            // Custom Color Themes Dropdown
                             Column {
                                 spacing: Theme.spacingS
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -310,7 +289,6 @@ Item {
                                     spacing: Theme.spacingS
                                     anchors.horizontalCenter: parent.horizontalCenter
 
-                                    // Theme Selection Dropdown
                                     Rectangle {
                                         width: 200
                                         height: 32
@@ -359,7 +337,6 @@ Item {
                                         }
                                     }
 
-                                    // Delete Theme Button
                                     Rectangle {
                                         width: 32
                                         height: 32
@@ -386,7 +363,6 @@ Item {
                                     }
                                 }
 
-                                // Theme Dropdown List
                                 Rectangle {
                                     id: themeDropdown
                                     width: 200
@@ -455,8 +431,6 @@ Item {
                                 Repeater {
                                     model: {
                                         forceUpdate // Trigger update when this changes
-                                        // // console.log("ThemeColorsTab: Extracted colors length:", ColorPaletteService.extractedColors.length)
-                                        // // console.log("ThemeColorsTab: Extracted colors:", ColorPaletteService.extractedColors)
                                         return ColorPaletteService.extractedColors.length > 0 ? 
                                                ColorPaletteService.extractedColors.slice(0, 8) : // Show first 8 extracted colors
                                                ["blue", "purple", "green", "orange", "red"] // Fallback to original colors
@@ -501,18 +475,12 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 if (isExtractedColor) {
-                                                    // Handle extracted color selection - replace all with just this color
-                                                    // // console.log("ThemeColorsTab: Extracted color clicked:", colorValue)
                                                     
-                                                    // Clear all selections and select only this color
                                                     ColorPaletteService.clearSelection()
                                                     ColorPaletteService.selectColor(colorValue, true)
                                                     
-                                                    // Auto-apply theme with just this color
-                                                    // // console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
                                                     ColorPaletteService.applySelectedColors()
                                                 } else {
-                                                    // Handle original theme switching
                                                     Theme.switchTheme(colorValue)
                                                 }
                                             }
@@ -542,7 +510,6 @@ Item {
                                 Repeater {
                                     model: {
                                         forceUpdate // Trigger update when this changes
-                                        // // console.log("ThemeColorsTab: Second row - Extracted colors length:", ColorPaletteService.extractedColors.length)
                                         return ColorPaletteService.extractedColors.length > 8 ? 
                                                ColorPaletteService.extractedColors.slice(8, 16) : // Show next 8 extracted colors
                                                ["cyan", "pink", "amber", "coral", "monochrome"] // Fallback to original colors
@@ -587,18 +554,12 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 if (isExtractedColor) {
-                                                    // Handle extracted color selection - replace all with just this color
-                                                    // // console.log("ThemeColorsTab: Extracted color clicked (row 2):", colorValue)
                                                     
-                                                    // Clear all selections and select only this color
                                                     ColorPaletteService.clearSelection()
                                                     ColorPaletteService.selectColor(colorValue, true)
                                                     
-                                                    // Auto-apply theme with just this color
-                                                    // // console.log("ThemeColorsTab: Auto-applying theme with single extracted color...")
                                                     ColorPaletteService.applySelectedColors()
                                                 } else {
-                                                    // Handle original theme switching
                                                     Theme.switchTheme(colorValue)
                                                 }
                                             }
@@ -925,7 +886,6 @@ Item {
             }
 
 
-            // Transparency & Opacity Settings
             StyledRect {
                 width: parent.width
                 height: transparencySection.implicitHeight + Theme.spacingL * 2
@@ -1184,7 +1144,6 @@ Item {
                 }
             }
 
-            // Icon Tinting Settings
             StyledRect {
                 width: parent.width
                 height: iconTintingSection.implicitHeight + Theme.spacingL * 2
@@ -1283,7 +1242,6 @@ Item {
                 }
             }
 
-            // Borders & Shadows Settings
             StyledRect {
                 width: parent.width
                 height: bordersShadowsSection.implicitHeight + Theme.spacingL * 2
@@ -1500,7 +1458,6 @@ Item {
                 }
             }
 
-            // Visual Effects Settings
             StyledRect {
                 width: parent.width
                 height: visualEffectsSection.implicitHeight + Theme.spacingL * 2
@@ -1659,7 +1616,6 @@ Item {
                 }
             }
 
-            // System Configuration Warning
             Rectangle {
                 width: parent.width
                 height: warningText.implicitHeight + Theme.spacingM * 2
@@ -1693,7 +1649,6 @@ Item {
                 }
             }
 
-            // Icon Theme
             StyledRect {
                 width: parent.width
                 height: iconThemeSection.implicitHeight + Theme.spacingL * 2
@@ -1748,7 +1703,6 @@ Item {
                 }
             }
 
-            // GTK Theme
             StyledRect {
                 width: parent.width
                 height: gtkThemeSection.implicitHeight + Theme.spacingL * 2
@@ -1799,7 +1753,6 @@ Item {
                 }
             }
 
-            // GNOME Shell Theme
             StyledRect {
                 width: parent.width
                 height: shellThemeSection.implicitHeight + Theme.spacingL * 2
@@ -1876,7 +1829,6 @@ Item {
                 }
             }
 
-            // QT Theme
             StyledRect {
                 width: parent.width
                 height: qtThemeSection.implicitHeight + Theme.spacingL * 2
@@ -1945,7 +1897,6 @@ Item {
                 }
             }
 
-            // Cursor Theme
             StyledRect {
                 width: parent.width
                 height: cursorThemeSection.implicitHeight + Theme.spacingL * 2
@@ -2028,7 +1979,6 @@ Item {
                 }
             }
 
-            // System App Theming
             StyledRect {
                 width: parent.width
                 height: systemThemingSection.implicitHeight + Theme.spacingL * 2
@@ -2178,7 +2128,6 @@ Item {
         }
 
         onFileSelected: function(filePath) {
-            // Save the custom theme file path and switch to custom theme
             if (filePath.endsWith(".json")) {
                 SettingsData.setCustomThemeFile(filePath)
                 Theme.switchTheme("custom")

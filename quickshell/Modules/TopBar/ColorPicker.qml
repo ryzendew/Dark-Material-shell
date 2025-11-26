@@ -36,12 +36,10 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onPressed: {
-            // console.log("Color picker button clicked!")
             root.colorPickerRequested();
         }
     }
 
-    // Signal to notify TopBar to open color picker
     signal colorPickerRequested()
 
 }

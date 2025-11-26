@@ -71,7 +71,6 @@ Item {
                 return
             }
 
-            // Check if item is visible on screen initially
             const itemY = itemIndex * (ClipboardConstants.itemHeight + listView.spacing)
             const viewTop = listView.contentY
             const viewBottom = viewTop + listView.height
@@ -121,13 +120,11 @@ Item {
                               modal.activeImageLoads--
                           }
                           if (exitCode !== 0) {
-                              console.warn("Failed to load clipboard image:", thumbnailImage.entryId)
                           }
                       }
         }
     }
 
-    // Rounded mask effect for images
     MultiEffect {
         anchors.fill: parent
         anchors.margins: 2
@@ -155,7 +152,6 @@ Item {
         }
     }
 
-    // Fallback icon
     DarkIcon {
         visible: !(entryType === "image" && thumbnailImage.status === Image.Ready && thumbnailImage.source != "")
         name: {

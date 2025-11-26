@@ -59,13 +59,6 @@ PanelWindow {
     WlrLayershell.layer: WlrLayershell.Top // if set to overlay -> virtual keyboards can be stuck under popup
     WlrLayershell.exclusiveZone: -1
 
-    // WlrLayershell.keyboardFocus should be set to Exclusive,
-    // if popup contains input fields and does NOT create new popups/modals
-    // with input fields.
-    // With OnDemand virtual keyboards can't send input to popup
-    // If set to Exclusive AND this popup creates other popups, that also have
-    // input fields -> they can't get keyboard focus, because the parent popup
-    // already took the lock
     WlrLayershell.keyboardFocus: shouldBeVisible ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None 
 
     anchors {
@@ -104,7 +97,6 @@ PanelWindow {
                 baseX = triggerX
             }
             
-            // Apply offset based on popout type
             var xOffset = 0
             if (root.objectName === "appDrawerPopout") {
                 xOffset = SettingsData.startMenuXOffset * (screenWidth - popupWidth) / 2
@@ -117,7 +109,6 @@ PanelWindow {
         readonly property real calculatedY: {
             var baseY = triggerY
             
-            // Apply offset based on popout type
             var yOffset = 0
             if (root.objectName === "appDrawerPopout") {
                 yOffset = SettingsData.startMenuYOffset * (screenHeight - popupHeight) / 2
@@ -149,7 +140,6 @@ PanelWindow {
             }
         }
 
-        // Background with transparency
         Rectangle {
             anchors.fill: parent
             color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.popupTransparency)

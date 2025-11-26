@@ -35,14 +35,38 @@ LazyLoader {
                 id: root
                 anchors.fill: parent
 
-                property string source: SessionData.getMonitorWallpaper(modelData.name) || ""
+                property string source: {
+                    if (SessionData.perMonitorWallpaper) {
+                        return SessionData.monitorWallpapers[modelData.name] || SessionData.wallpaperPath || ""
+                    }
+                    return SessionData.wallpaperPath || ""
+                }
                 property bool isColorSource: source.startsWith("#")
                 property string transitionType: SessionData.wallpaperTransition
                 onTransitionTypeChanged: {
                     currentWallpaper.visible = (transitionType === "none")
                 }
                 property real transitionProgress: 0
-                property real fillMode: 1.0
+                property real fillMode: {
+                    switch (SessionData.wallpaperFillMode) {
+                    case "center": return 0.0
+                    case "crop": return 1.0
+                    case "fit": return 2.0
+                    case "stretch": return 3.0
+                    case "tile": return 4.0
+                    default: return 1.0
+                    }
+                }
+                property int imageFillMode: {
+                    switch (SessionData.wallpaperFillMode) {
+                    case "center": return Image.Pad
+                    case "crop": return Image.PreserveAspectCrop
+                    case "fit": return Image.PreserveAspectFit
+                    case "stretch": return Image.Stretch
+                    case "tile": return Image.Tile
+                    default: return Image.PreserveAspectCrop
+                    }
+                }
                 property vector4d fillColor: Qt.vector4d(0, 0, 0, 1)
                 property real edgeSmoothness: 0.1
 
@@ -67,40 +91,70 @@ LazyLoader {
                     target: SessionData
                     function onUseAwwwBackendChanged() {
                         if (SessionData.useAwwwBackend && AwwwService.awwwAvailable) {
-                            // When switching to awww, set current wallpaper
-                            applyWallpaperToAwww()
+                            root.applyWallpaperToAwww()
                         }
                     }
                     function onWallpaperPathChanged() {
-                        // When wallpaper path changes, ensure it's applied
                         Qt.callLater(() => {
-                            applyWallpaperOnStartup()
+                            if (root.useAwww && root.source && root.source !== "") {
+                                root.applyWallpaperToAwww()
+                            } else {
+                                root.applyWallpaperOnStartup()
+                            }
                         })
+                    }
+                    function onMonitorWallpapersChanged() {
+                        Qt.callLater(() => {
+                            if (root.useAwww && root.source && root.source !== "") {
+                                root.applyWallpaperToAwww()
+                            } else {
+                                root.applyWallpaperOnStartup()
+                            }
+                        })
+                    }
+                    function onPerMonitorWallpaperChanged() {
+                        Qt.callLater(() => {
+                            if (root.useAwww && root.source && root.source !== "") {
+                                root.applyWallpaperToAwww()
+                            } else {
+                                root.applyWallpaperOnStartup()
+                            }
+                        })
+                    }
+                }
+
+                Connections {
+                    target: AwwwService
+                    function onDaemonRunningChanged() {
+                        if (AwwwService.daemonRunning && root.useAwww && root.source && root.source !== "") {
+                            Qt.callLater(() => {
+                                root.applyWallpaperToAwww()
+                            })
+                        }
                     }
                 }
 
                 function applyWallpaperOnStartup() {
                     var currentSource = SessionData.getMonitorWallpaper(modelData.name) || ""
                     if (currentSource && currentSource !== "") {
-                        console.log("WallpaperBackground: Applying wallpaper on startup, source:", currentSource)
                         if (useAwww) {
-                            // For awww, wait for daemon to be ready
                             if (AwwwService.daemonRunning) {
                                 applyWallpaperToAwww()
                             } else {
-                                // Wait a bit for daemon to start, retry a few times
-                                var retryCount = 0
-                                var checkTimer = Qt.createQmlObject(`
+                                AwwwService.startDaemon()
+                                var retryTimer = Qt.createQmlObject(`
                                     import QtQuick
                                     Timer {
-                                        property int retryCount: 0
+                                        property int attempts: 0
                                         interval: 500
                                         repeat: true
                                         running: true
                                         onTriggered: {
-                                            retryCount++
-                                            if (AwwwService.daemonRunning || retryCount >= 10) {
-                                                applyWallpaperToAwww()
+                                            attempts++
+                                            if (AwwwService.daemonRunning || attempts >= 10) {
+                                                if (AwwwService.daemonRunning) {
+                                                    root.applyWallpaperToAwww()
+                                                }
                                                 stop()
                                                 destroy()
                                             }
@@ -109,7 +163,6 @@ LazyLoader {
                                 `, root)
                             }
                         } else {
-                            // For QML Image backend, set immediately
                             const isWE = currentSource.startsWith("we:")
                             const isColor = currentSource.startsWith("#")
                             if (isWE) {
@@ -121,17 +174,43 @@ LazyLoader {
                                 setWallpaperImmediate(currentSource)
                             }
                         }
-                    } else {
-                        console.log("WallpaperBackground: No wallpaper source on startup")
                     }
                 }
 
                 Component.onCompleted: {
-                    // Ensure wallpaper is applied on startup
-                    // Wait a bit for SessionData to finish loading
                     Qt.callLater(() => {
                         Qt.callLater(() => {
-                            applyWallpaperOnStartup()
+                            var currentSource = root.source
+                            if (currentSource && currentSource !== "") {
+                                if (root.useAwww) {
+                                    if (AwwwService.daemonRunning) {
+                                        root.applyWallpaperToAwww()
+                                    } else {
+                                        AwwwService.startDaemon()
+                                        var applyTimer = Qt.createQmlObject(`
+                                            import QtQuick
+                                            Timer {
+                                                property int attempts: 0
+                                                interval: 500
+                                                repeat: true
+                                                running: true
+                                                onTriggered: {
+                                                    attempts++
+                                                    if (AwwwService.daemonRunning || attempts >= 10) {
+                                                        if (AwwwService.daemonRunning) {
+                                                            root.applyWallpaperToAwww()
+                                                        }
+                                                        stop()
+                                                        destroy()
+                                                    }
+                                                }
+                                            }
+                                        `, root)
+                                    }
+                                } else {
+                                    root.applyWallpaperOnStartup()
+                                }
+                            }
                         })
                     })
                 }
@@ -141,46 +220,65 @@ LazyLoader {
                 }
 
                 function applyWallpaperToAwww() {
-                    if (!useAwww) {
-                        console.log("WallpaperBackground: Not using awww backend (useAwww:", useAwww, ")")
+                    const isWebP = source && source.toLowerCase().endsWith('.webp')
+                    const shouldUseAwww = useAwww || (isWebP && AwwwService.awwwAvailable)
+                    
+                    if (!shouldUseAwww) {
                         return
                     }
                     
-                    // Determine if we should set for specific monitor or all monitors
                     const screenName = SessionData.perMonitorWallpaper ? modelData.name : ""
-                    
-                    console.log("WallpaperBackground: Applying wallpaper via awww, source:", source, "screen:", screenName || "all", "perMonitor:", SessionData.perMonitorWallpaper)
                     
                     const isWE = source.startsWith("we:")
                     const isColor = source.startsWith("#")
                     
                     if (isWE) {
-                        // Wallpaper Engine not supported by awww, fall back to empty
-                        console.log("WallpaperBackground: Wallpaper Engine not supported by awww, clearing")
                         AwwwService.clearWallpaper(screenName)
                     } else if (isColor) {
-                        console.log("WallpaperBackground: Setting color wallpaper:", source)
                         AwwwService.setWallpaperColor(screenName, source)
                     } else if (source && source !== "") {
-                        console.log("WallpaperBackground: Setting image wallpaper:", source)
                         AwwwService.setWallpaper(screenName, source)
                     } else {
-                        console.log("WallpaperBackground: Clearing wallpaper (empty source)")
                         AwwwService.clearWallpaper(screenName)
                     }
                 }
 
                 onSourceChanged: {
-                    console.log("WallpaperBackground: onSourceChanged fired, source:", source, "useAwww:", useAwww)
-                    // If using awww backend, handle wallpaper through awww
-                    if (useAwww) {
-                        applyWallpaperToAwww()
-                        return
-                    }
-
-                    // Otherwise use QML Image backend
                     const isWE = source.startsWith("we:")
                     const isColor = source.startsWith("#")
+                    const isWebP = source.toLowerCase().endsWith('.webp')
+                    
+                    const shouldUseAwww = useAwww || (isWebP && AwwwService.awwwAvailable)
+                    
+                    if (shouldUseAwww) {
+                        if (AwwwService.daemonRunning) {
+                            root.applyWallpaperToAwww()
+                        } else {
+                            AwwwService.startDaemon()
+                            Qt.callLater(() => {
+                                var retryTimer = Qt.createQmlObject(`
+                                    import QtQuick
+                                    Timer {
+                                        property int attempts: 0
+                                        interval: 500
+                                        repeat: true
+                                        running: true
+                                        onTriggered: {
+                                            attempts++
+                                            if (AwwwService.daemonRunning || attempts >= 10) {
+                                                if (AwwwService.daemonRunning) {
+                                                    root.applyWallpaperToAwww()
+                                                }
+                                                stop()
+                                                destroy()
+                                            }
+                                        }
+                                    }
+                                `, root)
+                            })
+                        }
+                        return
+                    }
 
                     if (isWE) {
                         setWallpaperImmediate("")
@@ -192,8 +290,6 @@ LazyLoader {
                         } else if (isColor) {
                             setWallpaperImmediate("")
                         } else {
-                            // Always set immediately if there's no current wallpaper (startup)
-                            // QML Image accepts plain paths, no need for file:// prefix
                             if (!currentWallpaper.source) {
                                 setWallpaperImmediate(source)
                             } else {
@@ -223,13 +319,11 @@ LazyLoader {
                         nextWallpaper.source = ""
                     }
 
-                    // If no current wallpaper, set immediately to avoid scaling issues
                     if (!currentWallpaper.source) {
                         setWallpaperImmediate(newPath)
                         return
                     }
 
-                    // If transition is "none", set immediately
                     if (root.transitionType === "none") {
                         setWallpaperImmediate(newPath)
                         return
@@ -248,7 +342,6 @@ LazyLoader {
                     nextWallpaper.source = newPath
 
                     if (nextWallpaper.status === Image.Ready) {
-                        // Use Timer-based animation for precise FPS control
                         root.transitionProgress = 0.0
                         transitionTimer.interval = Math.max(1, Math.round(1000.0 / root.transitionFps))
                         transitionTimer.start()
@@ -282,26 +375,75 @@ LazyLoader {
 
                 Image {
                     id: currentWallpaper
-                    anchors.fill: parent
-                    visible: root.transitionType === "none" && !root.useAwww
+                    anchors.fill: SessionData.wallpaperFillMode === "center" ? undefined : parent
+                    anchors.centerIn: SessionData.wallpaperFillMode === "center" ? parent : undefined
+                    width: {
+                        if (SessionData.wallpaperFillMode !== "center") return undefined
+                        var imgWidth = status === Image.Ready ? implicitWidth : 0
+                        var imgHeight = status === Image.Ready ? implicitHeight : 0
+                        if (imgWidth > 0 && imgHeight > 0 && (imgWidth > modelData.width || imgHeight > modelData.height)) {
+                            var scale = Math.min(modelData.width / imgWidth, modelData.height / imgHeight)
+                            return imgWidth * scale
+                        }
+                        return imgWidth > 0 ? imgWidth : undefined
+                    }
+                    height: {
+                        if (SessionData.wallpaperFillMode !== "center") return undefined
+                        var imgWidth = status === Image.Ready ? implicitWidth : 0
+                        var imgHeight = status === Image.Ready ? implicitHeight : 0
+                        if (imgWidth > 0 && imgHeight > 0 && (imgWidth > modelData.width || imgHeight > modelData.height)) {
+                            var scale = Math.min(modelData.width / imgWidth, modelData.height / imgHeight)
+                            return imgHeight * scale
+                        }
+                        return imgHeight > 0 ? imgHeight : undefined
+                    }
+                    visible: root.transitionType === "none" && !root.useAwww && status === Image.Ready
                     opacity: 1
                     layer.enabled: false
                     asynchronous: true
                     smooth: true
                     cache: true
-                    fillMode: Image.PreserveAspectCrop
+                    fillMode: SessionData.wallpaperFillMode === "center" ? Image.Pad : root.imageFillMode
+                    onStatusChanged: {
+                        if (status === Image.Ready && implicitWidth > 0 && implicitHeight > 0) {
+                            Qt.callLater(() => {
+                                var _ = fillMode
+                            })
+                        }
+                    }
                 }
 
                 Image {
                     id: nextWallpaper
-                    anchors.fill: parent
+                    anchors.fill: SessionData.wallpaperFillMode === "center" ? undefined : parent
+                    anchors.centerIn: SessionData.wallpaperFillMode === "center" ? parent : undefined
+                    width: {
+                        if (SessionData.wallpaperFillMode !== "center") return undefined
+                        var imgWidth = sourceSize.width > 0 ? sourceSize.width : (status === Image.Ready ? implicitWidth : 0)
+                        var imgHeight = sourceSize.height > 0 ? sourceSize.height : (status === Image.Ready ? implicitHeight : 0)
+                        if (imgWidth > 0 && imgHeight > 0 && (imgWidth > modelData.width || imgHeight > modelData.height)) {
+                            var scale = Math.min(modelData.width / imgWidth, modelData.height / imgHeight)
+                            return imgWidth * scale
+                        }
+                        return imgWidth > 0 ? imgWidth : undefined
+                    }
+                    height: {
+                        if (SessionData.wallpaperFillMode !== "center") return undefined
+                        var imgWidth = sourceSize.width > 0 ? sourceSize.width : (status === Image.Ready ? implicitWidth : 0)
+                        var imgHeight = sourceSize.height > 0 ? sourceSize.height : (status === Image.Ready ? implicitHeight : 0)
+                        if (imgWidth > 0 && imgHeight > 0 && (imgWidth > modelData.width || imgHeight > modelData.height)) {
+                            var scale = Math.min(modelData.width / imgWidth, modelData.height / imgHeight)
+                            return imgHeight * scale
+                        }
+                        return imgHeight > 0 ? imgHeight : undefined
+                    }
                     visible: false
                     opacity: 0
                     layer.enabled: false
                     asynchronous: true
                     smooth: true
                     cache: true
-                    fillMode: Image.PreserveAspectCrop
+                    fillMode: SessionData.wallpaperFillMode === "center" ? Image.Pad : root.imageFillMode
 
                     onStatusChanged: {
                         if (status !== Image.Ready) return
@@ -338,7 +480,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_fade.frag.qsb")
@@ -363,7 +504,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_wipe.frag.qsb")
@@ -390,7 +530,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_disc.frag.qsb")
@@ -417,7 +556,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_stripes.frag.qsb")
@@ -444,7 +582,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_iris_bloom.frag.qsb")
@@ -458,7 +595,7 @@ LazyLoader {
                     property variant source1: root.hasCurrent ? currentWallpaper : transparentSource
                     property variant source2: nextWallpaper
                     property real progress: root.transitionProgress
-                    property real smoothness: root.edgeSmoothness   // controls starting block size
+                    property real smoothness: root.edgeSmoothness
                     property real fillMode: root.fillMode
                     property vector4d fillColor: root.fillColor
                     property real imageWidth1: Math.max(1, root.hasCurrent ? source1.sourceSize.width : modelData.width)
@@ -471,7 +608,6 @@ LazyLoader {
                     property real centerY: root.discCenterY
                     property real aspectRatio: root.width / root.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_pixelate.frag.qsb")
@@ -498,7 +634,6 @@ LazyLoader {
                     property real screenWidth: modelData.width
                     property real screenHeight: modelData.height
 
-                    // Add data property to prevent warnings
                     property var data: null
 
                     fragmentShader: Qt.resolvedUrl("../Shaders/qsb/wp_portal.frag.qsb")
@@ -519,7 +654,6 @@ LazyLoader {
                             root.transitionAnimationFinished()
                             return
                         }
-                        // Use easing function for smooth animation
                         var t = root.transitionProgress
                         var eased = 0.5 - Math.cos(t * Math.PI) / 2.0 // Smooth ease in/out
                         root.transitionProgress = Math.min(1.0, root.transitionProgress + root.transitionStep)
@@ -553,7 +687,6 @@ LazyLoader {
                     }
                 }
 
-                // Use Timer-based animation when FPS is set and not using default
                 Connections {
                     target: SessionData
                     function onWallpaperTransitionFpsChanged() {

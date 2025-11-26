@@ -80,7 +80,6 @@ Rectangle {
             }
             anchors.verticalCenter: parent.verticalCenter
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -107,7 +106,6 @@ Rectangle {
             horizontalAlignment: Text.AlignLeft
             elide: Text.ElideNone
             
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0

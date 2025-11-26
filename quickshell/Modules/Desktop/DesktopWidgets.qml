@@ -7,14 +7,12 @@ Item {
     property var modelData: null
     property string screenName: modelData ? modelData.name : ""
 
-    // Desktop widget settings - controlled by SettingsData
     property bool showCpuTemp: SettingsData.desktopWidgetsEnabled && SettingsData.desktopCpuTempEnabled
     property bool showGpuTemp: SettingsData.desktopWidgetsEnabled && SettingsData.desktopGpuTempEnabled
     property bool showSystemMonitor: SettingsData.desktopWidgetsEnabled && SettingsData.desktopSystemMonitorEnabled
     property bool showClock: SettingsData.desktopWidgetsEnabled && SettingsData.desktopClockEnabled
     property bool showTerminal: SettingsData.desktopWidgetsEnabled && SettingsData.desktopTerminalEnabled
 
-    // Position mapping function
     function getPositionAnchors(position) {
         switch(position) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -30,7 +28,6 @@ Item {
         }
     }
 
-    // CPU Temperature Widget
     DesktopCpuTemp {
         id: cpuTempWidget
         visible: root.showCpuTemp
@@ -38,7 +35,6 @@ Item {
         screen: root.modelData
     }
 
-    // GPU Temperature Widget
     DesktopGpuTemp {
         id: gpuTempWidget
         visible: root.showGpuTemp
@@ -46,7 +42,6 @@ Item {
         screen: root.modelData
     }
 
-    // System Monitor Widget
     DesktopSystemMonitor {
         id: systemMonitorWidget
         visible: root.showSystemMonitor
@@ -54,7 +49,6 @@ Item {
         screen: root.modelData
     }
 
-    // Desktop Clock Widget
     DesktopClock {
         id: clockWidget
         visible: root.showClock
@@ -62,7 +56,6 @@ Item {
         screen: root.modelData
     }
 
-    // Desktop Terminal Widget
     DesktopTerminal {
         id: terminalWidget
         visible: root.showTerminal
@@ -70,7 +63,6 @@ Item {
         screen: root.modelData
     }
 
-    // Function to toggle widgets
     function toggleCpuTemp() {
         showCpuTemp = !showCpuTemp
     }
@@ -91,7 +83,6 @@ Item {
         showTerminal = !showTerminal
     }
 
-    // Function to show all widgets
     function showAllWidgets() {
         showCpuTemp = true
         showGpuTemp = true
@@ -100,7 +91,6 @@ Item {
         showTerminal = true
     }
 
-    // Function to hide all widgets
     function hideAllWidgets() {
         showCpuTemp = false
         showGpuTemp = false

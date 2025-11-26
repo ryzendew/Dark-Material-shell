@@ -7,12 +7,25 @@ import qs.Widgets
 Rectangle {
     id: root
     
+    readonly property bool notoSansAvailable: Qt.fontFamilies().some(f => f.includes("Noto Sans"))
+    
     FontLoader {
         id: notoSansLoader
-        source: "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
+        source: root.notoSansAvailable ? "" : "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
     }
     
-    readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"
+    readonly property string notoSansFamily: {
+        if (root.notoSansAvailable) {
+            const families = Qt.fontFamilies()
+            for (let i = 0; i < families.length; i++) {
+                if (families[i].includes("Noto Sans")) {
+                    return families[i]
+                }
+            }
+            return "Noto Sans"
+        }
+        return notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : ""
+    }
 
     property string text: ""
     property string description: ""
@@ -23,7 +36,6 @@ Rectangle {
     property bool enableFuzzySearch: false
     property int popupWidthOffset: 0
     property int maxPopupHeight: 400
-    // Height of the clickable box on the right (the one in your screenshot)
     property int controlHeight: 42
 
     signal valueChanged(string value)
@@ -203,11 +215,17 @@ Rectangle {
                 property var filteredOptions: []
                 property int selectedIndex: -1
                 readonly property string notoSansFamily: root.notoSansFamily
-                property var fzfFinder: new Fzf.Finder(root.options, {
-                                                           "selector": option => option,
-                                                           "limit": 50,
-                                                           "casing": "case-insensitive"
-                                                       })
+                property var fzfFinder: (function() {
+                    try {
+                        return Fzf.Finder(root.options, {
+                            "selector": option => option,
+                            "limit": 50,
+                            "casing": "case-insensitive"
+                        })
+                    } catch (e) {
+                        return null
+                    }
+                })()
 
                 function updateFilteredOptions() {
                     if (!root.enableFuzzySearch || searchQuery.length === 0) {

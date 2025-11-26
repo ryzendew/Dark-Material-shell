@@ -20,7 +20,6 @@ Rectangle {
     border.width: 1
     border.color: Theme.outline
     
-    // Preview image
     Rectangle {
         id: previewContainer
         anchors.fill: parent
@@ -28,13 +27,11 @@ Rectangle {
         radius: parent.radius - 2
         color: Theme.surface
         
-        // Placeholder for actual window preview
         Rectangle {
             anchors.fill: parent
             color: Theme.surfaceVariant
             radius: parent.radius
             
-            // App icon in center
             Image {
                 id: appIcon
                 anchors.centerIn: parent
@@ -53,7 +50,6 @@ Rectangle {
                 visible: status === Image.Ready
             }
             
-            // Fallback icon
             DarkIcon {
                 anchors.centerIn: parent
                 size: 48
@@ -63,7 +59,6 @@ Rectangle {
             }
         }
         
-        // Window title overlay
         Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
@@ -84,7 +79,6 @@ Rectangle {
         }
     }
     
-    // Hover effects
     scale: isHovered ? 1.05 : 1.0
     Behavior on scale {
         NumberAnimation {
@@ -93,7 +87,6 @@ Rectangle {
         }
     }
     
-    // Shadow effect
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -112,13 +105,11 @@ Rectangle {
         
         onClicked: {
             if (root.toplevel) {
-                // Restore the window
                 MinimizedWindowManager.restoreWindow(root.toplevel)
             }
         }
     }
     
-    // Close button
     Rectangle {
         id: closeButton
         anchors.top: parent.top
@@ -142,9 +133,7 @@ Rectangle {
             
             onClicked: {
                 if (root.toplevel) {
-                    // Close the window instead of restoring
                     root.toplevel.close()
-                    // Remove from minimized list
                     MinimizedWindowManager.restoreWindow(root.toplevel)
                 }
             }

@@ -33,7 +33,6 @@ Row {
             border.width: 1
             radius: Theme.cornerRadius
 
-            // Drop shadow
             layer.enabled: true
             layer.effect: DropShadow {
                 horizontalOffset: 0
@@ -88,7 +87,6 @@ Row {
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0

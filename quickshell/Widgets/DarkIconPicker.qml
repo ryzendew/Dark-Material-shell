@@ -114,7 +114,6 @@ Rectangle {
                 bottom: true
             }
 
-            // Top area - above popup
             MouseArea {
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -125,7 +124,6 @@ Rectangle {
                 }
             }
 
-            // Bottom area - below popup
             MouseArea {
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -136,7 +134,6 @@ Rectangle {
                 }
             }
 
-            // Left area - left of popup
             MouseArea {
                 anchors.left: parent.left
                 anchors.top: popupContainer.top
@@ -147,7 +144,6 @@ Rectangle {
                 }
             }
 
-            // Right area - right of popup
             MouseArea {
                 anchors.right: parent.right
                 anchors.top: popupContainer.top
@@ -176,7 +172,6 @@ Rectangle {
                     shadowVerticalOffset: 4
                 }
 
-                // Close button
                 Rectangle {
                     width: 24
                     height: 24
@@ -218,7 +213,6 @@ Rectangle {
                         width: parent.width
                         spacing: Theme.spacingM
 
-                        // Icon categories
                         Repeater {
                             model: root.iconCategories
 

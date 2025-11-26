@@ -71,7 +71,6 @@ Rectangle {
                          if (CompositorService.isNiri) {
                              winWs = w.workspace_id
                          } else {
-                             // For Hyprland, we need to find the corresponding Hyprland toplevel to get workspace
                              const hyprlandToplevels = Array.from(Hyprland.toplevels?.values || [])
                              const hyprToplevel = hyprlandToplevels.find(ht => ht.wayland === w)
                              winWs = hyprToplevel?.workspace?.id
@@ -134,7 +133,6 @@ Rectangle {
             workspaces = displayWorkspaces.length > 0 ? displayWorkspaces : [1, 2]
         }
         
-        // Limit to maxWorkspaces setting
         return workspaces.slice(0, SettingsData.maxWorkspaces)
     }
 
@@ -156,32 +154,26 @@ Rectangle {
         
         let result = []
         if (!root.screenName || !SettingsData.workspacesPerMonitor) {
-            // Show all workspaces on all monitors if per-monitor filtering is disabled
             const sorted = workspaces.slice().sort((a, b) => a.id - b.id)
             result = sorted.length > 0 ? sorted : [{
                         "id": 1,
                         "name": "1"
                     }]
         } else {
-            // Filter workspaces for this specific monitor using lastIpcObject.monitor
-            // This matches the approach from the original kyle-config
             const monitorWorkspaces = workspaces.filter(ws => {
                 return ws.lastIpcObject && ws.lastIpcObject.monitor === root.screenName
             })
             
             if (monitorWorkspaces.length === 0) {
-                // Fallback if no workspaces exist for this monitor
                 result = [{
                             "id": 1,
                             "name": "1"
                         }]
             } else {
-                // Return all workspaces for this monitor, sorted by ID
                 result = monitorWorkspaces.sort((a, b) => a.id - b.id)
             }
         }
         
-        // If we have fewer workspaces than maxWorkspaces, create placeholder workspaces
         if (result.length < SettingsData.maxWorkspaces) {
             const existingIds = new Set(result.map(ws => ws.id))
             for (let i = 1; i <= SettingsData.maxWorkspaces; i++) {
@@ -195,7 +187,6 @@ Rectangle {
             result = result.sort((a, b) => a.id - b.id)
         }
         
-        // Limit to maxWorkspaces setting
         return result.slice(0, SettingsData.maxWorkspaces)
     }
 
@@ -204,7 +195,6 @@ Rectangle {
             return Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id : 1
         }
 
-        // Find the monitor object for this screen
         const monitors = Hyprland.monitors?.values || []
         const currentMonitor = monitors.find(monitor => monitor.name === root.screenName)
         
@@ -212,7 +202,6 @@ Rectangle {
             return 1
         }
 
-        // Use the monitor's active workspace ID (like original config)
         return currentMonitor.activeWorkspace?.id ?? 1
     }
 
@@ -377,7 +366,6 @@ Rectangle {
                                 opacity: modelData.active ? 1.0 : appMouseArea.containsMouse ? 0.8 : 0.6
                                 visible: !modelData.isSteamApp
                                 
-                                // Drop shadow
                                 layer.enabled: true
                                 layer.effect: DropShadow {
                                     horizontalOffset: 0
@@ -402,7 +390,6 @@ Rectangle {
                                 opacity: modelData.active ? 1.0 : appMouseArea.containsMouse ? 0.8 : 0.6
                                 visible: modelData.isSteamApp
                                 
-                                // Drop shadow
                                 layer.enabled: true
                                 layer.effect: DropShadow {
                                     horizontalOffset: 0
@@ -460,7 +447,6 @@ Rectangle {
                     color: isActive ? Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.95) : Theme.surfaceTextMedium
                     weight: isActive && !isPlaceholder ? 500 : 400
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -480,7 +466,6 @@ Rectangle {
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: (isActive && !isPlaceholder) ? Font.DemiBold : Font.Normal
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -508,7 +493,6 @@ Rectangle {
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: (isActive && !isPlaceholder) ? Font.DemiBold : Font.Normal
                     
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -521,7 +505,6 @@ Rectangle {
                 }
 
                 Behavior on width {
-		    // When having more icons, animation becomes clunky
 		    enabled: (!SettingsData.showWorkspaceApps || SettingsData.maxWorkspaceIcons <= 3)
                     NumberAnimation {
                         duration: Theme.mediumDuration

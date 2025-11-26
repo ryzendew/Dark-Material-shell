@@ -20,7 +20,6 @@ PanelWindow {
     property real widgetOpacity: SettingsData.desktopSystemMonitorOpacity
     property var positioningBox: null
     
-    // Dynamic sizing based on widget dimensions
     property real scaleFactor: Math.min(widgetWidth / 512, widgetHeight / 512)
     property real baseFontSize: 16
     property real scaledFontSize: baseFontSize * scaleFactor
@@ -29,10 +28,8 @@ PanelWindow {
     property real basePadding: 20
     property real scaledPadding: basePadding * scaleFactor
     
-    // Fixed height for 512x512 widget
     property real contentHeight: 512
     
-    // System data properties
     property real currentCpuTemperature: DgopService.cpuTemperature || 0
     property real currentGpuTemperature: (DgopService.availableGpus && DgopService.availableGpus.length > 0) ? (DgopService.availableGpus[0].temperature || -1) : -1
     property real currentGpuMemoryUsed: (DgopService.availableGpus && DgopService.availableGpus.length > 0) ? (DgopService.availableGpus[0].memoryUsedMB || 0) : 0
@@ -44,7 +41,6 @@ PanelWindow {
     property real currentNetworkDownloadSpeed: DgopService.networkRxRate || 0
     property real currentNetworkUploadSpeed: DgopService.networkTxRate || 0
     
-    // Graph data arrays for historical data
     property var cpuUsageHistory: []
     property var memoryUsageHistory: []
     property var gpuMemoryHistory: []
@@ -61,7 +57,6 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
 
-    // Position using anchors and margins like notifications
     anchors {
         left: position.includes("left") ? true : false
         right: position.includes("right") ? true : false
@@ -80,7 +75,6 @@ PanelWindow {
         DgopService.addRef(["cpu", "memory", "gpu", "network"]);
         startNvmlMonitoring();
         
-        // Initialize graphs with some sample data
         for (var i = 0; i < 5; i++) {
             cpuUsageHistory.push(0);
             memoryUsageHistory.push(0);
@@ -88,7 +82,6 @@ PanelWindow {
             networkHistory.push(0);
         }
         
-        // Force initial update of memory values
         Qt.callLater(() => {
             currentMemoryUsage = DgopService.memoryUsage || 0;
             currentMemoryTotalMB = DgopService.totalMemoryMB || 0;
@@ -96,7 +89,6 @@ PanelWindow {
         });
     }
 
-    // Update data when services change
     Connections {
         target: DgopService
         function onCpuUsageChanged() {
@@ -124,7 +116,6 @@ PanelWindow {
         }
     }
 
-    // Update widget when settings change
     Connections {
         target: SettingsData
         function onDesktopSystemMonitorEnabledChanged() {
@@ -144,7 +135,6 @@ PanelWindow {
         }
     }
 
-    // Functions to get temperatures
     function getCpuTemperature() {
         return DgopService.cpuTemperature || 0;
     }
@@ -171,11 +161,9 @@ PanelWindow {
         return -1;
     }
     
-    // Function to shorten CPU name
     function getShortCpuName() {
         const fullName = DgopService.cpuModel || "CPU";
         
-        // Remove common prefixes and suffixes
         let shortName = fullName
             .replace(/^AMD\s+/i, "")  // Remove "AMD " prefix
             .replace(/^Intel\s+/i, "") // Remove "Intel " prefix
@@ -190,13 +178,11 @@ PanelWindow {
             .replace(/\s+with.*$/i, "") // Remove " with" and anything after
             .trim();
         
-        // If we removed everything, fall back to original
         if (!shortName) return fullName;
         
         return shortName;
     }
     
-    // Function to shorten GPU name
     function getShortGpuName() {
         if (!DgopService.availableGpus || DgopService.availableGpus.length === 0) {
             return "GPU";
@@ -205,22 +191,17 @@ PanelWindow {
         const gpu = DgopService.availableGpus[0];
         const fullName = gpu.displayName || "GPU";
         
-        // Check if this is a Radeon GPU that might be disabled in BIOS
         const isRadeon = /radeon/i.test(fullName) || /amd/i.test(fullName);
         
-        // If it's a Radeon GPU, check if it's actually functional
-        // Radeon GPUs disabled in BIOS typically show no temperature or very low values
         if (isRadeon) {
             const temperature = gpu.temperature || -1;
             const memoryTotal = gpu.memoryTotalMB || 0;
             
-            // If temperature is -1 or 0 and no memory, likely disabled in BIOS
             if (temperature <= 0 && memoryTotal === 0) {
                 return ""; // Return empty string to hide the GPU section
             }
         }
         
-        // Remove common prefixes
         let shortName = fullName
             .replace(/^NVIDIA\s+GeForce\s+/i, "") // Remove "NVIDIA GeForce " prefix
             .replace(/^GeForce\s+/i, "") // Remove "GeForce " prefix (in case NVIDIA was already removed)
@@ -235,7 +216,6 @@ PanelWindow {
             .replace(/\s*\/\s*Max-Q.*$/i, "") // Remove "/ Max-Q" and anything after
             .trim();
         
-        // If we removed everything, fall back to original
         if (!shortName) return fullName;
         
         return shortName;
@@ -245,7 +225,6 @@ PanelWindow {
     readonly property string nvmlPythonPath: "python3"
     readonly property string nvmlScriptPath: configDir + "/quickshell/scripts/nvidia_gpu_temp.py"
 
-    // Function to start NVML monitoring
     function startNvmlMonitoring() {
         nvmlGpuProcess.running = true;
     }
@@ -254,13 +233,11 @@ PanelWindow {
         DgopService.removeRef(["cpu", "memory", "gpu"]);
     }
 
-    // NVML GPU temperature monitoring process
     Process {
         id: nvmlGpuProcess
         command: [nvmlPythonPath, nvmlScriptPath]
         running: false
         onExited: exitCode => {
-            // Process completed
         }
         stdout: StdioCollector {
             onStreamFinished: {
@@ -307,14 +284,12 @@ PanelWindow {
                             }
                         }
                     } catch (e) {
-                        // Failed to parse JSON
                     }
                 }
             }
         }
     }
 
-    // Timer for regular NVML updates
     Timer {
         id: nvmlUpdateTimer
         interval: 2000
@@ -325,21 +300,18 @@ PanelWindow {
         }
     }
 
-    // Timer for graph data updates
     Timer {
         id: graphUpdateTimer
         interval: 1000
         running: true
         repeat: true
         onTriggered: {
-            // Update CPU usage history
             cpuUsageHistory.push(currentCpuUsage);
             if (cpuUsageHistory.length > maxHistoryPoints) {
                 cpuUsageHistory.shift();
             }
             cpuUsageHistoryChanged();
             
-            // Update memory usage history - read directly from DgopService
             const memUsage = DgopService.memoryUsage || 0
             memoryUsageHistory.push(memUsage);
             if (memoryUsageHistory.length > maxHistoryPoints) {
@@ -347,7 +319,6 @@ PanelWindow {
             }
             memoryUsageHistoryChanged();
             
-            // Update GPU memory history
             const gpuMemoryPercent = currentGpuMemoryTotal > 0 ? (currentGpuMemoryUsed / currentGpuMemoryTotal) * 100 : 0;
             gpuMemoryHistory.push(gpuMemoryPercent);
             if (gpuMemoryHistory.length > maxHistoryPoints) {
@@ -355,7 +326,6 @@ PanelWindow {
             }
             gpuMemoryHistoryChanged();
             
-            // Update network history
             const totalNetworkSpeed = (currentNetworkDownloadSpeed + currentNetworkUploadSpeed) / (1024 * 1024); // Convert to MB/s
             networkHistory.push(totalNetworkSpeed);
             if (networkHistory.length > maxHistoryPoints) {
@@ -365,7 +335,6 @@ PanelWindow {
         }
     }
 
-    // Main widget container - professional design
     Rectangle {
         width: widgetWidth
         height: contentHeight
@@ -375,13 +344,11 @@ PanelWindow {
         border.width: 1
         opacity: widgetOpacity
 
-        // Professional gradient background
         gradient: Gradient {
             GradientStop { position: 0.0; color: Qt.rgba(Theme.surfaceContainerHigh.r, Theme.surfaceContainerHigh.g, Theme.surfaceContainerHigh.b, widgetOpacity - 0.05) }
             GradientStop { position: 1.0; color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, widgetOpacity) }
         }
 
-        // Enhanced drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -392,13 +359,11 @@ PanelWindow {
             transparentBorder: true
         }
 
-        // Clean content layout
         Column {
             anchors.fill: parent
             anchors.margins: scaledPadding
             spacing: scaledSpacing
 
-            // Professional Header
             Rectangle {
                 width: parent.width
                 height: 40 * scaleFactor
@@ -427,7 +392,6 @@ PanelWindow {
                 }
             }
             
-            // Clean metrics grid - 2x2 layout for 512x512
             Grid {
                 width: parent.width
                 height: parent.height - 60 * scaleFactor // Leave space for header
@@ -435,7 +399,6 @@ PanelWindow {
                 rows: 2
                 spacing: 16 * scaleFactor
                 
-                // CPU Section - Professional Design
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
@@ -444,7 +407,6 @@ PanelWindow {
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
-                    // Subtle inner glow
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 1
@@ -460,7 +422,6 @@ PanelWindow {
                         anchors.margins: 12 * scaleFactor
                         spacing: 8 * scaleFactor
                         
-                        // CPU Name at top
                         StyledText {
                             text: getShortCpuName()
                             font.pixelSize: 16 * scaleFactor
@@ -471,7 +432,6 @@ PanelWindow {
                             maximumLineCount: 1
                         }
                         
-                        // CPU Usage Graph
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
@@ -525,17 +485,14 @@ PanelWindow {
                             }
                         }
                         
-                        // Spacer
                         Item {
                             height: 8 * scaleFactor
                         }
                         
-                        // CPU Temperature and Usage side by side
                         Item {
                             width: parent.width - 16 * scaleFactor
                             height: 50 * scaleFactor
                             
-                            // CPU Temperature (left)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.left: parent.left
@@ -561,7 +518,6 @@ PanelWindow {
                                 }
                             }
                             
-                            // CPU Usage (right)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.right: parent.right
@@ -589,7 +545,6 @@ PanelWindow {
                     }
                 }
 
-                // GPU Section - Professional Design
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
@@ -599,7 +554,6 @@ PanelWindow {
                     border.width: 1
                     visible: getShortGpuName() !== ""
                     
-                    // Subtle inner glow
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 1
@@ -615,7 +569,6 @@ PanelWindow {
                         anchors.margins: 12 * scaleFactor
                         spacing: 8 * scaleFactor
                         
-                        // GPU Name at top
                         StyledText {
                             text: getShortGpuName()
                             font.pixelSize: 16 * scaleFactor
@@ -626,7 +579,6 @@ PanelWindow {
                             maximumLineCount: 1
                         }
                         
-                        // GPU Memory Graph
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
@@ -680,17 +632,14 @@ PanelWindow {
                             }
                         }
                         
-                        // Spacer
                         Item {
                             height: 8 * scaleFactor
                         }
                         
-                        // GPU Temperature and Memory side by side
                         Item {
                             width: parent.width - 16 * scaleFactor
                             height: 50 * scaleFactor
                             
-                            // GPU Temperature (left)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.left: parent.left
@@ -716,7 +665,6 @@ PanelWindow {
                                 }
                             }
                             
-                            // GPU Memory (right)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.right: parent.right
@@ -750,7 +698,6 @@ PanelWindow {
                     }
                 }
 
-                // RAM Section - Professional Design
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
@@ -759,7 +706,6 @@ PanelWindow {
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
-                    // Subtle inner glow
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 1
@@ -775,7 +721,6 @@ PanelWindow {
                         anchors.margins: 12 * scaleFactor
                         spacing: 8 * scaleFactor
                         
-                        // RAM Name at top
                         StyledText {
                             text: "RAM"
                             font.pixelSize: 16 * scaleFactor
@@ -784,7 +729,6 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         
-                        // RAM Usage Graph
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
@@ -839,17 +783,14 @@ PanelWindow {
                             }
                         }
                         
-                        // Spacer
                         Item {
                             height: 8 * scaleFactor
                         }
                         
-                        // RAM Usage and Total side by side
                         Item {
                             width: parent.width - 16 * scaleFactor
                             height: 50 * scaleFactor
                             
-                            // RAM Usage (left)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.left: parent.left
@@ -882,7 +823,6 @@ PanelWindow {
                                 }
                             }
                             
-                            // RAM Total (right) - Show Used/Total format
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.right: parent.right
@@ -920,7 +860,6 @@ PanelWindow {
                     }
                 }
 
-                // Network Section - Professional Design
                 Rectangle {
                     width: (parent.width - parent.spacing) / 2
                     height: (parent.height - parent.spacing) / 2
@@ -929,7 +868,6 @@ PanelWindow {
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     border.width: 1
                     
-                    // Subtle inner glow
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 1
@@ -945,7 +883,6 @@ PanelWindow {
                         anchors.margins: 12 * scaleFactor
                         spacing: 8 * scaleFactor
                         
-                        // Network Name at top
                         StyledText {
                             text: "NETWORK"
                             font.pixelSize: 16 * scaleFactor
@@ -954,7 +891,6 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         
-                        // Network Activity Graph
                         Rectangle {
                             width: parent.width
                             height: 100 * scaleFactor
@@ -1008,17 +944,14 @@ PanelWindow {
                             }
                         }
                         
-                        // Spacer
                         Item {
                             height: 8 * scaleFactor
                         }
                         
-                        // Download and Upload side by side
                         Item {
                             width: parent.width - 16 * scaleFactor
                             height: 50 * scaleFactor
                             
-                            // Download Speed (left)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.left: parent.left
@@ -1068,7 +1001,6 @@ PanelWindow {
                                 }
                             }
                             
-                            // Upload Speed (right)
                             Column {
                                 spacing: 2 * scaleFactor
                                 anchors.right: parent.right
@@ -1126,14 +1058,12 @@ PanelWindow {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             onPressed: {
                 if (alwaysVisible) {
-                    // Widget is always visible, no need to show/hide
                 }
             }
         }

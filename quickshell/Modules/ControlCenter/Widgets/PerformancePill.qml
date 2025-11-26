@@ -35,7 +35,6 @@ Rectangle {
     border.width: 1
     antialiasing: true
 
-    // Color overlay based on performance mode
     Rectangle {
         id: modeOverlay
         anchors.fill: parent
@@ -51,7 +50,6 @@ Rectangle {
         }
     }
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0
@@ -167,7 +165,6 @@ Rectangle {
                 onClicked: {
                     if (PerformanceService.isChanging) return
                     
-                    // Cycle through modes: balanced -> performance -> powersave -> balanced
                     const modes = ["balanced", "performance", "power-saver"]
                     const currentIndex = modes.indexOf(PerformanceService.currentMode)
                     const nextIndex = (currentIndex + 1) % modes.length
@@ -185,7 +182,6 @@ Rectangle {
         if (ev.key === Qt.Key_Space || ev.key === Qt.Key_Return) { 
             if (PerformanceService.isChanging) return
             
-            // Cycle through modes: balanced -> performance -> powersave -> balanced
             const modes = ["balanced", "performance", "power-saver"]
             const currentIndex = modes.indexOf(PerformanceService.currentMode)
             const nextIndex = (currentIndex + 1) % modes.length

@@ -420,7 +420,6 @@ Rectangle {
                     onClicked: {
                         if (modelData.url && modelData.url !== "") {
                             if (Qt.openUrlExternally(modelData.url) === false) {
-                                console.warn("Failed to open URL: " + modelData.url)
                             }
                         }
                     }

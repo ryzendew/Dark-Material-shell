@@ -145,11 +145,9 @@ PanelWindow {
         }
     }
 
-    // Theme change detection for debugging
     Connections {
         target: Theme
         function onColorUpdateTriggerChanged() {
-            // Theme color update triggered
         }
     }
 
@@ -300,20 +298,17 @@ PanelWindow {
                     }
                 }
 
-                // Container that respects margins
                 Item {
                     anchors.fill: parent
                     anchors.leftMargin: SettingsData.topBarLeftMargin
                     anchors.rightMargin: SettingsData.topBarRightMargin
                     
-                    // Background for blur effect
                     Rectangle {
                         anchors.fill: parent
                         color: root._bgColor
                         radius: SettingsData.topBarSquareCorners ? 0 : (SettingsData.topBarRoundedCorners ? SettingsData.topBarCornerRadius : 0)
                     }
                     
-                    // Custom borders
                     Rectangle {
                         anchors.fill: parent
                         color: "transparent"
@@ -322,7 +317,6 @@ PanelWindow {
                         border.color: SettingsData.topBarBorderEnabled ? Qt.rgba(SettingsData.topBarBorderRed, SettingsData.topBarBorderGreen, SettingsData.topBarBorderBlue, SettingsData.topBarBorderAlpha) : "transparent"
                     }
                     
-                    // Individual border sides for selective visibility
                     Rectangle {
                         anchors.left: parent.left
                         anchors.right: parent.right

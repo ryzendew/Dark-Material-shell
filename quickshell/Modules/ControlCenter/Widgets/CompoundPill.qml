@@ -28,16 +28,16 @@ Rectangle {
         return Theme.isLightMode ? Qt.darker(base, factor) : Qt.lighter(base, factor)
     }
 
-    readonly property color _containerBg:
-        Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b,
-                Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity)
+    readonly property color _containerBg: {
+        const alpha = Theme.getContentBackgroundAlpha() * SettingsData.controlCenterWidgetBackgroundOpacity
+        return Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, alpha)
+    }
 
     color: _containerBg
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.10)
     border.width: 1
     antialiasing: true
 
-    // Drop shadow
     layer.enabled: true
     layer.effect: DropShadow {
         horizontalOffset: 0

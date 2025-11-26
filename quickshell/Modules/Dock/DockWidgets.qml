@@ -23,23 +23,19 @@ Row {
 
     readonly property real widgetHeight: SettingsData.dockIconSize
     
-    // Special styling for far left/right widgets
     readonly property bool isFarSide: side === "farLeft" || side === "farRight"
     readonly property real farSideOpacity: 0.8
     readonly property real farSideScale: 0.9
     
-    // Helper function to calculate widget position based on settings
     function calculateWidgetPosition(position, triggerWidth, triggerHeight) {
         const screen = root.screen || Screen
         const screenWidth = screen.width
         const screenHeight = screen.height
         
-        // Account for dock space at bottom
         const dockHeight = 80 // Approximate dock height
         const dockGap = -16 // Dock bottom gap
         const availableHeight = screenHeight - dockHeight - dockGap - 20 // Extra margin
         
-        // Check if dock is in expand mode
         const isExpandMode = SettingsData.dockExpandToScreen
         
         switch (position) {
@@ -49,28 +45,24 @@ Row {
                 return { x: screenWidth - triggerWidth, y: 20, section: "right" }
             case "bottom-left":
                 if (isExpandMode) {
-                    // When in expand mode, position at far left of screen
                     return { x: 8, y: availableHeight - triggerHeight, section: "left" }
                 } else {
                     return { x: 20, y: availableHeight - triggerHeight, section: "left" }
                 }
             case "bottom-right":
                 if (isExpandMode) {
-                    // When in expand mode, position at far right of screen
                     return { x: screenWidth - triggerWidth - 8, y: availableHeight - triggerHeight, section: "right" }
                 } else {
                     return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
                 }
             case "center":
                 if (isExpandMode) {
-                    // When in expand mode, position at far left of screen for start menu
                     return { x: 8, y: (availableHeight - triggerHeight) / 2, section: "left" }
                 } else {
                     return { x: (screenWidth - triggerWidth) / 2, y: (availableHeight - triggerHeight) / 2, section: "center" }
                 }
             default:
                 if (isExpandMode) {
-                    // When in expand mode, position at far right of screen
                     return { x: screenWidth - triggerWidth - 8, y: availableHeight - triggerHeight, section: "right" }
                 } else {
                     return { x: screenWidth - triggerWidth, y: availableHeight - triggerHeight, section: "right" }
@@ -78,7 +70,6 @@ Row {
         }
     }
 
-    // Define components for each widget type (using actual topbar widget names)
     Component { id: clockComponent; Clock { } }
     Component { id: weatherComponent; Weather { } }
     Component { id: batteryComponent; Battery { } }
@@ -97,12 +88,10 @@ Row {
             }
             
             Component.onCompleted: {
-                // Launcher button component created
             }
             
             
 
-            // System Logo (OS logo)
             SystemLogo {
                 visible: SettingsData.useOSLogo && !SettingsData.useCustomLauncherImage
                 anchors.centerIn: parent
@@ -112,7 +101,6 @@ Row {
                 brightnessOverride: SettingsData.osLogoBrightness
                 contrastOverride: SettingsData.osLogoContrast
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -124,7 +112,6 @@ Row {
                 }
             }
 
-            // Custom Image
             Item {
                 visible: SettingsData.useCustomLauncherImage && SettingsData.customLauncherImagePath !== ""
                 anchors.centerIn: parent
@@ -139,14 +126,12 @@ Row {
                     smooth: true
                     mipmap: true
 
-                    // Color overlay for custom images
                     layer.enabled: SettingsData.launcherLogoRed !== 1.0 || SettingsData.launcherLogoGreen !== 1.0 || SettingsData.launcherLogoBlue !== 1.0
                     layer.effect: ColorOverlay {
                         color: Qt.rgba(SettingsData.launcherLogoRed, SettingsData.launcherLogoGreen, SettingsData.launcherLogoBlue, 0.8)
                     }
                 }
 
-                // Drop shadow for custom images
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -158,7 +143,6 @@ Row {
                 }
             }
 
-            // Default Icon (apps icon)
             DarkIcon {
                 id: launcherIcon
                 visible: !SettingsData.useOSLogo && !SettingsData.useCustomLauncherImage
@@ -167,7 +151,6 @@ Row {
                 size: SettingsData.launcherLogoSize > 0 ? SettingsData.launcherLogoSize - 6 : Math.min(Theme.iconSize, root.widgetHeight - 8)
                 color: Qt.rgba(SettingsData.launcherLogoRed, SettingsData.launcherLogoGreen, SettingsData.launcherLogoBlue, 1.0)
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -190,10 +173,8 @@ Row {
                 propagateComposedEvents: false // Prevent event propagation
                 enabled: true // Explicitly enable the mouse area
                 
-                // Force the mouse area to be interactive
                 preventStealing: true
                 
-                // Visual feedback for debugging - red square showing clickable area
                 Rectangle {
                     anchors.fill: parent
                     color: launcherArea.containsMouse ? "rgba(255, 0, 0, 0.3)" : "rgba(255, 0, 0, 0.1)"
@@ -205,15 +186,12 @@ Row {
                 }
                 
                 Component.onCompleted: {
-                    // MouseArea created
                 }
                 
                 onEntered: {
-                    // Mouse entered
                 }
                 
                 onExited: {
-                    // Mouse exited
                 }
                 
                 onPressed: (mouse) => {
@@ -221,19 +199,15 @@ Row {
                 }
                 
                 onReleased: {
-                    // Mouse released
                 }
                 
                 onClicked: {
-                    // Try to access appDrawerLoader through global scope
                     try {
-                        // Look for appDrawerLoader in the global scope
                         let current = root
                         while (current) {
                         if (current.appDrawerLoader) {
                             current.appDrawerLoader.active = true
                             if (current.appDrawerLoader.item) {
-                                // Use settings-based positioning for app drawer
                                 const position = root.calculateWidgetPosition(SettingsData.appDrawerPosition, 400, 600)
                                 const screen = root.screen || Screen
                                 
@@ -247,11 +221,9 @@ Row {
                             current = current.parent
                         }
                         
-                        // If not found in parent hierarchy, try global access
                         if (typeof appDrawerLoader !== 'undefined') {
                             appDrawerLoader.active = true
                             if (appDrawerLoader.item) {
-                                // Use settings-based positioning for app drawer
                                 const position = root.calculateWidgetPosition(SettingsData.appDrawerPosition, 400, 600)
                                 const screen = root.screen || Screen
                                 
@@ -262,12 +234,10 @@ Row {
                             }
                         }
                     } catch (e) {
-                        // Error accessing appDrawerLoader
                     }
                 }
                 
                 onPressAndHold: {
-                    // Press and hold
                 }
             }
         }
@@ -298,7 +268,6 @@ Row {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                    // TODO: Implement clipboard functionality
                 }
             }
         }
@@ -323,7 +292,6 @@ Row {
         ControlCenterButton {
             section: "left"
             popupTarget: {
-                // Try to access controlCenterLoader through global scope
                 let current = root
                 while (current) {
                     if (current.controlCenterLoader) {
@@ -336,13 +304,11 @@ Row {
             }
             parentScreen: root.screen
             onClicked: {
-                // Try to access controlCenterLoader through global scope
                 let current = root
                 while (current) {
                     if (current.controlCenterLoader) {
                         current.controlCenterLoader.active = true
                         if (current.controlCenterLoader.item) {
-                            // Use settings-based positioning
                             const position = root.calculateWidgetPosition(SettingsData.controlCenterPosition, 300, 400)
                             const screen = root.screen || Screen
                             
@@ -354,11 +320,9 @@ Row {
                     current = current.parent
                 }
                 
-                // If not found in parent hierarchy, try global access
                 if (typeof controlCenterLoader !== 'undefined') {
                     controlCenterLoader.active = true
                     if (controlCenterLoader.item) {
-                        // Use settings-based positioning
                         const position = root.calculateWidgetPosition(SettingsData.controlCenterPosition, 300, 400)
                         const screen = root.screen || Screen
                         
@@ -409,7 +373,6 @@ Row {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                    // Open settings modal
                     settingsModal.show()
                 }
             }
@@ -456,12 +419,10 @@ Row {
     }
     
     function getWidgetVisible(widgetId) {
-        // Same logic as top bar - all dock widgets are visible by default
         return true
     }
     
     function getWidgetEnabled(enabled) {
-        // Same logic as top bar - check if widget is enabled
         return enabled !== false
     }
 
@@ -471,7 +432,6 @@ Row {
         model: root.widgetList
         
         Component.onCompleted: {
-            // Widget list loaded
         }
 
         Loader {
@@ -481,12 +441,10 @@ Row {
 
             anchors.verticalCenter: parent ? parent.verticalCenter : undefined
             
-            // Use the same pattern as top bar widgets
             active: root.getWidgetVisible(widgetId) && (widgetId !== "music" || MprisController.activePlayer !== null)
             sourceComponent: root.getWidgetComponent(widgetId)
             
             Component.onCompleted: {
-                // Widget loaded
             }
             opacity: {
                 const enabled = root.getWidgetEnabled(model.enabled)
@@ -512,7 +470,6 @@ Row {
                     item.spacerSize = Qt.binding(() => model.size || 20)
                 }
                 
-                // Apply far side styling to loaded items
                 if (root.isFarSide && item) {
                     item.opacity = root.farSideOpacity
                     item.scale = root.farSideScale
@@ -520,7 +477,6 @@ Row {
             }
             
             onActiveChanged: {
-                // Same as top bar - handle active state changes
                 if (active) {
                     Qt.callLater(() => {
                         if (item) {

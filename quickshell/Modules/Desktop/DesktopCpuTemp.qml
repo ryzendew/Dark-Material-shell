@@ -18,7 +18,6 @@ DarkOSD {
     enableMouseInteraction: true
     autoHideInterval: 0
 
-    // Position based on individual widget settings
     property var positionAnchors: {
         switch(SettingsData.desktopCpuTempPosition) {
             case "top-left": return { horizontal: "left", vertical: "top" }
@@ -36,14 +35,9 @@ DarkOSD {
 
     Component.onCompleted: {
         DgopService.addRef(["cpu"]);
-        // console.log("DesktopCpuTemp: Component completed")
-        // console.log("DesktopCpuTemp: CpuFrequencyService available:", typeof CpuFrequencyService !== 'undefined')
-        // console.log("DesktopCpuTemp: PerformanceService available:", typeof PerformanceService !== 'undefined')
         if (typeof CpuFrequencyService !== 'undefined') {
-            // console.log("DesktopCpuTemp: Initial CPU frequency:", CpuFrequencyService.currentFrequency)
         }
         if (typeof PerformanceService !== 'undefined') {
-            // console.log("DesktopCpuTemp: Initial performance mode:", PerformanceService.currentMode)
         }
         show();
     }
@@ -61,18 +55,11 @@ DarkOSD {
         border.width: 1
 
         Component.onCompleted: {
-            // console.log("DesktopCpuTemp content: Component.onCompleted");
-            // console.log("DesktopCpuTemp content: width =", width);
-            // console.log("DesktopCpuTemp content: height =", height);
-            // console.log("DesktopCpuTemp content: x =", x);
-            // console.log("DesktopCpuTemp content: y =", y);
         }
 
-        // Position at top-left for testing
         x: 50
         y: 50
 
-        // Drop shadow
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
@@ -101,7 +88,6 @@ DarkOSD {
                 }
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Drop shadow
                 layer.enabled: true
                 layer.effect: DropShadow {
                     horizontalOffset: 0
@@ -143,7 +129,6 @@ DarkOSD {
                         return Theme.surfaceText;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -162,7 +147,6 @@ DarkOSD {
                                 return CpuFrequencyService.currentFrequency.toFixed(1) + "GHz";
                             }
                         } catch (e) {
-                            // console.log("DesktopCpuTemp: Error accessing CpuFrequencyService:", e)
                         }
                         return "--GHz";
                     }
@@ -179,12 +163,10 @@ DarkOSD {
                                 }
                             }
                         } catch (e) {
-                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -203,7 +185,6 @@ DarkOSD {
                                 return PerformanceService.getCurrentModeInfo().name;
                             }
                         } catch (e) {
-                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return "Unknown";
                     }
@@ -220,12 +201,10 @@ DarkOSD {
                                 }
                             }
                         } catch (e) {
-                            // console.log("DesktopCpuTemp: Error accessing PerformanceService:", e)
                         }
                         return Theme.surfaceTextMedium;
                     }
 
-                    // Drop shadow
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
@@ -239,7 +218,6 @@ DarkOSD {
             }
         }
 
-        // Make the widget draggable
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
@@ -252,7 +230,6 @@ DarkOSD {
         }
     }
 
-    // Auto-refresh when temperature changes
     Connections {
         target: DgopService
         function onCpuTemperatureChanged() {

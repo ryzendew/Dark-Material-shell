@@ -20,19 +20,16 @@ Item {
 
     property var defaultSink: AudioService.sink
 
-    // Palette that stays stable across track switches until new colors are ready
     property color dom: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 1.0)
     property color acc: Qt.rgba(Theme.surfaceText.r, Theme.surfaceText.g, Theme.surfaceText.b, 0.25)
     property color _nextDom: dom
     property color _nextAcc: acc
 
-    // Track-switch hold (prevents banner flicker only during switches)
     property bool isSwitching: false
     property bool paletteReady: false
     property string _lastArtUrl: ""
     property url _cqSource: ""
 
-    // Derived "no players" state: always correct, no timers.
     readonly property int _playerCount: allPlayers ? allPlayers.length : 0
     readonly property bool _noneAvailable: _playerCount === 0
     readonly property bool _trulyIdle: activePlayer
@@ -40,7 +37,6 @@ Item {
           && !activePlayer.trackTitle && !activePlayer.trackArtist
     readonly property bool showNoPlayerNow: (!_switchHold) && (_noneAvailable || _trulyIdle)
 
-    // Short hold only during track switches (not when players disappear)
     property bool _switchHold: false
     Timer {
       id: _switchHoldTimer
@@ -359,7 +355,6 @@ Item {
             
             opacity: audioDevicesButton.devicesExpanded ? 1 : 0
             
-            // Drop shadow effect
             layer.enabled: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
@@ -471,7 +466,6 @@ Item {
                                     onClicked: {
                                         if (modelData) {
                                             Pipewire.preferredDefaultAudioSink = modelData
-                                            // console.log("Current default sink after change:", AudioService.sink ? AudioService.sink.name : "null")
                                         }
                                         audioDevicesButton.devicesExpanded = false
                                     }
@@ -666,7 +660,6 @@ Item {
                 }
             }
         }      
-        // Center Column: Main Media Content
         ColumnLayout {
             x: 72  
             y: 20  
@@ -687,7 +680,6 @@ Item {
                 }
             }
 
-            // Song Info and Controls Section
             Item {
                 width: parent.width
                 Layout.fillHeight: true
@@ -735,7 +727,6 @@ Item {
                     }
                 }
 
-                // Controls Group
                 Column {
                     id: controlsGroup
                     width: parent.width

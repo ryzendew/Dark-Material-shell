@@ -17,7 +17,6 @@ CompoundPill {
     onToggled: {
         if (HdrService.isChecking) return
         
-        // console.log("HDR Toggle clicked - toggling via service")
         HdrService.toggleHdr()
     }
 }

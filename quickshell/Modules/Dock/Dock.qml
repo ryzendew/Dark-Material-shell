@@ -22,7 +22,6 @@ PanelWindow {
     property bool autoHide: SettingsData.dockAutoHide
     property real backgroundTransparency: SettingsData.dockTransparency
     
-    // Use global minimized window manager
 
     property bool contextMenuOpen: (contextMenu && contextMenu.visible && contextMenu.screen === modelData)
     property bool windowIsFullscreen: {
@@ -36,7 +35,6 @@ PanelWindow {
     property bool reveal: (!autoHide || dockMouseArea.containsMouse || dockApps.requestDockShow || contextMenuOpen) && !windowIsFullscreen
 
     Component.onCompleted: {
-        // Dock component completed
     }
 
     Connections {
@@ -46,11 +44,9 @@ PanelWindow {
         }
     }
 
-    // Theme change detection for debugging
     Connections {
         target: Theme
         function onColorUpdateTriggerChanged() {
-            // Theme color update triggered
         }
     }
 
@@ -90,7 +86,6 @@ PanelWindow {
             right: parent.right
         }
         
-        // Exclude the left widget area from mouse events (unless expanding to screen)
         x: SettingsData.dockExpandToScreen ? 0 : leftWidgetArea.width + 8
         width: SettingsData.dockExpandToScreen ? parent.width : parent.width - leftWidgetArea.width - 8
         hoverEnabled: true
@@ -98,7 +93,6 @@ PanelWindow {
         propagateComposedEvents: true // Allow events to propagate to child components
         preventStealing: false // Allow child MouseAreas to steal events
         
-        // Override mouse event handlers to ensure they don't block
         onPressed: mouse.accepted = false
         onReleased: mouse.accepted = false
         onClicked: mouse.accepted = false
@@ -137,10 +131,8 @@ PanelWindow {
 
                 width: {
                     if (SettingsData.dockExpandToScreen) {
-                        // When expanding to screen, use full width minus margins
                         return parent.width - 16 // 8px margin on each side
                     } else {
-                        // Normal dock width calculation
                         const appsWidth = dockApps.implicitWidth || 0
                         const leftWidgetAreaWidth = leftWidgetArea.width || 0
                         const rightWidgetAreaWidth = rightWidgetArea.width || 0
@@ -174,7 +166,6 @@ PanelWindow {
                     radius: parent.radius
                 }
 
-                // Left Widget Area (Expandable)
                 Rectangle {
                     id: leftWidgetArea
                     anchors.left: parent.left
@@ -192,7 +183,6 @@ PanelWindow {
                     z: 10 // Ensure it's on top
                     visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
                     
-                    // Smooth width animation
                     Behavior on width {
                         NumberAnimation {
                             duration: SettingsData.dockAnimationDuration
@@ -200,7 +190,6 @@ PanelWindow {
                         }
                     }
                     
-                    // Add refresh mechanism like top bar
                     Connections {
                         target: SettingsData
                         function onWidgetDataChanged() {
@@ -213,12 +202,10 @@ PanelWindow {
                         }
                     }
                     
-                    // Reset widget area when media closes
                     Connections {
                         target: MprisController
                         function onActivePlayerChanged() {
                             if (MprisController.activePlayer === null) {
-                                // Media closed - force widget area to recalculate width
                                 Qt.callLater(() => {
                                     leftWidgets.visible = false
                                     Qt.callLater(() => {
@@ -238,13 +225,11 @@ PanelWindow {
                         z: 11 // Ensure widgets are on top
                         
                         Component.onCompleted: {
-                            // Left widgets created
                         }
                     }
                 }
 
 
-                // Right Widget Area (Expandable)
                 Rectangle {
                     id: rightWidgetArea
                     anchors.right: parent.right
@@ -261,7 +246,6 @@ PanelWindow {
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
                     
-                    // Smooth width animation
                     Behavior on width {
                         NumberAnimation {
                             duration: 200
@@ -269,7 +253,6 @@ PanelWindow {
                         }
                     }
                     
-                    // Add refresh mechanism like left widgets
                     Connections {
                         target: SettingsData
                         function onWidgetDataChanged() {
@@ -282,12 +265,10 @@ PanelWindow {
                         }
                     }
                     
-                    // Reset widget area when media closes
                     Connections {
                         target: MprisController
                         function onActivePlayerChanged() {
                             if (MprisController.activePlayer === null) {
-                                // Media closed - force widget area to recalculate width
                                 Qt.callLater(() => {
                                     rightWidgets.visible = false
                                     Qt.callLater(() => {
@@ -298,7 +279,6 @@ PanelWindow {
                         }
                     }
 
-                    // Widgets centered in the background
                     DockWidgets {
                         id: rightWidgets
                         anchors.centerIn: parent
@@ -307,12 +287,10 @@ PanelWindow {
                         side: "right"
                         
                         Component.onCompleted: {
-                            // Right widgets created
                         }
                     }
                 }
 
-                // Main dock content container (centered, with margins for widget areas)
                 Item {
                     id: mainDockContainer
                     anchors.left: SettingsData.dockExpandToScreen ? parent.left : leftWidgetArea.right
@@ -324,14 +302,12 @@ PanelWindow {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 4 + SettingsData.dockTopPadding
                     
-                    // Ensure this container doesn't extend into left widget area
                     clip: false
                     z: 5 // Lower than left widget area (z: 10)
 
                     Item {
                         anchors.fill: parent
 
-                        // Dock Apps (Left side)
                         DockApps {
                             id: dockApps
                             anchors.left: SettingsData.dockCenterApps ? undefined : (SettingsData.dockExpandToScreen ? expandedLeftWidgets.right : parent.left)
@@ -341,12 +317,10 @@ PanelWindow {
                             height: parent.height
                             contextMenu: dock.contextMenu
                             
-                            // Ensure dock apps don't extend beyond their container
                             clip: false
                             z: 1 // Lower than left widget area
                         }
 
-                        // Separator between dock apps and settings/right widgets
                         Rectangle {
                             anchors.left: dockApps.right
                             anchors.leftMargin: 8
@@ -360,7 +334,6 @@ PanelWindow {
 
 
 
-                        // Left Widgets (when expanding to screen)
                         DockWidgets {
                             id: expandedLeftWidgets
                             anchors.left: parent.left
@@ -373,7 +346,6 @@ PanelWindow {
                             z: 2
                         }
 
-                        // Separator between left widgets and dock apps
                         Rectangle {
                             anchors.left: expandedLeftWidgets.right
                             anchors.leftMargin: 4
@@ -385,7 +357,6 @@ PanelWindow {
                             visible: SettingsData.dockExpandToScreen
                         }
 
-                        // Right Widgets (when expanding to screen)
                         DockWidgets {
                             id: expandedRightWidgets
                             anchors.right: parent.right
@@ -454,7 +425,6 @@ PanelWindow {
                 }
             }
             
-            // Minimized window preview
             DockMinimizedPreview {
                 id: minimizedPreview
                 

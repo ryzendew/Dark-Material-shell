@@ -48,7 +48,7 @@ Rectangle {
         StyledText {
             text: {
                 const temp = SettingsData.useFahrenheit ? WeatherService.weather.tempF : WeatherService.weather.temp;
-                if (temp === undefined || temp === null || temp === 0) {
+                if (temp === undefined || temp === null) {
                     return "--°" + (SettingsData.useFahrenheit ? "F" : "C");
                 }
 

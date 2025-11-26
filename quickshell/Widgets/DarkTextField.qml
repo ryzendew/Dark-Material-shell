@@ -6,12 +6,25 @@ import qs.Widgets
 StyledRect {
     id: root
 
+    readonly property bool notoSansAvailable: Qt.fontFamilies().some(f => f.includes("Noto Sans"))
+    
     FontLoader {
         id: notoSansLoader
-        source: "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
+        source: root.notoSansAvailable ? "" : "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
     }
     
-    readonly property string notoSansFamily: notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : "Noto Sans"
+    readonly property string notoSansFamily: {
+        if (root.notoSansAvailable) {
+            const families = Qt.fontFamilies()
+            for (let i = 0; i < families.length; i++) {
+                if (families[i].includes("Noto Sans")) {
+                    return families[i]
+                }
+            }
+            return "Noto Sans"
+        }
+        return notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : ""
+    }
 
     activeFocusOnTab: true
 
@@ -122,7 +135,6 @@ StyledRect {
                                 if (root.ignoreLeftRightKeys) {
                                     event.accepted = true
                                 } else {
-                                    // Allow normal TextInput cursor movement
                                     event.accepted = false
                                 }
                             }
@@ -130,7 +142,6 @@ StyledRect {
                                  if (root.ignoreLeftRightKeys) {
                                      event.accepted = true
                                  } else {
-                                     // Allow normal TextInput cursor movement
                                      event.accepted = false
                                  }
                              }

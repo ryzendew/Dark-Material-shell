@@ -40,7 +40,6 @@ Singleton {
         command: ["sh", "-c", "ps -eo comm= | grep -E '^(elogind|elogind-daemon)$'"]
 
         onExited: function (exitCode) {
-            // // console.log("SessionService: Elogind detection exited with code", exitCode)
             isElogind = (exitCode === 0)
         }
     }
@@ -77,7 +76,6 @@ Singleton {
         }
     }
 
-    // * Apps
     function launchDesktopEntry(desktopEntry) {
         let cmd = desktopEntry.command
         if (SessionData.launchPrefix && SessionData.launchPrefix.length > 0) {
@@ -91,7 +89,6 @@ Singleton {
         });
     }
 
-    // * Session management
     function logout() {
         if (hasUwsm) {
             uwsmLogout.running = true
@@ -105,7 +102,6 @@ Singleton {
             return
         }
 
-        // Hyprland fallback
         Hyprland.dispatch("exit")
     }
 
@@ -125,7 +121,6 @@ Singleton {
         Quickshell.execDetached([isElogind ? "loginctl" : "systemctl", "poweroff"])
     }
 
-    // * Idle Inhibitor
     signal inhibitorChanged
 
     function enableIdleInhibit() {
@@ -182,7 +177,6 @@ Singleton {
 
         onExited: function (exitCode) {
             if (idleInhibited && exitCode !== 0) {
-                console.warn("SessionService: Inhibitor process crashed with exit code:", exitCode)
                 idleInhibited = false
                 ToastService.showWarning("Idle inhibitor failed")
             }

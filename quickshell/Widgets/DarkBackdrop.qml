@@ -48,7 +48,6 @@ Item {
         StyledText {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            // ! TODO qmlfmt will brick this
             text: `██████╗  █████╗ ███╗   ██╗██╗  ██╗
 ██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝
 ██║  ██║███████║██╔██╗ ██║█████╔╝

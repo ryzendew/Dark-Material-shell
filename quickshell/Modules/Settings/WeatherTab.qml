@@ -19,7 +19,6 @@ Item {
             width: parent.width
             spacing: Theme.spacingXL
 
-            // Enable Weather
             StyledRect {
                 width: parent.width
                 height: enableWeatherSection.implicitHeight + Theme.spacingL * 2
@@ -84,7 +83,6 @@ Item {
                 }
             }
 
-            // Temperature Unit
             StyledRect {
                 width: parent.width
                 height: temperatureSection.implicitHeight + Theme.spacingL * 2
@@ -158,7 +156,6 @@ Item {
                 }
             }
 
-            // Location Settings
             StyledRect {
                 width: parent.width
                 height: locationSection.implicitHeight + Theme.spacingL * 2
@@ -389,7 +386,6 @@ Item {
                 }
             }
 
-            // Desktop Weather Widget Settings
             StyledRect {
                 width: parent.width
                 height: desktopWeatherSection.implicitHeight + Theme.spacingL * 2
@@ -442,7 +438,6 @@ Item {
                         }
                     }
 
-                    // Basic Size Controls
                     Column {
                         width: parent.width
                         spacing: Theme.spacingXS
@@ -454,7 +449,6 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        // Width Slider
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -488,7 +482,6 @@ Item {
                             }
                         }
 
-                        // Height Slider
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -523,7 +516,6 @@ Item {
                         }
                     }
 
-                    // Typography Controls
                     Column {
                         width: parent.width
                         spacing: Theme.spacingXS
@@ -535,7 +527,6 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        // Base Font Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -569,7 +560,6 @@ Item {
                             }
                         }
 
-                        // Current Temperature Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -603,7 +593,6 @@ Item {
                             }
                         }
 
-                        // City Name Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -637,7 +626,6 @@ Item {
                             }
                         }
 
-                        // Details Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -671,7 +659,6 @@ Item {
                             }
                         }
 
-                        // Forecast Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -706,7 +693,6 @@ Item {
                         }
                     }
 
-                    // Layout Controls
                     Column {
                         width: parent.width
                         spacing: Theme.spacingXS
@@ -718,7 +704,6 @@ Item {
                             font.weight: Font.Medium
                         }
 
-                        // Icon Size
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -752,7 +737,6 @@ Item {
                             }
                         }
 
-                        // Spacing
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -786,7 +770,6 @@ Item {
                             }
                         }
 
-                        // Padding
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM
@@ -820,7 +803,6 @@ Item {
                             }
                         }
 
-                        // Border Radius
                         Row {
                             width: parent.width
                             spacing: Theme.spacingM

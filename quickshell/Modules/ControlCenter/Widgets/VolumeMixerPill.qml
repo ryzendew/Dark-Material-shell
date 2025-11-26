@@ -55,12 +55,9 @@ CompoundPill {
     }
 
     onToggled: {
-        // This could open a detailed view or toggle mute for all applications
-        // For now, we'll just show the detail view
     }
 
     onWheelEvent: function (wheelEvent) {
-        // Could implement volume adjustment for all applications
         wheelEvent.accepted = true
     }
 }

@@ -14,7 +14,6 @@ DarkModal {
 
     function show() {
         if (!DgopService.dgopAvailable) {
-            console.warn("ProcessListModal: dgop is not available");
             return ;
         }
         open();
@@ -31,7 +30,6 @@ DarkModal {
 
     function toggle() {
         if (!DgopService.dgopAvailable) {
-            console.warn("ProcessListModal: dgop is not available");
             return ;
         }
         if (shouldBeVisible) {
@@ -100,7 +98,6 @@ DarkModal {
                 }
             }
 
-            // Show error message when dgop is not available
             Rectangle {
                 anchors.centerIn: parent
                 width: 400

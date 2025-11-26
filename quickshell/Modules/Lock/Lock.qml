@@ -25,7 +25,6 @@ Item {
     Connections {
         target: IdleService
         function onLockRequested() {
-            // // console.log("Lock: Received lock request from IdleService")
             activate()
         }
     }
@@ -40,18 +39,15 @@ Item {
                 const match = text.match(/objectpath '([^']+)'/)
                 if (match) {
                     root.sessionPath = match[1]
-                    // // console.log("Found session path:", root.sessionPath)
                     checkCurrentLockState.running = true
                     lockStateMonitor.running = true
                 } else {
-                    console.warn("Could not determine session path")
                 }
             }
         }
 
         onExited: (exitCode, exitStatus) => {
                       if (exitCode !== 0) {
-                          console.warn("Failed to get session path, exit code:", exitCode)
                       }
                   }
     }
@@ -64,7 +60,6 @@ Item {
         stdout: StdioCollector {
             onStreamFinished: {
                 if (text.includes("true")) {
-                    // // console.log("Session is locked on startup, activating lock screen")
                     loader.activeAsync = true
                 }
             }
@@ -72,7 +67,6 @@ Item {
 
         onExited: (exitCode, exitStatus) => {
                       if (exitCode !== 0) {
-                          console.warn("Failed to check initial lock state, exit code:", exitCode)
                       }
                   }
     }
@@ -88,22 +82,18 @@ Item {
             onRead: line => {
                         if (line.includes(root.sessionPath)) {
                             if (line.includes("org.freedesktop.login1.Session.Lock")) {
-                                // // console.log("login1: Lock signal received -> show lock")
                                 loader.activeAsync = true
                                 return
                             }
                             if (line.includes("org.freedesktop.login1.Session.Unlock")) {
-                                // // console.log("login1: Unlock signal received -> hide lock")
                                 loader.active = false
                                 return
                             }
                             if (line.includes("LockedHint") && line.includes("true")) {
-                                // // console.log("login1: LockedHint=true -> show lock")
                                 loader.activeAsync = true
                                 return
                             }
                             if (line.includes("LockedHint") && line.includes("false")) {
-                                // // console.log("login1: LockedHint=false -> hide lock")
                                 loader.active = false
                                 return
                             }
@@ -118,7 +108,6 @@ Item {
 
         onExited: (exitCode, exitStatus) => {
                       if (exitCode !== 0) {
-                          console.warn("gdbus monitor failed, exit code:", exitCode)
                       }
                   }
     }
@@ -159,12 +148,10 @@ Item {
         target: "lock"
 
         function lock() {
-            // // console.log("Lock screen requested via IPC")
             loader.activeAsync = true
         }
 
         function demo() {
-            // // console.log("Lock screen DEMO mode requested via IPC")
             demoWindow.showDemo()
         }
 

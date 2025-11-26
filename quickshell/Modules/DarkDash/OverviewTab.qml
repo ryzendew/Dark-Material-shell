@@ -17,7 +17,6 @@ Item {
 
     Item {
         anchors.fill: parent
-        // Clock - top left (narrower and shorter)
         ClockCard {
             x: 0
             y: 0
@@ -25,7 +24,6 @@ Item {
             height: 180
         }
 
-        // Weather - top middle-left (narrower)
         WeatherOverviewCard {
             x: SettingsData.weatherEnabled ? parent.width * 0.2 - Theme.spacingM : 0
             y: 0
@@ -36,7 +34,6 @@ Item {
             onClicked: root.switchToWeatherTab()
         }
 
-        // UserInfo - top middle-right (extend when weather disabled)
         UserInfoCard {
             x: SettingsData.weatherEnabled ? parent.width * 0.5 : parent.width * 0.2 - Theme.spacingM
             y: 0
@@ -44,7 +41,6 @@ Item {
             height: 100
         }
 
-        // SystemMonitor - middle left (narrow and shorter)
         SystemMonitorCard {
             x: 0
             y: 180 + Theme.spacingM
@@ -52,7 +48,6 @@ Item {
             height: 220
         }
 
-        // Calendar - bottom middle (wider and taller)
         CalendarOverviewCard {
             x: parent.width * 0.2 - Theme.spacingM
             y: 100 + Theme.spacingM
@@ -60,7 +55,6 @@ Item {
             height: 300
         }
 
-        // Media - bottom right (narrow and taller)
         MediaOverviewCard {
             x: parent.width * 0.8
             y: 100 + Theme.spacingM

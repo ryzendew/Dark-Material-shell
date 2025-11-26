@@ -217,7 +217,6 @@ Column {
             }
 
             MouseArea {
-                // TODO: Re-implement sort order toggle
 
                 id: sortOrderArea
 
