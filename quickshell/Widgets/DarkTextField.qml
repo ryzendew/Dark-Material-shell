@@ -150,7 +150,17 @@ StyledRect {
             anchors.fill: parent
             hoverEnabled: true 
             cursorShape: Qt.IBeamCursor
-            acceptedButtons: Qt.NoButton
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: mouse => {
+                textInput.forceActiveFocus()
+                if (mouse.button === Qt.LeftButton) {
+                    const pos = textInput.positionAt(mouse.x - root.leftPadding, mouse.y - root.topPadding)
+                    textInput.cursorPosition = pos
+                }
+            }
+            onDoubleClicked: {
+                textInput.selectAll()
+            }
         }
     }
 

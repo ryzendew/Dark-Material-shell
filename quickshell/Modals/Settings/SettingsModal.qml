@@ -131,7 +131,7 @@ DarkModal {
     settingsContent: Component {
         Item {
             anchors.fill: parent
-            focus: true
+            focus: false
             clip: true
 
             Column {

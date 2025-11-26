@@ -208,24 +208,34 @@ PanelWindow {
 
         objectName: "modalFocusScope"
         anchors.fill: parent
-        visible: root.visible // Only active when the modal is visible
-        focus: root.visible
+        visible: root.visible
+        focus: root.visible && shouldHaveFocus && !allowFocusOverride
         Keys.onEscapePressed: event => {
-                                  if (root.closeOnEscapeKey && shouldHaveFocus) {
+                                  if (root.closeOnEscapeKey && shouldHaveFocus && !allowFocusOverride) {
                                       root.close()
                                       event.accepted = true
                                   }
                               }
         onVisibleChanged: {
-            if (visible && shouldHaveFocus) {
-                Qt.callLater(() => focusScope.forceActiveFocus())
+            if (visible && shouldHaveFocus && !allowFocusOverride) {
+                Qt.callLater(() => {
+                    const activeItem = focusScope.activeFocusItem
+                    if (!activeItem || !(activeItem instanceof TextInput || activeItem instanceof TextArea || activeItem instanceof TextField)) {
+                        focusScope.forceActiveFocus()
+                    }
+                })
             }
         }
 
         Connections {
             function onShouldHaveFocusChanged() {
-                if (shouldHaveFocus && visible) {
-                    Qt.callLater(() => focusScope.forceActiveFocus())
+                if (shouldHaveFocus && visible && !allowFocusOverride) {
+                    Qt.callLater(() => {
+                        const activeItem = focusScope.activeFocusItem
+                        if (!activeItem || !(activeItem instanceof TextInput || activeItem instanceof TextArea || activeItem instanceof TextField)) {
+                            focusScope.forceActiveFocus()
+                        }
+                    })
                 }
             }
 

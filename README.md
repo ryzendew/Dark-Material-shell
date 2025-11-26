@@ -26,7 +26,6 @@ You're welcome to use any part of this configuration, but **no support will be p
 - **fuzzel** — Application launcher/dmenu
 - **grim** — Screenshot tool
 - **hyprpicker** — Color picker
-- **hyprswitch** — Window switcher
 - **ptyxis** — Terminal emulator
 - **quickshell** — Shell/launcher/widget system
 - **slurp** — Region selector for screenshots
@@ -46,8 +45,8 @@ You're welcome to use any part of this configuration, but **no support will be p
 - **code** — Visual Studio Code
 - **easyeffects** — Audio effects/equalizer
 - **firefox** — Firefox browser
-- **gnome-system-monitor** — System monitor
-- **gnome-text-editor** — GNOME text editor
+- **mission-center** — System monitor
+- **gedit** — Text editor
 - **google-chrome-stable** — Google Chrome browser
 - **nautilus** — GNOME file manager
 - **pavucontrol** — PulseAudio volume control GUI
@@ -68,7 +67,7 @@ sudo pacman -Syu
 ### Official Repositories
 
 ```bash
-sudo pacman -S brightnessctl cliphist easyeffects firefox fuzzel gnome-system-monitor gnome-text-editor grim nautilus pavucontrol ptyxis slurp swappy tesseract wl-clipboard wlogout yad
+sudo pacman -S brightnessctl cliphist easyeffects firefox fuzzel gedit gnome-disks grim hyprland mission-center nautilus nwg-look pavucontrol polkit polkit-gnome mate-polkit ptyxis qt6ct slurp swappy tesseract wl-clipboard wlogout xdg-desktop-portal-hyprland yad
 ```
 
 ### AUR Packages
@@ -84,17 +83,7 @@ cd yay && makepkg -si && cd .. && rm -rf yay
 Install AUR packages:
 
 ```bash
-yay -S anyrun hyprpicker-git quickshell-git
-```
-
-### Hyprswitch (Build from Source)
-
-```bash
-sudo pacman -S rust cargo gtk4 pkg-config
-git clone https://github.com/ryzendew/hyprswitch.git
-cd hyprswitch && cargo build --release
-sudo cp target/release/hyprswitch /usr/local/bin/
-cd .. && rm -rf hyprswitch
+yay -S anyrun dgop hyprpicker-git quickshell-git
 ```
 
 ### Additional Applications
@@ -160,18 +149,7 @@ sudo dnf install -y \
     btop lm_sensors gedit nwg-look
 ```
 
-### Step 3: Hyprswitch (Build from Source)
-
-If you need hyprswitch, build it from source:
-
-```bash
-git clone https://github.com/ryzendew/hyprswitch.git
-cd hyprswitch && cargo build --release
-sudo cp target/release/hyprswitch /usr/local/bin/
-cd .. && rm -rf hyprswitch
-```
-
-### Step 4: Additional Applications (Optional)
+### Step 3: Additional Applications (Optional)
 
 - **Zed**: Download from [zed.dev](https://zed.dev)
 - **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo dnf install code` if available
@@ -179,7 +157,7 @@ cd .. && rm -rf hyprswitch
 - **wps**: Download from [wps.com](https://www.wps.com)
 - **better-control**: Check if available in COPR or build from source
 
-### Step 5: Python Dependencies
+### Step 4: Python Dependencies
 
 ```bash
 pip install pynvml
