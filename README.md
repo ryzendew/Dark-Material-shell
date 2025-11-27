@@ -1,4 +1,4 @@
-# Dark Material Shell
+# DarkMatter Shell
 
 This is my personal dotfiles repository. These configurations are built specifically for me and my system.
 
