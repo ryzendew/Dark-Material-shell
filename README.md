@@ -83,7 +83,7 @@ cd yay && makepkg -si && cd .. && rm -rf yay
 Install AUR packages:
 
 ```bash
-yay -S anyrun dgop hyprpicker-git python-pynvml quickshell-git
+yay -S anyrun dgop hyprpicker-git matugen-git python-pynvml quickshell-git
 ```
 
 ### Additional Applications
@@ -93,6 +93,47 @@ yay -S anyrun dgop hyprpicker-git python-pynvml quickshell-git
 - **google-chrome-stable**: `yay -S google-chrome`
 - **wps**: `yay -S wps-office`
 - **better-control**: `yay -S better-control`
+
+### dgop (Manual Installation)
+
+**Option 1: Install from AUR (Recommended)**
+
+```bash
+yay -S dgop
+```
+
+**Option 2: Build from Source**
+
+```bash
+# Install Go if not already installed
+sudo pacman -S --needed go
+
+# Clone and build
+cd /tmp
+git clone https://github.com/AvengeMedia/dgop.git
+cd dgop
+make
+sudo make install
+cd .. && rm -rf dgop
+```
+
+### matugen (Manual Installation)
+
+**Option 1: Install from AUR (Recommended)**
+
+```bash
+yay -S matugen-git
+```
+
+**Option 2: Install via Cargo**
+
+```bash
+# Install Rust and Cargo if not already installed
+sudo pacman -S --needed rust cargo
+
+# Install matugen
+cargo install matugen
+```
 
 </details>
 
@@ -171,6 +212,121 @@ sudo dnf install -y \
 
 ```bash
 pip install pynvml
+```
+
+### Step 6: dgop (Manual Installation)
+
+**Build from Source:**
+
+```bash
+# Install Go and build tools if not already installed
+sudo dnf install -y golang git make
+
+# Clone and build
+cd /tmp
+git clone https://github.com/AvengeMedia/dgop.git
+cd dgop
+make
+sudo make install
+cd .. && rm -rf dgop
+```
+
+**Optional: NVIDIA GPU Support**
+
+For NVIDIA GPU temperature monitoring, install nvidia-utils:
+
+```bash
+sudo dnf install -y nvidia-utils
+```
+
+### Step 7: matugen (Manual Installation)
+
+**Install via Cargo:**
+
+```bash
+# Install Rust and Cargo if not already installed
+sudo dnf install -y rust cargo
+
+# Install matugen
+cargo install matugen
+```
+
+</details>
+
+<details>
+<summary>Package Installation (PikaOS)</summary>
+
+Update your system first:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### Step 1: Install All Packages
+
+Install all required packages in a single command:
+
+```bash
+sudo apt install -y --no-install-recommends \
+    hyprland swww xdg-desktop-portal-hyprland xdg-desktop-portal-wlr xdg-desktop-portal-gnome gnome-keyring \
+    brightnessctl cliphist easyeffects firefox fuzzel gedit gnome-system-monitor gnome-text-editor grim nautilus nwg-look pavucontrol polkit mate-polkit-bin ptyxis qt6ct slurp swappy tesseract-ocr wl-clipboard wlogout yad \
+    rustc cargo gcc g++ pkg-config libssl-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev \
+    libfontconfig-dev libfreetype-dev libexpat1-dev curl unzip fontconfig libcairo2-dev libgtk-4-dev libgtk-layer-shell-dev \
+    qtbase5-dev qt6-base-dev python3-pyqt6 python3 python3-dev libcurl4-openssl-dev fuse libfuse2t64 \
+    btop lm-sensors golang-go git make
+```
+
+**Note:** Some packages like `hyprpicker` and `quickshell-git` may need to be built from source or installed from additional repositories if not available in PikaOS repositories.
+
+### Step 2: Additional Applications (Optional)
+
+- **Zed**: Download from [zed.dev](https://zed.dev)
+- **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo apt install code` if available
+- **google-chrome-stable**: Download from [google.com/chrome](https://www.google.com/chrome)
+- **wps**: Download from [wps.com](https://www.wps.com)
+- **better-control**: Check if available in PPA or build from source
+
+### Step 3: Python Dependencies
+
+```bash
+pip install pynvml
+```
+
+### Step 4: dgop (Manual Installation)
+
+**Build from Source:**
+
+```bash
+# Install Go and build tools if not already installed
+sudo apt install -y golang-go git make
+
+# Clone and build
+cd /tmp
+git clone https://github.com/AvengeMedia/dgop.git
+cd dgop
+make
+sudo make install
+cd .. && rm -rf dgop
+```
+
+**Optional: NVIDIA GPU Support**
+
+For NVIDIA GPU temperature monitoring, install nvidia-utils:
+
+```bash
+sudo apt install -y nvidia-utils
+```
+
+### Step 5: matugen (Manual Installation)
+
+**Install via Cargo:**
+
+```bash
+# Install Rust and Cargo if not already installed
+sudo apt install -y rustc cargo
+
+# Install matugen
+cargo install matugen
 ```
 
 </details>

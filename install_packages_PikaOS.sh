@@ -212,7 +212,8 @@ run_apt apt install -y --no-install-recommends \
     libcurl4-openssl-dev \
     fuse libfuse2t64 \
     mate-polkit-bin \
-    zenity
+    zenity \
+    golang-go git make
 
 # Desktop environment and window manager
 echo -e "\n${YELLOW}Installing desktop environment components...${NC}"
@@ -324,6 +325,28 @@ elif apt-cache show qml6-module-qt5compat >/dev/null 2>&1; then
     run_apt apt install -y --no-install-recommends qml6-module-qt5compat
 else
     echo -e "${YELLOW}Qt6 Qt5Compat package not found - may not be needed${NC}"
+fi
+
+# dgop (build from source)
+echo -e "\n${YELLOW}Building and installing dgop...${NC}"
+# Note: golang-go, git, and make are already installed in the development tools section above
+cd /tmp
+git clone https://github.com/AvengeMedia/dgop.git
+cd dgop
+make
+make install
+cd .. && rm -rf dgop
+cd ~
+echo -e "${GREEN}dgop installed successfully!${NC}"
+echo -e "${YELLOW}Note: For NVIDIA GPU temperature monitoring, install nvidia-utils (optional): sudo apt install -y nvidia-utils${NC}"
+
+# matugen (install via cargo)
+echo -e "\n${YELLOW}Installing matugen via cargo...${NC}"
+if ! command -v matugen &> /dev/null; then
+    cargo install matugen
+    echo -e "${GREEN}matugen installed successfully!${NC}"
+else
+    echo -e "${GREEN}matugen is already installed!${NC}"
 fi
 
 echo -e "\n${GREEN}Installation complete!${NC}"

@@ -103,6 +103,7 @@ AUR_PACKAGES=(
     anyrun
     dgop
     hyprpicker-git
+    matugen-git
     python-pynvml
     quickshell-git
 )
@@ -122,6 +123,32 @@ if [ ${#MISSING_AUR[@]} -gt 0 ]; then
     yay -S --needed --noconfirm "${MISSING_AUR[@]}"
 else
     echo -e "\n${GREEN}All AUR packages are already installed!${NC}"
+fi
+
+# dgop (build from source if not installed via AUR)
+echo -e "\n${YELLOW}Checking for dgop...${NC}"
+if ! check_command dgop; then
+    if ! check_package dgop; then
+        echo -e "${BLUE}dgop not found. Building from source...${NC}"
+        # Check for Go
+        if ! check_command go; then
+            echo -e "${YELLOW}Installing Go...${NC}"
+            sudo pacman -S --needed --noconfirm go
+        fi
+        
+        cd /tmp
+        git clone https://github.com/AvengeMedia/dgop.git
+        cd dgop
+        make
+        sudo make install
+        cd .. && rm -rf dgop
+        cd ~
+        echo -e "${GREEN}dgop installed successfully!${NC}"
+    else
+        echo -e "${GREEN}dgop is already installed via AUR!${NC}"
+    fi
+else
+    echo -e "${GREEN}dgop is already installed!${NC}"
 fi
 
 # Font installation

@@ -62,7 +62,8 @@ dnf install -y \
     qt6-qt5compat \
     python3-pyqt6 \
     python3.11 python3.11-libs \
-    libxcrypt-compat libcurl libcurl-devel apr fuse-libs
+    libxcrypt-compat libcurl libcurl-devel apr fuse-libs \
+    golang git make
 
 # Desktop environment and window manager
 echo -e "\n${YELLOW}Installing desktop environment components...${NC}"
@@ -121,6 +122,28 @@ dnf install -y \
 # Quickshell
 echo -e "\n${YELLOW}Installing Quickshell...${NC}"
 dnf install -y quickshell-git
+
+# dgop (build from source)
+echo -e "\n${YELLOW}Building and installing dgop...${NC}"
+# Note: golang, git, and make are already installed in the development tools section above
+cd /tmp
+git clone https://github.com/AvengeMedia/dgop.git
+cd dgop
+make
+make install
+cd .. && rm -rf dgop
+cd ~
+echo -e "${GREEN}dgop installed successfully!${NC}"
+echo -e "${YELLOW}Note: For NVIDIA GPU temperature monitoring, install nvidia-utils (optional): sudo dnf install -y nvidia-utils${NC}"
+
+# matugen (install via cargo)
+echo -e "\n${YELLOW}Installing matugen via cargo...${NC}"
+if ! command -v matugen &> /dev/null; then
+    cargo install matugen
+    echo -e "${GREEN}matugen installed successfully!${NC}"
+else
+    echo -e "${GREEN}matugen is already installed!${NC}"
+fi
 
 echo -e "\n${GREEN}Installation complete!${NC}"
 echo -e "${YELLOW}Note: You may need to reboot if you installed NVIDIA drivers or kernel packages.${NC}"
