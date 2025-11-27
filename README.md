@@ -56,7 +56,7 @@ You're welcome to use any part of this configuration, but **no support will be p
 </details>
 
 <details>
-<summary>Package Installation</summary>
+<summary>Package Installation (Arch)</summary>
 
 Update your system first:
 
