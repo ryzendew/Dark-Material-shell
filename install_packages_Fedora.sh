@@ -31,7 +31,7 @@ dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-
 
 # Enable COPR repositories
 echo -e "\n${YELLOW}Enabling COPR repositories...${NC}"
-dnf copr enable -y solopasha/hyprland
+dnf copr enable -y lionheartp/Hyprland
 dnf copr enable -y errornointernet/quickshell
 dnf copr enable -y bieszczaders/kernel-cachyos
 dnf copr enable -y bieszczaders/kernel-cachyos-addons
@@ -73,7 +73,6 @@ dnf install -y \
     xdg-desktop-portal-hyprland \
     xdg-desktop-portal-wlr \
     xdg-desktop-portal-gnome \
-    hyprpolkitagent \
     gnome-keyring
 
 # CachyOS kernel (optional)

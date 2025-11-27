@@ -83,7 +83,7 @@ cd yay && makepkg -si && cd .. && rm -rf yay
 Install AUR packages:
 
 ```bash
-yay -S anyrun dgop hyprpicker-git quickshell-git
+yay -S anyrun dgop hyprpicker-git python-pynvml quickshell-git
 ```
 
 ### Additional Applications
@@ -93,12 +93,6 @@ yay -S anyrun dgop hyprpicker-git quickshell-git
 - **google-chrome-stable**: `yay -S google-chrome`
 - **wps**: `yay -S wps-office`
 - **better-control**: `yay -S better-control`
-
-### Python Dependencies
-
-```bash
-pip install pynvml
-```
 
 </details>
 
@@ -123,7 +117,7 @@ sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-non
 Enable COPR repositories:
 
 ```bash
-sudo dnf copr enable -y solopasha/hyprland
+sudo dnf copr enable -y lionheartp/Hyprland
 sudo dnf copr enable -y errornointernet/quickshell
 ```
 
@@ -133,23 +127,39 @@ Update package cache:
 sudo dnf makecache
 ```
 
-### Step 2: Install All Packages
+### Step 2: Install Packages from COPR Repositories
+
+The following packages should be installed from the COPR repositories:
+
+**From `lionheartp/Hyprland` repository:**
+
+```bash
+sudo dnf install -y hyprland hyprpicker swww xdg-desktop-portal-hyprland
+```
+
+**From `errornointernet/quickshell` repository:**
+
+```bash
+sudo dnf install -y quickshell-git
+```
+
+### Step 3: Install All Packages
 
 Install all required packages in a single command:
 
 ```bash
 sudo dnf install -y \
-    hyprland hyprpicker swww xdg-desktop-portal-hyprland xdg-desktop-portal-wlr xdg-desktop-portal-gnome hyprpolkitagent gnome-keyring \
-    brightnessctl cliphist easyeffects firefox fuzzel gnome-system-monitor gnome-text-editor grim nautilus pavucontrol ptyxis slurp swappy tesseract wl-clipboard wlogout yad \
+    hyprland hyprpicker swww xdg-desktop-portal-hyprland xdg-desktop-portal-wlr xdg-desktop-portal-gnome gnome-keyring \
+    brightnessctl cliphist easyeffects firefox fuzzel gedit gnome-disks gnome-system-monitor gnome-text-editor grim nautilus nwg-look pavucontrol polkit mate-polkit ptyxis qt6ct slurp swappy tesseract wl-clipboard wlogout yad \
     quickshell-git \
     rust cargo gcc gcc-c++ pkg-config openssl-devel libX11-devel libXcursor-devel libXrandr-devel libXi-devel mesa-libGL-devel fontconfig-devel freetype-devel expat-devel \
     cairo-gobject cairo-gobject-devel rust-gdk4-sys+default-devel gtk4-layer-shell-devel \
-    qt5-qtgraphicaleffects qt6-qt5compat python3-pyqt6 qt6ct \
+    qt5-qtgraphicaleffects qt6-qt5compat python3-pyqt6 \
     python3.11 python3.11-libs libxcrypt-compat libcurl libcurl-devel apr fuse-libs fuse2 fuse \
     btop lm_sensors gedit nwg-look
 ```
 
-### Step 3: Additional Applications (Optional)
+### Step 4: Additional Applications (Optional)
 
 - **Zed**: Download from [zed.dev](https://zed.dev)
 - **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo dnf install code` if available
@@ -157,7 +167,7 @@ sudo dnf install -y \
 - **wps**: Download from [wps.com](https://www.wps.com)
 - **better-control**: Check if available in COPR or build from source
 
-### Step 4: Python Dependencies
+### Step 5: Python Dependencies
 
 ```bash
 pip install pynvml

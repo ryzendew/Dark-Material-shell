@@ -103,6 +103,7 @@ AUR_PACKAGES=(
     anyrun
     dgop
     hyprpicker-git
+    python-pynvml
     quickshell-git
 )
 
@@ -121,16 +122,6 @@ if [ ${#MISSING_AUR[@]} -gt 0 ]; then
     yay -S --needed --noconfirm "${MISSING_AUR[@]}"
 else
     echo -e "\n${GREEN}All AUR packages are already installed!${NC}"
-fi
-
-# Python dependencies
-echo -e "\n${YELLOW}Checking Python dependencies...${NC}"
-if ! python3 -c "import pynvml" 2>/dev/null; then
-    echo -e "${BLUE}Installing pynvml...${NC}"
-    pip install --user pynvml
-    echo -e "${GREEN}pynvml installed successfully!${NC}"
-else
-    echo -e "${GREEN}pynvml is already installed!${NC}"
 fi
 
 # Font installation
