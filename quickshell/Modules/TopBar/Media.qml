@@ -147,20 +147,11 @@ Rectangle {
                 }
 
                 MouseArea {
+                    id: mediaHoverArea
                     anchors.fill: parent
                     enabled: root.playerAvailable && root.opacity > 0 && root.width > 0 && parent.visible
                     hoverEnabled: enabled
                     cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-                    onPressed: {
-                        if (root.popupTarget && root.popupTarget.setTriggerPosition) {
-                            const globalPos = mapToGlobal(0, 0);
-                            const currentScreen = root.parentScreen || Screen;
-                            const screenX = currentScreen.x || 0;
-                            const relativeX = globalPos.x - screenX;
-                            root.popupTarget.setTriggerPosition(relativeX, barHeight + Theme.spacingXS, root.width, root.section, currentScreen);
-                        }
-                        root.clicked();
-                    }
                 }
             }
 

@@ -703,9 +703,9 @@ DarkPopout {
                         id: searchField
 
                         width: parent.width
-                                height: 40
+                        height: 48
                         cornerRadius: Theme.cornerRadius
-                                backgroundColor: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                        backgroundColor: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
                         normalBorderColor: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
                         focusedBorderColor: Theme.primary
                         leftIconName: "search"
@@ -713,11 +713,14 @@ DarkPopout {
                         leftIconColor: Theme.surfaceVariantText
                         leftIconFocusedColor: Theme.primary
                         showClearButton: true
-                                font.pixelSize: Theme.fontSizeMedium
+                        font.pixelSize: Theme.fontSizeMedium
+                        textColor: Theme.surfaceText
+                        topPadding: Theme.spacingM
+                        bottomPadding: Theme.spacingM
                         enabled: appDrawerPopout.shouldBeVisible
                         ignoreLeftRightKeys: true
                         keyForwardTargets: [keyHandler]
-                                placeholderText: "Type here to search"
+                        placeholderText: "Type here to search"
                         onTextEdited: {
                             appLauncher.searchQuery = text
                         }

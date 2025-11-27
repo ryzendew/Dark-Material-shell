@@ -169,6 +169,18 @@ Item {
             "description": "Check for system updates",
             "icon": "update",
             "enabled": SystemUpdateService.distributionSupported
+        }, {
+            "id": "darkDash",
+            "text": "Dark Dash",
+            "description": "Quick access dashboard with overview, media, and weather",
+            "icon": "dashboard",
+            "enabled": true
+        }, {
+            "id": "applications",
+            "text": "Applications",
+            "description": "macOS Tahoe-style application launcher with categorized apps",
+            "icon": "apps",
+            "enabled": true
         }]
     property var defaultLeftWidgets: [{
             "id": "launcherButton",
@@ -541,49 +553,15 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "visibility_off"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - autoHideToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Auto-hide"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Automatically hide the top bar to expand screen real estate"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: autoHideToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.topBarAutoHide
-                            onToggled: toggled => {
-                                           return SettingsData.setTopBarAutoHide(
-                                               toggled)
-                                       }
-                        }
+                        text: "Auto-hide"
+                        description: "Automatically hide the top bar to expand screen real estate"
+                        checked: SettingsData.topBarAutoHide
+                        onToggled: toggled => {
+                                       return SettingsData.setTopBarAutoHide(
+                                           toggled)
+                                   }
                     }
 
                     Rectangle {
@@ -593,49 +571,15 @@ Item {
                         opacity: 0.2
                     }
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "visibility"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - visibilityToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Manual Show/Hide"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Toggle top bar visibility manually (can be controlled via IPC)"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: visibilityToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.topBarVisible
-                            onToggled: toggled => {
-                                           return SettingsData.setTopBarVisible(
-                                               toggled)
-                                       }
-                        }
+                        text: "Manual Show/Hide"
+                        description: "Toggle top bar visibility manually (can be controlled via IPC)"
+                        checked: SettingsData.topBarVisible
+                        onToggled: toggled => {
+                                       return SettingsData.setTopBarVisible(
+                                           toggled)
+                                   }
                     }
 
                     Rectangle {
@@ -646,50 +590,16 @@ Item {
                         visible: CompositorService.isNiri
                     }
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
+                        text: "Show on Overview"
+                        description: "Always show the top bar when niri's overview is open"
                         visible: CompositorService.isNiri
-
-                        DarkIcon {
-                            name: "fullscreen"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - overviewToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Show on Overview"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Always show the top bar when niri's overview is open"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: overviewToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.topBarOpenOnOverview
-                            onToggled: toggled => {
-                                           return SettingsData.setTopBarOpenOnOverview(
-                                               toggled)
-                                       }
-                        }
+                        checked: SettingsData.topBarOpenOnOverview
+                        onToggled: toggled => {
+                                       return SettingsData.setTopBarOpenOnOverview(
+                                           toggled)
+                                   }
                     }
                 }
             }

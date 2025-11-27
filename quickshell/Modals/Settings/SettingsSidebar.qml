@@ -24,6 +24,9 @@ Rectangle {
         "text": "Widgets",
         "icon": "widgets"
     }, {
+        "text": "Desktop Widgets",
+        "icon": "widgets"
+    }, {
         "text": "Positioning",
         "icon": "open_with"
     }, {
@@ -58,19 +61,19 @@ Rectangle {
         "icon": "cloud"
     }]
 
-    width: 270
+    width: 280
     height: parent.height
     color: Theme.surfaceContainer
-    radius: Theme.cornerRadius
+    radius: Math.max(Theme.cornerRadius, 16)
     clip: true
 
     Column {
         anchors.fill: parent
-        anchors.leftMargin: Theme.spacingS
-        anchors.rightMargin: Theme.spacingS
-        anchors.bottomMargin: Theme.spacingS
-        anchors.topMargin: Theme.spacingM + 2
-        spacing: Theme.spacingXS
+        anchors.leftMargin: Theme.spacingM
+        anchors.rightMargin: Theme.spacingM
+        anchors.bottomMargin: Theme.spacingM
+        anchors.topMargin: Theme.spacingL
+        spacing: Theme.spacingS
         clip: true
 
         ProfileSection {
@@ -97,14 +100,14 @@ Rectangle {
             Rectangle {
                 property bool isActive: sidebarContainer.currentIndex === index
 
-                width: parent.width - Theme.spacingS * 2
-                height: 44
-                radius: Theme.cornerRadius
+                width: parent.width - Theme.spacingM * 2
+                height: 48
+                radius: Math.max(Theme.cornerRadius, 12)
                 color: isActive ? Theme.primaryContainer : tabMouseArea.containsMouse ? Theme.surfaceHover : "transparent"
 
                 Row {
                     anchors.left: parent.left
-                    anchors.leftMargin: Theme.spacingM
+                    anchors.leftMargin: Theme.spacingL
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: Theme.spacingM
 

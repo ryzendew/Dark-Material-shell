@@ -13,14 +13,14 @@ Row {
     property var defaultSink: AudioService.sink
     property color sliderTrackColor: "transparent"
 
-    height: 40
-    spacing: 0
+    height: 48
+    spacing: Theme.spacingS
 
     Rectangle {
-        width: Theme.iconSize + Theme.spacingS * 2
-        height: Theme.iconSize + Theme.spacingS * 2
+        width: Theme.iconSize + Theme.spacingM * 2
+        height: Theme.iconSize + Theme.spacingM * 2
         anchors.verticalCenter: parent.verticalCenter
-        radius: (Theme.iconSize + Theme.spacingS * 2) / 2
+        radius: (Theme.iconSize + Theme.spacingM * 2) / 2
         color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
         layer.enabled: true
@@ -72,7 +72,7 @@ Row {
         readonly property real actualVolumePercent: defaultSink ? Math.round(defaultSink.audio.volume * 100) : 0
 
         anchors.verticalCenter: parent.verticalCenter
-        width: parent.width - (Theme.iconSize + Theme.spacingS * 2)
+        width: parent.width - (Theme.iconSize + Theme.spacingM * 2) - root.spacing
         enabled: defaultSink !== null
         minimum: 0
         maximum: 100

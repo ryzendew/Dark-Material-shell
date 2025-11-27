@@ -30,7 +30,7 @@ PanelWindow {
     property real baseIconSize: SettingsData.desktopWeatherIconSize
     property real scaledIconSize: baseIconSize * scaleFactor
     WlrLayershell.layer: WlrLayershell.Background
-    WlrLayershell.namespace: "quickshell:desktop:weather"
+    WlrLayershell.namespace: "quickshell:dock:blur"
     WlrLayershell.exclusiveZone: -1
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"

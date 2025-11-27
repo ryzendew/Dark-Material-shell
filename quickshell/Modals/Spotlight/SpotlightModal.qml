@@ -48,10 +48,10 @@ DarkModal {
     }
 
     shouldBeVisible: spotlightOpen
-    width: 550
-    height: 600
+    width: 600
+    height: 650
     backgroundColor: Theme.popupBackground()
-    cornerRadius: Theme.cornerRadius
+    cornerRadius: Math.max(Theme.cornerRadius, 20)
     borderColor: Theme.outlineMedium
     borderWidth: 1
     enableShadow: true

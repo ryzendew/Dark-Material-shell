@@ -27,7 +27,7 @@ PanelWindow {
     property color backgroundColor: Theme.surfaceContainer
     property color borderColor: Theme.outlineMedium
     property real borderWidth: 1
-    property real cornerRadius: Theme.cornerRadius
+    property real cornerRadius: Math.max(Theme.cornerRadius, 16)
     property bool enableShadow: false
     property alias modalFocusScope: focusScope
     property bool shouldBeVisible: false

@@ -36,13 +36,13 @@ Rectangle {
     property bool enableFuzzySearch: false
     property int popupWidthOffset: 0
     property int maxPopupHeight: 400
-    property int controlHeight: 42
+    property int controlHeight: 48
 
     signal valueChanged(string value)
 
     width: parent.width
-    height: Math.max(60, controlHeight + Theme.spacingL * 2)
-    radius: Theme.cornerRadius
+    height: Math.max(68, controlHeight + Theme.spacingXL * 2)
+    radius: Math.max(Theme.cornerRadius, 16)
     color: "transparent"
     Component.onCompleted: forceRecreateTimer.start()
     Component.onDestruction: {
@@ -72,9 +72,9 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: dropdown.left
         anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: Theme.spacingM
-        anchors.rightMargin: Theme.spacingM
-        spacing: Theme.spacingXS
+        anchors.leftMargin: Theme.spacingL
+        anchors.rightMargin: Theme.spacingL
+        spacing: Theme.spacingS
 
         Text {
             text: root.text
@@ -99,12 +99,12 @@ Rectangle {
     Rectangle {
         id: dropdown
 
-        width: root.width <= 60 ? root.width : 180
+        width: root.width <= 60 ? root.width : 200
         height: root.controlHeight
         anchors.right: parent.right
-        anchors.rightMargin: Theme.spacingM
+        anchors.rightMargin: Theme.spacingL
         anchors.verticalCenter: parent.verticalCenter
-        radius: Theme.cornerRadius
+        radius: Math.max(Theme.cornerRadius, 12)
         color: dropdownArea.containsMouse ? Theme.primaryHover : Theme.contentBackground()
         border.color: Theme.surfaceVariantAlpha
         border.width: 1
@@ -138,8 +138,8 @@ Rectangle {
 
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: Theme.spacingM
-            spacing: Theme.spacingS
+            anchors.leftMargin: Theme.spacingL
+            spacing: Theme.spacingM
 
             Item {
                 width: root.currentValue ? 18 : 0

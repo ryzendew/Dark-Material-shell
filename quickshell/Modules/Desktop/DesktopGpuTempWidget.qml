@@ -26,7 +26,7 @@ PanelWindow {
     visible: alwaysVisible
 
     WlrLayershell.layer: WlrLayershell.Background
-    WlrLayershell.namespace: "quickshell:desktop:gpuTemp"
+    WlrLayershell.namespace: "quickshell:dock:blur"
     WlrLayershell.exclusiveZone: -1
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"

@@ -57,10 +57,10 @@ StyledRect {
     property int borderWidth: 1
     property int focusedBorderWidth: 2
     property real cornerRadius: Theme.cornerRadius
-    readonly property real leftPadding: Theme.spacingM + (leftIconName ? leftIconSize + Theme.spacingM : 0)
-    readonly property real rightPadding: Theme.spacingM + (showClearButton && text.length > 0 ? 24 + Theme.spacingM : 0)
-    property real topPadding: Theme.spacingM
-    property real bottomPadding: Theme.spacingM
+    readonly property real leftPadding: Theme.spacingL + (leftIconName ? leftIconSize + Theme.spacingM : 0)
+    readonly property real rightPadding: Theme.spacingL + (showClearButton && text.length > 0 ? 24 + Theme.spacingM : 0)
+    property real topPadding: Theme.spacingL
+    property real bottomPadding: Theme.spacingL
     property bool ignoreLeftRightKeys: false
     property var keyForwardTargets: []
     property Item keyNavigationTab: null

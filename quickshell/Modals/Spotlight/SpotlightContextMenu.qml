@@ -43,7 +43,7 @@ Rectangle {
     visible: false
     width: 180
     height: menuColumn.implicitHeight + Theme.spacingS * 2
-    radius: Theme.cornerRadius
+    radius: Math.max(Theme.cornerRadius, 12)
     color: Theme.popupBackground()
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
     border.width: 1
@@ -72,7 +72,7 @@ Rectangle {
         Rectangle {
             width: parent.width
             height: 32
-            radius: Theme.cornerRadius
+            radius: Math.max(Theme.cornerRadius, 12)
             color: pinMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
             Row {
@@ -147,7 +147,7 @@ Rectangle {
         Rectangle {
             width: parent.width
             height: 32
-            radius: Theme.cornerRadius
+            radius: Math.max(Theme.cornerRadius, 12)
             color: launchMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
 
             Row {

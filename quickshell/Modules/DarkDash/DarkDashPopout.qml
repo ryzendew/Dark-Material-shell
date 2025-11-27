@@ -11,22 +11,20 @@ import qs.Modules.DarkDash
 
 DarkPopout {
     id: root
+    objectName: "darkDashPopout"
 
-    property bool dashVisible: false
     property string triggerSection: "center"
     property var triggerScreen: null
     property int currentTabIndex: 0
 
+    function show() {
+        open()
+    }
+
     function setTriggerPosition(x, y, width, section, screen) {
-        if (section === "center") {
-            const screenWidth = screen ? screen.width : Screen.width
-            triggerX = (screenWidth - popupWidth) / 2
-            triggerWidth = popupWidth
-        } else {
-            triggerX = x
-            triggerWidth = width
-        }
+        triggerX = x
         triggerY = y
+        triggerWidth = width
         triggerSection = section
         triggerScreen = screen
     }
@@ -37,20 +35,10 @@ DarkPopout {
     triggerY: Theme.barHeight - 4 + SettingsData.topBarSpacing + Theme.spacingS
     triggerWidth: 80
     positioning: "center"
-    shouldBeVisible: dashVisible
-    visible: shouldBeVisible
-
-
-    onDashVisibleChanged: {
-        if (dashVisible) {
-            open()
-        } else {
-            close()
-        }
-    }
+    screen: triggerScreen
 
     onBackgroundClicked: {
-        dashVisible = false
+        close()
     }
 
     content: Component {
@@ -58,7 +46,7 @@ DarkPopout {
             id: mainContainer
 
             implicitHeight: contentColumn.height + Theme.spacingM * 2
-            color: Theme.surfaceContainer
+            color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.darkDashContentBackgroundOpacity)
             radius: Theme.cornerRadius
             focus: true
 
@@ -70,7 +58,7 @@ DarkPopout {
 
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Escape) {
-                    root.dashVisible = false
+                    root.close()
                     event.accepted = true
                 }
             }
@@ -87,22 +75,24 @@ DarkPopout {
             }
 
             Rectangle {
+                id: animatedTintRect
                 anchors.fill: parent
-                color: Qt.rgba(Theme.surfaceTint.r, Theme.surfaceTint.g, Theme.surfaceTint.b, 0.04)
+                color: Qt.rgba(Theme.surfaceTint.r, Theme.surfaceTint.g, Theme.surfaceTint.b, 1.0)
                 radius: parent.radius
+                opacity: SettingsData.darkDashAnimatedTintOpacity
 
                 SequentialAnimation on opacity {
-                    running: root.shouldBeVisible
+                    running: root.shouldBeVisible && SettingsData.darkDashAnimatedTintOpacity > 0
                     loops: Animation.Infinite
 
                     NumberAnimation {
-                        to: 0.08
+                        to: Math.min(1.0, SettingsData.darkDashAnimatedTintOpacity * 2)
                         duration: Theme.extraLongDuration
                         easing.type: Theme.standardEasing
                     }
 
                     NumberAnimation {
-                        to: 0.02
+                        to: Math.max(0.0, SettingsData.darkDashAnimatedTintOpacity * 0.5)
                         duration: Theme.extraLongDuration
                         easing.type: Theme.standardEasing
                     }
@@ -125,6 +115,7 @@ DarkPopout {
                     currentIndex: root.currentTabIndex
                     spacing: Theme.spacingS
                     equalWidthTabs: true
+                    opacity: SettingsData.darkDashTabBarOpacity
 
                     model: {
                         let tabs = [
@@ -147,7 +138,7 @@ DarkPopout {
                     onActionTriggered: function(index) {
                         let settingsIndex = SettingsData.weatherEnabled ? 3 : 2
                         if (index === settingsIndex) {
-                            dashVisible = false
+                            root.close()
                             settingsModal.show()
                         }
                     }

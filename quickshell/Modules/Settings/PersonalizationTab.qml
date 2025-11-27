@@ -442,46 +442,14 @@ Item {
                         spacing: Theme.spacingM
                         visible: SessionData.wallpaperPath !== ""
 
-                        Row {
+                        DarkToggle {
                             width: parent.width
-                            spacing: Theme.spacingM
-
-                            DarkIcon {
-                                name: "monitor"
-                                size: Theme.iconSize
-                                color: SessionData.perMonitorWallpaper ? Theme.primary : Theme.surfaceVariantText
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Column {
-                                width: parent.width - Theme.iconSize - Theme.spacingM - perMonitorToggle.width - Theme.spacingM
-                                spacing: Theme.spacingXS
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                StyledText {
-                                    text: "Per-Monitor Wallpapers"
-                                    font.pixelSize: Theme.fontSizeLarge
-                                    font.weight: Font.Medium
-                                    color: Theme.surfaceText
-                                }
-
-                                StyledText {
-                                    text: "Set different wallpapers for each connected monitor"
-                                    font.pixelSize: Theme.fontSizeSmall
-                                    color: Theme.surfaceVariantText
-                                    width: parent.width
-                                }
-                            }
-
-                            DarkToggle {
-                                id: perMonitorToggle
-
-                                anchors.verticalCenter: parent.verticalCenter
-                                checked: SessionData.perMonitorWallpaper
-                                onToggled: toggled => {
-                                               return SessionData.setPerMonitorWallpaper(toggled)
-                                           }
-                            }
+                            text: "Per-Monitor Wallpapers"
+                            description: "Set different wallpapers for each connected monitor"
+                            checked: SessionData.perMonitorWallpaper
+                            onToggled: toggled => {
+                                           return SessionData.setPerMonitorWallpaper(toggled)
+                                       }
                         }
 
                         Column {
@@ -533,57 +501,26 @@ Item {
                         spacing: Theme.spacingM
                         visible: SessionData.wallpaperPath !== "" || SessionData.perMonitorWallpaper
 
-                        Row {
+                        DarkToggle {
+                            id: cyclingToggle
                             width: parent.width
-                            spacing: Theme.spacingM
-
-                            DarkIcon {
-                                name: "schedule"
-                                size: Theme.iconSize
-                                color: SessionData.wallpaperCyclingEnabled ? Theme.primary : Theme.surfaceVariantText
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Column {
-                                width: parent.width - Theme.iconSize - Theme.spacingM - cyclingToggle.width - Theme.spacingM
-                                spacing: Theme.spacingXS
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                StyledText {
-                                    text: "Automatic Cycling"
-                                    font.pixelSize: Theme.fontSizeLarge
-                                    font.weight: Font.Medium
-                                    color: Theme.surfaceText
-                                }
-
-                                StyledText {
-                                    text: "Automatically cycle through wallpapers in the same folder"
-                                    font.pixelSize: Theme.fontSizeSmall
-                                    color: Theme.surfaceVariantText
-                                    width: parent.width
-                                }
-                            }
-
-                            DarkToggle {
-                                id: cyclingToggle
-
-                                anchors.verticalCenter: parent.verticalCenter
-                                checked: SessionData.perMonitorWallpaper ? SessionData.getMonitorCyclingSettings(selectedMonitorName).enabled : SessionData.wallpaperCyclingEnabled
-                                onToggled: toggled => {
-                                               if (SessionData.perMonitorWallpaper) {
-                                                   return SessionData.setMonitorCyclingEnabled(selectedMonitorName, toggled)
-                                               } else {
-                                                   return SessionData.setWallpaperCyclingEnabled(toggled)
-                                               }
+                            text: "Automatic Cycling"
+                            description: "Automatically cycle through wallpapers in the same folder"
+                            checked: SessionData.perMonitorWallpaper ? SessionData.getMonitorCyclingSettings(selectedMonitorName).enabled : SessionData.wallpaperCyclingEnabled
+                            onToggled: toggled => {
+                                           if (SessionData.perMonitorWallpaper) {
+                                               return SessionData.setMonitorCyclingEnabled(selectedMonitorName, toggled)
+                                           } else {
+                                               return SessionData.setWallpaperCyclingEnabled(toggled)
                                            }
+                                       }
 
-                                Connections {
-                                    target: personalizationTab
-                                    function onSelectedMonitorNameChanged() {
-                                        cyclingToggle.checked = Qt.binding(() => {
-                                            return SessionData.perMonitorWallpaper ? SessionData.getMonitorCyclingSettings(selectedMonitorName).enabled : SessionData.wallpaperCyclingEnabled
-                                        })
-                                    }
+                            Connections {
+                                target: personalizationTab
+                                function onSelectedMonitorNameChanged() {
+                                    cyclingToggle.checked = Qt.binding(() => {
+                                        return SessionData.perMonitorWallpaper ? SessionData.getMonitorCyclingSettings(selectedMonitorName).enabled : SessionData.wallpaperCyclingEnabled
+                                    })
                                 }
                             }
                         }
@@ -978,8 +915,6 @@ Item {
 
                         DarkToggle {
                             id: toggle
-
-                            anchors.verticalCenter: parent.verticalCenter
                             checked: Theme.wallpaperPath !== "" && Theme.currentTheme === Theme.dynamic
                             enabled: ToastService.wallpaperErrorStatus !== "matugen_missing" && Theme.wallpaperPath !== ""
                             onToggled: toggled => {

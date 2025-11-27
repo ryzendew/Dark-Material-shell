@@ -136,21 +136,21 @@ DarkModal {
 
             Column {
                 anchors.fill: parent
-                anchors.leftMargin: Theme.spacingL
-                anchors.rightMargin: Theme.spacingL
-                anchors.topMargin: Theme.spacingM
-                anchors.bottomMargin: Theme.spacingL
+                anchors.leftMargin: Theme.spacingXL
+                anchors.rightMargin: Theme.spacingXL
+                anchors.topMargin: Theme.spacingL
+                anchors.bottomMargin: Theme.spacingXL
                 spacing: 0
                 clip: true
 
                 Item {
                     width: parent.width
-                    height: 35
+                    height: 48
 
                     Row {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: Theme.spacingM
+                        spacing: Theme.spacingL
 
                         DarkIcon {
                             name: "settings"
@@ -185,8 +185,8 @@ DarkModal {
 
                 Row {
                     width: parent.width
-                    height: parent.height - 35
-                    spacing: 0
+                    height: parent.height - 48
+                    spacing: Theme.spacingXL
                     clip: true
 
                     SettingsSidebar {
@@ -202,7 +202,7 @@ DarkModal {
 
                     Loader {
                         id: contentLoader
-                        width: parent.width - sidebar.width
+                        width: parent.width - sidebar.width - parent.spacing
                         height: parent.height
                         source: "SettingsContent.qml"
                         onLoaded: {

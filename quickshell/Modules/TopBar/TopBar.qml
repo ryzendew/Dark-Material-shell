@@ -56,6 +56,24 @@ PanelWindow {
         }
         return null
     }
+
+    function getDarkDashWidget() {
+        var sections = [topBarContent.leftSection, topBarContent.centerSection, topBarContent.rightSection]
+        for (var s = 0; s < sections.length; s++) {
+            var section = sections[s]
+            if (!section) continue
+            var repeater = section.children[0]
+            if (repeater && repeater.count !== undefined) {
+                for (var i = 0; i < repeater.count; i++) {
+                    var loader = repeater.itemAt(i)
+                    if (loader && loader.widgetId === "darkDash" && loader.item) {
+                        return loader.item
+                    }
+                }
+            }
+        }
+        return null
+    }
     property string screenName: modelData.name
     readonly property int notificationCount: NotificationService.notifications.length
     readonly property real effectiveBarHeight: SettingsData.topBarHeight
@@ -211,7 +229,7 @@ PanelWindow {
                                  "loader": appDrawerLoader,
                                  "prop": "shouldBeVisible"
                              }, {
-                                 "loader": darkDashPopoutLoader,
+                                 "loader": darkDashLoader,
                                  "prop": "shouldBeVisible"
                              }, {
                                  "loader": processListPopoutLoader,
@@ -422,6 +440,8 @@ PanelWindow {
                                                                  "clock": clockComponent,
                                                                  "music": mediaComponent,
                                                                  "weather": weatherComponent,
+                                                                 "darkDash": darkDashComponent,
+                                                                 "applications": applicationsComponent,
                                                                  "systemTray": systemTrayComponent,
                                                                  "privacyIndicator": privacyIndicatorComponent,
                                                                  "clipboard": clipboardComponent,
@@ -829,18 +849,7 @@ PanelWindow {
                                 barHeight: root.effectiveBarHeight
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
-                                popupTarget: {
-                                    darkDashPopoutLoader.active = true
-                                    return darkDashPopoutLoader.item
-                                }
                                 parentScreen: root.screen
-                                onClockClicked: {
-                                    darkDashPopoutLoader.active = true
-                                    if (darkDashPopoutLoader.item) {
-                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
-                                        darkDashPopoutLoader.item.currentTabIndex = 0
-                                    }
-                                }
                             }
                         }
 
@@ -852,18 +861,7 @@ PanelWindow {
                                 barHeight: root.effectiveBarHeight
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
-                                popupTarget: {
-                                    darkDashPopoutLoader.active = true
-                                    return darkDashPopoutLoader.item
-                                }
                                 parentScreen: root.screen
-                                onClicked: {
-                                    darkDashPopoutLoader.active = true
-                                    if (darkDashPopoutLoader.item) {
-                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
-                                        darkDashPopoutLoader.item.currentTabIndex = 1
-                                    }
-                                }
                             }
                         }
 
@@ -874,18 +872,29 @@ PanelWindow {
                                 barHeight: root.effectiveBarHeight
                                 widgetHeight: root.widgetHeight
                                 section: topBarContent.getWidgetSection(parent) || "center"
-                                popupTarget: {
-                                    darkDashPopoutLoader.active = true
-                                    return darkDashPopoutLoader.item
-                                }
                                 parentScreen: root.screen
-                                onClicked: {
-                                    darkDashPopoutLoader.active = true
-                                    if (darkDashPopoutLoader.item) {
-                                        darkDashPopoutLoader.item.dashVisible = !darkDashPopoutLoader.item.dashVisible
-                                        darkDashPopoutLoader.item.currentTabIndex = 2
-                                    }
-                                }
+                            }
+                        }
+
+                        Component {
+                            id: darkDashComponent
+
+                            DarkDash {
+                                barHeight: root.effectiveBarHeight
+                                widgetHeight: root.widgetHeight
+                                section: topBarContent.getWidgetSection(parent) || "center"
+                                parentScreen: root.screen
+                            }
+                        }
+
+                        Component {
+                            id: applicationsComponent
+
+                            Applications {
+                                barHeight: root.effectiveBarHeight
+                                widgetHeight: root.widgetHeight
+                                section: topBarContent.getWidgetSection(parent) || "center"
+                                parentScreen: root.screen
                             }
                         }
 

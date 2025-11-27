@@ -358,6 +358,18 @@ Row {
     Component { id: notepadButtonComponent; NotepadButton { } }
     Component { id: colorPickerComponent; ColorPicker { } }
     Component { id: systemUpdateComponent; SystemUpdate { } }
+    Component {
+        id: darkDashComponent
+        DockDarkDash {
+            parentScreen: root.screen
+        }
+    }
+    Component {
+        id: applicationsComponent
+        DockApplications {
+            parentScreen: root.screen
+        }
+    }
     Component { 
         id: settingsButtonComponent
         Rectangle {
@@ -392,6 +404,8 @@ Row {
                                              "battery": batteryComponent,
                                              "music": musicComponent,
                                              "launcherButton": launcherButtonComponent,
+                                             "darkDash": darkDashComponent,
+                                             "applications": applicationsComponent,
                                              "clipboard": clipboardComponent,
                                              "cpuUsage": cpuUsageComponent,
                                              "memUsage": memUsageComponent,

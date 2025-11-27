@@ -54,8 +54,8 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        anchors.leftMargin: 0
-        anchors.rightMargin: Theme.spacingS
+        anchors.leftMargin: Theme.spacingL
+        anchors.rightMargin: Theme.spacingXL
         anchors.bottomMargin: Theme.spacingM
         anchors.topMargin: 0
         color: "transparent"
@@ -137,10 +137,23 @@ Item {
         }
 
         Loader {
-            id: positioningLoader
+            id: desktopWidgetsLoader
 
             anchors.fill: parent
             active: root.currentIndex === 5
+            visible: active
+            asynchronous: true
+
+            sourceComponent: DesktopWidgetsTab {
+            }
+
+        }
+
+        Loader {
+            id: positioningLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 6
             visible: active
             asynchronous: true
 
@@ -153,7 +166,7 @@ Item {
             id: launcherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 6
+            active: root.currentIndex === 7
             visible: active
             asynchronous: true
 
@@ -166,7 +179,7 @@ Item {
             id: defaultAppsLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 7
+            active: root.currentIndex === 8
             visible: active
             asynchronous: true
 
@@ -179,7 +192,7 @@ Item {
             id: displaysLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 8
+            active: root.currentIndex === 9
             visible: active
             asynchronous: true
 
@@ -192,7 +205,7 @@ Item {
             id: soundLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 9
+            active: root.currentIndex === 10
             visible: active
             asynchronous: true
 
@@ -205,7 +218,7 @@ Item {
             id: networkLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 10
+            active: root.currentIndex === 11
             visible: active
             asynchronous: true
 
@@ -219,7 +232,7 @@ Item {
             id: keyboardLangLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 11
+            active: root.currentIndex === 12
             visible: active
             asynchronous: true
 
@@ -232,7 +245,7 @@ Item {
             id: timeLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 12
+            active: root.currentIndex === 13
             visible: active
             asynchronous: true
 
@@ -245,7 +258,7 @@ Item {
             id: powerLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 13
+            active: root.currentIndex === 14
             visible: active
             asynchronous: true
 
@@ -258,7 +271,7 @@ Item {
             id: aboutLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 14
+            active: root.currentIndex === 15
             visible: active
             asynchronous: true
 
@@ -271,7 +284,7 @@ Item {
             id: weatherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 15
+            active: root.currentIndex === 16
             visible: active
             asynchronous: true
 

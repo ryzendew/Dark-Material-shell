@@ -26,7 +26,7 @@ Item {
     signal sliderValueChanged(int newValue)
     signal sliderDragFinished(int finalValue)
 
-    height: 48
+    height: 52
 
     function updateValueFromPosition(x) {
         let ratio = Math.max(0, Math.min(1, (x - sliderHandle.width / 2) / (sliderTrack.width - sliderHandle.width)))
@@ -37,10 +37,10 @@ Item {
         }
     }
 
-    Row {
+        Row {
         anchors.centerIn: parent
         width: parent.width
-        spacing: Theme.spacingM
+        spacing: Theme.spacingL
 
         DarkIcon {
             name: slider.leftIcon
@@ -56,9 +56,9 @@ Item {
             property int leftIconWidth: slider.leftIcon.length > 0 ? Theme.iconSize : 0
             property int rightIconWidth: slider.rightIcon.length > 0 ? Theme.iconSize : 0
 
-            width: parent.width - (leftIconWidth + rightIconWidth + (slider.leftIcon.length > 0 ? Theme.spacingM : 0) + (slider.rightIcon.length > 0 ? Theme.spacingM : 0))
-            height: 12
-            radius: Theme.cornerRadius
+            width: parent.width - (leftIconWidth + rightIconWidth + (slider.leftIcon.length > 0 ? Theme.spacingL : 0) + (slider.rightIcon.length > 0 ? Theme.spacingL : 0))
+            height: 14
+            radius: Math.max(Theme.cornerRadius, 7)
             color: slider.trackColor
             anchors.verticalCenter: parent.verticalCenter
             clip: false
@@ -82,9 +82,9 @@ Item {
 
                 property bool active: sliderMouseArea.containsMouse || sliderMouseArea.pressed || slider.isDragging
 
-                width: 8
-                height: 24
-                radius: Theme.cornerRadius
+                width: 10
+                height: 28
+                radius: Math.max(Theme.cornerRadius, 5)
                 x: {
                     const ratio = (slider.value - slider.minimum) / (slider.maximum - slider.minimum)
                     const travel = sliderTrack.width - width

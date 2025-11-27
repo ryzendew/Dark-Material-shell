@@ -238,55 +238,22 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "sync"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
+                        text: "Network Time Synchronization"
+                        description: "Automatically synchronize system time with internet time servers"
+                        checked: TimeService.ntpEnabled
+                        onToggled: checked => {
+                            TimeService.setNTP(checked)
                         }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - ntpToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Network Time Synchronization"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Automatically synchronize system time with internet time servers"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-
-                            StyledText {
-                                text: "Status: " + (TimeService.systemClockSynchronized ? "Synchronized" : "Not synchronized") + " (" + TimeService.ntpServiceStatus + ")"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: TimeService.systemClockSynchronized ? Theme.success : Theme.surfaceVariantText
-                                visible: TimeService.ntpServiceStatus && TimeService.ntpServiceStatus.length > 0
-                            }
-                        }
-
-                        DarkToggle {
-                            id: ntpToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: TimeService.ntpEnabled
-                            onToggled: checked => {
-                                TimeService.setNTP(checked)
-                            }
-                        }
+                    }
+                    
+                    StyledText {
+                        text: "Status: " + (TimeService.systemClockSynchronized ? "Synchronized" : "Not synchronized") + " (" + TimeService.ntpServiceStatus + ")"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: TimeService.systemClockSynchronized ? Theme.success : Theme.surfaceVariantText
+                        visible: TimeService.ntpServiceStatus && TimeService.ntpServiceStatus.length > 0
+                        width: parent.width
                     }
                 }
             }
@@ -378,49 +345,15 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "schedule"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - toggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "24-Hour Format"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Use 24-hour time format instead of 12-hour AM/PM"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: toggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.use24HourClock
-                            onToggled: checked => {
-                                           return SettingsData.setClockFormat(
-                                               checked)
-                                       }
-                        }
+                        text: "24-Hour Format"
+                        description: "Use 24-hour time format instead of 12-hour AM/PM"
+                        checked: SettingsData.use24HourClock
+                        onToggled: checked => {
+                                       return SettingsData.setClockFormat(
+                                           checked)
+                                   }
                     }
                 }
             }

@@ -130,8 +130,8 @@ PanelWindow {
             property var shadowLayers: [shadowLayer1, shadowLayer2, shadowLayer3]
 
             anchors.fill: parent
-            anchors.margins: 4
-            radius: Theme.cornerRadius
+            anchors.margins: 6
+            radius: Math.max(Theme.cornerRadius, 16)
             color: Qt.rgba(Theme.popupBackground().r, Theme.popupBackground().g, Theme.popupBackground().b, SettingsData.notificationTransparency)
             border.color: notificationData && notificationData.urgency === NotificationUrgency.Critical ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3) : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.08)
             border.width: notificationData && notificationData.urgency === NotificationUrgency.Critical ? 2 : 1
@@ -204,18 +204,18 @@ PanelWindow {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.topMargin: 12
-                anchors.leftMargin: 16
-                anchors.rightMargin: 56
-                height: 98
+                anchors.topMargin: Theme.spacingL
+                anchors.leftMargin: Theme.spacingXL
+                anchors.rightMargin: Theme.spacingXL + 40
+                height: 104
 
                 DarkCircularImage {
                     id: iconContainer
 
                     readonly property bool hasNotificationImage: notificationData && notificationData.image && notificationData.image !== ""
 
-                    width: 63
-                    height: 63
+                    width: 68
+                    height: 68
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
 

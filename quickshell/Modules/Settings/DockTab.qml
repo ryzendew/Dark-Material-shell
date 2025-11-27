@@ -41,48 +41,14 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "dock_to_bottom"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - enableToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Show Dock"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Display a dock at the bottom of the screen with pinned and running applications"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: enableToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.showDock
-                            onToggled: checked => {
-                                           SettingsData.setShowDock(checked)
-                                       }
-                        }
+                        text: "Show Dock"
+                        description: "Display a dock at the bottom of the screen with pinned and running applications"
+                        checked: SettingsData.showDock
+                        onToggled: checked => {
+                                       SettingsData.setShowDock(checked)
+                                   }
                     }
                 }
             }
@@ -112,48 +78,14 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "info"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - tooltipsToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Show Tooltips"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Show application names and window titles when hovering over dock icons"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: tooltipsToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockTooltipsEnabled
-                            onToggled: checked => {
-                                           SettingsData.setDockTooltipsEnabled(checked)
-                                       }
-                        }
+                        text: "Show Tooltips"
+                        description: "Show application names and window titles when hovering over dock icons"
+                        checked: SettingsData.dockTooltipsEnabled
+                        onToggled: checked => {
+                                       SettingsData.setDockTooltipsEnabled(checked)
+                                   }
                     }
                 }
 
@@ -184,56 +116,23 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
+                        id: groupAppsToggle
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "apps"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
+                        text: "Group Apps"
+                        description: "Group multiple windows of the same application into a single dock entry"
+                        checked: SettingsData.dockGroupApps
+                        
+                        Binding {
+                            target: groupAppsToggle
+                            property: "checked"
+                            value: SettingsData.dockGroupApps
+                            when: SettingsData.dockGroupApps !== groupAppsToggle.checked
                         }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - groupAppsToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Group Apps"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Group multiple windows of the same application into a single dock entry"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: groupAppsToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockGroupApps
-                            
-                            Binding {
-                                target: groupAppsToggle
-                                property: "checked"
-                                value: SettingsData.dockGroupApps
-                                when: SettingsData.dockGroupApps !== groupAppsToggle.checked
-                            }
-                            
-                            onToggled: checked => {
-                                           SettingsData.setDockGroupApps(checked)
-                                       }
-                        }
+                        
+                        onToggled: checked => {
+                                       SettingsData.setDockGroupApps(checked)
+                                   }
                     }
                 }
 
@@ -265,56 +164,23 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
+                        id: hideOnGamesToggle
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "visibility_off"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
+                        text: "Hide on Games/Apps"
+                        description: "Automatically hide the dock when games or fullscreen applications are running. Group multiple windows of the same application into a single dock entry"
+                        checked: SettingsData.dockHideOnGames
+                        
+                        Binding {
+                            target: hideOnGamesToggle
+                            property: "checked"
+                            value: SettingsData.dockHideOnGames
+                            when: SettingsData.dockHideOnGames !== hideOnGamesToggle.checked
                         }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - hideOnGamesToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Hide on Games/Apps"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Automatically hide the dock when games or fullscreen applications are running. Group multiple windows of the same application into a single dock entry"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: hideOnGamesToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockHideOnGames
-                            
-                            Binding {
-                                target: hideOnGamesToggle
-                                property: "checked"
-                                value: SettingsData.dockHideOnGames
-                                when: SettingsData.dockHideOnGames !== hideOnGamesToggle.checked
-                            }
-                            
-                            onToggled: checked => {
-                                           SettingsData.setDockHideOnGames(checked)
-                                       }
-                        }
+                        
+                        onToggled: checked => {
+                                       SettingsData.setDockHideOnGames(checked)
+                                   }
                     }
                 }
 
@@ -345,48 +211,14 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "visibility_off"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - autoHideToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Auto-hide Dock"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Hide the dock when not in use and reveal it when hovering near the bottom of the screen"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: autoHideToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockAutoHide
-                            onToggled: checked => {
-                                           SettingsData.setDockAutoHide(checked)
-                                       }
-                        }
+                        text: "Auto-hide Dock"
+                        description: "Hide the dock when not in use and reveal it when hovering near the bottom of the screen"
+                        checked: SettingsData.dockAutoHide
+                        onToggled: checked => {
+                                       SettingsData.setDockAutoHide(checked)
+                                   }
                     }
                 }
 
@@ -417,48 +249,14 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "fullscreen"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - expandToScreenToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Expand to Screen"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Expand the dock to full screen width, hiding the left and right widget areas"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: expandToScreenToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockExpandToScreen
-                            onToggled: checked => {
-                                           SettingsData.setDockExpandToScreen(checked)
-                                       }
-                        }
+                        text: "Expand to Screen"
+                        description: "Expand the dock to full screen width, hiding the left and right widget areas"
+                        checked: SettingsData.dockExpandToScreen
+                        onToggled: checked => {
+                                       SettingsData.setDockExpandToScreen(checked)
+                                   }
                     }
                 }
 
@@ -489,48 +287,14 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "center_focus_strong"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - centerAppsToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Center Apps"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Center the pinned and running apps in the middle of the screen"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: centerAppsToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.dockCenterApps
-                            onToggled: checked => {
-                                           SettingsData.setDockCenterApps(checked)
-                                       }
-                        }
+                        text: "Center Apps"
+                        description: "Center the pinned and running apps in the middle of the screen"
+                        checked: SettingsData.dockCenterApps
+                        onToggled: checked => {
+                                       SettingsData.setDockCenterApps(checked)
+                                   }
                     }
                 }
 
@@ -1784,6 +1548,18 @@ Item {
             "text": "Settings Button",
             "description": "Quick access to settings modal",
             "icon": "settings",
+            "enabled": true
+        }, {
+            "id": "darkDash",
+            "text": "Dark Dash",
+            "description": "Quick access dashboard with overview, media, and weather",
+            "icon": "dashboard",
+            "enabled": true
+        }, {
+            "id": "applications",
+            "text": "Applications",
+            "description": "macOS Tahoe-style application launcher with categorized apps",
+            "icon": "apps",
             "enabled": true
         }]
 

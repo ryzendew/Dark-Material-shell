@@ -12,7 +12,7 @@ Rectangle {
 
     width: parent.width
     height: parent.height - y
-    radius: Theme.cornerRadius
+    radius: Math.max(Theme.cornerRadius, 16)
     color: Theme.surfaceLight
     border.color: Theme.outlineLight
     border.width: 1
@@ -20,10 +20,10 @@ Rectangle {
     DarkListView {
         id: resultsList
 
-        property int itemHeight: 60
-        property int iconSize: 40
+        property int itemHeight: 68
+        property int iconSize: 44
         property bool showDescription: true
-        property int itemSpacing: Theme.spacingS
+        property int itemSpacing: Theme.spacingM
         property bool hoverUpdatesSelection: false
         property bool keyboardNavigationActive: appLauncher ? appLauncher.keyboardNavigationActive : false
 
@@ -74,15 +74,15 @@ Rectangle {
         delegate: Rectangle {
             width: ListView.view.width
             height: resultsList.itemHeight
-            radius: Theme.cornerRadius
+            radius: Math.max(Theme.cornerRadius, 12)
             color: ListView.isCurrentItem ? Theme.primaryPressed : listMouseArea.containsMouse ? Theme.primaryHoverLight : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.03)
             border.color: ListView.isCurrentItem ? Theme.primarySelected : Theme.outlineMedium
             border.width: ListView.isCurrentItem ? 2 : 1
 
             Row {
                 anchors.fill: parent
-                anchors.margins: Theme.spacingM
-                spacing: Theme.spacingL
+                anchors.margins: Theme.spacingL
+                spacing: Theme.spacingXL
 
                 Item {
                     width: resultsList.iconSize

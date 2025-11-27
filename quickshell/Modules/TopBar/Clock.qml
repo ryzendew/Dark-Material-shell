@@ -108,17 +108,6 @@ Rectangle {
 
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onPressed: {
-            if (popupTarget && popupTarget.setTriggerPosition) {
-                const globalPos = mapToGlobal(0, 0)
-                const currentScreen = parentScreen || Screen
-                const screenX = currentScreen.x || 0
-                const relativeX = globalPos.x - screenX
-                popupTarget.setTriggerPosition(relativeX, barHeight + Theme.spacingXS, width, section, currentScreen)
-            }
-            root.clockClicked()
-        }
     }
 
 }

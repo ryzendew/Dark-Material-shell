@@ -1,3 +1,4 @@
+//@ pragma UseQApplication
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -13,6 +14,7 @@ import qs.Modals.Overview
 import qs.Modules
 import qs.Modules.AppDrawer
 import qs.Modules.DarkDash
+import qs.Modules.Applications
 import qs.Modules.ControlCenter
 import qs.Modules.Dock
 import qs.Modules.Lock
@@ -31,6 +33,7 @@ ShellRoot {
     id: root
 
     Component.onCompleted: {
+        console.warn("[DarkDash-Debug] shell.qml ShellRoot component completed - Dark Dash debug logging enabled")
         PortalService.init()
         DisplayService.nightModeEnabled
         WallpaperCyclingService.cyclingActive
@@ -63,6 +66,7 @@ ShellRoot {
             property bool showClock: SettingsData.desktopWidgetsEnabled && SettingsData.desktopClockEnabled
             property bool showWeather: SettingsData.desktopWidgetsEnabled && SettingsData.desktopWeatherEnabled
             property bool showTerminal: SettingsData.desktopWidgetsEnabled && SettingsData.desktopTerminalEnabled
+            property bool showDarkDash: SettingsData.desktopWidgetsEnabled && SettingsData.desktopDarkDashEnabled
 
             DesktopPositioning {
                 id: positioning
@@ -141,6 +145,18 @@ ShellRoot {
                     item.positioningBox = positioning.getPositionBox(SettingsData.desktopTerminalPosition)
                 }
             }
+
+            Loader {
+                id: darkDashLoader
+                visible: parent.showDarkDash
+                source: "Modules/Desktop/DesktopDarkDashWidget.qml"
+                onLoaded: {
+                    item.alwaysVisible = parent.showDarkDash
+                    item.screen = parent.modelData
+                    item.position = SettingsData.desktopDarkDashPosition
+                    item.positioningBox = positioning.getPositionBox(SettingsData.desktopDarkDashPosition)
+                }
+            }
         }
     }
 
@@ -151,6 +167,7 @@ ShellRoot {
     }
 
     Variants {
+        id: topBarVariants
         model: SettingsData.getFilteredScreens("topBar")
 
         delegate: TopBar {
@@ -159,6 +176,7 @@ ShellRoot {
             onColorPickerRequested: colorPickerModal.show()
         }
     }
+
 
 
 
@@ -177,16 +195,23 @@ ShellRoot {
         }
     }
 
-    Loader {
-        id: darkDashPopoutLoader
+    LazyLoader {
+        id: darkDashLoader
 
         active: false
-        asynchronous: true
 
-        sourceComponent: Component {
-            DarkDashPopout {
-                id: darkDashPopout
-            }
+        DarkDashPopout {
+            id: darkDashPopout
+        }
+    }
+
+    LazyLoader {
+        id: applicationsLoader
+
+        active: false
+
+        ApplicationsPopout {
+            id: applicationsPopout
         }
     }
 
@@ -620,60 +645,60 @@ ShellRoot {
 
     IpcHandler {
         function open(tab: string): string {
-            darkDashPopoutLoader.active = true
-            if (darkDashPopoutLoader.item) {
+            darkDashLoader.active = true
+            if (darkDashLoader.item) {
                 switch (tab.toLowerCase()) {
                 case "media":
-                    darkDashPopoutLoader.item.currentTabIndex = 1
+                    darkDashLoader.item.currentTabIndex = 1
                     break
                 case "weather":
-                    darkDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
+                    darkDashLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
                     break
                 default:
-                    darkDashPopoutLoader.item.currentTabIndex = 0
+                    darkDashLoader.item.currentTabIndex = 0
                     break
                 }
-                darkDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
-                darkDashPopoutLoader.item.dashVisible = true
+                darkDashLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
+                darkDashLoader.item.show()
                 return "DASH_OPEN_SUCCESS"
             }
             return "DASH_OPEN_FAILED"
         }
 
         function close(): string {
-            if (darkDashPopoutLoader.item) {
-                darkDashPopoutLoader.item.dashVisible = false
+            if (darkDashLoader.item) {
+                darkDashLoader.item.close()
                 return "DASH_CLOSE_SUCCESS"
             }
             return "DASH_CLOSE_FAILED"
         }
 
         function toggle(tab: string): string {
-            darkDashPopoutLoader.active = true
-            if (darkDashPopoutLoader.item) {
-                if (darkDashPopoutLoader.item.dashVisible) {
-                    darkDashPopoutLoader.item.dashVisible = false
+            darkDashLoader.active = true
+            if (darkDashLoader.item) {
+                if (darkDashLoader.item.shouldBeVisible) {
+                    darkDashLoader.item.close()
                 } else {
                     switch (tab.toLowerCase()) {
                     case "media":
-                        darkDashPopoutLoader.item.currentTabIndex = 1
+                        darkDashLoader.item.currentTabIndex = 1
                         break
                     case "weather":
-                        darkDashPopoutLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
+                        darkDashLoader.item.currentTabIndex = SettingsData.weatherEnabled ? 2 : 0
                         break
                     default:
-                        darkDashPopoutLoader.item.currentTabIndex = 0
+                        darkDashLoader.item.currentTabIndex = 0
                         break
                     }
-                    darkDashPopoutLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
-                    darkDashPopoutLoader.item.dashVisible = true
+                    darkDashLoader.item.setTriggerPosition(Screen.width / 2, Theme.barHeight + Theme.spacingS, 100, "center", Screen)
+                    darkDashLoader.item.show()
                 }
                 return "DASH_TOGGLE_SUCCESS"
             }
             return "DASH_TOGGLE_FAILED"
         }
 
-        target: "dash"
+        target: "darkDash"
     }
 
     IpcHandler {

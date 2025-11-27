@@ -13,7 +13,7 @@ Column {
     property bool lazyLoad: true
 
     width: parent.width
-    spacing: expanded ? Theme.spacingM : 0
+    spacing: expanded ? Theme.spacingL : 0
     Component.onCompleted: {
         if (!collapsible)
         expanded = true
@@ -42,9 +42,9 @@ Column {
             id: headerRow
 
             width: parent.width
-            spacing: Theme.spacingS
-            topPadding: Theme.spacingS
-            bottomPadding: Theme.spacingS
+            spacing: Theme.spacingM
+            topPadding: Theme.spacingM
+            bottomPadding: Theme.spacingM
 
             DarkIcon {
                 name: root.collapsible ? (root.expanded ? "expand_less" : "expand_more") : root.iconName

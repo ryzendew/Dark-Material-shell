@@ -38,6 +38,13 @@ Singleton {
     property real launcherLogoDropShadowOpacity: 0.15
     property real dockIconDropShadowOpacity: 0.15
     property real topBarDropShadowOpacity: 0.15
+    property real darkDashTransparency: 0.92
+    property real darkDashDropShadowOpacity: 0.15
+    property real darkDashBorderOpacity: 0.0
+    property real darkDashBorderThickness: 0
+    property real darkDashTabBarOpacity: 1.0
+    property real darkDashContentBackgroundOpacity: 1.0
+    property real darkDashAnimatedTintOpacity: 0.04
     property bool systemIconTinting: false
     property real iconTintIntensity: 0.5 // 0.0 to 1.0
     property int settingsWindowWidth: 0 // 0 means auto sizing
@@ -51,6 +58,7 @@ Singleton {
     property bool desktopClockEnabled: true
     property bool desktopWeatherEnabled: false
     property bool desktopTerminalEnabled: false
+    property bool desktopDarkDashEnabled: false
     property string desktopWidgetsDisplay: "primary"
     property string desktopWidgetsPosition: "top-left"
     
@@ -60,6 +68,7 @@ Singleton {
     property string desktopClockPosition: "bottom-right"
     property string desktopWeatherPosition: "top-left"
     property string desktopTerminalPosition: "bottom-left"
+    property string desktopDarkDashPosition: "top-right"
     
     property real desktopCpuTempOpacity: 0.9
     property real desktopGpuTempOpacity: 0.9
@@ -81,6 +90,8 @@ Singleton {
     property real desktopTerminalWidth: 600
     property real desktopTerminalHeight: 400
     property real desktopTerminalFontSize: 12
+    property real desktopDarkDashWidth: 700
+    property real desktopDarkDashHeight: 500
     property real desktopWeatherFontSize: 20
     property real desktopWeatherIconSize: 24
     property real desktopWeatherSpacing: 8
@@ -199,6 +210,10 @@ Singleton {
     property real startMenuYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
     property real controlCenterXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
     property real controlCenterYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
+    property real darkDashXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
+    property real darkDashYOffset: 0.0 // -1.0 to 1.0, where -1 is top edge, 1 is bottom edge
+    property real applicationsXOffset: 0.0 // -1.15 to 1.15, where -1.15 is left edge, 1.15 is right edge
+    property real applicationsYOffset: 0.0 // -1.15 to 1.15, where -1.15 is top edge, 1.15 is bottom edge
     
     property alias dockLeftWidgetsModel: dockLeftWidgetsModel
     property alias dockRightWidgetsModel: dockRightWidgetsModel
@@ -404,6 +419,13 @@ Singleton {
                 launcherLogoDropShadowOpacity = settings.launcherLogoDropShadowOpacity !== undefined ? (settings.launcherLogoDropShadowOpacity > 1 ? settings.launcherLogoDropShadowOpacity / 100 : settings.launcherLogoDropShadowOpacity) : 0.15
                 dockIconDropShadowOpacity = settings.dockIconDropShadowOpacity !== undefined ? (settings.dockIconDropShadowOpacity > 1 ? settings.dockIconDropShadowOpacity / 100 : settings.dockIconDropShadowOpacity) : 0.15
                 topBarDropShadowOpacity = settings.topBarDropShadowOpacity !== undefined ? (settings.topBarDropShadowOpacity > 1 ? settings.topBarDropShadowOpacity / 100 : settings.topBarDropShadowOpacity) : 0.15
+                darkDashTransparency = settings.darkDashTransparency !== undefined ? (settings.darkDashTransparency > 1 ? settings.darkDashTransparency / 100 : settings.darkDashTransparency) : 0.92
+                darkDashDropShadowOpacity = settings.darkDashDropShadowOpacity !== undefined ? (settings.darkDashDropShadowOpacity > 1 ? settings.darkDashDropShadowOpacity / 100 : settings.darkDashDropShadowOpacity) : 0.15
+                darkDashBorderOpacity = settings.darkDashBorderOpacity !== undefined ? (settings.darkDashBorderOpacity > 1 ? settings.darkDashBorderOpacity / 100 : settings.darkDashBorderOpacity) : 0.0
+                darkDashBorderThickness = settings.darkDashBorderThickness !== undefined ? settings.darkDashBorderThickness : 0
+                darkDashTabBarOpacity = settings.darkDashTabBarOpacity !== undefined ? (settings.darkDashTabBarOpacity > 1 ? settings.darkDashTabBarOpacity / 100 : settings.darkDashTabBarOpacity) : 1.0
+                darkDashContentBackgroundOpacity = settings.darkDashContentBackgroundOpacity !== undefined ? (settings.darkDashContentBackgroundOpacity > 1 ? settings.darkDashContentBackgroundOpacity / 100 : settings.darkDashContentBackgroundOpacity) : 1.0
+                darkDashAnimatedTintOpacity = settings.darkDashAnimatedTintOpacity !== undefined ? (settings.darkDashAnimatedTintOpacity > 1 ? settings.darkDashAnimatedTintOpacity / 100 : settings.darkDashAnimatedTintOpacity) : 0.04
                 systemIconTinting = settings.systemIconTinting !== undefined ? settings.systemIconTinting : false
                 iconTintIntensity = settings.iconTintIntensity !== undefined ? settings.iconTintIntensity : 0.5
                 settingsWindowWidth = settings.settingsWindowWidth !== undefined ? settings.settingsWindowWidth : 0
@@ -417,6 +439,7 @@ Singleton {
                 desktopClockEnabled = settings.desktopClockEnabled !== undefined ? settings.desktopClockEnabled : true
                 desktopWeatherEnabled = settings.desktopWeatherEnabled !== undefined ? settings.desktopWeatherEnabled : false
                 desktopTerminalEnabled = settings.desktopTerminalEnabled !== undefined ? settings.desktopTerminalEnabled : false
+                desktopDarkDashEnabled = settings.desktopDarkDashEnabled !== undefined ? settings.desktopDarkDashEnabled : false
         desktopWidgetsDisplay = settings.desktopWidgetsDisplay !== undefined ? settings.desktopWidgetsDisplay : "primary"
         desktopWidgetsPosition = settings.desktopWidgetsPosition !== undefined ? settings.desktopWidgetsPosition : "top-left"
         desktopCpuTempPosition = settings.desktopCpuTempPosition !== undefined ? settings.desktopCpuTempPosition : "top-left"
@@ -425,6 +448,7 @@ Singleton {
         desktopClockPosition = settings.desktopClockPosition !== undefined ? settings.desktopClockPosition : "bottom-right"
         desktopWeatherPosition = settings.desktopWeatherPosition !== undefined ? settings.desktopWeatherPosition : "top-left"
         desktopTerminalPosition = settings.desktopTerminalPosition !== undefined ? settings.desktopTerminalPosition : "bottom-left"
+        desktopDarkDashPosition = settings.desktopDarkDashPosition !== undefined ? settings.desktopDarkDashPosition : "top-right"
         desktopCpuTempOpacity = settings.desktopCpuTempOpacity !== undefined ? settings.desktopCpuTempOpacity : 0.9
         desktopGpuTempOpacity = settings.desktopGpuTempOpacity !== undefined ? settings.desktopGpuTempOpacity : 0.9
         desktopSystemMonitorOpacity = settings.desktopSystemMonitorOpacity !== undefined ? settings.desktopSystemMonitorOpacity : 0.9
@@ -444,6 +468,8 @@ Singleton {
         desktopTerminalWidth = settings.desktopTerminalWidth !== undefined ? settings.desktopTerminalWidth : 600
         desktopTerminalHeight = settings.desktopTerminalHeight !== undefined ? settings.desktopTerminalHeight : 400
         desktopTerminalFontSize = settings.desktopTerminalFontSize !== undefined ? settings.desktopTerminalFontSize : 12
+        desktopDarkDashWidth = settings.desktopDarkDashWidth !== undefined ? settings.desktopDarkDashWidth : 700
+        desktopDarkDashHeight = settings.desktopDarkDashHeight !== undefined ? settings.desktopDarkDashHeight : 500
         desktopWeatherIconSize = settings.desktopWeatherIconSize !== undefined ? settings.desktopWeatherIconSize : 24
         desktopWeatherSpacing = settings.desktopWeatherSpacing !== undefined ? settings.desktopWeatherSpacing : 8
         desktopWeatherPadding = settings.desktopWeatherPadding !== undefined ? settings.desktopWeatherPadding : 16
@@ -578,6 +604,10 @@ Singleton {
                 startMenuYOffset = settings.startMenuYOffset !== undefined ? settings.startMenuYOffset : 0.0
                 controlCenterXOffset = settings.controlCenterXOffset !== undefined ? settings.controlCenterXOffset : 0.0
                 controlCenterYOffset = settings.controlCenterYOffset !== undefined ? settings.controlCenterYOffset : 0.0
+                darkDashXOffset = settings.darkDashXOffset !== undefined ? settings.darkDashXOffset : 0.0
+                darkDashYOffset = settings.darkDashYOffset !== undefined ? settings.darkDashYOffset : 0.0
+                applicationsXOffset = settings.applicationsXOffset !== undefined ? settings.applicationsXOffset : 0.0
+                applicationsYOffset = settings.applicationsYOffset !== undefined ? settings.applicationsYOffset : 0.0
                 
                 appLauncherViewMode = settings.appLauncherViewMode !== undefined ? settings.appLauncherViewMode : "list"
                 spotlightModalViewMode = settings.spotlightModalViewMode !== undefined ? settings.spotlightModalViewMode : "list"
@@ -703,6 +733,13 @@ Singleton {
                                                 "launcherLogoDropShadowOpacity": launcherLogoDropShadowOpacity,
                                                 "dockIconDropShadowOpacity": dockIconDropShadowOpacity,
                                                 "topBarDropShadowOpacity": topBarDropShadowOpacity,
+                                                "darkDashTransparency": darkDashTransparency,
+                                                "darkDashDropShadowOpacity": darkDashDropShadowOpacity,
+                                                "darkDashBorderOpacity": darkDashBorderOpacity,
+                                                "darkDashBorderThickness": darkDashBorderThickness,
+                                                "darkDashTabBarOpacity": darkDashTabBarOpacity,
+                                                "darkDashContentBackgroundOpacity": darkDashContentBackgroundOpacity,
+                                                "darkDashAnimatedTintOpacity": darkDashAnimatedTintOpacity,
                                                 "systemIconTinting": systemIconTinting,
                                                 "iconTintIntensity": iconTintIntensity,
                                                 "settingsWindowWidth": settingsWindowWidth,
@@ -716,6 +753,7 @@ Singleton {
                                                 "desktopClockEnabled": desktopClockEnabled,
                                                 "desktopWeatherEnabled": desktopWeatherEnabled,
                                                 "desktopTerminalEnabled": desktopTerminalEnabled,
+                                                "desktopDarkDashEnabled": desktopDarkDashEnabled,
             "desktopWidgetsDisplay": desktopWidgetsDisplay,
             "desktopWidgetsPosition": desktopWidgetsPosition,
             "desktopCpuTempPosition": desktopCpuTempPosition,
@@ -724,6 +762,7 @@ Singleton {
             "desktopClockPosition": desktopClockPosition,
             "desktopWeatherPosition": desktopWeatherPosition,
             "desktopTerminalPosition": desktopTerminalPosition,
+            "desktopDarkDashPosition": desktopDarkDashPosition,
             "desktopCpuTempOpacity": desktopCpuTempOpacity,
             "desktopGpuTempOpacity": desktopGpuTempOpacity,
             "desktopSystemMonitorOpacity": desktopSystemMonitorOpacity,
@@ -744,6 +783,8 @@ Singleton {
             "desktopTerminalWidth": desktopTerminalWidth,
             "desktopTerminalHeight": desktopTerminalHeight,
             "desktopTerminalFontSize": desktopTerminalFontSize,
+            "desktopDarkDashWidth": desktopDarkDashWidth,
+            "desktopDarkDashHeight": desktopDarkDashHeight,
             "desktopWeatherSpacing": desktopWeatherSpacing,
             "desktopWeatherPadding": desktopWeatherPadding,
             "desktopWeatherBorderRadius": desktopWeatherBorderRadius,
@@ -847,6 +888,10 @@ Singleton {
                                                 "startMenuYOffset": startMenuYOffset,
                                                 "controlCenterXOffset": controlCenterXOffset,
                                                 "controlCenterYOffset": controlCenterYOffset,
+                                                "darkDashXOffset": darkDashXOffset,
+                                                "darkDashYOffset": darkDashYOffset,
+                                                "applicationsXOffset": applicationsXOffset,
+                                                "applicationsYOffset": applicationsYOffset,
                                                 "appLauncherViewMode": appLauncherViewMode,
                                                 "spotlightModalViewMode": spotlightModalViewMode,
                                                 "networkPreference": networkPreference,
@@ -1184,6 +1229,41 @@ Singleton {
         saveSettings()
     }
 
+    function setDarkDashTransparency(transparency) {
+        darkDashTransparency = transparency
+        saveSettings()
+    }
+
+    function setDarkDashDropShadowOpacity(opacity) {
+        darkDashDropShadowOpacity = opacity
+        saveSettings()
+    }
+
+    function setDarkDashBorderOpacity(opacity) {
+        darkDashBorderOpacity = opacity
+        saveSettings()
+    }
+
+    function setDarkDashBorderThickness(thickness) {
+        darkDashBorderThickness = thickness
+        saveSettings()
+    }
+
+    function setDarkDashTabBarOpacity(opacity) {
+        darkDashTabBarOpacity = opacity
+        saveSettings()
+    }
+
+    function setDarkDashContentBackgroundOpacity(opacity) {
+        darkDashContentBackgroundOpacity = opacity
+        saveSettings()
+    }
+
+    function setDarkDashAnimatedTintOpacity(opacity) {
+        darkDashAnimatedTintOpacity = opacity
+        saveSettings()
+    }
+
     function setSystemIconTinting(enabled) {
         systemIconTinting = enabled
         saveSettings()
@@ -1319,6 +1399,26 @@ Singleton {
         saveSettings()
     }
     
+    function setDesktopDarkDashEnabled(enabled) {
+        desktopDarkDashEnabled = enabled
+        saveSettings()
+    }
+    
+    function setDesktopDarkDashPosition(position) {
+        desktopDarkDashPosition = position
+        saveSettings()
+    }
+    
+    function setDesktopDarkDashWidth(width) {
+        desktopDarkDashWidth = width
+        saveSettings()
+    }
+    
+    function setDesktopDarkDashHeight(height) {
+        desktopDarkDashHeight = height
+        saveSettings()
+    }
+    
     function setStartMenuXOffset(offset) {
         startMenuXOffset = Math.max(-1.0, Math.min(1.0, offset))
         saveSettings()
@@ -1336,6 +1436,26 @@ Singleton {
     
     function setControlCenterYOffset(offset) {
         controlCenterYOffset = Math.max(-1.0, Math.min(1.0, offset))
+        saveSettings()
+    }
+    
+    function setDarkDashXOffset(offset) {
+        darkDashXOffset = Math.max(-1.15, Math.min(1.15, offset))
+        saveSettings()
+    }
+    
+    function setDarkDashYOffset(offset) {
+        darkDashYOffset = Math.max(-1.15, Math.min(1.15, offset))
+        saveSettings()
+    }
+
+    function setApplicationsXOffset(offset) {
+        applicationsXOffset = Math.max(-1.15, Math.min(1.15, offset))
+        saveSettings()
+    }
+
+    function setApplicationsYOffset(offset) {
+        applicationsYOffset = Math.max(-1.15, Math.min(1.15, offset))
         saveSettings()
     }
     

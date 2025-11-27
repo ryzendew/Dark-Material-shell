@@ -12,9 +12,9 @@ import qs.Modules.ControlCenter.Widgets
 Rectangle {
     id: root
 
-    height: Math.max(400, contentColumn.height + Theme.spacingM * 2)
+    height: Math.max(400, contentColumn.height + Theme.spacingL * 2)
     width: parent.width
-    radius: Theme.cornerRadius
+    radius: Math.max(Theme.cornerRadius, 16)
     color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, Theme.getContentBackgroundAlpha() * 0.30)
     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
     border.width: 1
@@ -32,12 +32,12 @@ Rectangle {
     Column {
         id: contentColumn
         anchors.fill: parent
-        anchors.margins: Theme.spacingM
-        spacing: Theme.spacingM
+        anchors.margins: Theme.spacingL
+        spacing: Theme.spacingL
 
         Row {
             width: parent.width
-            spacing: Theme.spacingS
+            spacing: Theme.spacingM
 
             DarkIcon {
                 name: "volume_up"

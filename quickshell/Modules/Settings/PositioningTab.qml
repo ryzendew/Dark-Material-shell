@@ -325,6 +325,304 @@ Item {
 
             StyledRect {
                 width: parent.width
+                height: darkDashSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: darkDashSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "dashboard"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Dark Dash Positioning"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    StyledText {
+                        text: "Adjust the horizontal and vertical position of the Dark Dash"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Horizontal Position"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: (SettingsData.darkDashXOffset + 1.15) * (100 / 2.3)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDarkDashXOffset(
+                                                          (newValue * 2.3 / 100.0) - 1.15)
+                                              }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                id: leftText3
+                                text: "Left"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            Item {
+                                width: parent.width - leftText3.width - rightText3.width - Theme.spacingM * 2
+                                height: 1
+                            }
+
+                            StyledText {
+                                id: rightText3
+                                text: "Right"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Vertical Position"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: (SettingsData.darkDashYOffset + 1.15) * (100 / 2.3)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDarkDashYOffset(
+                                                          (newValue * 2.3 / 100.0) - 1.15)
+                                              }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                id: topText3
+                                text: "Top"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            Item {
+                                width: parent.width - topText3.width - bottomText3.width - Theme.spacingM * 2
+                                height: 1
+                            }
+
+                            StyledText {
+                                id: bottomText3
+                                text: "Bottom"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
+                height: applicationsSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: applicationsSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "apps"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Applications Positioning"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    StyledText {
+                        text: "Adjust the horizontal and vertical position of the Applications launcher"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Horizontal Position"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: (SettingsData.applicationsXOffset + 1.15) * (100 / 2.3)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setApplicationsXOffset(
+                                                          (newValue * 2.3 / 100.0) - 1.15)
+                                              }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                id: leftText4
+                                text: "Left"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            Item {
+                                width: parent.width - leftText4.width - rightText4.width - Theme.spacingM * 2
+                                height: 1
+                            }
+
+                            StyledText {
+                                id: rightText4
+                                text: "Right"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Vertical Position"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: (SettingsData.applicationsYOffset + 1.15) * (100 / 2.3)
+                            minimum: 0
+                            maximum: 100
+                            unit: "%"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setApplicationsYOffset(
+                                                          (newValue * 2.3 / 100.0) - 1.15)
+                                              }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                id: topText4
+                                text: "Top"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            Item {
+                                width: parent.width - topText4.width - bottomText4.width - Theme.spacingM * 2
+                                height: 1
+                            }
+
+                            StyledText {
+                                id: bottomText4
+                                text: "Bottom"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
                 height: resetSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
@@ -392,6 +690,10 @@ Item {
                                 SettingsData.setStartMenuYOffset(0.0)
                                 SettingsData.setControlCenterXOffset(0.0)
                                 SettingsData.setControlCenterYOffset(0.0)
+                                SettingsData.setDarkDashXOffset(0.0)
+                                SettingsData.setDarkDashYOffset(0.0)
+                                SettingsData.setApplicationsXOffset(0.0)
+                                SettingsData.setApplicationsYOffset(0.0)
                             }
                         }
                     }

@@ -10,13 +10,14 @@ StyledRect {
     property color iconColor: Theme.surfaceText
     property color backgroundColor: "transparent"
     property bool circular: true
-    property int buttonSize: 32
+    property int buttonSize: 40
+    property int buttonPadding: 10
 
     signal clicked
 
     width: buttonSize
     height: buttonSize
-    radius: Theme.cornerRadius
+    radius: circular ? buttonSize / 2 : Theme.cornerRadius
     color: backgroundColor
 
     DarkIcon {

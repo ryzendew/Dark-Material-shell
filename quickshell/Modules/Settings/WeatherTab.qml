@@ -36,49 +36,15 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "cloud"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - enableToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Enable Weather"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Show weather information in top bar and control center"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: enableToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.weatherEnabled
-                            onToggled: checked => {
-                                           return SettingsData.setWeatherEnabled(
-                                               checked)
-                                       }
-                        }
+                        text: "Enable Weather"
+                        description: "Show weather information in top bar and control center"
+                        checked: SettingsData.weatherEnabled
+                        onToggled: checked => {
+                                       return SettingsData.setWeatherEnabled(
+                                           checked)
+                                   }
                     }
                 }
             }
@@ -102,49 +68,15 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "thermostat"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - temperatureToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Use Fahrenheit"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Use Fahrenheit instead of Celsius for temperature"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: temperatureToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.useFahrenheit
-                            onToggled: checked => {
-                                           return SettingsData.setTemperatureUnit(
-                                               checked)
-                                       }
-                        }
+                        text: "Use Fahrenheit"
+                        description: "Use Fahrenheit instead of Celsius for temperature"
+                        checked: SettingsData.useFahrenheit
+                        onToggled: checked => {
+                                       return SettingsData.setTemperatureUnit(
+                                           checked)
+                                   }
                     }
                 }
 
@@ -175,49 +107,15 @@ Item {
                     anchors.margins: Theme.spacingL
                     spacing: Theme.spacingM
 
-                    Row {
+                    DarkToggle {
                         width: parent.width
-                        spacing: Theme.spacingM
-
-                        DarkIcon {
-                            name: "location_on"
-                            size: Theme.iconSize
-                            color: Theme.primary
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Column {
-                            width: parent.width - Theme.iconSize - Theme.spacingM
-                                   - autoLocationToggle.width - Theme.spacingM
-                            spacing: Theme.spacingXS
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            StyledText {
-                                text: "Auto Location"
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.weight: Font.Medium
-                                color: Theme.surfaceText
-                            }
-
-                            StyledText {
-                                text: "Automatically determine your location using your IP address"
-                                font.pixelSize: Theme.fontSizeSmall
-                                color: Theme.surfaceVariantText
-                                wrapMode: Text.WordWrap
-                                width: parent.width
-                            }
-                        }
-
-                        DarkToggle {
-                            id: autoLocationToggle
-
-                            anchors.verticalCenter: parent.verticalCenter
-                            checked: SettingsData.useAutoLocation
-                            onToggled: checked => {
-                                           return SettingsData.setAutoLocation(
-                                               checked)
-                                       }
-                        }
+                        text: "Auto Location"
+                        description: "Automatically determine your location using your IP address"
+                        checked: SettingsData.useAutoLocation
+                        onToggled: checked => {
+                                       return SettingsData.setAutoLocation(
+                                           checked)
+                                   }
                     }
 
                     Column {
