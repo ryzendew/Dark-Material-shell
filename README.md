@@ -86,14 +86,6 @@ Install AUR packages:
 yay -S anyrun dgop hyprpicker-git matugen-git python-pynvml quickshell-git
 ```
 
-### Additional Applications
-
-- **Zed**: `yay -S zed-bin` or download from [zed.dev](https://zed.dev)
-- **code**: `yay -S visual-studio-code-bin`
-- **google-chrome-stable**: `yay -S google-chrome`
-- **wps**: `yay -S wps-office`
-- **better-control**: `yay -S better-control`
-
 ### dgop (Manual Installation)
 
 **Option 1: Install from AUR (Recommended)**
@@ -200,21 +192,13 @@ sudo dnf install -y \
     btop lm_sensors gedit nwg-look
 ```
 
-### Step 4: Additional Applications (Optional)
-
-- **Zed**: Download from [zed.dev](https://zed.dev)
-- **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo dnf install code` if available
-- **google-chrome-stable**: Download from [google.com/chrome](https://www.google.com/chrome)
-- **wps**: Download from [wps.com](https://www.wps.com)
-- **better-control**: Check if available in COPR or build from source
-
-### Step 5: Python Dependencies
+### Step 4: Python Dependencies
 
 ```bash
 pip install pynvml
 ```
 
-### Step 6: dgop (Manual Installation)
+### Step 5: dgop (Manual Installation)
 
 **Build from Source:**
 
@@ -231,15 +215,7 @@ sudo make install
 cd .. && rm -rf dgop
 ```
 
-**Optional: NVIDIA GPU Support**
-
-For NVIDIA GPU temperature monitoring, install nvidia-utils:
-
-```bash
-sudo dnf install -y nvidia-utils
-```
-
-### Step 7: matugen (Manual Installation)
+### Step 6: matugen (Manual Installation)
 
 **Install via Cargo:**
 
@@ -278,21 +254,13 @@ sudo apt install -y --no-install-recommends \
 
 **Note:** Some packages like `hyprpicker` and `quickshell-git` may need to be built from source or installed from additional repositories if not available in PikaOS repositories.
 
-### Step 2: Additional Applications (Optional)
-
-- **Zed**: Download from [zed.dev](https://zed.dev)
-- **code**: Install from [code.visualstudio.com](https://code.visualstudio.com) or use `sudo apt install code` if available
-- **google-chrome-stable**: Download from [google.com/chrome](https://www.google.com/chrome)
-- **wps**: Download from [wps.com](https://www.wps.com)
-- **better-control**: Check if available in PPA or build from source
-
-### Step 3: Python Dependencies
+### Step 2: Python Dependencies
 
 ```bash
 pip install pynvml
 ```
 
-### Step 4: dgop (Manual Installation)
+### Step 3: dgop (Manual Installation)
 
 **Build from Source:**
 
@@ -309,15 +277,7 @@ sudo make install
 cd .. && rm -rf dgop
 ```
 
-**Optional: NVIDIA GPU Support**
-
-For NVIDIA GPU temperature monitoring, install nvidia-utils:
-
-```bash
-sudo apt install -y nvidia-utils
-```
-
-### Step 5: matugen (Manual Installation)
+### Step 4: matugen (Manual Installation)
 
 **Install via Cargo:**
 
