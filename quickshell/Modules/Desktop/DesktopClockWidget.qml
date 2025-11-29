@@ -34,11 +34,38 @@ PanelWindow {
         bottom: position.includes("bottom") ? true : false
     }
 
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
+    readonly property real barExclusiveSize: SettingsData.topBarVisible && !SettingsData.topBarFloat ? (SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)) : 0
+    
     margins {
-        left: position.includes("left") ? 20 : 0
-        right: position.includes("right") ? 20 : 0
-        top: position.includes("top") ? (SettingsData.topBarHeight + SettingsData.topBarSpacing + SettingsData.topBarBottomGap + 20) : 0
-        bottom: position.includes("bottom") ? (SettingsData.dockExclusiveZone + SettingsData.dockBottomGap + 20) : 0
+        left: {
+            var base = position.includes("left") ? 20 : 0
+            if (SettingsData.topBarPosition === "left" && !SettingsData.topBarFloat) {
+                return base + barExclusiveSize
+            }
+            return base
+        }
+        right: {
+            var base = position.includes("right") ? 20 : 0
+            if (SettingsData.topBarPosition === "right" && !SettingsData.topBarFloat) {
+                return base + barExclusiveSize
+            }
+            return base
+        }
+        top: {
+            var base = position.includes("top") ? (SettingsData.topBarHeight + SettingsData.topBarSpacing + SettingsData.topBarBottomGap + 20) : 0
+            if (SettingsData.topBarPosition === "top" && !SettingsData.topBarFloat) {
+                return base
+            }
+            return position.includes("top") ? 20 : 0
+        }
+        bottom: {
+            var base = position.includes("bottom") ? (SettingsData.dockExclusiveZone + SettingsData.dockBottomGap + 20) : 0
+            if (SettingsData.topBarPosition === "bottom" && !SettingsData.topBarFloat) {
+                return base + barExclusiveSize
+            }
+            return base
+        }
     }
 
     Rectangle {

@@ -20,13 +20,14 @@ PanelWindow {
 
     WlrLayershell.namespace: "quickshell:bar:blur"
     WlrLayershell.layer: WlrLayershell.Top
-    WlrLayershell.exclusiveZone: SettingsData.topBarFloat ? -1 : 0
+    WlrLayershell.exclusionMode: root.shouldBeExclusive ? ExclusionMode.Auto : ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
     margins {
-        left: SettingsData.topBarLeftMargin
-        right: SettingsData.topBarRightMargin
-        top: SettingsData.topBarTopMargin
+        top: (barPosition === "top" || barIsVertical) ? SettingsData.topBarTopMargin : 0
+        bottom: barIsVertical ? 0 : (barPosition === "bottom" ? SettingsData.topBarTopMargin : 0)
+        left: (barPosition === "left" || !barIsVertical) ? SettingsData.topBarLeftMargin : 0
+        right: (barPosition === "right" || !barIsVertical) ? SettingsData.topBarRightMargin : 0
     }
 
     property var modelData
@@ -78,10 +79,14 @@ PanelWindow {
     readonly property int notificationCount: NotificationService.notifications.length
     readonly property real effectiveBarHeight: SettingsData.topBarHeight
     readonly property real widgetHeight: Math.max(20, 26 + SettingsData.topBarInnerPadding * 0.6)
+    
+    readonly property string barPosition: SettingsData.topBarPosition || "top"
+    readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
 
     screen: modelData
     color: "transparent"
-    implicitHeight: effectiveBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? _wingR : 0)
+    implicitWidth: barIsVertical ? (effectiveBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? _wingR : 0)) : 0
+    implicitHeight: barIsVertical ? 0 : (effectiveBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? _wingR : 0))
     
     Component.onCompleted: {
         const fonts = Qt.fontFamilies()
@@ -92,12 +97,18 @@ PanelWindow {
         SettingsData.forceTopBarLayoutRefresh.connect(() => {
                                                           Qt.callLater(() => {
                                                                            leftSection.visible = false
+                                                                           leftSectionVertical.visible = false
                                                                            centerSection.visible = false
+                                                                           centerSectionVertical.visible = false
                                                                            rightSection.visible = false
+                                                                           rightSectionVertical.visible = false
                                                                            Qt.callLater(() => {
-                                                                                            leftSection.visible = true
-                                                                                            centerSection.visible = true
-                                                                                            rightSection.visible = true
+                                                                                            leftSection.visible = !barIsVertical
+                                                                                            leftSectionVertical.visible = barIsVertical
+                                                                                            centerSection.visible = !barIsVertical
+                                                                                            centerSectionVertical.visible = barIsVertical
+                                                                                            rightSection.visible = !barIsVertical
+                                                                                            rightSectionVertical.visible = barIsVertical
                                                                                         })
                                                                        })
                                                       })
@@ -105,11 +116,32 @@ PanelWindow {
         updateGpuTempConfig()
         Qt.callLater(() => Qt.callLater(forceWidgetRefresh))
     }
+    
+    Connections {
+        target: SettingsData
+        function onTopBarPositionChanged() {
+            Qt.callLater(() => {
+                leftSection.visible = !barIsVertical
+                leftSectionVertical.visible = barIsVertical
+                centerSection.visible = !barIsVertical
+                centerSectionVertical.visible = barIsVertical
+                rightSection.visible = !barIsVertical
+                rightSectionVertical.visible = barIsVertical
+            })
+        }
+    }
 
     function forceWidgetRefresh() {
-        const sections = [leftSection, centerSection, rightSection]
+        const sections = [leftSection, leftSectionVertical, centerSection, centerSectionVertical, rightSection, rightSectionVertical]
         sections.forEach(section => section && (section.visible = false))
-        Qt.callLater(() => sections.forEach(section => section && (section.visible = true)))
+        Qt.callLater(() => {
+            leftSection.visible = !barIsVertical
+            leftSectionVertical.visible = barIsVertical
+            centerSection.visible = !barIsVertical
+            centerSectionVertical.visible = barIsVertical
+            rightSection.visible = !barIsVertical
+            rightSectionVertical.visible = barIsVertical
+        })
     }
 
     function updateGpuTempConfig() {
@@ -170,29 +202,40 @@ PanelWindow {
     }
 
     anchors {
-        top: true
-        left: true
-        right: true
+        top: barPosition === "top" || barIsVertical
+        bottom: barPosition === "bottom" || barIsVertical
+        left: barPosition === "left" || !barIsVertical
+        right: barPosition === "right" || !barIsVertical
     }
 
-    exclusiveZone: (!SettingsData.topBarVisible || topBarCore.autoHide) ? -1 : root.effectiveBarHeight + SettingsData.topBarSpacing + SettingsData.topBarBottomGap - 2
+    readonly property bool shouldBeExclusive: {
+        if (!SettingsData.topBarVisible) {
+            return false
+        }
+        if (SettingsData.topBarFloat && barPosition === "top") {
+            return false
+        }
+        if (barPosition === "top" && SettingsData.topBarAutoHide) {
+            return false
+        }
+        if (barIsVertical || barPosition === "bottom") {
+            return true
+        }
+        return !SettingsData.topBarFloat
+    }
 
     Item {
         id: inputMask
         anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
+            top: barPosition === "top" || barIsVertical ? parent.top : undefined
+            bottom: barPosition === "bottom" || barIsVertical ? parent.bottom : undefined
+            left: barPosition === "left" || !barIsVertical ? parent.left : undefined
+            right: barPosition === "right" || !barIsVertical ? parent.right : undefined
         }
-        height: {
-            if (topBarCore.autoHide && !topBarCore.reveal) {
-                return 8
-            }
-            if (CompositorService.isNiri && NiriService.inOverview && SettingsData.topBarOpenOnOverview) {
-                return root.effectiveBarHeight + SettingsData.topBarSpacing
-            }
-            return SettingsData.topBarVisible ? (root.effectiveBarHeight + SettingsData.topBarSpacing) : 0
-        }
+        width: barIsVertical ? inputMaskSize : undefined
+        height: !barIsVertical ? inputMaskSize : undefined
+        
+        readonly property real inputMaskSize: (SettingsData.topBarAutoHide && topBarCore && !topBarCore.reveal) ? 8 : ((CompositorService.isNiri && NiriService.inOverview && SettingsData.topBarOpenOnOverview) ? (root.effectiveBarHeight + SettingsData.topBarSpacing) : (SettingsData.topBarVisible ? (root.effectiveBarHeight + SettingsData.topBarSpacing) : 0))
     }
 
     mask: Region {
@@ -289,13 +332,14 @@ PanelWindow {
 
         MouseArea {
             id: topBarMouseArea
-            y: 0
-            height: root.effectiveBarHeight + SettingsData.topBarSpacing
             anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
+                top: barPosition === "top" || barIsVertical ? parent.top : undefined
+                bottom: barPosition === "bottom" || barIsVertical ? parent.bottom : undefined
+                left: barPosition === "left" || !barIsVertical ? parent.left : undefined
+                right: barPosition === "right" || !barIsVertical ? parent.right : undefined
             }
+            width: barIsVertical ? (root.effectiveBarHeight + SettingsData.topBarSpacing) : undefined
+            height: !barIsVertical ? (root.effectiveBarHeight + SettingsData.topBarSpacing) : undefined
             hoverEnabled: true
             acceptedButtons: Qt.NoButton
             enabled: true
@@ -306,8 +350,15 @@ PanelWindow {
 
                 transform: Translate {
                     id: topBarSlide
-                    y: Math.round(topBarCore.reveal ? 0 : -root.implicitHeight)
+                    x: barIsVertical ? Math.round(topBarCore.reveal ? 0 : (barPosition === "left" ? -(root.effectiveBarHeight + SettingsData.topBarSpacing) : (root.effectiveBarHeight + SettingsData.topBarSpacing))) : 0
+                    y: !barIsVertical ? Math.round(topBarCore.reveal ? 0 : (barPosition === "top" ? -(root.effectiveBarHeight + SettingsData.topBarSpacing) : (root.effectiveBarHeight + SettingsData.topBarSpacing))) : 0
 
+                    Behavior on x {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
                     Behavior on y {
                         NumberAnimation {
                             duration: 200
@@ -336,49 +387,54 @@ PanelWindow {
                     }
                     
                     Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        height: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderTop ? SettingsData.topBarBorderWidth : 0
+                        anchors.left: (barPosition === "top" || barPosition === "bottom") ? parent.left : (barPosition === "left" ? parent.left : undefined)
+                        anchors.right: (barPosition === "top" || barPosition === "bottom") ? parent.right : (barPosition === "right" ? parent.right : undefined)
+                        anchors.top: (barPosition === "top" || barPosition === "bottom") ? parent.top : undefined
+                        width: barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderTop ? SettingsData.topBarBorderWidth : 0
+                        height: !barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderTop ? SettingsData.topBarBorderWidth : 0
                         color: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderTop ? Qt.rgba(SettingsData.topBarBorderRed, SettingsData.topBarBorderGreen, SettingsData.topBarBorderBlue, SettingsData.topBarBorderAlpha) : "transparent"
                     }
                     
                     Rectangle {
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        width: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderLeft ? SettingsData.topBarBorderWidth : 0
+                        anchors.left: (barPosition === "top" || barPosition === "bottom") ? parent.left : undefined
+                        anchors.top: barIsVertical ? parent.top : ((barPosition === "top" || barPosition === "bottom") ? parent.top : undefined)
+                        anchors.bottom: barIsVertical ? parent.bottom : ((barPosition === "top" || barPosition === "bottom") ? parent.bottom : undefined)
+                        width: (barPosition === "top" || barPosition === "bottom") && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderLeft ? SettingsData.topBarBorderWidth : 0
+                        height: barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderLeft ? SettingsData.topBarBorderWidth : 0
                         color: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderLeft ? Qt.rgba(SettingsData.topBarBorderRed, SettingsData.topBarBorderGreen, SettingsData.topBarBorderBlue, SettingsData.topBarBorderAlpha) : "transparent"
                     }
                     
                     Rectangle {
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        width: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderRight ? SettingsData.topBarBorderWidth : 0
+                        anchors.right: (barPosition === "top" || barPosition === "bottom") ? parent.right : undefined
+                        anchors.top: barIsVertical ? parent.top : ((barPosition === "top" || barPosition === "bottom") ? parent.top : undefined)
+                        anchors.bottom: barIsVertical ? parent.bottom : ((barPosition === "top" || barPosition === "bottom") ? parent.bottom : undefined)
+                        width: (barPosition === "top" || barPosition === "bottom") && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderRight ? SettingsData.topBarBorderWidth : 0
+                        height: barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderRight ? SettingsData.topBarBorderWidth : 0
                         color: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderRight ? Qt.rgba(SettingsData.topBarBorderRed, SettingsData.topBarBorderGreen, SettingsData.topBarBorderBlue, SettingsData.topBarBorderAlpha) : "transparent"
                     }
                     
                     Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: SettingsData.topBarBorderBottomLeftInset
-                        anchors.rightMargin: SettingsData.topBarBorderBottomRightInset
-                        height: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderBottom ? SettingsData.topBarBorderWidth : (SettingsData.topBarBorderEnabled ? 0 : 1)
+                        anchors.left: (barPosition === "top" || barPosition === "bottom") ? parent.left : (barPosition === "right" ? parent.left : undefined)
+                        anchors.right: (barPosition === "top" || barPosition === "bottom") ? parent.right : (barPosition === "left" ? parent.right : undefined)
+                        anchors.bottom: (barPosition === "top" || barPosition === "bottom") ? parent.bottom : undefined
+                        anchors.leftMargin: (barPosition === "top" || barPosition === "bottom") ? SettingsData.topBarBorderBottomLeftInset : 0
+                        anchors.rightMargin: (barPosition === "top" || barPosition === "bottom") ? SettingsData.topBarBorderBottomRightInset : 0
+                        width: barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderBottom ? SettingsData.topBarBorderWidth : (barIsVertical && SettingsData.topBarBorderEnabled ? 0 : (barIsVertical ? 1 : 0))
+                        height: !barIsVertical && SettingsData.topBarBorderEnabled && SettingsData.topBarBorderBottom ? SettingsData.topBarBorderWidth : (!barIsVertical && SettingsData.topBarBorderEnabled ? 0 : (!barIsVertical ? 1 : 0))
                         color: SettingsData.topBarBorderEnabled && SettingsData.topBarBorderBottom ? Qt.rgba(SettingsData.topBarBorderRed, SettingsData.topBarBorderGreen, SettingsData.topBarBorderBlue, SettingsData.topBarBorderAlpha) : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3 * root._bgColor.a)
                     }
                     
                     Item {
                         id: topBarContent
                         anchors.fill: parent
-                        anchors.leftMargin: Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8)
-                        anchors.rightMargin: Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8)
-                        anchors.topMargin: SettingsData.topBarInnerPadding / 2
-                        anchors.bottomMargin: SettingsData.topBarInnerPadding / 2
+                        anchors.leftMargin: barIsVertical ? (SettingsData.topBarInnerPadding / 2) : Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8)
+                        anchors.rightMargin: barIsVertical ? (SettingsData.topBarInnerPadding / 2) : Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8)
+                        anchors.topMargin: barIsVertical ? Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8) : (SettingsData.topBarInnerPadding / 2)
+                        anchors.bottomMargin: barIsVertical ? Math.max(Theme.spacingXS, SettingsData.topBarInnerPadding * 0.8) : (SettingsData.topBarInnerPadding / 2)
                         clip: true
 
-                    readonly property int availableWidth: width
+                    readonly property int availableWidth: barIsVertical ? height : width
+                    readonly property int availableHeight: barIsVertical ? width : height
                         readonly property int launcherButtonWidth: 40
                         readonly property int workspaceSwitcherWidth: 120
                         readonly property int focusedAppMaxWidth: 456
@@ -469,7 +525,7 @@ PanelWindow {
 
                         Row {
                             id: leftSection
-
+                            visible: !barIsVertical
                             height: parent.height
                             spacing: SettingsData.topBarNoBackground ? 2 : Theme.spacingXS
                             anchors.left: parent.left
@@ -484,7 +540,32 @@ PanelWindow {
                                     property int spacerSize: model.size || 20
 
                                     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-                                    active: topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                    active: leftSection.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                    sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
+                                    opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
+                                    asynchronous: false
+                                }
+                            }
+                        }
+                        
+                        Column {
+                            id: leftSectionVertical
+                            visible: barIsVertical
+                            width: parent.width
+                            spacing: SettingsData.topBarNoBackground ? 2 : Theme.spacingXS
+                            anchors.top: parent.top
+                            anchors.horizontalCenter: parent.horizontalCenter
+
+                            Repeater {
+                                model: SettingsData.topBarLeftWidgetsModel
+
+                                Loader {
+                                    property string widgetId: model.widgetId
+                                    property var widgetData: model
+                                    property int spacerSize: model.size || 20
+
+                                    anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+                                    active: leftSectionVertical.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
                                     sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
                                     opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
                                     asynchronous: false
@@ -494,7 +575,7 @@ PanelWindow {
 
                         Item {
                             id: centerSection
-
+                            visible: !barIsVertical
                             property var centerWidgets: []
                             property int totalWidgets: 0
                             property real totalWidth: 0
@@ -702,7 +783,7 @@ PanelWindow {
                                     property int spacerSize: model.size || 20
 
                                     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-                                    active: topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                    active: centerSection.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
                                     sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
                                     opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
                                     asynchronous: false
@@ -731,10 +812,39 @@ PanelWindow {
                                 target: SettingsData.topBarCenterWidgetsModel
                             }
                         }
+                        
+                        Item {
+                            id: centerSectionVertical
+                            visible: barIsVertical
+                            width: parent.width
+                            height: childrenRect.height
+                            anchors.centerIn: parent
+                            
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: SettingsData.topBarNoBackground ? 2 : Theme.spacingXS
+                                
+                                Repeater {
+                                    model: SettingsData.topBarCenterWidgetsModel
+
+                                    Loader {
+                                        property string widgetId: model.widgetId
+                                        property var widgetData: model
+                                        property int spacerSize: model.size || 20
+
+                                        anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+                                        active: centerSectionVertical.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                        sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
+                                        opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
+                                        asynchronous: false
+                                    }
+                                }
+                            }
+                        }
 
                         Row {
                             id: rightSection
-
+                            visible: !barIsVertical
                             height: parent.height
                             spacing: SettingsData.topBarNoBackground ? 2 : Theme.spacingXS
                             anchors.right: parent.right
@@ -749,7 +859,32 @@ PanelWindow {
                                     property int spacerSize: model.size || 20
 
                                     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-                                    active: topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                    active: rightSection.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
+                                    sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
+                                    opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
+                                    asynchronous: false
+                                }
+                            }
+                        }
+                        
+                        Column {
+                            id: rightSectionVertical
+                            visible: barIsVertical
+                            width: parent.width
+                            spacing: SettingsData.topBarNoBackground ? 2 : Theme.spacingXS
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+
+                            Repeater {
+                                model: SettingsData.topBarRightWidgetsModel
+
+                                Loader {
+                                    property string widgetId: model.widgetId
+                                    property var widgetData: model
+                                    property int spacerSize: model.size || 20
+
+                                    anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+                                    active: rightSectionVertical.visible && topBarContent.getWidgetVisible(model.widgetId) && (model.widgetId !== "music" || MprisController.activePlayer !== null)
                                     sourceComponent: topBarContent.getWidgetComponent(model.widgetId)
                                     opacity: topBarContent.getWidgetEnabled(model.enabled) ? 1 : 0
                                     asynchronous: false

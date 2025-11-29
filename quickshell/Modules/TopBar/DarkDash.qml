@@ -11,6 +11,7 @@ Rectangle {
     property var parentScreen: null
     property real barHeight: 48
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
 
     function getDarkDashLoader() {
@@ -24,26 +25,49 @@ Rectangle {
         return null
     }
 
+    function calculateTriggerPosition() {
+        const globalPos = dashMouseArea.mapToGlobal(0, 0)
+        const currentScreen = parentScreen || Screen
+        const screenX = currentScreen.x || 0
+        const screenY = currentScreen.y || 0
+        const relativeX = globalPos.x - screenX
+        const relativeY = globalPos.y - screenY
+        
+        let triggerX, triggerY
+        if (isBarVertical) {
+            if (SettingsData.topBarPosition === "left") {
+                triggerX = relativeX + width + Theme.spacingXS
+                triggerY = relativeY
+            } else {
+                triggerX = relativeX - Theme.spacingXS
+                triggerY = relativeY
+            }
+        } else {
+            triggerX = relativeX
+            if (SettingsData.topBarPosition === "top") {
+                triggerY = relativeY + height + Theme.spacingXS
+            } else {
+                triggerY = relativeY - Theme.spacingXS
+            }
+        }
+        
+        return { x: triggerX, y: triggerY, width: isBarVertical ? height : width }
+    }
+
     function openDarkDash() {
         const loader = getDarkDashLoader()
+        const pos = calculateTriggerPosition()
+        const currentScreen = parentScreen || Screen
         if (loader) {
             loader.active = true
             if (loader.item) {
-                const globalPos = dashMouseArea.mapToGlobal(0, 0)
-                const currentScreen = parentScreen || Screen
-                const screenX = currentScreen.x || 0
-                const leftX = globalPos.x - screenX
-                loader.item.setTriggerPosition(leftX, barHeight + Theme.spacingXS, width, "center", currentScreen)
+                loader.item.setTriggerPosition(pos.x, pos.y, pos.width, "center", currentScreen)
                 loader.item.show()
             }
         } else if (typeof darkDashLoader !== 'undefined') {
             darkDashLoader.active = true
             if (darkDashLoader.item) {
-                const globalPos = dashMouseArea.mapToGlobal(0, 0)
-                const currentScreen = parentScreen || Screen
-                const screenX = currentScreen.x || 0
-                const leftX = globalPos.x - screenX
-                darkDashLoader.item.setTriggerPosition(leftX, barHeight + Theme.spacingXS, width, "center", currentScreen)
+                darkDashLoader.item.setTriggerPosition(pos.x, pos.y, pos.width, "center", currentScreen)
                 darkDashLoader.item.show()
             }
         }
@@ -51,17 +75,15 @@ Rectangle {
 
     function toggleDarkDash() {
         const loader = getDarkDashLoader()
+        const pos = calculateTriggerPosition()
+        const currentScreen = parentScreen || Screen
         if (loader) {
             loader.active = true
             if (loader.item) {
                 if (loader.item.shouldBeVisible) {
                     loader.item.close()
                 } else {
-                    const globalPos = dashMouseArea.mapToGlobal(0, 0)
-                    const currentScreen = parentScreen || Screen
-                    const screenX = currentScreen.x || 0
-                    const leftX = globalPos.x - screenX
-                    loader.item.setTriggerPosition(leftX, barHeight + Theme.spacingXS, width, "center", currentScreen)
+                    loader.item.setTriggerPosition(pos.x, pos.y, pos.width, "center", currentScreen)
                     loader.item.show()
                 }
             }
@@ -71,11 +93,7 @@ Rectangle {
                 if (darkDashLoader.item.shouldBeVisible) {
                     darkDashLoader.item.close()
                 } else {
-                    const globalPos = dashMouseArea.mapToGlobal(0, 0)
-                    const currentScreen = parentScreen || Screen
-                    const screenX = currentScreen.x || 0
-                    const leftX = globalPos.x - screenX
-                    darkDashLoader.item.setTriggerPosition(leftX, barHeight + Theme.spacingXS, width, "center", currentScreen)
+                    darkDashLoader.item.setTriggerPosition(pos.x, pos.y, pos.width, "center", currentScreen)
                     darkDashLoader.item.show()
                 }
             }

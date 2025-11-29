@@ -9,6 +9,7 @@ import Quickshell.Widgets
 import qs.Common
 import qs.Modules
 import qs.Modules.TopBar
+import qs.Modules.Dock
 import qs.Services
 import qs.Widgets
 
@@ -71,7 +72,7 @@ Row {
     }
 
     Component { id: clockComponent; Clock { } }
-    Component { id: weatherComponent; Weather { } }
+    Component { id: weatherComponent; DockWeather { } }
     Component { id: batteryComponent; Battery { } }
     Component { id: musicComponent; Media { } }
     Component { 

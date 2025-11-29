@@ -16,6 +16,7 @@ Rectangle {
     property var hoveredItem: null
     property var topBar: null
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
     property Item windowRoot: (Window.window ? Window.window.contentItem : null)
     readonly property var sortedToplevels: {
@@ -36,9 +37,20 @@ Rectangle {
                     + (windowCount - 1) * Theme.spacingXS + horizontalPadding * 2;
         }
     }
+    readonly property int calculatedHeight: {
+        if (windowCount === 0) {
+            return 0;
+        }
+        if (SettingsData.runningAppsCompactMode) {
+            return windowCount * 24 + (windowCount - 1) * Theme.spacingXS + horizontalPadding * 2;
+        } else {
+            return windowCount * (24 + Theme.spacingXS + 120)
+                    + (windowCount - 1) * Theme.spacingXS + horizontalPadding * 2;
+        }
+    }
 
-    width: calculatedWidth
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : calculatedWidth
+    height: isBarVertical ? calculatedHeight : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     visible: windowCount > 0
     clip: false
@@ -330,26 +342,64 @@ Rectangle {
                             windowContextMenuLoader.active = true;
                             if (windowContextMenuLoader.item) {
                                 windowContextMenuLoader.item.currentWindow = toplevelObject;
-                                const globalPos = delegateItem.mapToGlobal(delegateItem.width / 2, 0);
+                                const globalPos = delegateItem.mapToGlobal(delegateItem.width / 2, delegateItem.height / 2);
                                 const screenX = root.parentScreen ? root.parentScreen.x : 0;
                                 const screenY = root.parentScreen ? root.parentScreen.y : 0;
                                 const relativeX = globalPos.x - screenX;
-                                const yPos = Theme.barHeight + SettingsData.topBarSpacing - 7;
-                                windowContextMenuLoader.item.showAt(relativeX, yPos);
+                                const relativeY = globalPos.y - screenY;
+                                
+                                let menuX, menuY;
+                                if (root.isBarVertical) {
+                                    if (SettingsData.topBarPosition === "left") {
+                                        menuX = delegateItem.width + SettingsData.topBarSpacing;
+                                        menuY = relativeY - (windowContextMenuLoader.item.implicitHeight / 2);
+                                    } else {
+                                        menuX = -windowContextMenuLoader.item.implicitWidth - SettingsData.topBarSpacing;
+                                        menuY = relativeY - (windowContextMenuLoader.item.implicitHeight / 2);
+                                    }
+                                } else {
+                                    menuX = relativeX - (windowContextMenuLoader.item.implicitWidth / 2);
+                                    if (SettingsData.topBarPosition === "top") {
+                                        menuY = relativeY + delegateItem.height + SettingsData.topBarSpacing - 7;
+                                    } else {
+                                        menuY = relativeY - windowContextMenuLoader.item.implicitHeight - SettingsData.topBarSpacing - 7;
+                                    }
+                                }
+                                windowContextMenuLoader.item.showAt(menuX, menuY);
                             }
                         }
                     }
                     onEntered: {
                         root.hoveredItem = delegateItem;
                         const globalPos = delegateItem.mapToGlobal(
-                                    delegateItem.width / 2, delegateItem.height);
+                                    delegateItem.width / 2, delegateItem.height / 2);
                         tooltipLoader.active = true;
                         if (tooltipLoader.item) {
-                            const tooltipY = Theme.barHeight
-                                    + SettingsData.topBarSpacing + Theme.spacingXS;
+                            const screenX = root.parentScreen ? root.parentScreen.x : 0;
+                            const screenY = root.parentScreen ? root.parentScreen.y : 0;
+                            const relativeX = globalPos.x - screenX;
+                            const relativeY = globalPos.y - screenY;
+                            
+                            let tooltipX, tooltipY;
+                            if (root.isBarVertical) {
+                                if (SettingsData.topBarPosition === "left") {
+                                    tooltipX = delegateItem.width + SettingsData.topBarSpacing;
+                                    tooltipY = relativeY;
+                                } else {
+                                    tooltipX = -SettingsData.topBarSpacing;
+                                    tooltipY = relativeY;
+                                }
+                            } else {
+                                tooltipX = relativeX;
+                                if (SettingsData.topBarPosition === "top") {
+                                    tooltipY = relativeY + delegateItem.height + SettingsData.topBarSpacing + Theme.spacingXS;
+                                } else {
+                                    tooltipY = relativeY - SettingsData.topBarSpacing - Theme.spacingXS;
+                                }
+                            }
                             tooltipLoader.item.showTooltip(
-                                        delegateItem.tooltipText, globalPos.x,
-                                        tooltipY, root.parentScreen);
+                                        delegateItem.tooltipText, tooltipX + screenX,
+                                        tooltipY + screenY, root.parentScreen, root.isBarVertical, SettingsData.topBarPosition);
                         }
                     }
                     onExited: {

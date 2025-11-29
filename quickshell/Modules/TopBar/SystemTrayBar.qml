@@ -12,6 +12,7 @@ Item {
     id: root
 
     property bool isVertical: axis?.isVertical ?? false
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     property var axis: null
     property var parentWindow: null
     property var parentScreen: null
@@ -34,11 +35,11 @@ Item {
         })
     }
     readonly property int calculatedSize: visibleTrayItems.length > 0 ? visibleTrayItems.length * 24 + horizontalPadding * 2 : 0
-    readonly property real visualWidth: isVertical ? widgetThickness : calculatedSize
-    readonly property real visualHeight: isVertical ? calculatedSize : widgetThickness
+    readonly property real visualWidth: (isVertical || isBarVertical) ? widgetThickness : calculatedSize
+    readonly property real visualHeight: (isVertical || isBarVertical) ? calculatedSize : widgetThickness
 
-    width: isVertical ? barThickness : visualWidth
-    height: isVertical ? visualHeight : (isAtBottom ? barThickness : widgetHeight)
+    width: (isVertical || isBarVertical) ? barThickness : visualWidth
+    height: (isVertical || isBarVertical) ? visualHeight : (isAtBottom ? barThickness : widgetHeight)
     visible: visibleTrayItems.length > 0
 
     Rectangle {
@@ -62,7 +63,7 @@ Item {
     Loader {
         id: layoutLoader
         anchors.centerIn: parent
-        sourceComponent: root.isVertical ? columnComp : rowComp
+        sourceComponent: (root.isVertical || root.isBarVertical) ? columnComp : rowComp
     }
 
     Component {
@@ -467,14 +468,11 @@ Item {
                         console.log("[Systray-Menu] Horizontal layout, isAtBottom:", menuRoot.isAtBottom)
                         let targetY
                         if (menuRoot.isAtBottom) {
-                            const dockHeight = 80
-                            const dockGap = 16
-                            const availableHeight = screen.height - dockHeight - dockGap - 20
-                            targetY = availableHeight + 40
-                            console.log("[Systray-Menu] Bottom bar - targetY:", targetY)
+                            targetY = relativeY
+                            console.log("[Systray-Menu] Bottom bar - targetY:", targetY, "relativeY:", relativeY)
                         } else {
-                            targetY = effectiveBarThickness + SettingsData.darkBarSpacing + SettingsData.darkBarBottomGap + Theme.popupDistance
-                            console.log("[Systray-Menu] Top bar - targetY:", targetY)
+                            targetY = relativeY + menuRoot.anchorItem.height + SettingsData.darkBarSpacing + Theme.popupDistance
+                            console.log("[Systray-Menu] Top bar - targetY:", targetY, "relativeY:", relativeY)
                         }
                         anchorPos = Qt.point(relativeX + menuRoot.anchorItem.width / 2, targetY)
                         console.log("[Systray-Menu] Horizontal anchorPos:", anchorPos)
@@ -512,11 +510,30 @@ Item {
                             return Math.max(top, Math.min(bottom, want))
                         } else {
                             if (menuRoot.isAtBottom) {
-                                const targetY = menuWindow.anchorPos.y - height
-                                return Math.max(10, targetY)
+                                const menuHeight = menuContainer.height
+                                const spacing = Theme.spacingS
+                                
+                                const bottomBarSize = typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "bottom" && !SettingsData.topBarFloat && SettingsData.topBarVisible ? 
+                                    (SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)) : 0
+                                
+                                const maxMenuBottom = menuWindow.screen.height - bottomBarSize - spacing
+                                const maxMenuTop = maxMenuBottom - menuHeight
+                                
+                                let targetY = menuWindow.anchorPos.y - menuHeight - spacing
+                                
+                                const minY = 10
+                                
+                                const topBarSize = typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "top" && !SettingsData.topBarFloat && SettingsData.topBarVisible ? 
+                                    (SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)) : 0
+                                
+                                const clampedForBar = Math.min(maxMenuTop, targetY)
+                                return Math.max(minY + topBarSize, clampedForBar)
                             } else {
                                 const targetY = menuWindow.anchorPos.y
-                                return Math.min(menuWindow.screen.height - height - 10, targetY)
+                                const bottomBarSize = typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "bottom" && !SettingsData.topBarFloat && SettingsData.topBarVisible ? 
+                                    (SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)) : 0
+                                const maxY = menuWindow.screen.height - height - 10 - bottomBarSize
+                                return Math.min(maxY, targetY)
                             }
                         }
                     }

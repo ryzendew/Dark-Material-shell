@@ -169,7 +169,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Power Profile"
                         description: "Current: " + (PowerService.powerProfile || "balanced")
                         currentValue: PowerService.powerProfile || "balanced"
@@ -230,7 +230,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Power Button"
                         description: "Action when power button is pressed"
                         currentValue: PowerService.powerButtonAction || "poweroff"
@@ -244,7 +244,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Sleep Button"
                         description: "Action when sleep button is pressed"
                         currentValue: PowerService.sleepButtonAction || "suspend"
@@ -258,7 +258,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Hibernate Button"
                         description: "Action when hibernate button is pressed"
                         currentValue: PowerService.hibernateButtonAction || "hibernate"
@@ -321,7 +321,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "When Lid is Closed (On Battery)"
                         description: "Action when lid is closed while on battery"
                         currentValue: PowerService.lidCloseAction || "suspend"
@@ -335,7 +335,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "When Lid is Closed (Plugged In)"
                         description: "Action when lid is closed while plugged in"
                         currentValue: PowerService.lidCloseExternalPowerAction || "suspend"
@@ -410,7 +410,7 @@ Item {
 
                             DarkDropdown {
                                 width: parent.width
-                                height: 50
+                                height: Theme.scaledHeight(50)
                                 text: "Select Time"
                                 description: formatTime(PowerService.idleSleepTimeout)
                                 currentValue: formatTime(PowerService.idleSleepTimeout)
@@ -434,7 +434,7 @@ Item {
 
                             DarkDropdown {
                                 width: parent.width
-                                height: 50
+                                height: Theme.scaledHeight(50)
                                 text: "Select Time"
                                 description: formatTime(PowerService.idleHibernateTimeout)
                                 currentValue: formatTime(PowerService.idleHibernateTimeout)
@@ -511,7 +511,7 @@ Item {
 
                             DarkDropdown {
                                 width: parent.width
-                                height: 50
+                                height: Theme.scaledHeight(50)
                                 text: "Select Time"
                                 description: formatTime(PowerService.screenDimTimeout)
                                 currentValue: formatTime(PowerService.screenDimTimeout)
@@ -535,7 +535,7 @@ Item {
 
                             DarkDropdown {
                                 width: parent.width
-                                height: 50
+                                height: Theme.scaledHeight(50)
                                 text: "Select Time"
                                 description: formatTime(PowerService.screenOffTimeout)
                                 currentValue: formatTime(PowerService.screenOffTimeout)
@@ -659,7 +659,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Low Battery Action"
                         description: "Action when battery reaches low threshold"
                         currentValue: PowerService.lowBatteryAction || "suspend"
@@ -673,7 +673,7 @@ Item {
 
                     DarkDropdown {
                         width: parent.width
-                        height: 50
+                        height: Theme.scaledHeight(50)
                         text: "Critical Battery Action"
                         description: "Action when battery reaches critical threshold"
                         currentValue: PowerService.criticalBatteryAction || "hibernate"

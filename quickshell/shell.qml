@@ -1,4 +1,3 @@
-//@ pragma UseQApplication
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -166,32 +165,73 @@ ShellRoot {
         anchors.fill: parent
     }
 
-    Variants {
-        id: topBarVariants
-        model: SettingsData.getFilteredScreens("topBar")
+    Loader {
+        id: topBarVariantsLoader
+        active: true
+        sourceComponent: Component {
+            Variants {
+                id: topBarVariants
+                model: SettingsData.getFilteredScreens("topBar")
 
-        delegate: TopBar {
-            modelData: item
-            notepadVariants: notepadSlideoutVariants
-            onColorPickerRequested: colorPickerModal.show()
+                delegate: TopBar {
+                    modelData: item
+                    notepadVariants: notepadSlideoutVariants
+                    onColorPickerRequested: colorPickerModal.show()
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: SettingsData
+        function onTopBarPositionChanged() {
+            Qt.callLater(() => {
+                topBarVariantsLoader.active = false
+                Qt.callLater(() => {
+                    topBarVariantsLoader.active = true
+                })
+            })
         }
     }
 
 
 
 
-    Variants {
-        model: SettingsData.getFilteredScreens("dock")
-        
-        Component.onCompleted: {
-        }
+    Loader {
+        id: dockVariantsLoader
+        active: true
+        sourceComponent: Component {
+            Variants {
+                model: SettingsData.getFilteredScreens("dock")
 
-        delegate: Dock {
-            modelData: item
-            contextMenu: dockContextMenuLoader.item ? dockContextMenuLoader.item : null
-            Component.onCompleted: {
-                dockContextMenuLoader.active = true
+                delegate: Dock {
+                    modelData: item
+                    contextMenu: dockContextMenuLoader.item ? dockContextMenuLoader.item : null
+                    Component.onCompleted: {
+                        dockContextMenuLoader.active = true
+                    }
+                }
             }
+        }
+    }
+
+    Connections {
+        target: SettingsData
+        function onDockExpandToScreenChanged() {
+            Qt.callLater(() => {
+                dockVariantsLoader.active = false
+                Qt.callLater(() => {
+                    dockVariantsLoader.active = true
+                })
+            })
+        }
+        function onDockCenterAppsChanged() {
+            Qt.callLater(() => {
+                dockVariantsLoader.active = false
+                Qt.callLater(() => {
+                    dockVariantsLoader.active = true
+                })
+            })
         }
     }
 

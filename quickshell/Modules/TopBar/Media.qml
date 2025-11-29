@@ -22,11 +22,13 @@ Rectangle {
     property var parentScreen: null
     property real barHeight: 48
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 0 : Math.max(Theme.spacingXS, Theme.spacingS * (widgetHeight / 30))
 
     signal clicked()
 
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : (playerAvailable ? currentContentWidth : 0)
+    height: isBarVertical ? (playerAvailable ? currentContentWidth : 0) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground) {
@@ -44,7 +46,8 @@ Rectangle {
             PropertyChanges {
                 target: root
                 opacity: 1
-                width: currentContentWidth
+                width: isBarVertical ? widgetHeight : currentContentWidth
+                height: isBarVertical ? currentContentWidth : widgetHeight
             }
 
         },
@@ -55,7 +58,8 @@ Rectangle {
             PropertyChanges {
                 target: root
                 opacity: 0
-                width: 0
+                width: isBarVertical ? widgetHeight : 0
+                height: isBarVertical ? 0 : widgetHeight
             }
 
         }

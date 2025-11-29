@@ -462,7 +462,7 @@ Column {
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        width: 60
+                        width: Theme.scaledWidth(60)
                         hoverEnabled: true
                         cursorShape: Qt.SizeVerCursor
                         drag.target: held ? delegateItem : undefined

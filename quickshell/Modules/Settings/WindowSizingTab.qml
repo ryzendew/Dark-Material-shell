@@ -25,16 +25,30 @@ Item {
 
     DarkFlickable {
         anchors.fill: parent
-        anchors.topMargin: Theme.spacingL
+        anchors.topMargin: getTopMargin()
         clip: true
         contentHeight: mainColumn.height
         contentWidth: width
+        
+        function getTopMargin() {
+            const screenHeight = Screen.height
+            if (screenHeight >= 1080) return Theme.spacingM
+            if (screenHeight >= 720) return Theme.spacingS
+            return Theme.spacingXS
+        }
 
         Column {
             id: mainColumn
 
             width: parent.width
-            spacing: Theme.spacingXL
+            spacing: getColumnSpacing()
+            
+            function getColumnSpacing() {
+                const screenHeight = Screen.height
+                if (screenHeight >= 1080) return Theme.spacingL
+                if (screenHeight >= 720) return Theme.spacingM
+                return Theme.spacingS
+            }
 
             StyledRect {
                 width: parent.width
@@ -95,10 +109,10 @@ Item {
 
                         DarkSlider {
                             width: parent.width
-                            height: 24
+                            height: Theme.scaledHeight(24)
                             value: SettingsData.settingsWindowWidth > 0 ? SettingsData.settingsWindowWidth : getDefaultWidth()
-                            minimum: 600
-                            maximum: Math.min(Screen.width - 100, 3000)
+                            minimum: getMinWidth()
+                            maximum: Math.min(Screen.width - 40, 3000)
                             unit: "px"
                             showValue: true
                             wheelEnabled: false
@@ -124,10 +138,10 @@ Item {
 
                         DarkSlider {
                             width: parent.width
-                            height: 24
+                            height: Theme.scaledHeight(24)
                             value: SettingsData.settingsWindowHeight > 0 ? SettingsData.settingsWindowHeight : getDefaultHeight()
-                            minimum: 400
-                            maximum: Math.min(Screen.height - 100, 2000)
+                            minimum: getMinHeight()
+                            maximum: Math.min(Screen.height - 40, 2000)
                             unit: "px"
                             showValue: true
                             wheelEnabled: false
@@ -164,7 +178,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetMouseArea1.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -183,8 +197,8 @@ Item {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const width = 800
-                                        const height = 600
+                                        const width = getSmallPresetWidth()
+                                        const height = getSmallPresetHeight()
                                         SettingsData.setSettingsWindowWidth(width)
                                         SettingsData.setSettingsWindowHeight(height)
                                         if (parentModal) {
@@ -197,7 +211,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetMouseArea2.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -216,8 +230,8 @@ Item {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const width = 1280
-                                        const height = 950
+                                        const width = getMediumPresetWidth()
+                                        const height = getMediumPresetHeight()
                                         SettingsData.setSettingsWindowWidth(width)
                                         SettingsData.setSettingsWindowHeight(height)
                                         if (parentModal) {
@@ -230,7 +244,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetMouseArea3.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -249,8 +263,8 @@ Item {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const width = 1920
-                                        const height = 1325
+                                        const width = getLargePresetWidth()
+                                        const height = getLargePresetHeight()
                                         SettingsData.setSettingsWindowWidth(width)
                                         SettingsData.setSettingsWindowHeight(height)
                                         if (parentModal) {
@@ -283,7 +297,7 @@ Item {
 
                         Rectangle {
                             width: parent.width
-                            height: 32
+                            height: Theme.scaledHeight(32)
                             radius: Theme.cornerRadius
                             color: autoSizeMouseArea.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                             border.color: Theme.outline
@@ -386,7 +400,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea1.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -419,7 +433,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea2.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -452,7 +466,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea6.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -491,7 +505,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea3.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -524,7 +538,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea4.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -557,7 +571,7 @@ Item {
 
                             Rectangle {
                                 width: (parent.width - Theme.spacingS * 2) / 3
-                                height: 32
+                                height: Theme.scaledHeight(32)
                                 radius: Theme.cornerRadius
                                 color: presetPosMouseArea5.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                                 border.color: Theme.outline
@@ -610,7 +624,7 @@ Item {
 
                         Rectangle {
                             width: parent.width
-                            height: 32
+                            height: Theme.scaledHeight(32)
                             radius: Theme.cornerRadius
                             color: autoPosMouseArea.containsMouse ? Theme.surfaceVariant : Theme.surfaceContainer
                             border.color: Theme.outline
@@ -734,18 +748,38 @@ Item {
 
     function getDefaultWidth() {
         const screenWidth = Screen.width
-        if (screenWidth >= 3840) return 2560 // 4K -> 1440p
-        if (screenWidth >= 2560) return 1920 // 1440p -> 1080p  
-        if (screenWidth >= 1920) return 1280 // 1080p -> 720p
-        return 800 // 720p or lower -> 800x600
+
+        let baseWidth
+        if (screenWidth >= 3840) baseWidth = 2560 // 4K -> 1440p
+        else if (screenWidth >= 2560) baseWidth = 1920 // 1440p -> 1080p  
+        else if (screenWidth >= 1920) baseWidth = 1280 // 1080p -> 720p
+        else baseWidth = 800 // 720p or lower -> 800x600
+
+        let scale = 1.0
+        if (typeof Theme !== "undefined" && Theme.getWindowScaleFactor !== undefined) {
+            scale = Theme.getWindowScaleFactor()
+        }
+
+        const scaledWidth = baseWidth * scale
+        return Math.max(600, Math.min(scaledWidth, screenWidth - 40))
     }
 
     function getDefaultHeight() {
         const screenHeight = Screen.height
-        if (screenHeight >= 2160) return 1710 // 4K -> 1710px
-        if (screenHeight >= 1440) return 1325 // 1440p -> 1325px
-        if (screenHeight >= 1080) return 950 // 1080p -> 950px
-        return 760 // 720p or lower -> 760px
+
+        let baseHeight
+        if (screenHeight >= 2160) baseHeight = 1710 // 4K -> 1710px
+        else if (screenHeight >= 1440) baseHeight = 1325 // 1440p -> 1325px
+        else if (screenHeight >= 1080) baseHeight = 950 // 1080p -> 950px
+        else baseHeight = 760 // 720p or lower -> 760px
+
+        let scale = 1.0
+        if (typeof Theme !== "undefined" && Theme.getWindowScaleFactor !== undefined) {
+            scale = Theme.getWindowScaleFactor()
+        }
+
+        const scaledHeight = baseHeight * scale
+        return Math.max(500, Math.min(scaledHeight, screenHeight - 20))
     }
 
     function getDefaultX() {
@@ -756,6 +790,62 @@ Item {
     function getDefaultY() {
         const height = getDefaultHeight()
         return Math.max(0, (Screen.height - height) / 2)
+    }
+    
+    function getMinWidth() {
+        const screenWidth = Screen.width
+        if (screenWidth >= 1920) return 600
+        if (screenWidth >= 1280) return 500
+        return Math.max(400, screenWidth * 0.7)
+    }
+    
+    function getMinHeight() {
+        const screenHeight = Screen.height
+        if (screenHeight >= 1080) return 400
+        if (screenHeight >= 720) return 350
+        return Math.max(300, screenHeight * 0.6)
+    }
+    
+    function getSmallPresetWidth() {
+        const screenWidth = Screen.width
+        if (screenWidth >= 1920) return 800
+        if (screenWidth >= 1280) return Math.max(600, screenWidth * 0.6)
+        return Math.max(400, screenWidth * 0.85)
+    }
+    
+    function getSmallPresetHeight() {
+        const screenHeight = Screen.height
+        if (screenHeight >= 1080) return 600
+        if (screenHeight >= 720) return Math.max(450, screenHeight * 0.65)
+        return Math.max(350, screenHeight * 0.8)
+    }
+    
+    function getMediumPresetWidth() {
+        const screenWidth = Screen.width
+        if (screenWidth >= 1920) return 1280
+        if (screenWidth >= 1280) return Math.max(900, screenWidth * 0.75)
+        return Math.max(500, screenWidth * 0.9)
+    }
+    
+    function getMediumPresetHeight() {
+        const screenHeight = Screen.height
+        if (screenHeight >= 1080) return 950
+        if (screenHeight >= 720) return Math.max(650, screenHeight * 0.85)
+        return Math.max(450, screenHeight * 0.9)
+    }
+    
+    function getLargePresetWidth() {
+        const screenWidth = Screen.width
+        if (screenWidth >= 1920) return 1920
+        if (screenWidth >= 1280) return Math.min(screenWidth - 40, 1600)
+        return Math.min(screenWidth - 20, 1200)
+    }
+    
+    function getLargePresetHeight() {
+        const screenHeight = Screen.height
+        if (screenHeight >= 1080) return 1325
+        if (screenHeight >= 720) return Math.min(screenHeight - 40, 1000)
+        return Math.min(screenHeight - 20, 700)
     }
 }
 

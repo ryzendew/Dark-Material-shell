@@ -131,7 +131,7 @@ Item {
 
             StyledRect {
                 width: parent.width
-                height: launcherPositionSection.implicitHeight + Theme.spacingL * 2
+                height: appDrawerPositionSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
                                Theme.surfaceVariant.b, 0.3)
@@ -140,7 +140,7 @@ Item {
                 border.width: 1
 
                 Column {
-                    id: launcherPositionSection
+                    id: appDrawerPositionSection
 
                     anchors.fill: parent
                     anchors.margins: Theme.spacingL
@@ -151,14 +151,14 @@ Item {
                         spacing: Theme.spacingM
 
                         DarkIcon {
-                            name: "open_in_full"
+                            name: "apps"
                             size: Theme.iconSize
                             color: Theme.primary
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         StyledText {
-                            text: "Launcher Position"
+                            text: "App Drawer Position"
                             font.pixelSize: Theme.fontSizeLarge
                             font.weight: Font.Medium
                             color: Theme.surfaceText
@@ -167,54 +167,186 @@ Item {
                     }
 
                     StyledText {
-                        text: "Choose where the app launcher menu appears when clicked"
+                        text: "Choose where the app drawer menu appears when clicked"
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.surfaceVariantText
                         wrapMode: Text.WordWrap
                         width: parent.width
                     }
 
-                    Row {
-                        spacing: Theme.spacingM
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
 
                         Repeater {
                             model: [
-                                { "value": "bottom-center", "text": "Bottom Center", "icon": "center_focus_strong" },
-                                { "value": "bottom-left", "text": "Bottom Left", "icon": "west" },
-                                { "value": "bottom-right", "text": "Bottom Right", "icon": "east" }
+                                { "value": "follow-trigger", "text": "Follow Trigger", "icon": "near_me", "description": "Position relative to button" },
+                                { "value": "center", "text": "Center", "icon": "center_focus_strong", "description": "Center of screen" },
+                                { "value": "top-left", "text": "Top Left", "icon": "north_west", "description": "Top left corner" },
+                                { "value": "top-center", "text": "Top Center", "icon": "north", "description": "Top center" },
+                                { "value": "top-right", "text": "Top Right", "icon": "north_east", "description": "Top right corner" },
+                                { "value": "bottom-left", "text": "Bottom Left", "icon": "south_west", "description": "Bottom left corner" },
+                                { "value": "bottom-center", "text": "Bottom Center", "icon": "south", "description": "Bottom center" },
+                                { "value": "bottom-right", "text": "Bottom Right", "icon": "south_east", "description": "Bottom right corner" }
                             ]
 
                             Rectangle {
-                                width: 120
-                                height: 80
+                                width: parent.width
+                                height: 56
                                 radius: Theme.cornerRadius
-                                color: SettingsData.launcherPosition === modelData.value ? Theme.primary : Theme.surfaceContainerHigh
-                                border.color: SettingsData.launcherPosition === modelData.value ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
+                                color: SettingsData.appDrawerPosition === modelData.value ? Theme.primary : Theme.surfaceContainerHigh
+                                border.color: SettingsData.appDrawerPosition === modelData.value ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
                                 border.width: 1
 
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        SettingsData.launcherPosition = modelData.value
+                                        SettingsData.appDrawerPosition = modelData.value
                                     }
                                 }
 
-                                Column {
-                                    anchors.centerIn: parent
-                                    spacing: Theme.spacingXS
+                                Row {
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: Theme.spacingM
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    spacing: Theme.spacingM
 
                                     DarkIcon {
                                         name: modelData.icon
                                         size: Theme.iconSize
-                                        color: SettingsData.launcherPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        color: SettingsData.appDrawerPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
                                     }
 
-                                    StyledText {
-                                        text: modelData.text
-                                        font.pixelSize: Theme.fontSizeSmall
-                                        color: SettingsData.launcherPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    Column {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        spacing: 2
+
+                                        StyledText {
+                                            text: modelData.text
+                                            font.pixelSize: Theme.fontSizeMedium
+                                            font.weight: Font.Medium
+                                            color: SettingsData.appDrawerPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        }
+
+                                        StyledText {
+                                            text: modelData.description
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: SettingsData.appDrawerPosition === modelData.value ? Qt.rgba(Theme.onPrimary.r, Theme.onPrimary.g, Theme.onPrimary.b, 0.7) : Theme.surfaceVariantText
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
+                height: controlCenterPositionSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: controlCenterPositionSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "tune"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Control Center Position"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    StyledText {
+                        text: "Choose where the control center menu appears when clicked"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        Repeater {
+                            model: [
+                                { "value": "follow-trigger", "text": "Follow Trigger", "icon": "near_me", "description": "Position relative to button" },
+                                { "value": "center", "text": "Center", "icon": "center_focus_strong", "description": "Center of screen" },
+                                { "value": "top-left", "text": "Top Left", "icon": "north_west", "description": "Top left corner" },
+                                { "value": "top-center", "text": "Top Center", "icon": "north", "description": "Top center" },
+                                { "value": "top-right", "text": "Top Right", "icon": "north_east", "description": "Top right corner" },
+                                { "value": "bottom-left", "text": "Bottom Left", "icon": "south_west", "description": "Bottom left corner" },
+                                { "value": "bottom-center", "text": "Bottom Center", "icon": "south", "description": "Bottom center" },
+                                { "value": "bottom-right", "text": "Bottom Right", "icon": "south_east", "description": "Bottom right corner" }
+                            ]
+
+                            Rectangle {
+                                width: parent.width
+                                height: 56
+                                radius: Theme.cornerRadius
+                                color: SettingsData.controlCenterPosition === modelData.value ? Theme.primary : Theme.surfaceContainerHigh
+                                border.color: SettingsData.controlCenterPosition === modelData.value ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
+                                border.width: 1
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        SettingsData.controlCenterPosition = modelData.value
+                                    }
+                                }
+
+                                Row {
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: Theme.spacingM
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    spacing: Theme.spacingM
+
+                                    DarkIcon {
+                                        name: modelData.icon
+                                        size: Theme.iconSize
+                                        color: SettingsData.controlCenterPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Column {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        spacing: 2
+
+                                        StyledText {
+                                            text: modelData.text
+                                            font.pixelSize: Theme.fontSizeMedium
+                                            font.weight: Font.Medium
+                                            color: SettingsData.controlCenterPosition === modelData.value ? Theme.onPrimary : Theme.surfaceText
+                                        }
+
+                                        StyledText {
+                                            text: modelData.description
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: SettingsData.controlCenterPosition === modelData.value ? Qt.rgba(Theme.onPrimary.r, Theme.onPrimary.g, Theme.onPrimary.b, 0.7) : Theme.surfaceVariantText
+                                        }
                                     }
                                 }
                             }

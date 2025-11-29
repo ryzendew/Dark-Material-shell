@@ -154,7 +154,7 @@ Item {
                                     DarkTextField {
                                         id: latitudeInput
                                         width: parent.width
-                                        height: 48
+                                        height: Theme.scaledHeight(48)
                                         placeholderText: "40.7128"
                                         backgroundColor: Theme.surfaceVariant
                                         normalBorderColor: Theme.primarySelected
@@ -205,7 +205,7 @@ Item {
                                     DarkTextField {
                                         id: longitudeInput
                                         width: parent.width
-                                        height: 48
+                                        height: Theme.scaledHeight(48)
                                         placeholderText: "-74.0060"
                                         backgroundColor: Theme.surfaceVariant
                                         normalBorderColor: Theme.primarySelected
@@ -355,13 +355,13 @@ Item {
                                 text: "Width"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 400
                                 maximum: 1200
                                 value: SettingsData.desktopWeatherWidth
@@ -375,7 +375,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherWidth) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -388,13 +388,13 @@ Item {
                                 text: "Height"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 300
                                 maximum: 800
                                 value: SettingsData.desktopWeatherHeight
@@ -408,7 +408,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherHeight) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -433,13 +433,13 @@ Item {
                                 text: "Base Font"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 10
                                 maximum: 40
                                 value: SettingsData.desktopWeatherFontSize
@@ -453,7 +453,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherFontSize) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -466,13 +466,13 @@ Item {
                                 text: "Temp Size"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 10
                                 maximum: 40
                                 value: Math.round(SettingsData.desktopWeatherCurrentTempSize * 10)
@@ -486,7 +486,7 @@ Item {
                                 text: SettingsData.desktopWeatherCurrentTempSize.toFixed(1) + "x"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -499,13 +499,13 @@ Item {
                                 text: "City Size"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 10
                                 maximum: 40
                                 value: Math.round(SettingsData.desktopWeatherCitySize * 10)
@@ -519,7 +519,7 @@ Item {
                                 text: SettingsData.desktopWeatherCitySize.toFixed(1) + "x"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -532,13 +532,13 @@ Item {
                                 text: "Details Size"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 5
                                 maximum: 20
                                 value: Math.round(SettingsData.desktopWeatherDetailsSize * 10)
@@ -552,7 +552,7 @@ Item {
                                 text: SettingsData.desktopWeatherDetailsSize.toFixed(1) + "x"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -565,13 +565,13 @@ Item {
                                 text: "Forecast Size"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 5
                                 maximum: 20
                                 value: Math.round(SettingsData.desktopWeatherForecastSize * 10)
@@ -585,7 +585,7 @@ Item {
                                 text: SettingsData.desktopWeatherForecastSize.toFixed(1) + "x"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -610,13 +610,13 @@ Item {
                                 text: "Icon Size"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 12
                                 maximum: 48
                                 value: SettingsData.desktopWeatherIconSize
@@ -630,7 +630,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherIconSize) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -643,13 +643,13 @@ Item {
                                 text: "Spacing"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 4
                                 maximum: 24
                                 value: SettingsData.desktopWeatherSpacing
@@ -663,7 +663,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherSpacing) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -676,13 +676,13 @@ Item {
                                 text: "Padding"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 8
                                 maximum: 32
                                 value: SettingsData.desktopWeatherPadding
@@ -696,7 +696,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherPadding) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -709,13 +709,13 @@ Item {
                                 text: "Radius"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceText
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             DarkSlider {
                                 width: parent.width - 80 - Theme.spacingM - 60
-                                height: 40
+                                height: Theme.scaledHeight(40)
                                 minimum: 4
                                 maximum: 24
                                 value: SettingsData.desktopWeatherBorderRadius
@@ -729,7 +729,7 @@ Item {
                                 text: Math.round(SettingsData.desktopWeatherBorderRadius) + "px"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
-                                width: 60
+                                width: Theme.scaledWidth(60)
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }

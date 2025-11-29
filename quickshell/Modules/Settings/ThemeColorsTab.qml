@@ -126,6 +126,395 @@ Item {
 
             StyledRect {
                 width: parent.width
+                height: uiScaleSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: uiScaleSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "zoom_in"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Settings UI Scale"
+                            font.pixelSize: Theme.fontSizeLarge
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    StyledText {
+                        text: "Scale the settings window, icons, and controls. Use Font Scale for text."
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        StyledText {
+                            text: "Scale"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            width: 60
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DarkSlider {
+                            id: uiScaleSlider
+
+                            width: parent.width - 60 - Theme.spacingM - 60
+                            height: Theme.scaledHeight(32)
+                            minimum: 80
+                            maximum: 140
+                            value: Math.round((SettingsData.settingsUiScale > 0 ? SettingsData.settingsUiScale : 1.0) * 100)
+                            unit: "%"
+                            showValue: false
+                            wheelEnabled: false
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            onSliderValueChanged: newValue => {
+                                const scale = newValue / 100.0
+                                SettingsData.setSettingsUiScale(scale)
+                            }
+                        }
+
+                        StyledText {
+                            text: (SettingsData.settingsUiScale * 100).toFixed(0) + "%"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                            width: 60
+                            horizontalAlignment: Text.AlignRight
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
+                height: advancedScaleSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: advancedScaleSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "tune"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: "Advanced Scaling"
+                            font.pixelSize: Theme.fontSizeMedium
+                            font.weight: Font.Medium
+                            color: Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Item {
+                            width: 1
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DarkToggle {
+                            checked: SettingsData.settingsUiAdvancedScaling
+                            anchors.verticalCenter: parent.verticalCenter
+                            onToggled: value => {
+                                SettingsData.settingsUiAdvancedScaling = value
+                            }
+                        }
+                    }
+
+                    StyledText {
+                        text: "Individually adjust window size, controls, and icons in settings."
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+                        visible: SettingsData.settingsUiAdvancedScaling
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Window Scale"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 80
+                                maximum: 140
+                                value: Math.round((SettingsData.settingsUiWindowScale || 1.0) * 100)
+                                unit: "%"
+                                showValue: false
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    const scale = newValue / 100.0
+                                    SettingsData.settingsUiWindowScale = scale
+                                    SettingsData.setSettingsWindowWidth(0)
+                                    SettingsData.setSettingsWindowHeight(0)
+                                }
+                            }
+
+                            StyledText {
+                                text: ((SettingsData.settingsUiWindowScale || 1.0) * 100).toFixed(0) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Window Width"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 600
+                                maximum: Math.min(Screen.width - 40, 3000)
+                                value: SettingsData.settingsWindowWidth > 0
+                                       ? SettingsData.settingsWindowWidth
+                                       : Math.min(Screen.width - 40, 1280)
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    SettingsData.setSettingsWindowWidth(newValue)
+                                }
+                            }
+
+                            StyledText {
+                                text: (SettingsData.settingsWindowWidth > 0
+                                       ? SettingsData.settingsWindowWidth
+                                       : Math.min(Screen.width - 40, 1280)) + "px"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Window Height"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 500
+                                maximum: Math.min(Screen.height - 20, 2000)
+                                value: SettingsData.settingsWindowHeight > 0
+                                       ? SettingsData.settingsWindowHeight
+                                       : Math.min(Screen.height - 20, 950)
+                                unit: "px"
+                                showValue: true
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    SettingsData.setSettingsWindowHeight(newValue)
+                                }
+                            }
+
+                            StyledText {
+                                text: (SettingsData.settingsWindowHeight > 0
+                                       ? SettingsData.settingsWindowHeight
+                                       : Math.min(Screen.height - 20, 950)) + "px"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Font Scale"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 80
+                                maximum: 200
+                                value: Math.round((SettingsData.fontScale || 1.0) * 100)
+                                unit: "%"
+                                showValue: false
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    const scale = newValue / 100.0
+                                    SettingsData.setFontScale(scale)
+                                }
+                            }
+
+                            StyledText {
+                                text: (SettingsData.fontScale * 100).toFixed(0) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Controls"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 80
+                                maximum: 140
+                                value: Math.round((SettingsData.settingsUiControlScale || 1.0) * 100)
+                                unit: "%"
+                                showValue: false
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    SettingsData.settingsUiControlScale = newValue / 100.0
+                                }
+                            }
+
+                            StyledText {
+                                text: ((SettingsData.settingsUiControlScale || 1.0) * 100).toFixed(0) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            StyledText {
+                                text: "Icons"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                width: 100
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            DarkSlider {
+                                width: parent.width - 100 - Theme.spacingM - 60
+                                height: Theme.scaledHeight(28)
+                                minimum: 80
+                                maximum: 140
+                                value: Math.round((SettingsData.settingsUiIconScale || 1.0) * 100)
+                                unit: "%"
+                                showValue: false
+                                wheelEnabled: false
+                                anchors.verticalCenter: parent.verticalCenter
+                                onSliderValueChanged: newValue => {
+                                    SettingsData.settingsUiIconScale = newValue / 100.0
+                                }
+                            }
+
+                            StyledText {
+                                text: ((SettingsData.settingsUiIconScale || 1.0) * 100).toFixed(0) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: 60
+                                horizontalAlignment: Text.AlignRight
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            StyledRect {
+                width: parent.width
                 height: themeSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,

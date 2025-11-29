@@ -134,6 +134,7 @@ Singleton {
     property real topBarRightMargin: 0
     property real topBarTopMargin: 0
     property real topBarHeight: 40
+    property string topBarPosition: "top" // "top", "bottom", "left", or "right"
     property bool use24HourClock: true
     property bool useFahrenheit: false
     property bool nightModeEnabled: false
@@ -201,9 +202,9 @@ Singleton {
     property var dockLeftWidgets: ["launcherButton", "music", "clock"]
     property var dockRightWidgets: ["systemTray", "controlCenterButton", "settingsButton"]
     
-    property string controlCenterPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
+    property string controlCenterPosition: "follow-trigger" // "follow-trigger", "center", "top-left", "top-right", "top-center", "bottom-left", "bottom-right", "bottom-center"
     property string notificationCenterPosition: "top-right" // "top-right", "bottom-right", "top-left", "bottom-left", "center"
-    property string appDrawerPosition: "center" // "center", "top-left", "top-right", "bottom-left", "bottom-right"
+    property string appDrawerPosition: "follow-trigger" // "follow-trigger", "center", "top-left", "top-right", "top-center", "bottom-left", "bottom-right", "bottom-center"
     property string clipboardPosition: "bottom-right" // "bottom-right", "top-right", "bottom-left", "top-left", "center"
     
     property real startMenuXOffset: 0.0 // -1.0 to 1.0, where -1 is left edge, 1 is right edge
@@ -259,6 +260,11 @@ Singleton {
     property string monoFontFamily: "Fira Code"
     property int fontWeight: Font.Normal
     property real fontScale: 1.0
+    property real settingsUiScale: 1.0
+    property bool settingsUiAdvancedScaling: false
+    property real settingsUiWindowScale: 1.0
+    property real settingsUiControlScale: 1.0
+    property real settingsUiIconScale: 1.0
     property bool notepadUseMonospace: true
     property string notepadFontFamily: ""
     property real notepadFontSize: 14
@@ -283,6 +289,45 @@ Singleton {
     onNotepadLastCustomTransparencyChanged: saveSettings()
     onTerminalEmulatorChanged: saveSettings()
     onAurHelperChanged: saveSettings()
+    onSettingsUiScaleChanged: saveSettings()
+    onSettingsUiAdvancedScalingChanged: saveSettings()
+    onSettingsUiWindowScaleChanged: saveSettings()
+    onSettingsUiControlScaleChanged: saveSettings()
+    onSettingsUiIconScaleChanged: saveSettings()
+    onTopBarPositionChanged: {
+        if (topBarPosition === "bottom") {
+            if (appDrawerPosition === "follow-trigger" || appDrawerPosition === "center" || appDrawerPosition.includes("top") || appDrawerPosition === "") {
+                appDrawerPosition = "bottom-left"
+            }
+            if (controlCenterPosition === "follow-trigger" || controlCenterPosition === "center" || controlCenterPosition.includes("top") || controlCenterPosition === "") {
+                controlCenterPosition = "bottom-right"
+            }
+        } else if (topBarPosition === "top") {
+            if (appDrawerPosition === "follow-trigger" || appDrawerPosition === "center" || appDrawerPosition.includes("bottom") || appDrawerPosition === "") {
+                appDrawerPosition = "top-left"
+            }
+            if (controlCenterPosition === "follow-trigger" || controlCenterPosition === "center" || controlCenterPosition.includes("bottom") || controlCenterPosition === "") {
+                controlCenterPosition = "top-right"
+            }
+        } else if (topBarPosition === "right") {
+            if (appDrawerPosition === "follow-trigger" || appDrawerPosition === "center" || appDrawerPosition.includes("left") || appDrawerPosition === "") {
+                appDrawerPosition = "top-right"
+            }
+            if (controlCenterPosition !== "bottom-right") {
+                controlCenterPosition = "bottom-right"
+            }
+        } else if (topBarPosition === "left") {
+            if (appDrawerPosition !== "top-left") {
+                appDrawerPosition = "top-left"
+            }
+            if (controlCenterPosition !== "bottom-left") {
+                controlCenterPosition = "bottom-left"
+            }
+        }
+        saveSettings()
+    }
+    onAppDrawerPositionChanged: saveSettings()
+    onControlCenterPositionChanged: saveSettings()
     property bool gtkThemingEnabled: false
     property bool qtThemingEnabled: false
     property bool showDock: true
@@ -510,6 +555,7 @@ Singleton {
                 topBarRightMargin = settings.topBarRightMargin !== undefined ? settings.topBarRightMargin : 0
                 topBarTopMargin = settings.topBarTopMargin !== undefined ? settings.topBarTopMargin : 0
                 topBarHeight = settings.topBarHeight !== undefined ? settings.topBarHeight : 40
+                topBarPosition = settings.topBarPosition !== undefined ? settings.topBarPosition : "top"
                 use24HourClock = settings.use24HourClock !== undefined ? settings.use24HourClock : true
                 useFahrenheit = settings.useFahrenheit !== undefined ? settings.useFahrenheit : false
                 nightModeEnabled = settings.nightModeEnabled !== undefined ? settings.nightModeEnabled : false
@@ -595,9 +641,9 @@ Singleton {
                 updateListModel(dockLeftWidgetsModel, dockLeftWidgets)
                 updateListModel(dockRightWidgetsModel, dockRightWidgets)
                 
-                controlCenterPosition = settings.controlCenterPosition !== undefined ? settings.controlCenterPosition : "bottom-right"
+                controlCenterPosition = settings.controlCenterPosition !== undefined ? settings.controlCenterPosition : "follow-trigger"
                 notificationCenterPosition = settings.notificationCenterPosition !== undefined ? settings.notificationCenterPosition : "top-right"
-                appDrawerPosition = settings.appDrawerPosition !== undefined ? settings.appDrawerPosition : "center"
+                appDrawerPosition = settings.appDrawerPosition !== undefined ? settings.appDrawerPosition : "follow-trigger"
                 clipboardPosition = settings.clipboardPosition !== undefined ? settings.clipboardPosition : "bottom-right"
                 
                 startMenuXOffset = settings.startMenuXOffset !== undefined ? settings.startMenuXOffset : 0.0
@@ -631,6 +677,11 @@ Singleton {
                 monoFontFamily = settings.monoFontFamily !== undefined ? settings.monoFontFamily : defaultMonoFontFamily
                 fontWeight = settings.fontWeight !== undefined ? settings.fontWeight : Font.Normal
                 fontScale = settings.fontScale !== undefined ? settings.fontScale : 1.0
+                settingsUiScale = settings.settingsUiScale !== undefined ? settings.settingsUiScale : 1.0
+                settingsUiAdvancedScaling = settings.settingsUiAdvancedScaling !== undefined ? settings.settingsUiAdvancedScaling : false
+                settingsUiWindowScale = settings.settingsUiWindowScale !== undefined ? settings.settingsUiWindowScale : 1.0
+                settingsUiControlScale = settings.settingsUiControlScale !== undefined ? settings.settingsUiControlScale : 1.0
+                settingsUiIconScale = settings.settingsUiIconScale !== undefined ? settings.settingsUiIconScale : 1.0
                 notepadUseMonospace = settings.notepadUseMonospace !== undefined ? settings.notepadUseMonospace : true
                 notepadFontFamily = settings.notepadFontFamily !== undefined ? settings.notepadFontFamily : ""
                 notepadFontSize = settings.notepadFontSize !== undefined ? settings.notepadFontSize : 14
@@ -829,6 +880,7 @@ Singleton {
                                                 "topBarRightMargin": topBarRightMargin,
                                                 "topBarTopMargin": topBarTopMargin,
                                                 "topBarHeight": topBarHeight,
+                                                "topBarPosition": topBarPosition,
                                                 "use24HourClock": use24HourClock,
                                                 "useFahrenheit": useFahrenheit,
                                                 "nightModeEnabled": nightModeEnabled,
@@ -914,6 +966,11 @@ Singleton {
                                                 "monoFontFamily": monoFontFamily,
                                                 "fontWeight": fontWeight,
                                                 "fontScale": fontScale,
+                                                "settingsUiScale": settingsUiScale,
+                                                "settingsUiAdvancedScaling": settingsUiAdvancedScaling,
+                                                "settingsUiWindowScale": settingsUiWindowScale,
+                                                "settingsUiControlScale": settingsUiControlScale,
+                                                "settingsUiIconScale": settingsUiIconScale,
                                                 "notepadUseMonospace": notepadUseMonospace,
                                                 "notepadFontFamily": notepadFontFamily,
                                                 "notepadFontSize": notepadFontSize,
@@ -2405,6 +2462,12 @@ Singleton {
 
     function setFontScale(scale) {
         fontScale = scale
+        saveSettings()
+    }
+
+    function setSettingsUiScale(scale) {
+        var clamped = Math.max(0.7, Math.min(1.5, scale))
+        settingsUiScale = clamped
         saveSettings()
     }
 

@@ -12,14 +12,15 @@ Rectangle {
     property var parentScreen: null
     property real widgetHeight: 30
     property real barHeight: 48
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 0 : Math.max(Theme.spacingXS, Theme.spacingS * (widgetHeight / 30))
     readonly property bool hasUpdates: SystemUpdateService.updateCount > 0
     readonly property bool isChecking: SystemUpdateService.isChecking
 
     signal clicked()
 
-    width: updaterIcon.width + horizontalPadding * 2
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : (updaterIcon.width + horizontalPadding * 2)
+    height: isBarVertical ? (updaterIcon.width + horizontalPadding * 2) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground) {
@@ -94,8 +95,29 @@ Rectangle {
                 const globalPos = mapToGlobal(0, 0);
                 const currentScreen = parentScreen || Screen;
                 const screenX = currentScreen.x || 0;
+                const screenY = currentScreen.y || 0;
                 const relativeX = globalPos.x - screenX;
-                popupTarget.setTriggerPosition(relativeX, barHeight + Theme.spacingXS, width, section, currentScreen);
+                const relativeY = globalPos.y - screenY;
+                
+                let triggerX, triggerY;
+                if (isBarVertical) {
+                    if (SettingsData.topBarPosition === "left") {
+                        triggerX = relativeX + width + Theme.spacingXS;
+                        triggerY = relativeY;
+                    } else {
+                        triggerX = relativeX - Theme.spacingXS;
+                        triggerY = relativeY;
+                    }
+                } else {
+                    triggerX = relativeX;
+                    if (SettingsData.topBarPosition === "top") {
+                        triggerY = relativeY + height + Theme.spacingXS;
+                    } else {
+                        triggerY = relativeY - Theme.spacingXS;
+                    }
+                }
+                
+                popupTarget.setTriggerPosition(triggerX, triggerY, isBarVertical ? height : width, section, currentScreen);
             }
             root.clicked();
         }

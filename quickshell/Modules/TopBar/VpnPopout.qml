@@ -23,10 +23,33 @@ DarkPopout {
         triggerScreen = screen;
     }
 
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
+    
     popupWidth: 360
     popupHeight: Math.min(Screen.height - 100, contentLoader.item ? contentLoader.item.implicitHeight : 260)
-    triggerX: Screen.width - 380 - Theme.spacingL
-    triggerY: Theme.barHeight - 4 + SettingsData.topBarSpacing + Theme.spacingS
+    triggerX: {
+        const screenWidth = triggerScreen?.width ?? Screen.width
+        if (isBarVertical) {
+            if (SettingsData.topBarPosition === "left") {
+                return SettingsData.topBarHeight + SettingsData.topBarSpacing + Theme.spacingXS
+            } else {
+                return screenWidth - SettingsData.topBarHeight - SettingsData.topBarSpacing - Theme.spacingXS - 360
+            }
+        } else {
+            return screenWidth - 380 - Theme.spacingL
+        }
+    }
+    triggerY: {
+        if (isBarVertical) {
+            return (triggerScreen?.height ?? Screen.height) / 2
+        } else {
+            if (SettingsData.topBarPosition === "top") {
+                return SettingsData.topBarHeight - 4 + SettingsData.topBarSpacing + Theme.spacingS
+            } else {
+                return (triggerScreen?.height ?? Screen.height) - SettingsData.topBarHeight - SettingsData.topBarSpacing - Theme.spacingS - 4
+            }
+        }
+    }
     triggerWidth: 70
     positioning: "center"
     screen: triggerScreen

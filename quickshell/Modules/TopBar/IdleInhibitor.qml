@@ -12,10 +12,11 @@ Rectangle {
     property var popupTarget: null
     property var parentScreen: null
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 0 : Math.max(Theme.spacingXS, Theme.spacingS * (widgetHeight / 30))
 
-    width: idleIcon.width + horizontalPadding * 2
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : (idleIcon.width + horizontalPadding * 2)
+    height: isBarVertical ? (idleIcon.width + horizontalPadding * 2) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground) {

@@ -33,10 +33,12 @@ DarkPopout {
         triggerScreen = screen
     }
 
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
+    
     popupWidth: 800
     popupHeight: 800
     triggerX: Theme.spacingL
-    triggerY: Theme.barHeight - 4 + SettingsData.topBarSpacing + Theme.spacingXS
+    property real triggerY: 0
     triggerWidth: 40
     positioning: "center"
     screen: triggerScreen

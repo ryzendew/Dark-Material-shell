@@ -14,6 +14,7 @@ Rectangle {
 
     property string screenName: ""
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     property int currentWorkspace: {
         if (CompositorService.isNiri) {
             return getNiriActiveWorkspace()
@@ -205,7 +206,7 @@ Rectangle {
         return currentMonitor.activeWorkspace?.id ?? 1
     }
 
-    readonly property real padding: (widgetHeight - workspaceRow.implicitHeight) / 2
+    readonly property real padding: isBarVertical ? (widgetHeight - workspaceColumn.implicitWidth) / 2 : (widgetHeight - workspaceRow.implicitHeight) / 2
 
     function getRealWorkspaces() {
         return root.workspaceList.filter(ws => {
@@ -234,8 +235,8 @@ Rectangle {
         }
     }
 
-    width: workspaceRow.implicitWidth + padding * 2
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : (workspaceRow.implicitWidth + padding * 2)
+    height: isBarVertical ? (workspaceColumn.implicitHeight + padding * 2) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground)
@@ -276,7 +277,7 @@ Rectangle {
 
     Row {
         id: workspaceRow
-
+        visible: !isBarVertical
         anchors.centerIn: parent
         spacing: Theme.spacingS
 
@@ -512,6 +513,245 @@ Rectangle {
                     }
                 }
 
+            }
+        }
+    }
+    
+    Column {
+        id: workspaceColumn
+        visible: isBarVertical
+        anchors.centerIn: parent
+        spacing: Theme.spacingXS
+
+        Repeater {
+            model: root.workspaceList
+
+            Rectangle {
+                property bool isActive: {
+                    if (CompositorService.isHyprland) {
+                        return modelData && modelData.id === root.currentWorkspace
+                    }
+                    return modelData === root.currentWorkspace
+                }
+                property bool isPlaceholder: {
+                    if (CompositorService.isHyprland) {
+                        return modelData && modelData.id === -1
+                    }
+                    return modelData === -1
+                }
+                property bool isHovered: mouseAreaVertical.containsMouse
+                property var workspaceData: {
+                    if (isPlaceholder) {
+                        return null
+                    }
+
+                    if (CompositorService.isNiri) {
+                        return NiriService.allWorkspaces.find(ws => ws.idx + 1 === modelData && ws.output === root.screenName) || null
+                    }
+                    return CompositorService.isHyprland ? modelData : null
+                }
+                property var iconData: workspaceData?.name ? SettingsData.getWorkspaceNameIcon(workspaceData.name) : null
+                property bool hasIcon: iconData !== null
+                property var icons: SettingsData.showWorkspaceApps ? root.getWorkspaceIcons(CompositorService.isHyprland ? modelData : (modelData === -1 ? null : modelData)) : []
+                readonly property int maxIconsVertical: Math.min(SettingsData.maxWorkspaceIcons, 2)
+
+                width: SettingsData.showWorkspaceApps ? widgetHeight * 0.8 : widgetHeight * 0.6
+                height: {
+                    if (SettingsData.showWorkspaceApps && icons.length > 0) {
+                        return isActive ? widgetHeight * 1.0 + Theme.spacingXS + contentColumn.implicitHeight : widgetHeight * 0.8 + contentColumn.implicitHeight
+                    } else {
+                        return isActive ? widgetHeight * 1.0 + Theme.spacingXS : widgetHeight * 0.8
+                    }
+                }
+                radius: Theme.cornerRadius * 0.6
+                color: isActive ? Theme.primary : isPlaceholder ? Theme.surfaceTextLight : isHovered ? Theme.outlineButton : Theme.surfaceTextAlpha
+
+                MouseArea {
+                    id: mouseAreaVertical
+
+                    anchors.fill: parent
+                    hoverEnabled: !isPlaceholder
+                    cursorShape: isPlaceholder ? Qt.ArrowCursor : Qt.PointingHandCursor
+                    enabled: !isPlaceholder
+                    onClicked: {
+                        if (isPlaceholder) {
+                            return
+                        }
+
+                        if (CompositorService.isNiri) {
+                            NiriService.switchToWorkspace(modelData - 1)
+                        } else if (CompositorService.isHyprland && modelData?.id) {
+                            Hyprland.dispatch(`workspace ${modelData.id}`)
+                        }
+                    }
+                }
+
+                Column {
+                    id: contentColumn
+                    anchors.centerIn: parent
+                    spacing: 2
+                    visible: SettingsData.showWorkspaceApps && icons.length > 0
+
+                    Repeater {
+                        model: icons.slice(0, maxIconsVertical)
+                        delegate: Item {
+                            width: 14
+                            height: 14
+                            layer.enabled: SettingsData.systemIconTinting
+
+                            Image {
+                                id: appIconVertical
+                                property var windowId: modelData.windowId
+                                anchors.fill: parent
+                                source: modelData.icon
+                                opacity: modelData.active ? 1.0 : appMouseAreaVertical.containsMouse ? 0.8 : 0.6
+                                visible: !modelData.isSteamApp
+                                
+                                layer.enabled: true
+                                layer.effect: DropShadow {
+                                    horizontalOffset: 0
+                                    verticalOffset: 1
+                                    radius: 2
+                                    samples: 16
+                                    color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
+                                    transparentBorder: true
+                                }
+                            }
+
+                            layer.effect: MultiEffect {
+                                colorization: SettingsData.systemIconTinting ? SettingsData.iconTintIntensity : 0
+                                colorizationColor: Theme.primary
+                            }
+
+                            DarkIcon {
+                                anchors.centerIn: parent
+                                size: 14
+                                name: "sports_esports"
+                                color: Theme.surfaceText
+                                opacity: modelData.active ? 1.0 : appMouseAreaVertical.containsMouse ? 0.8 : 0.6
+                                visible: modelData.isSteamApp
+                                
+                                layer.enabled: true
+                                layer.effect: DropShadow {
+                                    horizontalOffset: 0
+                                    verticalOffset: 1
+                                    radius: 2
+                                    samples: 16
+                                    color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
+                                    transparentBorder: true
+                                }
+                            }
+
+                            MouseArea {
+                                id: appMouseAreaVertical
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                enabled: isActive
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (CompositorService.isHyprland) {
+                                        Hyprland.dispatch(`focuswindow address:${appIconVertical.windowId}`)
+                                    } else if (CompositorService.isNiri) {
+                                        NiriService.focusWindow(appIconVertical.windowId)
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                visible: modelData.count > 1 && !isActive
+                                width: 10
+                                height: 10
+                                radius: Theme.cornerRadius * 0.3
+                                color: "black"
+                                border.color: "white"
+                                border.width: 1
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                                z: 2
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.count
+                                    font.pixelSize: 6
+                                    color: "white"
+                                }
+                            }
+                        }
+                    }
+                }
+
+                DarkIcon {
+                    visible: hasIcon && iconData.type === "icon" && (!SettingsData.showWorkspaceApps || icons.length === 0)
+                    anchors.centerIn: parent
+                    name: (hasIcon && iconData.type === "icon") ? iconData.value : ""
+                    size: Theme.fontSizeSmall - 2
+                    color: isActive ? Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.95) : Theme.surfaceTextMedium
+                    weight: isActive && !isPlaceholder ? 500 : 400
+                    
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        horizontalOffset: 0
+                        verticalOffset: 1
+                        radius: 3
+                        samples: 16
+                        color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
+                        transparentBorder: true
+                    }
+                }
+
+                StyledText {
+                    visible: hasIcon && iconData.type === "text" && (!SettingsData.showWorkspaceApps || icons.length === 0)
+                    anchors.centerIn: parent
+                    text: (hasIcon && iconData.type === "text") ? iconData.value : ""
+                    color: isActive ? Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.95) : Theme.surfaceTextMedium
+                    font.pixelSize: Theme.fontSizeSmall - 2
+                    font.weight: (isActive && !isPlaceholder) ? Font.DemiBold : Font.Normal
+                    
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        horizontalOffset: 0
+                        verticalOffset: 1
+                        radius: 3
+                        samples: 16
+                        color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
+                        transparentBorder: true
+                    }
+                }
+
+                StyledText {
+                    visible: (SettingsData.showWorkspaceIndex && !hasIcon && (!SettingsData.showWorkspaceApps || icons.length === 0))
+                    anchors.centerIn: parent
+                    text: {
+                        const isPlaceholder = CompositorService.isHyprland ? (modelData?.id === -1) : (modelData === -1)
+
+                        if (isPlaceholder) {
+                            return index + 1
+                        }
+
+                        return CompositorService.isHyprland ? (modelData?.id || "") : (modelData - 1)
+                    }
+                    color: isActive ? Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.95) : isPlaceholder ? Theme.surfaceTextAlpha : Theme.surfaceTextMedium
+                    font.pixelSize: Theme.fontSizeSmall - 2
+                    font.weight: (isActive && !isPlaceholder) ? Font.DemiBold : Font.Normal
+                    
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        horizontalOffset: 0
+                        verticalOffset: 1
+                        radius: 3
+                        samples: 16
+                        color: Qt.rgba(0, 0, 0, SettingsData.topBarDropShadowOpacity)
+                        transparentBorder: true
+                    }
+                }
+
+                Behavior on height {
+                    enabled: (!SettingsData.showWorkspaceApps || maxIconsVertical <= 2)
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
             }
         }
     }

@@ -47,10 +47,23 @@ DarkPopout {
         StateUtils.toggleSection(root, section)
     }
 
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
+    
     popupWidth: 550
     popupHeight: Math.min((triggerScreen?.height ?? 1080) - 100, contentLoader.item && contentLoader.item.implicitHeight > 0 ? contentLoader.item.implicitHeight + 20 : 400)
-    triggerX: (triggerScreen?.width ?? 1920) - 600 - Theme.spacingL
-    triggerY: Theme.barHeight - 4 + SettingsData.topBarSpacing + Theme.spacingXS
+    triggerX: {
+        const screenWidth = triggerScreen?.width ?? 1920
+        if (isBarVertical) {
+            if (SettingsData.topBarPosition === "left") {
+                return Theme.barHeight + SettingsData.topBarSpacing + Theme.spacingXS
+            } else {
+                return screenWidth - Theme.barHeight - SettingsData.topBarSpacing - Theme.spacingXS - 550
+            }
+        } else {
+            return screenWidth - 600 - Theme.spacingL
+        }
+    }
+    property real triggerY: 0
     triggerWidth: 80
     positioning: "center"
     screen: triggerScreen

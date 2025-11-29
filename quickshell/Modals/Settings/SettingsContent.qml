@@ -54,12 +54,19 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        anchors.leftMargin: Theme.spacingL
-        anchors.rightMargin: Theme.spacingXL
-        anchors.bottomMargin: Theme.spacingM
+        anchors.leftMargin: getContentMargin()
+        anchors.rightMargin: getContentMargin()
+        anchors.bottomMargin: getContentMargin()
         anchors.topMargin: 0
         color: "transparent"
         clip: true
+        
+        function getContentMargin() {
+            const screenWidth = Screen.width
+            if (screenWidth >= 1920) return Theme.spacingXL
+            if (screenWidth >= 1280) return Theme.spacingL
+            return Theme.spacingM
+        }
 
         Loader {
             id: personalizationLoader
@@ -290,6 +297,18 @@ Item {
 
             sourceComponent: WeatherTab {
             }
+
+        }
+
+        Loader {
+            id: keybindsLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 17
+            visible: active
+            asynchronous: true
+
+            source: "../../Modules/Settings/KeybindsTab.qml"
 
         }
 

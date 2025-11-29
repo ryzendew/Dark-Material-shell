@@ -11,6 +11,7 @@ Rectangle {
     property var popupTarget: null
     property var parentScreen: null
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
     readonly property bool hasActivePrivacy: PrivacyService.anyPrivacyActive
     readonly property int activeCount: PrivacyService.microphoneActive + PrivacyService.cameraActive + PrivacyService.screensharingActive
@@ -111,8 +112,8 @@ Rectangle {
     Rectangle {
         id: tooltip
 
-        width: tooltipText.contentWidth + Theme.spacingM * 2
-        height: tooltipText.contentHeight + Theme.spacingS * 2
+        width: isBarVertical ? (tooltipText.contentHeight + Theme.spacingS * 2) : (tooltipText.contentWidth + Theme.spacingM * 2)
+        height: isBarVertical ? (tooltipText.contentWidth + Theme.spacingM * 2) : (tooltipText.contentHeight + Theme.spacingS * 2)
         radius: Theme.cornerRadius
         color: Theme.popupBackground()
         border.color: Theme.outlineMedium
@@ -120,13 +121,15 @@ Rectangle {
         visible: false
         opacity: privacyArea.containsMouse && hasActivePrivacy ? 1 : 0
         z: 100
-        x: (parent.width - width) / 2
-        y: -height - Theme.spacingXS
+        x: isBarVertical ? (SettingsData.topBarPosition === "left" ? -width - Theme.spacingXS : parent.width + Theme.spacingXS) : ((parent.width - width) / 2)
+        y: isBarVertical ? ((parent.height - height) / 2) : (SettingsData.topBarPosition === "top" ? (-height - Theme.spacingXS) : (parent.height + Theme.spacingXS))
+        rotation: isBarVertical ? (SettingsData.topBarPosition === "left" ? 90 : -90) : 0
 
         StyledText {
             id: tooltipText
 
             anchors.centerIn: parent
+            rotation: isBarVertical ? (SettingsData.topBarPosition === "left" ? -90 : 90) : 0
             text: PrivacyService.getPrivacySummary()
             font.pixelSize: Theme.fontSizeSmall
             color: Theme.surfaceText
@@ -139,9 +142,16 @@ Rectangle {
             border.color: parent.border.color
             border.width: parent.border.width
             rotation: 45
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.bottom
-            anchors.topMargin: -4
+            anchors.horizontalCenter: isBarVertical ? undefined : parent.horizontalCenter
+            anchors.verticalCenter: isBarVertical ? parent.verticalCenter : undefined
+            anchors.right: isBarVertical && SettingsData.topBarPosition === "left" ? parent.left : undefined
+            anchors.left: isBarVertical && SettingsData.topBarPosition === "right" ? parent.right : undefined
+            anchors.top: !isBarVertical && SettingsData.topBarPosition === "top" ? parent.bottom : undefined
+            anchors.bottom: !isBarVertical && SettingsData.topBarPosition === "bottom" ? parent.top : undefined
+            anchors.rightMargin: isBarVertical ? -4 : undefined
+            anchors.leftMargin: isBarVertical ? -4 : undefined
+            anchors.topMargin: !isBarVertical && SettingsData.topBarPosition === "top" ? -4 : undefined
+            anchors.bottomMargin: !isBarVertical && SettingsData.topBarPosition === "bottom" ? -4 : undefined
         }
 
         Behavior on opacity {

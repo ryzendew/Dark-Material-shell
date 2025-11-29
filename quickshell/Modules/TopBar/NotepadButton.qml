@@ -13,12 +13,13 @@ Rectangle {
     property var parentScreen: null
     property real widgetHeight: 30
     property real barHeight: 48
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 0 : Math.max(Theme.spacingXS, Theme.spacingS * (widgetHeight / 30))
 
     signal clicked()
 
-    width: notepadIcon.width + horizontalPadding * 2
-    height: widgetHeight
+    width: isBarVertical ? widgetHeight : (notepadIcon.width + horizontalPadding * 2)
+    height: isBarVertical ? (notepadIcon.width + horizontalPadding * 2) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground) {

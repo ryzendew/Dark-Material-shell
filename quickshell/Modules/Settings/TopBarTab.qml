@@ -653,7 +653,7 @@ Item {
 
                             Rectangle {
                                 id: resetButton
-                                width: 80
+                                width: Theme.scaledWidth(80)
                                 height: 28
                                 radius: Theme.cornerRadius
                                 color: resetArea.containsMouse ? Theme.surfacePressed : Theme.surfaceVariant
@@ -1562,6 +1562,20 @@ Item {
                             font.weight: Font.Medium
                             color: Theme.surfaceText
                             anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    DarkDropdown {
+                        width: parent.width
+                        height: Theme.scaledHeight(50)
+                        text: "Bar Position"
+                        description: "Current: " + SettingsData.topBarPosition
+                        currentValue: SettingsData.topBarPosition
+                        options: ["top", "bottom", "left", "right"]
+                        onValueChanged: value => {
+                            if (value && value !== SettingsData.topBarPosition) {
+                                SettingsData.topBarPosition = value
+                            }
                         }
                     }
 

@@ -20,6 +20,9 @@ PanelWindow {
     property int animationDuration: Theme.mediumDuration
     property var animationEasing: Theme.emphasizedEasing
     property bool shouldBeVisible: false
+    
+    readonly property bool isBarVertical: typeof SettingsData !== "undefined" && (SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right")
+    readonly property bool isBarAtBottom: typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "bottom"
 
     signal opened
     signal popoutClosed
@@ -112,16 +115,35 @@ PanelWindow {
 
         readonly property real screenWidth: root.screen ? root.screen.width : 1920
         readonly property real screenHeight: root.screen ? root.screen.height : 1080
+        readonly property real barExclusiveSize: typeof SettingsData !== "undefined" && SettingsData.topBarVisible && !SettingsData.topBarFloat ? (SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)) : 0
+        
         property real calculatedX: {
+            var positionSetting = ""
+            if (root.objectName === "appDrawerPopout") {
+                positionSetting = SettingsData.appDrawerPosition
+            } else if (root.objectName === "controlCenterPopout") {
+                positionSetting = SettingsData.controlCenterPosition
+            }
+            
             var baseX
-            if (positioning === "center") {
-                baseX = triggerX + (triggerWidth / 2) - (popupWidth / 2)
-            } else if (positioning === "left") {
-                baseX = triggerX
-            } else if (positioning === "right") {
-                baseX = triggerX + triggerWidth - popupWidth
+            if (positionSetting === "follow-trigger" || positionSetting === "") {
+                if (positioning === "center") {
+                    baseX = triggerX + (triggerWidth / 2) - (popupWidth / 2)
+                } else if (positioning === "left") {
+                    baseX = triggerX
+                } else if (positioning === "right") {
+                    baseX = triggerX + triggerWidth - popupWidth
+                } else {
+                    baseX = triggerX
+                }
             } else {
-                baseX = triggerX
+                if (positionSetting.includes("left")) {
+                    baseX = Theme.spacingL
+                } else if (positionSetting.includes("right")) {
+                    baseX = screenWidth - popupWidth - Theme.spacingL
+                } else {
+                    baseX = (screenWidth - popupWidth) / 2
+                }
             }
             
             var xOffset = 0
@@ -135,29 +157,117 @@ PanelWindow {
                 xOffset = SettingsData.applicationsXOffset * (screenWidth - popupWidth) / 2
             }
             
-            return Math.max(Theme.spacingM, Math.min(screenWidth - popupWidth - Theme.spacingM, baseX + xOffset))
-        }
-        property real calculatedY: {
-            var baseY = triggerY
+            var minX = Theme.spacingM
+            var maxX = screenWidth - popupWidth - Theme.spacingM
             
-            var yOffset = 0
-            if (root.objectName === "appDrawerPopout") {
-                yOffset = SettingsData.startMenuYOffset * (screenHeight - popupHeight) / 2
-            } else if (root.objectName === "controlCenterPopout") {
-                yOffset = SettingsData.controlCenterYOffset * (screenHeight - popupHeight) / 2
-            } else if (root.objectName === "darkDashPopout") {
-                if (triggerY > screenHeight * 0.5) {
-                    baseY = triggerY - popupHeight + 30
+            if (typeof SettingsData !== "undefined") {
+                if (SettingsData.topBarPosition === "left" && !SettingsData.topBarFloat) {
+                    minX = barExclusiveSize + Theme.spacingM
+                } else if (SettingsData.topBarPosition === "right" && !SettingsData.topBarFloat) {
+                    maxX = screenWidth - popupWidth - barExclusiveSize - Theme.spacingM
                 }
-                yOffset = SettingsData.darkDashYOffset * (screenHeight - popupHeight) / 2
-            } else if (root.objectName === "applicationsPopout") {
-                if (triggerY > screenHeight * 0.5) {
-                    baseY = triggerY - popupHeight + 30
-                }
-                yOffset = SettingsData.applicationsYOffset * (screenHeight - popupHeight) / 2
             }
             
-            return Math.max(Theme.spacingM, Math.min(screenHeight - popupHeight - Theme.spacingM, baseY + yOffset))
+            return Math.max(minX, Math.min(maxX, baseX + xOffset))
+        }
+        property real calculatedY: {
+            var _ = triggerY
+            var __ = triggerScreen
+            
+            var actualScreenHeight = triggerScreen ? triggerScreen.height : (root.screen ? root.screen.height : screenHeight)
+            
+            var positionSetting = ""
+            if (root.objectName === "appDrawerPopout") {
+                positionSetting = SettingsData.appDrawerPosition
+            } else if (root.objectName === "controlCenterPopout") {
+                positionSetting = SettingsData.controlCenterPosition
+            }
+            
+            var baseY
+            var yOffset = 0
+            
+            if (positionSetting === "follow-trigger" || positionSetting === "") {
+                if (triggerY === 0 && triggerScreen === null) {
+                    return Theme.spacingM
+                }
+                
+                var barPosition = typeof SettingsData !== "undefined" ? SettingsData.topBarPosition : "top"
+                
+                if (root.objectName === "appDrawerPopout" || root.objectName === "controlCenterPopout") {
+                    if (barPosition === "bottom" && !isBarVertical) {
+                        baseY = triggerY - popupHeight - Theme.spacingS
+                    } else if (barPosition === "top" && !isBarVertical) {
+                        baseY = triggerY + Theme.spacingS
+                    } else {
+                        baseY = triggerY
+                    }
+                    
+                    if (root.objectName === "appDrawerPopout") {
+                        yOffset = SettingsData.startMenuYOffset * (actualScreenHeight - popupHeight) / 2
+                    } else {
+                        yOffset = SettingsData.controlCenterYOffset * (actualScreenHeight - popupHeight) / 2
+                    }
+                } else if (root.objectName === "darkDashPopout") {
+                    if (shouldPositionAbove) {
+                        baseY = triggerY - popupHeight + 30
+                    } else {
+                        baseY = triggerY + Theme.spacingS
+                    }
+                    yOffset = SettingsData.darkDashYOffset * (actualScreenHeight - popupHeight) / 2
+                } else if (root.objectName === "applicationsPopout") {
+                    if (shouldPositionAbove) {
+                        baseY = triggerY - popupHeight + 30
+                    } else {
+                        baseY = triggerY + Theme.spacingS
+                    }
+                    yOffset = SettingsData.applicationsYOffset * (actualScreenHeight - popupHeight) / 2
+                }
+            } else {
+                if (positionSetting.includes("top")) {
+                    baseY = Theme.spacingL
+                    if (typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "top" && !SettingsData.topBarFloat && SettingsData.topBarVisible) {
+                        var topBarSize = SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)
+                        baseY = topBarSize + Theme.spacingL
+                    }
+                } else if (positionSetting.includes("bottom")) {
+                    baseY = actualScreenHeight - popupHeight - Theme.spacingL
+                    if (typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "bottom" && !SettingsData.topBarFloat && SettingsData.topBarVisible) {
+                        var bottomBarSize = SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)
+                        baseY = actualScreenHeight - popupHeight - bottomBarSize - Theme.spacingL
+                    }
+                } else {
+                    baseY = (actualScreenHeight - popupHeight) / 2
+                }
+                
+                if (root.objectName === "appDrawerPopout") {
+                    yOffset = SettingsData.startMenuYOffset * (actualScreenHeight - popupHeight) / 2
+                } else if (root.objectName === "controlCenterPopout") {
+                    yOffset = SettingsData.controlCenterYOffset * (actualScreenHeight - popupHeight) / 2
+                }
+            }
+            
+            var finalY = baseY + yOffset
+            
+            var minY = Theme.spacingM
+            var maxY = actualScreenHeight - popupHeight - Theme.spacingM
+            
+            if (typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "bottom" && !SettingsData.topBarFloat && SettingsData.topBarVisible) {
+                var bottomBarExclusiveSize = SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)
+                maxY = actualScreenHeight - popupHeight - bottomBarExclusiveSize - Theme.spacingM
+                
+                if ((root.objectName === "appDrawerPopout" || root.objectName === "controlCenterPopout") && finalY > maxY) {
+                    finalY = maxY
+                }
+            }
+            
+            if (typeof SettingsData !== "undefined" && SettingsData.topBarPosition === "top" && !SettingsData.topBarFloat && SettingsData.topBarVisible) {
+                var topBarExclusiveSize = SettingsData.topBarHeight + SettingsData.topBarSpacing + (SettingsData.topBarGothCornersEnabled ? Theme.cornerRadius : 0)
+                minY = topBarExclusiveSize + Theme.spacingM
+            }
+            
+            var clampedY = Math.max(minY, Math.min(maxY, finalY))
+            
+            return clampedY
         }
 
         width: popupWidth

@@ -12,6 +12,7 @@ Rectangle {
     property int availableWidth: 400
     readonly property int baseWidth: contentRow.implicitWidth + Theme.spacingS * 2
     readonly property int maxNormalWidth: 456
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 0 : Math.max(Theme.spacingXS, Theme.spacingS * (widgetHeight / 30))
 
     function formatNetworkSpeed(bytesPerSec) {

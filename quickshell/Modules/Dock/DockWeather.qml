@@ -5,50 +5,52 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 
-Item {
-    id: root
+    Item {
+        id: root
 
-    property real widgetHeight: 40
+        property real widgetHeight: 40
 
-    width: weatherRow.implicitWidth + 16
-    height: widgetHeight
+        width: weatherRow.implicitWidth + 16
+        height: widgetHeight
 
-    Rectangle {
-        anchors.fill: parent
-        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.3)
-        radius: Theme.cornerRadius
-        border.width: 1
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
+        Ref {
+            service: WeatherService
+        }
 
-        Row {
-            id: weatherRow
-            anchors.centerIn: parent
-            spacing: 6
+        Rectangle {
+            anchors.fill: parent
+            color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.3)
+            radius: Theme.cornerRadius
+            border.width: 1
+            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
 
-            DarkIcon {
-                name: "wb_sunny"
-                size: 16
-                color: Theme.primary
-                anchors.verticalCenter: parent.verticalCenter
-            }
+            Row {
+                id: weatherRow
+                anchors.centerIn: parent
+                spacing: 6
 
-            StyledText {
-                text: WeatherService.temperature ? Math.round(WeatherService.temperature) + "°" : "--°"
-                font.pixelSize: 12
-                color: Theme.surfaceText
-                anchors.verticalCenter: parent.verticalCenter
+                DarkIcon {
+                    name: WeatherService.getWeatherIcon(WeatherService.weather.wCode)
+                    size: 16
+                    color: Theme.primary
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                StyledText {
+                    text: {
+                        const temp = SettingsData.useFahrenheit ? WeatherService.weather.tempF : WeatherService.weather.temp;
+                        if (temp === undefined || temp === null) {
+                            return "--°" + (SettingsData.useFahrenheit ? "F" : "C");
+                        }
+                        return temp + "°" + (SettingsData.useFahrenheit ? "F" : "C");
+                    }
+                    font.pixelSize: 12
+                    color: Theme.surfaceText
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
         }
     }
-
-    Component.onCompleted: {
-        WeatherService.addRef()
-    }
-
-    Component.onDestruction: {
-        WeatherService.removeRef()
-    }
-}
 
 
 

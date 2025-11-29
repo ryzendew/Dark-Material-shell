@@ -12,6 +12,7 @@ Rectangle {
     property bool compactMode: SettingsData.focusedWindowCompactMode
     property int availableWidth: 400
     property real widgetHeight: 30
+    readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
     readonly property int baseWidth: contentRow.implicitWidth + horizontalPadding * 2
     readonly property int maxNormalWidth: 456
@@ -39,8 +40,8 @@ Rectangle {
         return workspaceWindows.length > 0 && activeWindow && activeWindow.title
     }
 
-    width: !hasWindowsOnCurrentWorkspace ? 0 : (compactMode ? Math.min(baseWidth, Math.min(maxCompactWidth, availableWidth)) : Math.min(baseWidth, Math.min(maxNormalWidth, availableWidth)))
-    height: widgetHeight
+    width: !hasWindowsOnCurrentWorkspace ? 0 : (isBarVertical ? widgetHeight : (compactMode ? Math.min(baseWidth, Math.min(maxCompactWidth, availableWidth)) : Math.min(baseWidth, Math.min(maxNormalWidth, availableWidth))))
+    height: !hasWindowsOnCurrentWorkspace ? 0 : (isBarVertical ? (compactMode ? Math.min(baseWidth, Math.min(maxCompactWidth, availableWidth)) : Math.min(baseWidth, Math.min(maxNormalWidth, availableWidth))) : widgetHeight)
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (!activeWindow || !activeWindow.title) {

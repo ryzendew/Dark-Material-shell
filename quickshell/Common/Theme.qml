@@ -231,19 +231,90 @@ Singleton {
     property int emphasizedEasing: Easing.OutQuart
 
     property real cornerRadius: typeof SettingsData !== "undefined" ? SettingsData.cornerRadius : 12
-    property real spacingXS: 4
-    property real spacingS: 8
-    property real spacingM: 12
-    property real spacingL: 16
-    property real spacingXL: 24
+
+    readonly property real _baseSpacingXS: 4
+    readonly property real _baseSpacingS: 8
+    readonly property real _baseSpacingM: 12
+    readonly property real _baseSpacingL: 16
+    readonly property real _baseSpacingXL: 24
+
+    property real spacingXS: _baseSpacingXS * getControlScaleFactor()
+    property real spacingS: _baseSpacingS * getControlScaleFactor()
+    property real spacingM: _baseSpacingM * getControlScaleFactor()
+    property real spacingL: _baseSpacingL * getControlScaleFactor()
+    property real spacingXL: _baseSpacingXL * getControlScaleFactor()
     property real fontSizeSmall: (typeof SettingsData !== "undefined" ? SettingsData.fontScale : 1.0) * 12
     property real fontSizeMedium: (typeof SettingsData !== "undefined" ? SettingsData.fontScale : 1.0) * 14
     property real fontSizeLarge: (typeof SettingsData !== "undefined" ? SettingsData.fontScale : 1.0) * 16
     property real fontSizeXLarge: (typeof SettingsData !== "undefined" ? SettingsData.fontScale : 1.0) * 20
-    property real barHeight: 48
-    property real iconSize: 24
-    property real iconSizeSmall: 16
-    property real iconSizeLarge: 32
+
+    readonly property real _baseBarHeight: 48
+    readonly property real _baseIconSize: 24
+    readonly property real _baseIconSizeSmall: 16
+    readonly property real _baseIconSizeLarge: 32
+
+    property real barHeight: _baseBarHeight * getWindowScaleFactor()
+    property real iconSize: _baseIconSize * getIconScaleFactor()
+    property real iconSizeSmall: _baseIconSizeSmall * getIconScaleFactor()
+    property real iconSizeLarge: _baseIconSizeLarge * getIconScaleFactor()
+
+    function getScaleFactor() {
+        var base = 1.0
+        if (typeof Screen !== 'undefined') {
+            const screenHeight = Screen.height
+            if (screenHeight >= 2160) base = 1.2 // 4K
+            else if (screenHeight >= 1440) base = 1.1 // 1440p
+            else if (screenHeight >= 1080) base = 1.0 // 1080p (base)
+            else if (screenHeight >= 720) base = 0.85 // 720p
+            else base = 0.7 // Below 720p
+        }
+
+        return base
+    }
+
+    function getSettingsUiScale() {
+        var uiScale = 1.0
+        if (typeof SettingsData !== "undefined" && SettingsData.settingsUiScale !== undefined) {
+            uiScale = SettingsData.settingsUiScale
+        }
+        return Math.max(0.7, Math.min(1.5, uiScale))
+    }
+
+    function getControlScaleFactor() {
+        var scale = getScaleFactor() * getSettingsUiScale()
+        if (typeof SettingsData !== "undefined" && SettingsData.settingsUiAdvancedScaling && SettingsData.settingsUiControlScale !== undefined) {
+            scale *= SettingsData.settingsUiControlScale
+        }
+        return scale
+    }
+
+    function getIconScaleFactor() {
+        var scale = getScaleFactor() * getSettingsUiScale()
+        if (typeof SettingsData !== "undefined" && SettingsData.settingsUiAdvancedScaling && SettingsData.settingsUiIconScale !== undefined) {
+            scale *= SettingsData.settingsUiIconScale
+        }
+        return scale
+    }
+
+    function getWindowScaleFactor() {
+        var scale = getScaleFactor() * getSettingsUiScale()
+        if (typeof SettingsData !== "undefined" && SettingsData.settingsUiAdvancedScaling && SettingsData.settingsUiWindowScale !== undefined) {
+            scale *= SettingsData.settingsUiWindowScale
+        }
+        return scale
+    }
+    
+    function scaledSize(baseSize) {
+        return baseSize * getScaleFactor()
+    }
+    
+    function scaledHeight(baseHeight) {
+        return Math.max(Math.round(baseHeight * getScaleFactor()), 1)
+    }
+    
+    function scaledWidth(baseWidth) {
+        return Math.max(Math.round(baseWidth * getScaleFactor()), 1)
+    }
 
     property real panelTransparency: 0.85
     property real widgetTransparency: typeof SettingsData !== "undefined" && SettingsData.topBarWidgetTransparency !== undefined ? SettingsData.topBarWidgetTransparency : 0.85
