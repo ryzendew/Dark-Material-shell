@@ -50,9 +50,9 @@ DarkOSD {
         width: widgetWidth
         height: widgetHeight
         radius: Theme.cornerRadius
-        color: Qt.rgba(1, 0, 0, 0.9) // Bright red for testing
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
-        border.width: 1
+        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.desktopCpuTempOpacity)
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.desktopWidgetBorderOpacity)
+        border.width: SettingsData.desktopWidgetBorderThickness
 
         Component.onCompleted: {
         }
@@ -60,13 +60,13 @@ DarkOSD {
         x: 50
         y: 50
 
-        layer.enabled: true
+        layer.enabled: SettingsData.desktopWidgetDropShadowOpacity > 0
         layer.effect: DropShadow {
             horizontalOffset: 0
             verticalOffset: 4
             radius: 12
             samples: 16
-            color: Qt.rgba(0, 0, 0, 0.3)
+            color: Qt.rgba(0, 0, 0, SettingsData.desktopWidgetDropShadowOpacity)
             transparentBorder: true
         }
 

@@ -367,8 +367,8 @@ PanelWindow {
         height: contentHeight
         radius: Theme.cornerRadius
         color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, widgetOpacity)
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
-        border.width: 1
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.desktopWidgetBorderOpacity)
+        border.width: SettingsData.desktopWidgetBorderThickness
         opacity: widgetOpacity
 
         gradient: Gradient {
@@ -376,13 +376,13 @@ PanelWindow {
             GradientStop { position: 1.0; color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, widgetOpacity) }
         }
 
-        layer.enabled: true
+        layer.enabled: SettingsData.desktopWidgetDropShadowOpacity > 0
         layer.effect: DropShadow {
             horizontalOffset: 0
             verticalOffset: 8
             radius: 24
             samples: 32
-            color: Qt.rgba(0, 0, 0, 0.4)
+            color: Qt.rgba(0, 0, 0, SettingsData.desktopWidgetDropShadowOpacity)
             transparentBorder: true
         }
 

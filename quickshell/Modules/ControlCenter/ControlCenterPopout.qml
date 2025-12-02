@@ -49,18 +49,20 @@ DarkPopout {
 
     readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
     
-    popupWidth: 550
+    readonly property real basePopupWidth: 550
+    popupWidth: basePopupWidth * Theme.getControlScaleFactor()
     popupHeight: Math.min((triggerScreen?.height ?? 1080) - 100, contentLoader.item && contentLoader.item.implicitHeight > 0 ? contentLoader.item.implicitHeight + 20 : 400)
     triggerX: {
         const screenWidth = triggerScreen?.width ?? 1920
+        const scaledWidth = basePopupWidth * Theme.getControlScaleFactor()
         if (isBarVertical) {
             if (SettingsData.topBarPosition === "left") {
                 return Theme.barHeight + SettingsData.topBarSpacing + Theme.spacingXS
             } else {
-                return screenWidth - Theme.barHeight - SettingsData.topBarSpacing - Theme.spacingXS - 550
+                return screenWidth - Theme.barHeight - SettingsData.topBarSpacing - Theme.spacingXS - scaledWidth
             }
         } else {
-            return screenWidth - 600 - Theme.spacingL
+            return screenWidth - (600 * Theme.getControlScaleFactor()) - Theme.spacingL
         }
     }
     property real triggerY: 0

@@ -203,8 +203,8 @@ DarkOSD {
         height: widgetHeight
         radius: Theme.cornerRadius
         color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.desktopTerminalOpacity)
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.3)
-        border.width: 1
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.desktopWidgetBorderOpacity)
+        border.width: SettingsData.desktopWidgetBorderThickness
 
         anchors.left: positionAnchors.horizontal === "left" ? parent.left : undefined
         anchors.horizontalCenter: positionAnchors.horizontal === "center" ? parent.horizontalCenter : undefined
@@ -215,13 +215,13 @@ DarkOSD {
         
         anchors.margins: 20
 
-        layer.enabled: true
+        layer.enabled: SettingsData.desktopWidgetDropShadowOpacity > 0
         layer.effect: DropShadow {
             horizontalOffset: 0
             verticalOffset: 4
             radius: 12
             samples: 16
-            color: Qt.rgba(0, 0, 0, 0.3)
+            color: Qt.rgba(0, 0, 0, SettingsData.desktopWidgetDropShadowOpacity)
             transparentBorder: true
         }
 

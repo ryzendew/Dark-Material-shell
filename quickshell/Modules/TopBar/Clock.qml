@@ -14,38 +14,45 @@ Rectangle {
     property real barHeight: 48
     property real widgetHeight: 30
     readonly property bool isBarVertical: SettingsData.topBarPosition === "left" || SettingsData.topBarPosition === "right"
+    readonly property bool useStackedFormat: SettingsData.clockStackedFormat || isBarVertical
     readonly property real horizontalPadding: SettingsData.topBarNoBackground ? 2 : Theme.spacingS
 
     signal clockClicked
 
-    readonly property string verticalFormattedText: {
-        if (!systemClock?.date) return ""
+    readonly property var verticalTextParts: {
+        root.formatUpdateTrigger // Reference to force update
+        if (!systemClock?.date) return []
+        
         var parts = []
         
-        var timeFormat = SettingsData.use24HourClock ? "HH:mm" : "h:mm"
-        parts.push(systemClock.date.toLocaleTimeString(Qt.locale(), timeFormat))
-        
-        if (!SettingsData.use24HourClock) {
-            var period = systemClock.date.toLocaleTimeString(Qt.locale(), "AP")
-            if (period) {
-                parts.push(period.toUpperCase().replace(/\./g, ""))
-            }
-        }
-        
+        // First line: Day name and day number (e.g., "Mon 1")
         if (!SettingsData.clockCompactMode) {
             var dayName = systemClock.date.toLocaleDateString(Qt.locale(), "ddd")
             var dayNum = systemClock.date.toLocaleDateString(Qt.locale(), "d")
-            parts.push(dayName)
-            parts.push(dayNum)
+            parts.push(dayName + " " + dayNum)
         }
         
-        return parts.join(" ")
+        // Second line: Time with AM/PM (e.g., "11:29 PM")
+        var use24Hour = SettingsData.use24HourClock
+        var timeStr = ""
+        if (use24Hour) {
+            // Force 24-hour format with AM/PM
+            const hours = systemClock.date.getHours()
+            const minutes = systemClock.date.getMinutes()
+            const period = hours >= 12 ? "PM" : "AM"
+            timeStr = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
+        } else {
+            // Use combined format string for 12-hour time
+            const formatted = systemClock.date.toLocaleTimeString(Qt.locale(), "h:mm AP")
+            timeStr = formatted.replace(/\./g, "").trim()
+        }
+        parts.push(timeStr)
+        
+        return parts
     }
-    
-    readonly property var verticalTextParts: verticalFormattedText.split(" ").filter(part => part !== "")
 
-    width: isBarVertical ? widgetHeight : (clockRow.implicitWidth + horizontalPadding * 2 + 2)
-    height: isBarVertical ? (clockColumn.implicitHeight + horizontalPadding * 2) : widgetHeight
+    width: useStackedFormat ? Math.max(widgetHeight, clockColumn.implicitWidth + horizontalPadding * 2 + 2) : (clockRow.implicitWidth + horizontalPadding * 2 + 2)
+    height: useStackedFormat ? (clockColumn.implicitHeight + horizontalPadding * 2) : widgetHeight
     radius: SettingsData.topBarNoBackground ? 0 : Theme.cornerRadius
     color: {
         if (SettingsData.topBarNoBackground) {
@@ -58,21 +65,35 @@ Rectangle {
 
     Row {
         id: clockRow
-        visible: !isBarVertical
+        visible: !useStackedFormat
         anchors.centerIn: parent
         spacing: Theme.spacingS
 
         StyledText {
+            id: clockTimeText
             text: {
-                if (SettingsData.use24HourClock) {
-                    return systemClock?.date?.toLocaleTimeString(Qt.locale(), "HH:mm")
+                // Force re-evaluation when use24HourClock changes
+                root.formatUpdateTrigger // Reference to force update
+                const use24Hour = SettingsData.use24HourClock
+                if (!systemClock?.date) return ""
+                
+                if (use24Hour) {
+                    // Force 24-hour format with AM/PM
+                    const date = systemClock.date
+                    const hours = date.getHours() // Returns 0-23
+                    const minutes = date.getMinutes() // Returns 0-59
+                    // Format as HH:mm with AM/PM
+                    const period = hours >= 12 ? "PM" : "AM"
+                    return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
                 } else {
-                    const timePart = systemClock?.date?.toLocaleTimeString(Qt.locale(), "h:mm")
-                    const period = systemClock?.date?.toLocaleTimeString(Qt.locale(), "AP")
-                    return timePart + " " + (period ? period.toUpperCase().replace(/\./g, "") : "")
+                    // Use combined format string for 12-hour time
+                    const formatted = systemClock.date.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                    // Clean up the format - remove dots and ensure proper spacing
+                    return formatted.replace(/\./g, "").trim()
                 }
             }
             font.pixelSize: Theme.fontSizeMedium - 1
+            font.weight: SettingsData.clockBoldFont ? Font.Bold : Font.Normal
             color: Theme.surfaceText
             anchors.verticalCenter: parent.verticalCenter
             
@@ -114,6 +135,7 @@ Rectangle {
                 return systemClock?.date?.toLocaleDateString(Qt.locale(), "ddd d")
             }
             font.pixelSize: Theme.fontSizeMedium - 1
+            font.weight: SettingsData.clockBoldFont ? Font.Bold : Font.Normal
             color: Theme.surfaceText
             anchors.verticalCenter: parent.verticalCenter
             visible: !SettingsData.clockCompactMode
@@ -132,15 +154,17 @@ Rectangle {
     
     Column {
         id: clockColumn
-        visible: isBarVertical
+        visible: useStackedFormat
         anchors.centerIn: parent
         spacing: Theme.spacingXS
+        width: implicitWidth
 
         Repeater {
             model: root.verticalTextParts
             delegate: StyledText {
                 text: modelData
                 font.pixelSize: Theme.fontSizeSmall
+                font.weight: SettingsData.clockBoldFont ? Font.Bold : Font.Normal
                 color: Theme.surfaceText
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: text !== ""
@@ -161,6 +185,20 @@ Rectangle {
     SystemClock {
         id: systemClock
         precision: SystemClock.Seconds
+    }
+    
+    // Property to force re-evaluation when format changes
+    property int formatUpdateTrigger: 0
+    
+    // Force update when clock format changes
+    Connections {
+        target: SettingsData
+        function onUse24HourClockChanged() {
+            formatUpdateTrigger++
+        }
+        function onWidgetDataChanged() {
+            formatUpdateTrigger++
+        }
     }
 
     MouseArea {

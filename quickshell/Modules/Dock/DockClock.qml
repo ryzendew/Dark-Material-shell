@@ -36,9 +36,14 @@ Item {
                 text: {
                     const now = new Date()
                     if (SettingsData.use24HourClock) {
-                        return now.toLocaleTimeString(Qt.locale(), "hh:mm")
+                        // Force 24-hour format with AM/PM
+                        const hours = now.getHours()
+                        const minutes = now.getMinutes()
+                        const period = hours >= 12 ? "PM" : "AM"
+                        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
                     } else {
-                        return now.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                        const formatted = now.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                        return formatted.replace(/\./g, "").trim()
                     }
                 }
                 font.pixelSize: 12
@@ -55,9 +60,14 @@ Item {
         onTriggered: {
             const now = new Date()
             if (SettingsData.use24HourClock) {
-                clockText.text = now.toLocaleTimeString(Qt.locale(), "hh:mm")
+                // Force 24-hour format with AM/PM
+                const hours = now.getHours()
+                const minutes = now.getMinutes()
+                const period = hours >= 12 ? "PM" : "AM"
+                clockText.text = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
             } else {
-                clockText.text = now.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                const formatted = now.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                clockText.text = formatted.replace(/\./g, "").trim()
             }
         }
     }

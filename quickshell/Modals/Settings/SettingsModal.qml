@@ -41,8 +41,42 @@ DarkModal {
 
     objectName: "settingsModal"
     positioning: "center"
-    width: 1236
-    height: 990
+    width: {
+        if (SettingsData.settingsWindowWidth > 0) {
+            return SettingsData.settingsWindowWidth
+        }
+        const screenWidth = Screen.width
+        let baseWidth
+        if (screenWidth >= 3840) baseWidth = 2560
+        else if (screenWidth >= 2560) baseWidth = 1920
+        else if (screenWidth >= 1920) baseWidth = 1280
+        else baseWidth = 800
+        
+        let scale = 1.0
+        if (typeof Theme !== "undefined" && Theme.getWindowScaleFactor !== undefined) {
+            scale = Theme.getWindowScaleFactor()
+        }
+        const scaledWidth = baseWidth * scale
+        return Math.max(600, Math.min(scaledWidth, screenWidth - 40))
+    }
+    height: {
+        if (SettingsData.settingsWindowHeight > 0) {
+            return SettingsData.settingsWindowHeight
+        }
+        const screenHeight = Screen.height
+        let baseHeight
+        if (screenHeight >= 2160) baseHeight = 1710
+        else if (screenHeight >= 1440) baseHeight = 1325
+        else if (screenHeight >= 1080) baseHeight = 950
+        else baseHeight = 760
+        
+        let scale = 1.0
+        if (typeof Theme !== "undefined" && Theme.getWindowScaleFactor !== undefined) {
+            scale = Theme.getWindowScaleFactor()
+        }
+        const scaledHeight = baseHeight * scale
+        return Math.max(500, Math.min(scaledHeight, screenHeight - 20))
+    }
     visible: false
     onBackgroundClicked: () => {
         return hide();

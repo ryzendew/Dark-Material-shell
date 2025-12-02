@@ -84,8 +84,8 @@ PanelWindow {
         anchors.fill: parent
         radius: Theme.cornerRadius
         color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, widgetOpacity)
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
-        border.width: 1
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.desktopWidgetBorderOpacity)
+        border.width: SettingsData.desktopWidgetBorderThickness
 
 
         Column {

@@ -45,6 +45,15 @@ Singleton {
     property real darkDashTabBarOpacity: 1.0
     property real darkDashContentBackgroundOpacity: 1.0
     property real darkDashAnimatedTintOpacity: 0.04
+    
+    // Desktop Dark Dash Widget Settings (separate from regular Dark Dash)
+    property real desktopDarkDashTransparency: 0.92
+    property real desktopDarkDashDropShadowOpacity: 0.15
+    property real desktopDarkDashBorderOpacity: 0.0
+    property real desktopDarkDashBorderThickness: 0
+    property real desktopDarkDashTabBarOpacity: 1.0
+    property real desktopDarkDashContentBackgroundOpacity: 1.0
+    property real desktopDarkDashAnimatedTintOpacity: 0.04
     property bool systemIconTinting: false
     property real iconTintIntensity: 0.5 // 0.0 to 1.0
     property int settingsWindowWidth: 0 // 0 means auto sizing
@@ -77,6 +86,11 @@ Singleton {
     property real desktopClockBackgroundOpacity: 0.9
     property real desktopWeatherOpacity: 0.9
     property real desktopTerminalOpacity: 0.9
+    
+    // Desktop Widget Visual Effects
+    property real desktopWidgetDropShadowOpacity: 0.3
+    property real desktopWidgetBorderOpacity: 0.3
+    property real desktopWidgetBorderThickness: 1
     
     property real desktopWidgetWidth: 180
     property real desktopWidgetHeight: 80
@@ -136,6 +150,8 @@ Singleton {
     property real topBarHeight: 40
     property string topBarPosition: "top" // "top", "bottom", "left", or "right"
     property bool use24HourClock: true
+    property bool clockStackedFormat: false
+    property bool clockBoldFont: false
     property bool useFahrenheit: false
     property bool nightModeEnabled: false
     property string weatherLocation: "New York, NY"
@@ -471,6 +487,13 @@ Singleton {
                 darkDashTabBarOpacity = settings.darkDashTabBarOpacity !== undefined ? (settings.darkDashTabBarOpacity > 1 ? settings.darkDashTabBarOpacity / 100 : settings.darkDashTabBarOpacity) : 1.0
                 darkDashContentBackgroundOpacity = settings.darkDashContentBackgroundOpacity !== undefined ? (settings.darkDashContentBackgroundOpacity > 1 ? settings.darkDashContentBackgroundOpacity / 100 : settings.darkDashContentBackgroundOpacity) : 1.0
                 darkDashAnimatedTintOpacity = settings.darkDashAnimatedTintOpacity !== undefined ? (settings.darkDashAnimatedTintOpacity > 1 ? settings.darkDashAnimatedTintOpacity / 100 : settings.darkDashAnimatedTintOpacity) : 0.04
+                desktopDarkDashTransparency = settings.desktopDarkDashTransparency !== undefined ? (settings.desktopDarkDashTransparency > 1 ? settings.desktopDarkDashTransparency / 100 : settings.desktopDarkDashTransparency) : 0.92
+                desktopDarkDashDropShadowOpacity = settings.desktopDarkDashDropShadowOpacity !== undefined ? (settings.desktopDarkDashDropShadowOpacity > 1 ? settings.desktopDarkDashDropShadowOpacity / 100 : settings.desktopDarkDashDropShadowOpacity) : 0.15
+                desktopDarkDashBorderOpacity = settings.desktopDarkDashBorderOpacity !== undefined ? (settings.desktopDarkDashBorderOpacity > 1 ? settings.desktopDarkDashBorderOpacity / 100 : settings.desktopDarkDashBorderOpacity) : 0.0
+                desktopDarkDashBorderThickness = settings.desktopDarkDashBorderThickness !== undefined ? settings.desktopDarkDashBorderThickness : 0
+                desktopDarkDashTabBarOpacity = settings.desktopDarkDashTabBarOpacity !== undefined ? (settings.desktopDarkDashTabBarOpacity > 1 ? settings.desktopDarkDashTabBarOpacity / 100 : settings.desktopDarkDashTabBarOpacity) : 1.0
+                desktopDarkDashContentBackgroundOpacity = settings.desktopDarkDashContentBackgroundOpacity !== undefined ? (settings.desktopDarkDashContentBackgroundOpacity > 1 ? settings.desktopDarkDashContentBackgroundOpacity / 100 : settings.desktopDarkDashContentBackgroundOpacity) : 1.0
+                desktopDarkDashAnimatedTintOpacity = settings.desktopDarkDashAnimatedTintOpacity !== undefined ? (settings.desktopDarkDashAnimatedTintOpacity > 1 ? settings.desktopDarkDashAnimatedTintOpacity / 100 : settings.desktopDarkDashAnimatedTintOpacity) : 0.04
                 systemIconTinting = settings.systemIconTinting !== undefined ? settings.systemIconTinting : false
                 iconTintIntensity = settings.iconTintIntensity !== undefined ? settings.iconTintIntensity : 0.5
                 settingsWindowWidth = settings.settingsWindowWidth !== undefined ? settings.settingsWindowWidth : 0
@@ -501,6 +524,9 @@ Singleton {
         desktopClockBackgroundOpacity = settings.desktopClockBackgroundOpacity !== undefined ? settings.desktopClockBackgroundOpacity : 0.9
         desktopWeatherOpacity = settings.desktopWeatherOpacity !== undefined ? settings.desktopWeatherOpacity : 0.9
         desktopTerminalOpacity = settings.desktopTerminalOpacity !== undefined ? settings.desktopTerminalOpacity : 0.9
+        desktopWidgetDropShadowOpacity = settings.desktopWidgetDropShadowOpacity !== undefined ? settings.desktopWidgetDropShadowOpacity : 0.3
+        desktopWidgetBorderOpacity = settings.desktopWidgetBorderOpacity !== undefined ? settings.desktopWidgetBorderOpacity : 0.3
+        desktopWidgetBorderThickness = settings.desktopWidgetBorderThickness !== undefined ? settings.desktopWidgetBorderThickness : 1
         desktopWidgetWidth = settings.desktopWidgetWidth !== undefined ? settings.desktopWidgetWidth : 180
         desktopWidgetHeight = settings.desktopWidgetHeight !== undefined ? settings.desktopWidgetHeight : 80
         desktopWidgetFontSize = settings.desktopWidgetFontSize !== undefined ? settings.desktopWidgetFontSize : 14
@@ -557,6 +583,8 @@ Singleton {
                 topBarHeight = settings.topBarHeight !== undefined ? settings.topBarHeight : 40
                 topBarPosition = settings.topBarPosition !== undefined ? settings.topBarPosition : "top"
                 use24HourClock = settings.use24HourClock !== undefined ? settings.use24HourClock : true
+                clockStackedFormat = settings.clockStackedFormat !== undefined ? settings.clockStackedFormat : false
+                clockBoldFont = settings.clockBoldFont !== undefined ? settings.clockBoldFont : false
                 useFahrenheit = settings.useFahrenheit !== undefined ? settings.useFahrenheit : false
                 nightModeEnabled = settings.nightModeEnabled !== undefined ? settings.nightModeEnabled : false
                 weatherLocation = settings.weatherLocation !== undefined ? settings.weatherLocation : "New York, NY"
@@ -791,6 +819,13 @@ Singleton {
                                                 "darkDashTabBarOpacity": darkDashTabBarOpacity,
                                                 "darkDashContentBackgroundOpacity": darkDashContentBackgroundOpacity,
                                                 "darkDashAnimatedTintOpacity": darkDashAnimatedTintOpacity,
+                                                "desktopDarkDashTransparency": desktopDarkDashTransparency,
+                                                "desktopDarkDashDropShadowOpacity": desktopDarkDashDropShadowOpacity,
+                                                "desktopDarkDashBorderOpacity": desktopDarkDashBorderOpacity,
+                                                "desktopDarkDashBorderThickness": desktopDarkDashBorderThickness,
+                                                "desktopDarkDashTabBarOpacity": desktopDarkDashTabBarOpacity,
+                                                "desktopDarkDashContentBackgroundOpacity": desktopDarkDashContentBackgroundOpacity,
+                                                "desktopDarkDashAnimatedTintOpacity": desktopDarkDashAnimatedTintOpacity,
                                                 "systemIconTinting": systemIconTinting,
                                                 "iconTintIntensity": iconTintIntensity,
                                                 "settingsWindowWidth": settingsWindowWidth,
@@ -821,6 +856,9 @@ Singleton {
             "desktopClockBackgroundOpacity": desktopClockBackgroundOpacity,
             "desktopWeatherOpacity": desktopWeatherOpacity,
             "desktopTerminalOpacity": desktopTerminalOpacity,
+            "desktopWidgetDropShadowOpacity": desktopWidgetDropShadowOpacity,
+            "desktopWidgetBorderOpacity": desktopWidgetBorderOpacity,
+            "desktopWidgetBorderThickness": desktopWidgetBorderThickness,
             "desktopWidgetWidth": desktopWidgetWidth,
             "desktopWidgetHeight": desktopWidgetHeight,
             "desktopWidgetFontSize": desktopWidgetFontSize,
@@ -882,6 +920,8 @@ Singleton {
                                                 "topBarHeight": topBarHeight,
                                                 "topBarPosition": topBarPosition,
                                                 "use24HourClock": use24HourClock,
+                                                "clockStackedFormat": clockStackedFormat,
+                                                "clockBoldFont": clockBoldFont,
                                                 "useFahrenheit": useFahrenheit,
                                                 "nightModeEnabled": nightModeEnabled,
                                                 "weatherLocation": weatherLocation,
@@ -1320,6 +1360,34 @@ Singleton {
         darkDashAnimatedTintOpacity = opacity
         saveSettings()
     }
+    function setDesktopDarkDashTransparency(transparency) {
+        desktopDarkDashTransparency = transparency
+        saveSettings()
+    }
+    function setDesktopDarkDashDropShadowOpacity(opacity) {
+        desktopDarkDashDropShadowOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopDarkDashBorderOpacity(opacity) {
+        desktopDarkDashBorderOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopDarkDashBorderThickness(thickness) {
+        desktopDarkDashBorderThickness = thickness
+        saveSettings()
+    }
+    function setDesktopDarkDashTabBarOpacity(opacity) {
+        desktopDarkDashTabBarOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopDarkDashContentBackgroundOpacity(opacity) {
+        desktopDarkDashContentBackgroundOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopDarkDashAnimatedTintOpacity(opacity) {
+        desktopDarkDashAnimatedTintOpacity = opacity
+        saveSettings()
+    }
 
     function setSystemIconTinting(enabled) {
         systemIconTinting = enabled
@@ -1438,6 +1506,18 @@ Singleton {
     
     function setDesktopTerminalOpacity(opacity) {
         desktopTerminalOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopWidgetDropShadowOpacity(opacity) {
+        desktopWidgetDropShadowOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopWidgetBorderOpacity(opacity) {
+        desktopWidgetBorderOpacity = opacity
+        saveSettings()
+    }
+    function setDesktopWidgetBorderThickness(thickness) {
+        desktopWidgetBorderThickness = thickness
         saveSettings()
     }
     
@@ -1786,9 +1866,27 @@ Singleton {
         saveSettings()
     }
 
-    function setClockFormat(use24Hour) {
-        use24HourClock = use24Hour
+    function setClockStackedFormat(stacked) {
+        clockStackedFormat = stacked
         saveSettings()
+        widgetDataChanged()
+    }
+    function setClockBoldFont(bold) {
+        clockBoldFont = bold
+        saveSettings()
+        widgetDataChanged()
+    }
+    function setClockFormat(use24Hour) {
+        console.log("[SettingsData] Setting clock format to:", use24Hour ? "24-hour" : "12-hour", "current value:", use24HourClock)
+        if (use24HourClock !== use24Hour) {
+            use24HourClock = use24Hour
+            saveSettings()
+            console.log("[SettingsData] Clock format updated to:", use24HourClock)
+            // Emit signal to notify components
+            widgetDataChanged()
+        } else {
+            console.log("[SettingsData] Clock format already set to:", use24Hour)
+        }
     }
 
     function setTemperatureUnit(fahrenheit) {

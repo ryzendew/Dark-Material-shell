@@ -144,8 +144,17 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 text: {
-                    const format = SettingsData.use24HourClock ? "HH:mm" : "h:mm AP"
-                    return systemClock.date.toLocaleTimeString(Qt.locale(), format)
+                    const date = systemClock.date
+                    if (SettingsData.use24HourClock) {
+                        // Force 24-hour format with AM/PM
+                        const hours = date.getHours()
+                        const minutes = date.getMinutes()
+                        const period = hours >= 12 ? "PM" : "AM"
+                        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
+                    } else {
+                        const formatted = date.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                        return formatted.replace(/\./g, "").trim()
+                    }
                 }
                 font.pixelSize: 120
                 font.weight: Font.Light

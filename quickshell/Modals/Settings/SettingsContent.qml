@@ -94,6 +94,7 @@ Item {
             asynchronous: true
 
             sourceComponent: ThemeColorsTab {
+                parentModal: root.parentModal
             }
 
         }

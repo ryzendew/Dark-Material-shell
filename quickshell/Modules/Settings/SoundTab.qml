@@ -6,13 +6,9 @@ import Quickshell.Services.Pipewire
 import qs.Common
 import qs.Services
 import qs.Widgets
-import qs.Modules.ControlCenter.Widgets
 
 Item {
     id: soundTab
-
-    property bool showOutputs: true
-    property bool showInputs: true
 
     DarkFlickable {
         anchors.fill: parent
@@ -22,356 +18,304 @@ Item {
         Column {
             id: contentColumn
             width: parent.width
-            spacing: Theme.spacingM
+            spacing: Theme.spacingL
 
-
-            StyledRect {
+            // Application Volume Mixer
+            Loader {
                 width: parent.width
-                height: outputColumn.implicitHeight + (Theme.spacingL || 16) * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-                border.width: 1
-                visible: showOutputs
-
-                Column {
-                    id: outputColumn
-                    anchors.fill: parent
-                    anchors.margins: (Theme.spacingL || 16)
-                    spacing: (Theme.spacingS || 8)
-
-                    Row {
-                        width: parent.width
-                        spacing: (Theme.spacingS || 8)
-                        StyledText { text: "Output Applications"; font.pixelSize: (Theme.fontSizeL || 18); font.weight: Font.Medium; color: Theme.surfaceText }
-                        Item { width: 1; height: 1 }
-                        StyledText { text: `${(ApplicationAudioService.applicationStreams||[]).length} active`; font.pixelSize: (Theme.fontSizeS || 12); color: Theme.surfaceText }
+                source: "EnhancedVolumeMixer.qml"
+                onLoaded: {
+                    if (item) {
+                        item.showInputs = true
+                        item.showOutputs = true
                     }
-
-                    Column {
-                        width: parent.width
-                        spacing: (Theme.spacingXS || 4)
-
-                        Repeater {
-                            model: ApplicationAudioService.applicationStreams || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: applicationVolumeControlRow
-                                asynchronous: false
-                                property var node: modelData
-                                property bool isInput: false
-                                height: item ? item.height : 56
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-
-                        Repeater {
-                            model: ApplicationAudioService.applicationStreams || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: applicationRoutingSection
-                                property var node: modelData
-                                property bool isInput: false
-                                height: item ? item.height : ((Theme.iconSize || 24) + (Theme.spacingL || 16) * 2)
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-                    }
-
-                        StyledText {
-                            text: "No applications with audio output"
-                            font.pixelSize: (Theme.fontSizeS || 12)
-                            color: Theme.surfaceText
-                            visible: (ApplicationAudioService.applicationStreams || []).length === 0
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
                 }
             }
 
+            // Default Output Device Section
             StyledRect {
                 width: parent.width
-                height: inputColumn.implicitHeight + (Theme.spacingL || 16) * 2
+                height: outputSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
                 border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
                 border.width: 1
-                visible: showInputs
 
                 Column {
-                    id: inputColumn
+                    id: outputSection
                     anchors.fill: parent
-                    anchors.margins: (Theme.spacingL || 16)
-                    spacing: (Theme.spacingS || 8)
-
-                    Row {
-                        width: parent.width
-                        spacing: (Theme.spacingS || 8)
-                        StyledText { text: "Input Applications"; font.pixelSize: (Theme.fontSizeL || 18); font.weight: Font.Medium; color: Theme.surfaceText }
-                        Item { width: 1; height: 1 }
-                        StyledText { text: `${(ApplicationAudioService.applicationInputStreams||[]).length} active`; font.pixelSize: (Theme.fontSizeS || 12); color: Theme.surfaceText }
-                    }
-
-                    Column {
-                        width: parent.width
-                        spacing: (Theme.spacingXS || 4)
-
-                        Repeater {
-                            model: ApplicationAudioService.applicationInputStreams || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: applicationVolumeControlRow
-                                asynchronous: false
-                                property var node: modelData
-                                property bool isInput: true
-                                height: item ? item.height : 56
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-
-                        Repeater {
-                            model: ApplicationAudioService.applicationInputStreams || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: applicationRoutingSection
-                                property var node: modelData
-                                property bool isInput: true
-                                height: item ? item.height : ((Theme.iconSize || 24) + (Theme.spacingL || 16) * 2)
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-                    }
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
 
                     StyledText {
-                        text: "No applications with audio input"
-                        font.pixelSize: (Theme.fontSizeS || 12)
-                        color: Theme.surfaceText
-                        visible: (ApplicationAudioService.applicationInputStreams || []).length === 0
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
-                }
-            }
-
-            StyledRect {
-                width: parent.width
-                height: outputDevicesCol.implicitHeight + (Theme.spacingL || 16) * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-                border.width: 1
-
-                Column {
-                    id: outputDevicesCol
-                    anchors.fill: parent
-                    anchors.margins: (Theme.spacingL || 16)
-                    spacing: (Theme.spacingS || 8)
-
-                    Row { width: parent.width; spacing: (Theme.spacingS || 8)
-                        StyledText { text: "Output Devices"; font.pixelSize: (Theme.fontSizeL || 18); font.weight: Font.Medium; color: Theme.surfaceText }
-                        Item { width: 1; height: 1 }
-                        StyledText { text: `${(ApplicationAudioService.outputDevices||[]).length} devices`; font.pixelSize: (Theme.fontSizeS || 12); color: Theme.surfaceText }
-                    }
-
-                    Column { width: parent.width; spacing: (Theme.spacingXS || 4)
-                        Repeater {
-                            model: ApplicationAudioService.outputDevices || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: deviceVolumeRow
-                                property var node: modelData
-                                property bool isInput: false
-                                height: item ? item.height : 56
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-                    }
-                }
-            }
-
-            StyledRect {
-                width: parent.width
-                height: inputDevicesCol.implicitHeight + (Theme.spacingL || 16) * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-                border.width: 1
-
-                Column {
-                    id: inputDevicesCol
-                    anchors.fill: parent
-                    anchors.margins: (Theme.spacingL || 16)
-                    spacing: (Theme.spacingS || 8)
-
-                    Row { width: parent.width; spacing: (Theme.spacingS || 8)
-                        StyledText { text: "Input Devices"; font.pixelSize: (Theme.fontSizeL || 18); font.weight: Font.Medium; color: Theme.surfaceText }
-                        Item { width: 1; height: 1 }
-                        StyledText { text: `${(ApplicationAudioService.inputDevices||[]).length} devices`; font.pixelSize: (Theme.fontSizeS || 12); color: Theme.surfaceText }
-                    }
-
-                    Column { width: parent.width; spacing: (Theme.spacingXS || 4)
-                        Repeater {
-                            model: ApplicationAudioService.inputDevices || []
-                            delegate: Loader {
-                                width: parent.width
-                                sourceComponent: deviceVolumeRow
-                                property var node: modelData
-                                property bool isInput: true
-                                height: item ? item.height : 56
-                                onLoaded: { if (item) { item.node = node; item.isInput = isInput } }
-                            }
-                        }
-                    }
-                }
-            }
-
-            StyledText {
-                text: "No applications with audio"
-                font.pixelSize: (Theme.fontSizeS || 12)
-                color: Theme.onSurfaceVariant
-                anchors.horizontalCenter: parent.horizontalCenter
-                visible: (ApplicationAudioService.applicationStreams || []).length === 0 && (ApplicationAudioService.applicationInputStreams || []).length === 0
-            }
-        }
-    }
-
-    Component {
-        id: applicationVolumeControlRow
-
-        Rectangle {
-            id: rowRoot
-
-            property var node: null
-            property bool isInput: false
-
-            height: 68
-            radius: Theme.cornerRadius
-            color: mouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.06) : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.16)
-            border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
-            border.width: 1
-
-            PwObjectTracker { objects: rowRoot.node ? [rowRoot.node] : [] }
-
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-            }
-
-            Row {
-                anchors.fill: parent
-                anchors.margins: Theme.spacingM
-                spacing: Theme.spacingM
-
-                Column {
-                    width: parent.width - volumeSliderRow.width - Theme.spacingM
-                    spacing: Theme.spacingXS
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    StyledText {
-                        text: rowRoot.node ? (rowRoot.node.name || "Unknown") : "Unknown"
-                        font.pixelSize: Theme.fontSizeM
+                        text: "Default Output Device"
+                        font.pixelSize: Theme.fontSizeLarge
                         font.weight: Font.Medium
                         color: Theme.surfaceText
-                        elide: Text.ElideRight
-                        width: parent.width
                     }
 
-                    StyledText {
-                        text: rowRoot.isInput ? "Input" : "Output"
-                        font.pixelSize: Theme.fontSizeS
-                        color: Theme.surfaceVariantText
+                    Loader {
+                        width: parent.width
+                        source: "../../Modules/ControlCenter/Widgets/AudioSliderRow.qml"
                     }
                 }
+            }
 
-                Row {
-                    id: volumeSliderRow
-                    width: 200
-                    spacing: Theme.spacingS
-                    anchors.verticalCenter: parent.verticalCenter
+            // Output Devices List
+            StyledRect {
+                width: parent.width
+                height: outputDevicesSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
+                border.width: 1
 
-                    Rectangle {
-                        width: Theme.iconSize + Theme.spacingS * 2
-                        height: Theme.iconSize + Theme.spacingS * 2
-                        anchors.verticalCenter: parent.verticalCenter
-                        radius: (Theme.iconSize + Theme.spacingS * 2) / 2
-                        color: iconArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
+                Column {
+                    id: outputDevicesSection
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
 
-                        MouseArea {
-                            id: iconArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                if (rowRoot.node && rowRoot.node.audio) {
-                                    rowRoot.node.audio.muted = !rowRoot.node.audio.muted
-                                }
-                            }
-                        }
-
-                        DarkIcon {
-                            anchors.centerIn: parent
-                            name: {
-                                if (!rowRoot.node || !rowRoot.node.audio) return rowRoot.isInput ? "mic_off" : "volume_off"
-                                const volume = rowRoot.node.audio.volume
-                                const muted = rowRoot.node.audio.muted
-                                if (rowRoot.isInput) {
-                                    return (muted || volume === 0.0) ? "mic_off" : "mic"
-                                } else {
-                                    if (muted || volume === 0.0) return "volume_off"
-                                    if (volume <= 0.33) return "volume_down"
-                                    if (volume <= 0.66) return "volume_up"
-                                    return "volume_up"
-                                }
-                            }
-                            size: Theme.iconSize
-                            color: rowRoot.node && rowRoot.node.audio && !rowRoot.node.audio.muted && rowRoot.node.audio.volume > 0 ? Theme.primary : Theme.surfaceText
-                        }
+                    StyledText {
+                        text: "Output Devices"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
                     }
 
-                    DarkSlider {
-                        readonly property real actualVolumePercent: rowRoot.node && rowRoot.node.audio ? Math.round(rowRoot.node.audio.volume * 100) : 0
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width - (Theme.iconSize + Theme.spacingS * 2) - Theme.spacingS
-                        enabled: rowRoot.node !== null && rowRoot.node.audio !== null
-                        minimum: 0
-                        maximum: 100
-                        value: rowRoot.node && rowRoot.node.audio ? Math.min(100, Math.round(rowRoot.node.audio.volume * 100)) : 0
-                        showValue: true
-                        unit: "%"
-                        valueOverride: actualVolumePercent
-                        onSliderValueChanged: function(newValue) {
-                            if (rowRoot.node && rowRoot.node.audio) {
-                                rowRoot.node.audio.volume = newValue / 100.0
-                                if (newValue > 0 && rowRoot.node.audio.muted) {
-                                    rowRoot.node.audio.muted = false
+                        Repeater {
+                            model: Pipewire.nodes?.values ? Pipewire.nodes.values.filter(node => {
+                                return node && node.ready && node.audio && node.isSink && !node.isStream
+                            }) : []
+
+                            delegate: Rectangle {
+                                required property var modelData
+                                required property int index
+
+                                width: parent.width
+                                height: 50
+                                radius: Theme.cornerRadius
+                                color: deviceMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.08) : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, index % 2 === 0 ? 0.3 : 0.2)
+                                border.color: modelData === AudioService.sink ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
+                                border.width: modelData === AudioService.sink ? 2 : 1
+
+                                Row {
+                                    anchors.left: parent.left
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.leftMargin: Theme.spacingM
+                                    spacing: Theme.spacingS
+
+                                    DarkIcon {
+                                        name: {
+                                            if (modelData.name.includes("bluez"))
+                                                return "headset"
+                                            else if (modelData.name.includes("hdmi"))
+                                                return "tv"
+                                            else if (modelData.name.includes("usb"))
+                                                return "headset"
+                                            else
+                                                return "speaker"
+                                        }
+                                        size: Theme.iconSize - 4
+                                        color: modelData === AudioService.sink ? Theme.primary : Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Column {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: parent.parent.width - parent.parent.anchors.leftMargin - parent.spacing - Theme.iconSize - Theme.spacingM
+
+                                        StyledText {
+                                            text: AudioService.displayName(modelData)
+                                            font.pixelSize: Theme.fontSizeMedium
+                                            color: Theme.surfaceText
+                                            font.weight: modelData === AudioService.sink ? Font.Medium : Font.Normal
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                        }
+
+                                        StyledText {
+                                            text: modelData === AudioService.sink ? "Active" : "Available"
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: Theme.surfaceVariantText
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                        }
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: deviceMouseArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (modelData) {
+                                            Pipewire.preferredDefaultAudioSink = modelData
+                                        }
+                                    }
                                 }
                             }
+                        }
+
+                        StyledText {
+                            text: "No output devices available"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            visible: !Pipewire.nodes || !Pipewire.nodes.values || Pipewire.nodes.values.filter(node => {
+                                return node && node.ready && node.audio && node.isSink && !node.isStream
+                            }).length === 0
                         }
                     }
                 }
             }
-        }
-    }
 
-    Component {
-        id: applicationRoutingSection
+            // Default Input Device Section
+            StyledRect {
+                width: parent.width
+                height: inputSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
+                border.width: 1
 
-        Rectangle {
-            property var node: null
-            property bool isInput: false
-            height: (Theme.iconSize || 24) + (Theme.spacingL || 16) * 2
-            visible: false
-        }
-    }
+                Column {
+                    id: inputSection
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
 
-    Component {
-        id: deviceVolumeRow
+                    StyledText {
+                        text: "Default Input Device"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                    }
 
-        Rectangle {
-            property var node: null
-            property bool isInput: false
-            height: 56
-            visible: false
+                    Loader {
+                        width: parent.width
+                        source: "../../Modules/ControlCenter/Widgets/InputAudioSliderRow.qml"
+                    }
+                }
+            }
+
+            // Input Devices List
+            StyledRect {
+                width: parent.width
+                height: inputDevicesSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.20)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
+                border.width: 1
+
+                Column {
+                    id: inputDevicesSection
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    StyledText {
+                        text: "Input Devices"
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        Repeater {
+                            model: Pipewire.nodes?.values ? Pipewire.nodes.values.filter(node => {
+                                return node && node.ready && node.audio && !node.isSink && !node.isStream
+                            }) : []
+
+                            delegate: Rectangle {
+                                required property var modelData
+                                required property int index
+
+                                width: parent.width
+                                height: 50
+                                radius: Theme.cornerRadius
+                                color: deviceMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.08) : Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, index % 2 === 0 ? 0.3 : 0.2)
+                                border.color: modelData === AudioService.source ? Theme.primary : Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.12)
+                                border.width: modelData === AudioService.source ? 2 : 1
+
+                                Row {
+                                    anchors.left: parent.left
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.leftMargin: Theme.spacingM
+                                    spacing: Theme.spacingS
+
+                                    DarkIcon {
+                                        name: {
+                                            if (modelData.name.includes("bluez"))
+                                                return "headset"
+                                            else if (modelData.name.includes("usb"))
+                                                return "headset"
+                                            else
+                                                return "mic"
+                                        }
+                                        size: Theme.iconSize - 4
+                                        color: modelData === AudioService.source ? Theme.primary : Theme.surfaceText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Column {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: parent.parent.width - parent.parent.anchors.leftMargin - parent.spacing - Theme.iconSize - Theme.spacingM
+
+                                        StyledText {
+                                            text: AudioService.displayName(modelData)
+                                            font.pixelSize: Theme.fontSizeMedium
+                                            color: Theme.surfaceText
+                                            font.weight: modelData === AudioService.source ? Font.Medium : Font.Normal
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                        }
+
+                                        StyledText {
+                                            text: modelData === AudioService.source ? "Active" : "Available"
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: Theme.surfaceVariantText
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                        }
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: deviceMouseArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (modelData) {
+                                            Pipewire.preferredDefaultAudioSource = modelData
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        StyledText {
+                            text: "No input devices available"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            visible: !Pipewire.nodes || !Pipewire.nodes.values || Pipewire.nodes.values.filter(node => {
+                                return node && node.ready && node.audio && !node.isSink && !node.isStream
+                            }).length === 0
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

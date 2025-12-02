@@ -43,6 +43,16 @@ Item {
         running: true
         repeat: true
         onTriggered: {
+            // Force time display update
+        }
+    }
+    
+    // Force update when format changes
+    property int formatUpdateTrigger: 0
+    Connections {
+        target: SettingsData
+        function onUse24HourClockChanged() {
+            formatUpdateTrigger++
         }
     }
 
@@ -100,7 +110,22 @@ Item {
                             }
 
                             StyledText {
-                                text: TimeService.localTime || new Date().toLocaleString(Qt.locale(), Locale.LongFormat)
+                                text: {
+                                    root.formatUpdateTrigger // Force update when format changes
+                                    const now = new Date()
+                                    if (SettingsData.use24HourClock) {
+                                        // Force 24-hour format with AM/PM
+                                        const hours = now.getHours()
+                                        const minutes = now.getMinutes()
+                                        const period = hours >= 12 ? "PM" : "AM"
+                                        return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period + " " + now.toLocaleDateString(Qt.locale(), Locale.LongFormat)
+                                    } else {
+                                        // Use combined format string for 12-hour time
+                                        const timeStr = now.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                                        const cleanedTime = timeStr.replace(/\./g, "").trim()
+                                        return cleanedTime + " " + now.toLocaleDateString(Qt.locale(), Locale.LongFormat)
+                                    }
+                                }
                                 font.pixelSize: Theme.fontSizeMedium
                                 color: Theme.surfaceVariantText
                             }
@@ -111,6 +136,85 @@ Item {
                                 color: Theme.surfaceVariantText
                                 visible: TimeService.universalTime && TimeService.universalTime.length > 0
                             }
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
+                height: timeFormatSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: timeFormatSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "schedule"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingM
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            StyledText {
+                                text: "Time Format"
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                            }
+
+                            StyledText {
+                                text: "Configure how time is displayed"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+
+                    DarkToggle {
+                        width: parent.width
+                        text: "Use 24-hour time format"
+                        checked: SettingsData.use24HourClock
+                        onToggled: checked => {
+                            SettingsData.setClockFormat(checked)
+                        }
+                    }
+
+                    DarkToggle {
+                        width: parent.width
+                        text: "Stack Time Format"
+                        description: "Display time in a vertical stacked format"
+                        checked: SettingsData.clockStackedFormat
+                        onToggled: checked => {
+                            SettingsData.setClockStackedFormat(checked)
+                        }
+                    }
+
+                    DarkToggle {
+                        width: parent.width
+                        text: "Bold Time Font"
+                        description: "Make the time text bold"
+                        checked: SettingsData.clockBoldFont
+                        onToggled: checked => {
+                            SettingsData.setClockBoldFont(checked)
                         }
                     }
                 }
@@ -324,36 +428,6 @@ Item {
                         onValueChanged: value => {
                             SettingsData.setWeekNumbering(value)
                         }
-                    }
-                }
-            }
-
-            StyledRect {
-                width: parent.width
-                height: timeSection.implicitHeight + Theme.spacingL * 2
-                radius: Theme.cornerRadius
-                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
-                               Theme.surfaceVariant.b, 0.3)
-                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
-                                      Theme.outline.b, 0.2)
-                border.width: 1
-
-                Column {
-                    id: timeSection
-
-                    anchors.fill: parent
-                    anchors.margins: Theme.spacingL
-                    spacing: Theme.spacingM
-
-                    DarkToggle {
-                        width: parent.width
-                        text: "24-Hour Format"
-                        description: "Use 24-hour time format instead of 12-hour AM/PM"
-                        checked: SettingsData.use24HourClock
-                        onToggled: checked => {
-                                       return SettingsData.setClockFormat(
-                                           checked)
-                                   }
                     }
                 }
             }

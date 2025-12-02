@@ -150,9 +150,17 @@ Item {
             return item.original
         }).join('\n')
         
-        keybindsFile.setText(content)
-        hasUnsavedChanges = false
+        // Use the same pattern as SettingsData/Notepad - reset path then setText
+        keybindsFile.path = ""
+        pendingSaveContent = content
+        keybindsFile.path = keybindsPath
+        
+        Qt.callLater(() => {
+            keybindsFile.setText(pendingSaveContent)
+        })
     }
+    
+    property string pendingSaveContent: ""
 
     function addNewKeybind() {
         var newKeybind = {
@@ -196,6 +204,7 @@ Item {
         path: keybindsTab.keybindsPath
         blockWrites: true
         atomicWrites: true
+        printErrors: true
         
         onLoaded: {
             parseKeybinds(text())
@@ -209,14 +218,41 @@ Item {
         }
         
         onSaved: {
+            hasUnsavedChanges = false
             if (typeof ToastService !== "undefined") {
                 ToastService.showSuccess("Keybinds saved successfully")
             }
+            // Reload the file to reflect changes
+            Qt.callLater(() => {
+                keybindsFile.reload()
+            })
+            // Reload Hyprland configuration to apply changes
+            reloadHyprlandProcess.running = true
+            pendingSaveContent = ""
         }
         
-        onSaveFailed: {
+        onSaveFailed: (error) => {
             if (typeof ToastService !== "undefined") {
-                ToastService.showError("Failed to save keybinds file")
+                ToastService.showError("Failed to save keybinds file: " + (error || "Unknown error"))
+            }
+            pendingSaveContent = ""
+        }
+    }
+
+    Process {
+        id: reloadHyprlandProcess
+        command: ["hyprctl", "reload"]
+        running: false
+        
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                if (typeof ToastService !== "undefined") {
+                    ToastService.showSuccess("Hyprland configuration reloaded")
+                }
+            } else {
+                if (typeof ToastService !== "undefined") {
+                    ToastService.showError("Failed to reload Hyprland configuration")
+                }
             }
         }
     }

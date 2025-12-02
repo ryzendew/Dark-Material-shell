@@ -61,8 +61,7 @@ Item {
     }
 
     function setScreenPreferences(componentId, screenNames) {
-        var prefs = SettingsData.screenPreferences || {
-        };
+        var prefs = SettingsData.screenPreferences ? Object.assign({}, SettingsData.screenPreferences) : {};
         prefs[componentId] = screenNames;
         SettingsData.setScreenPreferences(prefs);
     }
@@ -297,10 +296,17 @@ Item {
                                         description: "Show on all connected displays"
                                         checked: parent.selectedScreens.includes("all")
                                         onToggled: (checked) => {
-                                            if (checked)
+                                            if (checked) {
                                                 displaysTab.setScreenPreferences(parent.componentId, ["all"]);
-                                            else
-                                                displaysTab.setScreenPreferences(parent.componentId, []);
+                                            } else {
+                                                // When unchecking "All displays", default to all screens selected
+                                                // so user can uncheck the ones they don't want
+                                                var allScreenNames = [];
+                                                for (var i = 0; i < Quickshell.screens.length; i++) {
+                                                    allScreenNames.push(Quickshell.screens[i].name);
+                                                }
+                                                displaysTab.setScreenPreferences(parent.componentId, allScreenNames);
+                                            }
                                         }
                                     }
 

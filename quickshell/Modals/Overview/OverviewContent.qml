@@ -572,7 +572,7 @@ Item {
                                             text: windowData ? windowData.title : ""
                                             font.pixelSize: Theme.fontSizeSmall
                                             font.weight: (windowData && windowData.isActive) ? Font.Medium : Font.Normal
-                                            color: isSelected ? Theme.onPrimaryContainer : Theme.surfaceText
+                                            color: isSelected ? Theme.primaryText : Theme.surfaceText
                                             elide: Text.ElideRight
                                             horizontalAlignment: Text.AlignHCenter
                                         }

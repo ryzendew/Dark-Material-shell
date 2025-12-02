@@ -76,17 +76,18 @@ PanelWindow {
         width: widgetWidth
         height: widgetHeight
         radius: Theme.cornerRadius
-        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.darkDashContentBackgroundOpacity)
-        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.darkDashBorderOpacity)
-        border.width: SettingsData.darkDashBorderThickness
+        opacity: SettingsData.desktopDarkDashTransparency
+        color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, SettingsData.desktopDarkDashContentBackgroundOpacity)
+        border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, SettingsData.desktopDarkDashBorderOpacity)
+        border.width: SettingsData.desktopDarkDashBorderThickness
 
-        layer.enabled: SettingsData.darkDashDropShadowOpacity > 0
+        layer.enabled: SettingsData.desktopDarkDashDropShadowOpacity > 0
         layer.effect: DropShadow {
             horizontalOffset: 0
             verticalOffset: 4
             radius: 12
             samples: 16
-            color: Qt.rgba(0, 0, 0, SettingsData.darkDashDropShadowOpacity)
+            color: Qt.rgba(0, 0, 0, SettingsData.desktopDarkDashDropShadowOpacity)
             transparentBorder: true
         }
 
@@ -95,20 +96,20 @@ PanelWindow {
             anchors.fill: parent
             color: Qt.rgba(Theme.surfaceTint.r, Theme.surfaceTint.g, Theme.surfaceTint.b, 1.0)
             radius: parent.radius
-            opacity: SettingsData.darkDashAnimatedTintOpacity
+            opacity: SettingsData.desktopDarkDashAnimatedTintOpacity
 
             SequentialAnimation on opacity {
-                running: root.alwaysVisible && SettingsData.darkDashAnimatedTintOpacity > 0
+                running: root.alwaysVisible && SettingsData.desktopDarkDashAnimatedTintOpacity > 0
                 loops: Animation.Infinite
 
                 NumberAnimation {
-                    to: Math.min(1.0, SettingsData.darkDashAnimatedTintOpacity * 2)
+                    to: Math.min(1.0, SettingsData.desktopDarkDashAnimatedTintOpacity * 2)
                     duration: Theme.extraLongDuration
                     easing.type: Theme.standardEasing
                 }
 
                 NumberAnimation {
-                    to: Math.max(0.0, SettingsData.darkDashAnimatedTintOpacity * 0.5)
+                    to: Math.max(0.0, SettingsData.desktopDarkDashAnimatedTintOpacity * 0.5)
                     duration: Theme.extraLongDuration
                     easing.type: Theme.standardEasing
                 }
@@ -131,7 +132,7 @@ PanelWindow {
                 currentIndex: root.currentTabIndex
                 spacing: Theme.spacingS
                 equalWidthTabs: true
-                opacity: SettingsData.darkDashTabBarOpacity
+                opacity: SettingsData.desktopDarkDashTabBarOpacity
 
                 model: {
                     let tabs = [
@@ -167,6 +168,12 @@ PanelWindow {
             StackLayout {
                 id: pages
                 width: parent.width
+                height: {
+                    if (currentIndex === 0) return overviewTab.implicitHeight
+                    if (currentIndex === 1) return mediaTab.implicitHeight
+                    if (SettingsData.weatherEnabled && currentIndex === 2) return weatherTab.implicitHeight
+                    return overviewTab.implicitHeight
+                }
                 implicitHeight: {
                     if (currentIndex === 0) return overviewTab.implicitHeight
                     if (currentIndex === 1) return mediaTab.implicitHeight
@@ -177,6 +184,7 @@ PanelWindow {
 
                 OverviewTab {
                     id: overviewTab
+                    width: pages.width
 
                     onSwitchToWeatherTab: {
                         if (SettingsData.weatherEnabled) {

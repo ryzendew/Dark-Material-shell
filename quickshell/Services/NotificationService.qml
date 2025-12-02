@@ -331,9 +331,14 @@ Singleton {
             }
 
             if (use24Hour) {
-                return date.toLocaleTimeString(Qt.locale(), "HH:mm")
+                // Force 24-hour format with AM/PM
+                const hours = date.getHours()
+                const minutes = date.getMinutes()
+                const period = hours >= 12 ? "PM" : "AM"
+                return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + " " + period
             } else {
-                return date.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                const formatted = date.toLocaleTimeString(Qt.locale(), "h:mm AP")
+                return formatted.replace(/\./g, "").trim()
             }
         }
 

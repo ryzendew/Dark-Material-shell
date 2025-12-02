@@ -18,6 +18,26 @@ Singleton {
     property int currentTabIndex: 0
     property var tabsBeingCreated: ({})
 
+    Component.onCompleted: {
+        // Ensure the notepad-files directory exists
+        ensureDirectoryExists()
+    }
+
+    function ensureDirectoryExists() {
+        var dirProcess = ensureDirProcessComponent.createObject(root, {
+            directory: filesDir
+        })
+    }
+
+    Component {
+        id: ensureDirProcessComponent
+        Process {
+            property string directory
+            command: ["mkdir", "-p", directory]
+            Component.onCompleted: running = true
+        }
+    }
+
     FileView {
         id: metadataFile
         path: root.metadataPath
@@ -101,10 +121,48 @@ Singleton {
             return
         }
         
-        var loader = tabFileLoaderComponent.createObject(root, {
-            path: fullPath,
-            callback: callback
+        // Ensure directory exists before loading
+        ensureDirectoryExists()
+        
+        // Check if file exists, create it if it doesn't
+        var checkProcess = fileCheckProcessComponent.createObject(root, {
+            filePath: fullPath,
+            callback: function(exists) {
+                if (!exists) {
+                    // File doesn't exist, create it first
+                    createEmptyFile(fullPath, function() {
+                        // Now load the file
+                        var loader = tabFileLoaderComponent.createObject(root, {
+                            path: fullPath,
+                            callback: callback
+                        })
+                    })
+                } else {
+                    // File exists, load it
+                    var loader = tabFileLoaderComponent.createObject(root, {
+                        path: fullPath,
+                        callback: callback
+                    })
+                }
+            }
         })
+    }
+
+    Component {
+        id: fileCheckProcessComponent
+        Process {
+            property string filePath
+            property var callback
+            command: ["test", "-f", filePath]
+            
+            Component.onCompleted: running = true
+            
+            onExited: function(exitCode) {
+                var exists = (exitCode === 0)
+                if (callback) callback(exists)
+                destroy()
+            }
+        }
     }
 
     function saveTabContent(tabIndex, content) {
@@ -274,6 +332,9 @@ Singleton {
             }
 
             onLoadFailed: {
+                // This should rarely happen now since we check/create before loading
+                // But if it does, return empty content
+                console.log("[NotepadStorageService] Failed to load file:", path)
                 callback("")
                 destroy()
             }
@@ -318,6 +379,9 @@ Singleton {
             cleanPath = baseDir + "/" + cleanPath
         }
 
+        // Ensure directory exists before creating file
+        ensureDirectoryExists()
+
         var creator = fileCreatorComponent.createObject(root, {
             filePath: cleanPath,
             creationCallback: callback
@@ -355,13 +419,34 @@ Singleton {
         Process {
             property string filePath
             property var callback
-            command: ["touch", filePath]
+            property bool directoryCreated: false
+            
+            // First ensure directory exists, then create file
+            command: directoryCreated ? ["touch", filePath] : ["mkdir", "-p", filePath.substring(0, filePath.lastIndexOf("/"))]
 
-            Component.onCompleted: running = true
+            Component.onCompleted: {
+                // Extract directory from file path
+                var dirPath = filePath.substring(0, filePath.lastIndexOf("/"))
+                if (dirPath) {
+                    // Create directory first
+                    running = true
+                } else {
+                    // No directory needed, just create file
+                    directoryCreated = true
+                    running = true
+                }
+            }
 
             onExited: (exitCode) => {
-                if (callback) callback()
-                destroy()
+                if (!directoryCreated) {
+                    // Directory created, now create the file
+                    directoryCreated = true
+                    running = true
+                } else {
+                    // File created (or already existed)
+                    if (callback) callback()
+                    destroy()
+                }
             }
         }
     }
