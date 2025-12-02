@@ -237,10 +237,23 @@ Item {
         }
 
         Loader {
-            id: keyboardLangLoader
+            id: bluetoothLoader
 
             anchors.fill: parent
             active: root.currentIndex === 12
+            visible: active
+            asynchronous: true
+
+            sourceComponent: BluetoothTab {
+            }
+
+        }
+
+        Loader {
+            id: keyboardLangLoader
+
+            anchors.fill: parent
+            active: root.currentIndex === 13
             visible: active
             asynchronous: true
 
@@ -253,7 +266,7 @@ Item {
             id: timeLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 13
+            active: root.currentIndex === 14
             visible: active
             asynchronous: true
 
@@ -266,7 +279,7 @@ Item {
             id: powerLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 14
+            active: root.currentIndex === 15
             visible: active
             asynchronous: true
 
@@ -279,7 +292,7 @@ Item {
             id: aboutLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 15
+            active: root.currentIndex === 16
             visible: active
             asynchronous: true
 
@@ -292,7 +305,7 @@ Item {
             id: weatherLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 16
+            active: root.currentIndex === 17
             visible: active
             asynchronous: true
 
@@ -305,7 +318,7 @@ Item {
             id: keybindsLoader
 
             anchors.fill: parent
-            active: root.currentIndex === 17
+            active: root.currentIndex === 18
             visible: active
             asynchronous: true
 

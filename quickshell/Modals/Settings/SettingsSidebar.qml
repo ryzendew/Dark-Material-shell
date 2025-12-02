@@ -45,6 +45,9 @@ Rectangle {
         "text": "Network",
         "icon": "wifi"
     }, {
+        "text": "Bluetooth",
+        "icon": "bluetooth"
+    }, {
         "text": "Keyboard & Language",
         "icon": "keyboard"
     }, {

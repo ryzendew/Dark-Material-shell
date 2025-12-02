@@ -299,8 +299,6 @@ Item {
                                             if (checked) {
                                                 displaysTab.setScreenPreferences(parent.componentId, ["all"]);
                                             } else {
-                                                // When unchecking "All displays", default to all screens selected
-                                                // so user can uncheck the ones they don't want
                                                 var allScreenNames = [];
                                                 for (var i = 0; i < Quickshell.screens.length; i++) {
                                                     allScreenNames.push(Quickshell.screens[i].name);

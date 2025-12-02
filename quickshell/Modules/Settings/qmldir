@@ -19,6 +19,7 @@ SoundTab 1.0 SoundTab.qml
 DefaultAppsTab 1.0 DefaultAppsTab.qml
 KeyboardLangTab 1.0 KeyboardLangTab.qml
 NetworkTab 1.0 NetworkTab.qml
+BluetoothTab 1.0 BluetoothTab.qml
 PowerTab 1.0 PowerTab.qml
 KeybindsTab 1.0 KeybindsTab.qml
 
