@@ -188,7 +188,7 @@ sudo dnf install -y \
     rust cargo gcc gcc-c++ pkg-config openssl-devel libX11-devel libXcursor-devel libXrandr-devel libXi-devel mesa-libGL-devel fontconfig-devel freetype-devel expat-devel \
     cairo-gobject cairo-gobject-devel rust-gdk4-sys+default-devel gtk4-layer-shell-devel \
     qt5-qtgraphicaleffects qt6-qt5compat python3-pyqt6 \
-    python3.11 python3.11-libs libxcrypt-compat libcurl libcurl-devel apr fuse-libs fuse2 fuse \
+    python3.11 python3.11-libs libxcrypt-compat libcurl libcurl-devel apr fuse-libs fuse \
     btop lm_sensors gedit nwg-look
 ```
 
