@@ -268,6 +268,7 @@ Singleton {
     property real osLogoContrast: 1
     property bool useCustomLauncherImage: false
     property string customLauncherImagePath: ""
+    property string keybindsPath: ""
     property real launcherLogoSize: 24
     property string launcherPosition: "bottom-center" // "bottom-center", "bottom-left", "bottom-right"
     property bool wallpaperDynamicTheming: true
@@ -699,6 +700,7 @@ Singleton {
                 osLogoContrast = settings.osLogoContrast !== undefined ? settings.osLogoContrast : 1
                 useCustomLauncherImage = settings.useCustomLauncherImage !== undefined ? settings.useCustomLauncherImage : false
                 customLauncherImagePath = settings.customLauncherImagePath !== undefined ? settings.customLauncherImagePath : ""
+                keybindsPath = settings.keybindsPath !== undefined ? settings.keybindsPath : ""
                 launcherLogoSize = settings.launcherLogoSize !== undefined ? settings.launcherLogoSize : 24
                 launcherPosition = settings.launcherPosition !== undefined ? settings.launcherPosition : "bottom-center"
                 wallpaperDynamicTheming = settings.wallpaperDynamicTheming !== undefined ? settings.wallpaperDynamicTheming : true
@@ -1000,6 +1002,7 @@ Singleton {
                                                 "osLogoContrast": osLogoContrast,
                                                 "useCustomLauncherImage": useCustomLauncherImage,
                                                 "customLauncherImagePath": customLauncherImagePath,
+                                                "keybindsPath": keybindsPath,
                                                 "launcherLogoSize": launcherLogoSize,
                                                 "launcherPosition": launcherPosition,
                                                 "wallpaperDynamicTheming": wallpaperDynamicTheming,

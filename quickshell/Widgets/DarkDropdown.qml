@@ -82,7 +82,7 @@ Rectangle {
             font.family: root.notoSansFamily
             color: Theme.surfaceText
             font.weight: Font.Medium
-            visible: !root.currentValue || root.currentValue === ""
+            visible: (root.description && root.description.length > 0) && (!root.currentValue || root.currentValue === "")
         }
 
         Text {
@@ -137,8 +137,10 @@ Rectangle {
             id: contentRow
 
             anchors.left: parent.left
+            anchors.right: expandIcon.left
             anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: Theme.spacingL
+            anchors.leftMargin: (root.currentValue && root.currentValue !== "") ? Theme.spacingL : 0
+            anchors.rightMargin: Theme.spacingS
             spacing: Theme.spacingM
 
             Item {
@@ -166,15 +168,14 @@ Rectangle {
             }
 
             Text {
-                text: root.currentValue || ""
+                text: root.currentValue || root.text
                 font.pixelSize: Theme.fontSizeMedium
                 font.family: root.notoSansFamily
-                font.weight: Font.Normal
-                color: Theme.surfaceText
-                width: root.width <= 60 ? dropdown.width - expandIcon.width - Theme.spacingS * 2 : dropdown.width - contentRow.x - expandIcon.width - Theme.spacingM - Theme.spacingS
+                font.weight: root.currentValue ? Font.Normal : Font.Medium
+                color: root.currentValue ? Theme.surfaceText : Theme.surfaceVariantText
+                width: parent.width
                 elide: root.width <= 60 ? Text.ElideNone : Text.ElideRight
-                horizontalAlignment: root.width <= 60 ? Text.AlignHCenter : Text.AlignLeft
-                visible: root.currentValue && root.currentValue !== ""
+                horizontalAlignment: (root.currentValue && root.currentValue !== "") ? Text.AlignLeft : Text.AlignHCenter
             }
         }
 

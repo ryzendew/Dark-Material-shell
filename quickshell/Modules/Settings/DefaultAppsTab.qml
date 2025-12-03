@@ -7,26 +7,6 @@ import qs.Widgets
 Item {
     id: root
     
-    readonly property bool notoSansAvailable: Qt.fontFamilies().some(f => f.includes("Noto Sans"))
-    
-    FontLoader {
-        id: notoSansLoader
-        source: root.notoSansAvailable ? "" : "/usr/share/fonts/google-noto/NotoSans-Regular.ttf"
-    }
-    
-    readonly property string notoSansFamily: {
-        if (root.notoSansAvailable) {
-            const families = Qt.fontFamilies()
-            for (let i = 0; i < families.length; i++) {
-                if (families[i].includes("Noto Sans")) {
-                    return families[i]
-                }
-            }
-            return "Noto Sans"
-        }
-        return notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : ""
-    }
-
     // Query queue system to prevent conflicts
     property var queryQueue: []
     property bool queryInProgress: false
@@ -230,13 +210,64 @@ Item {
         anchors.fill: parent
         anchors.topMargin: Theme.spacingL
         clip: true
-        contentHeight: contentCol.height
+        contentHeight: mainColumn.height
         contentWidth: width
 
         Column {
-            id: contentCol
+            id: mainColumn
             width: parent.width
             spacing: Theme.spacingXL
+
+            StyledRect {
+                width: parent.width
+                height: headerSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g, Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
+                border.width: 1
+
+                Column {
+                    id: headerSection
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        Image {
+                            width: Theme.iconSize
+                            height: Theme.iconSize
+                            source: "image://icon/apps"
+                            sourceSize.width: Theme.iconSize
+                            sourceSize.height: Theme.iconSize
+                            fillMode: Image.PreserveAspectFit
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            width: parent.width - Theme.iconSize - Theme.spacingM
+                            spacing: Theme.spacingXS
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            StyledText {
+                                text: "Default Applications"
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                            }
+
+                            StyledText {
+                                text: "Configure default applications for different file types and actions. Changes apply immediately."
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                wrapMode: Text.WordWrap
+                            }
+                        }
+                    }
+                }
+            }
 
             Repeater {
                 model: root.defaultsModel
@@ -260,33 +291,32 @@ Item {
                             width: parent.width
                             spacing: Theme.spacingM
 
-                            DarkIcon {
-                                name: modelData.icon
-                                size: Theme.iconSize
-                                color: Theme.primary
+                            Image {
+                                width: Theme.iconSize
+                                height: Theme.iconSize
+                                source: "image://icon/" + (modelData.icon || "application-x-executable")
+                                sourceSize.width: Theme.iconSize
+                                sourceSize.height: Theme.iconSize
+                                fillMode: Image.PreserveAspectFit
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            Text {
-                                text: modelData.title
-                                font.pixelSize: Theme.fontSizeLarge
-                                font.family: root.notoSansFamily
-                                font.weight: Font.Normal
-                                color: Theme.surfaceText
+                            Column {
+                                width: parent.width - Theme.iconSize - Theme.spacingM
+                                spacing: Theme.spacingXS
                                 anchors.verticalCenter: parent.verticalCenter
+
+                                StyledText {
+                                    text: modelData.title
+                                    font.pixelSize: Theme.fontSizeLarge
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                }
                             }
                         }
 
-                        Text {
-                            width: parent.width
-                            text: "Choose the default application. Changes apply immediately."
-                            font.pixelSize: Theme.fontSizeSmall
-                            font.family: root.notoSansFamily
-                            color: Theme.surfaceVariantText
-                            wrapMode: Text.WordWrap
-                        }
-
-                        Row {
+                        Column {
+                            id: appSelector
                             width: parent.width
                             spacing: Theme.spacingM
 
@@ -529,24 +559,28 @@ Item {
                                 refreshDefault()
                             }
 
+                            Row {
+                                width: parent.width
+                                spacing: Theme.spacingM
+
                             DarkDropdown {
                                 id: dropdown
-                                width: Math.min(parent.width, 200)
+                                    width: Math.min(300, parent.width * 0.5)
                                 text: "Select application"
                                 description: ""
-                                options: parent.optionNames || []
-                                optionIcons: parent.optionIcons || []
-                                currentValue: parent.currentDisplayName || ""
+                                    options: appSelector.optionNames || []
+                                    optionIcons: appSelector.optionIcons || []
+                                    currentValue: appSelector.currentDisplayName || ""
                                 onValueChanged: (value) => {
-                                    var desktopId = parent.nameToDesktopId[value] || ""
+                                        var desktopId = appSelector.nameToDesktopId[value] || ""
                                     if (!desktopId) return
                                     
                                     if (modelData.isTerminal) {
                                         SettingsData.terminalEmulator = desktopId
-                                        parent.currentDesktopId = desktopId
+                                            appSelector.currentDesktopId = desktopId
                                     } else if (modelData.isAurHelper) {
                                         SettingsData.aurHelper = desktopId
-                                        parent.currentDesktopId = desktopId
+                                            appSelector.currentDesktopId = desktopId
                                     } else {
                                         // Set default for all MIME types
                                         for (const mime of (modelData.mimes || [])) {
@@ -554,42 +588,44 @@ Item {
                                         }
                                         
                                         // Update UI immediately
-                                        parent.currentDesktopId = desktopId
-                                        parent.ensureCurrentAppInCandidates()
+                                            appSelector.currentDesktopId = desktopId
+                                            appSelector.ensureCurrentAppInCandidates()
                                         
                                         // Verify after a delay to allow system to update
                                         // Use nested Qt.callLater for delay effect
                                         Qt.callLater(function() {
                                             Qt.callLater(function() {
                                                 Qt.callLater(function() {
-                                                    parent.refreshDefault()
+                                                        appSelector.refreshDefault()
+                                                    })
                                                 })
                                             })
-                                        })
                                     }
                                 }
                             }
 
                             Row {
+                                    id: currentAppRow
                                 spacing: Theme.spacingS
                                 anchors.verticalCenter: dropdown.verticalCenter
 
                                 Image {
                                     width: 24
                                     height: 24
-                                    source: "image://icon/" + parent.parent.currentIcon
+                                        source: "image://icon/" + (appSelector.currentIcon || "application-x-executable")
                                     sourceSize.width: 24
                                     sourceSize.height: 24
                                     fillMode: Image.PreserveAspectFit
-                                    visible: parent.parent.currentIcon && parent.parent.currentIcon !== ""
+                                        visible: appSelector.currentIcon && appSelector.currentIcon !== ""
+                                        anchors.verticalCenter: parent.verticalCenter
                                 }
 
-                                Text {
-                                    text: parent.parent.currentName || ""
+                                    StyledText {
+                                        text: appSelector.currentName || "Not set"
                                     font.pixelSize: Theme.fontSizeMedium
-                                    font.family: root.notoSansFamily
-                                    font.weight: Font.Normal
-                                    color: Theme.surfaceText
+                                        color: appSelector.currentName ? Theme.surfaceText : Theme.surfaceVariantText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
                                 }
                             }
                         }

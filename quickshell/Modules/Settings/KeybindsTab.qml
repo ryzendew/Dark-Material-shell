@@ -5,11 +5,15 @@ import Quickshell
 import Quickshell.Io
 import qs.Common
 import qs.Widgets
+import qs.Modals
+import qs.Modals.FileBrowser
 
 Item {
     id: keybindsTab
 
-    readonly property string keybindsPath: (Quickshell.env("HOME") || StandardPaths.writableLocation(StandardPaths.HomeLocation)) + "/.config/hypr/hyprland/keybinds.conf"
+    readonly property string defaultKeybindsPath: (Quickshell.env("HOME") || StandardPaths.writableLocation(StandardPaths.HomeLocation)) + "/.config/hypr/hyprland/keybinds.conf"
+    
+    property string keybindsPath: (SettingsData.keybindsPath && SettingsData.keybindsPath !== "") ? SettingsData.keybindsPath : defaultKeybindsPath
     
     property var keybinds: []
     property bool isLoading: false
@@ -69,7 +73,18 @@ Item {
         { "name": "Screenshot Area", "modifiers": "SUPER SHIFT", "key": "S", "command": "exec, $screenshotarea" },
         { "name": "Dock - Toggle Dock", "modifiers": "SUPER", "key": "D", "command": "exec, hyprctl dispatch togglespecialworkspace quickshell:dock:blur" },
         { "name": "Dock - Show Dock", "modifiers": "SUPER", "key": "B", "command": "exec, hyprctl dispatch togglespecialworkspace quickshell:dock:blur" },
-        { "name": "Dock - Hide Dock", "modifiers": "SUPER SHIFT", "key": "D", "command": "exec, hyprctl dispatch togglespecialworkspace quickshell:dock:blur" }
+        { "name": "Dock - Hide Dock", "modifiers": "SUPER SHIFT", "key": "D", "command": "exec, hyprctl dispatch togglespecialworkspace quickshell:dock:blur" },
+        { "name": "Toggle Overview (IPC)", "modifiers": "ALT", "key": "Tab", "command": "exec,qs ipc call overview toggle" },
+        { "name": "Toggle Overview (IPC - Reverse)", "modifiers": "ALT SHIFT", "key": "Tab", "command": "exec,qs ipc call overview toggle" },
+        { "name": "Toggle HyprMenu (IPC)", "modifiers": "", "key": "Super", "command": "exec,quickshell ipc call hyprmenu toggle" },
+        { "name": "Toggle Cheatsheet (IPC)", "modifiers": "SUPER", "key": "Slash", "command": "exec,quickshell ipc call cheatsheet toggle" },
+        { "name": "Toggle Overview (CLI)", "modifiers": "SUPER", "key": "Tab", "command": "exec,quickshell --overview" },
+        { "name": "Toggle Bar (CLI)", "modifiers": "SUPER", "key": "B", "command": "exec,quickshell --toggle-bar" },
+        { "name": "Toggle Media Player (IPC)", "modifiers": "SUPER", "key": "M", "command": "exec,quickshell ipc call simpleMediaPlayer toggle" },
+        { "name": "Toggle Keyboard (CLI)", "modifiers": "SUPER", "key": "K", "command": "exec,quickshell --toggle-keyboard" },
+        { "name": "Toggle Dark Dash (IPC)", "modifiers": "SUPER SHIFT", "key": "D", "command": "exec,quickshell ipc call dash toggle" },
+        { "name": "Toggle Power Menu (CLI)", "modifiers": "CTRL ALT", "key": "Delete", "command": "exec,quickshell --toggle-power" },
+        { "name": "Toggle App Drawer (IPC)", "modifiers": "SUPER", "key": "a", "command": "exec,qs ipc call appDrawerPopout toggle" }
     ]
 
     Component.onCompleted: {
@@ -136,28 +151,84 @@ Item {
     }
 
     function saveKeybinds() {
-        var content = keybinds.map(item => {
+        var lines = []
+        var lastWasEmpty = false
+        
+        for (var i = 0; i < keybinds.length; i++) {
+            var item = keybinds[i]
+            var line = ""
+            
             if (item.type === 'comment' || item.type === 'raw') {
-                return item.original
+                line = item.original
             } else if (item.type === 'keybind') {
                 var bindType = item.isRelease ? 'bindr' : 'bind'
                 var parts = [item.modifiers, item.key]
                 if (item.command) {
                     parts.push(item.command)
                 }
-                return bindType + ' = ' + parts.join(', ')
+                line = bindType + ' = ' + parts.join(', ')
+            } else {
+                line = item.original
             }
-            return item.original
-        }).join('\n')
+            
+            // Remove trailing whitespace (QML doesn't have trimEnd, so use regex)
+            line = line.replace(/\s+$/, '')
+            
+            // Skip consecutive blank lines (but keep single blank lines between sections)
+            var isEmpty = line.length === 0 || line.trim().length === 0
+            if (isEmpty && lastWasEmpty) {
+                continue // Skip this blank line if the previous was also blank
+            }
+            lastWasEmpty = isEmpty
+            
+            lines.push(line)
+        }
         
-        // Use the same pattern as SettingsData/Notepad - reset path then setText
-        keybindsFile.path = ""
+        // Remove trailing blank lines
+        while (lines.length > 0 && lines[lines.length - 1].trim().length === 0) {
+            lines.pop()
+        }
+        
+        var content = lines.join('\n')
+        
+        // Ensure directory exists
+        var dirPath = keybindsPath.substring(0, keybindsPath.lastIndexOf('/'))
+        ensureDirProcess.command = ["mkdir", "-p", dirPath]
+        ensureDirProcess.running = true
         pendingSaveContent = content
-        keybindsFile.path = keybindsPath
+    }
+    
+    Process {
+        id: ensureDirProcess
+        command: ["mkdir", "-p"]
+        running: false
         
-        Qt.callLater(() => {
-            keybindsFile.setText(pendingSaveContent)
-        })
+        onExited: exitCode => {
+            if (pendingSaveContent !== "") {
+                // Ensure file exists first
+                touchFileProcess.command = ["touch", keybindsPath]
+                touchFileProcess.running = true
+            }
+        }
+    }
+    
+    Process {
+        id: touchFileProcess
+        command: ["touch"]
+        running: false
+        
+        onExited: exitCode => {
+            if (pendingSaveContent !== "") {
+                // Use separate FileView for saving (like Notepad does)
+                saveKeybindsFile.path = ""
+                Qt.callLater(() => {
+                    saveKeybindsFile.path = keybindsPath
+                    Qt.callLater(() => {
+                        saveKeybindsFile.setText(pendingSaveContent)
+                    })
+                })
+            }
+        }
     }
     
     property string pendingSaveContent: ""
@@ -203,11 +274,13 @@ Item {
         id: keybindsFile
         path: keybindsTab.keybindsPath
         blockWrites: true
+        blockLoading: false
         atomicWrites: true
         printErrors: true
         
         onLoaded: {
-            parseKeybinds(text())
+            var fileContent = text()
+            parseKeybinds(fileContent)
         }
         
         onLoadFailed: {
@@ -216,6 +289,14 @@ Item {
                 ToastService.showError("Failed to load keybinds file")
             }
         }
+    }
+    
+    FileView {
+        id: saveKeybindsFile
+        blockWrites: false
+        blockLoading: true
+        atomicWrites: true
+        printErrors: true
         
         onSaved: {
             hasUnsavedChanges = false
@@ -307,7 +388,7 @@ Item {
                             }
 
                             StyledText {
-                                text: "Manage keyboard shortcuts for Hyprland window manager"
+                                text: "Manage keyboard shortcuts for Hyprland window manager. Changes are saved to your config file."
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
                                 wrapMode: Text.WordWrap
@@ -317,21 +398,34 @@ Item {
 
                     Row {
                         width: parent.width
-                        spacing: Theme.spacingS
+                        spacing: Theme.spacingM
+                        anchors.topMargin: Theme.spacingM
 
                         Rectangle {
-                            width: 120
-                            height: 36
+                            width: 140
+                            height: 40
                             radius: Theme.cornerRadius
                             color: reloadMouseArea.containsMouse ? Theme.primaryContainer : Theme.surfaceVariant
                             enabled: !isLoading
                             opacity: enabled ? 1 : 0.5
 
-                            StyledText {
+                            Row {
                                 anchors.centerIn: parent
-                                text: "Reload"
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.surfaceText
+                                spacing: Theme.spacingXS
+
+                                DarkIcon {
+                                    name: "refresh"
+                                    size: 18
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Reload"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
                             }
 
                             MouseArea {
@@ -345,18 +439,32 @@ Item {
                         }
 
                         Rectangle {
-                            width: 120
-                            height: 36
+                            id: saveButton
+                            width: 140
+                            height: 40
                             radius: Theme.cornerRadius
-                            color: saveMouseArea.containsMouse ? Theme.primary : (hasUnsavedChanges ? Theme.primaryContainer : Theme.surfaceVariant)
-                            enabled: hasUnsavedChanges && !isLoading
-                            opacity: enabled ? 1 : 0.5
+                            property bool isEnabled: keybindsTab.hasUnsavedChanges && !keybindsTab.isLoading
+                            color: saveMouseArea.containsMouse ? Theme.primary : (isEnabled ? Theme.primaryContainer : Theme.surfaceVariant)
+                            opacity: isEnabled ? 1 : 0.5
 
-                            StyledText {
+                            Row {
                                 anchors.centerIn: parent
-                                text: "Save"
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: enabled ? Theme.onPrimary : Theme.surfaceText
+                                spacing: Theme.spacingXS
+
+                                DarkIcon {
+                                    name: "save"
+                                    size: 18
+                                    color: saveButton.isEnabled ? Theme.onPrimary : Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: saveButton.isEnabled
+                                }
+
+                                StyledText {
+                                    text: "Save"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: saveButton.isEnabled ? Theme.onPrimary : Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
                             }
 
                             MouseArea {
@@ -364,9 +472,70 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                enabled: parent.enabled
+                                enabled: saveButton.isEnabled
                                 onClicked: saveKeybinds()
                             }
+                        }
+
+                        Rectangle {
+                            width: 180
+                            height: 40
+                            radius: Theme.cornerRadius
+                            color: selectFileMouseArea.containsMouse ? Theme.primaryContainer : Theme.surfaceVariant
+                            enabled: !isLoading
+                            opacity: enabled ? 1 : 0.5
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: Theme.spacingXS
+
+                                DarkIcon {
+                                    name: "folder_open"
+                                    size: 18
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                StyledText {
+                                    text: "Select Config"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    color: Theme.surfaceText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            MouseArea {
+                                id: selectFileMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                enabled: parent.enabled
+                                onClicked: keybindsFileBrowser.open()
+                            }
+                        }
+                    }
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+                        visible: keybindsPath !== ""
+                        anchors.topMargin: Theme.spacingS
+
+                        StyledText {
+                            text: "Config file:"
+                            font.pixelSize: Theme.fontSizeSmall
+                            font.weight: Font.Medium
+                            color: Theme.surfaceVariantText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            width: parent.width - implicitWidth - Theme.spacingM
+                            text: keybindsPath
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            elide: Text.ElideMiddle
+                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
                 }
@@ -421,11 +590,12 @@ Item {
 
                     Row {
                         width: parent.width
-                        spacing: Theme.spacingS
+                        spacing: Theme.spacingM
+                        anchors.topMargin: Theme.spacingM
 
                         Rectangle {
-                            width: 140
-                            height: 36
+                            width: 160
+                            height: 40
                             radius: Theme.cornerRadius
                             color: addMouseArea.containsMouse ? Theme.primaryContainer : Theme.surfaceVariant
 
@@ -458,8 +628,8 @@ Item {
                         }
 
                         Rectangle {
-                            width: 180
-                            height: 36
+                            width: 200
+                            height: 40
                             radius: Theme.cornerRadius
                             color: builtInMouseArea.containsMouse ? Theme.primaryContainer : Theme.surfaceVariant
 
@@ -494,14 +664,17 @@ Item {
 
                     Rectangle {
                         width: parent.width
-                        height: 32
+                        height: 40
                         radius: Theme.cornerRadius
                         color: Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.5)
                         visible: keybindsTab.keybinds.filter(k => k.type === 'keybind').length > 0
+                        anchors.topMargin: Theme.spacingM
 
                         Row {
                             anchors.fill: parent
-                            anchors.margins: Theme.spacingM
+                            anchors.margins: Theme.spacingL
+                            anchors.leftMargin: Theme.spacingL
+                            anchors.rightMargin: Theme.spacingL
                             spacing: Theme.spacingM
 
                             StyledText {
@@ -523,7 +696,7 @@ Item {
                             }
 
                             StyledText {
-                                width: parent.width - 140 - 120 - 40
+                                width: parent.width - 140 - 120 - 40 - 32 - Theme.spacingM
                                 text: "Command"
                                 font.pixelSize: Theme.fontSizeSmall
                                 font.weight: Font.Medium
@@ -539,11 +712,12 @@ Item {
                         clip: true
                         contentHeight: keybindsList.height
                         contentWidth: width
+                        anchors.topMargin: Theme.spacingM
 
                         Column {
                             id: keybindsList
                             width: parent.width
-                            spacing: Theme.spacingXS
+                            spacing: Theme.spacingS
 
                             Repeater {
                                 model: keybindsTab.keybinds
@@ -556,7 +730,7 @@ Item {
                                     Rectangle {
                                         id: keybindItem
                                         width: parent.width
-                                        height: 48
+                                        height: Math.max(56, keybindContent.implicitHeight + Theme.spacingL * 2)
                                         radius: Theme.cornerRadius
                                         color: itemMouseArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.08) : Qt.rgba(Theme.surfaceContainer.r, Theme.surfaceContainer.g, Theme.surfaceContainer.b, 0.2)
                                         border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.1)
@@ -565,9 +739,13 @@ Item {
                                         Row {
                                             id: keybindContent
                                             anchors.left: parent.left
-                                            anchors.right: parent.right
-                                            anchors.verticalCenter: parent.verticalCenter
-                                            anchors.margins: Theme.spacingM
+                                            anchors.right: deleteButton.visible ? deleteButton.left : parent.right
+                                            anchors.top: parent.top
+                                            anchors.bottom: parent.bottom
+                                            anchors.leftMargin: Theme.spacingL
+                                            anchors.rightMargin: deleteButton.visible ? Theme.spacingM : Theme.spacingL
+                                            anchors.topMargin: Theme.spacingL
+                                            anchors.bottomMargin: Theme.spacingL
                                             spacing: Theme.spacingM
 
                                             property bool isEditing: keybindsTab.editingIndex === index
@@ -577,7 +755,7 @@ Item {
                                                 text: modelData.modifiers || "MOD"
                                                 font.pixelSize: Theme.fontSizeMedium
                                                 color: modelData.modifiers ? Theme.surfaceText : Theme.surfaceVariantText
-                                                verticalAlignment: Text.AlignVCenter
+                                                wrapMode: Text.Wrap
                                                 visible: !keybindContent.isEditing
 
                                                 MouseArea {
@@ -612,6 +790,10 @@ Item {
                                                 }
                                                 onTextChanged: {
                                                     if (modelData.modifiers !== text) {
+                                                        // Update the array directly, not modelData
+                                                        if (index >= 0 && index < keybindsTab.keybinds.length) {
+                                                            keybindsTab.keybinds[index].modifiers = text
+                                                        }
                                                         modelData.modifiers = text
                                                         keybindsTab.hasUnsavedChanges = true
                                                     }
@@ -636,7 +818,7 @@ Item {
                                                 text: modelData.key || "key"
                                                 font.pixelSize: Theme.fontSizeMedium
                                                 color: modelData.key ? Theme.surfaceText : Theme.surfaceVariantText
-                                                verticalAlignment: Text.AlignVCenter
+                                                wrapMode: Text.Wrap
                                                 visible: !keybindContent.isEditing
 
                                                 MouseArea {
@@ -663,6 +845,10 @@ Item {
                                                 visible: keybindContent.isEditing
                                                 onTextChanged: {
                                                     if (modelData.key !== text) {
+                                                        // Update the array directly first, then modelData
+                                                        if (index >= 0 && index < keybindsTab.keybinds.length) {
+                                                            keybindsTab.keybinds[index].key = text
+                                                        }
                                                         modelData.key = text
                                                         keybindsTab.hasUnsavedChanges = true
                                                     }
@@ -683,12 +869,12 @@ Item {
                                             }
 
                                             StyledText {
-                                                width: parent.width - 140 - 120 - 40
+                                                id: commandText
+                                                width: parent.width - 140 - 120 - 40 - 32 - Theme.spacingM
                                                 text: modelData.command || "command"
                                                 font.pixelSize: Theme.fontSizeMedium
                                                 color: modelData.command ? Theme.surfaceText : Theme.surfaceVariantText
-                                                elide: Text.ElideRight
-                                                verticalAlignment: Text.AlignVCenter
+                                                wrapMode: Text.Wrap
                                                 visible: !keybindContent.isEditing
 
                                                 MouseArea {
@@ -709,12 +895,16 @@ Item {
 
                                             DarkTextField {
                                                 id: commandField
-                                                width: parent.width - 140 - 120 - 40
+                                                width: parent.width - 140 - 120 - 40 - 32 - Theme.spacingM
                                                 placeholderText: "command"
                                                 text: modelData.command || ""
                                                 visible: keybindContent.isEditing
                                                 onTextChanged: {
                                                     if (modelData.command !== text) {
+                                                        // Update the array directly, not modelData
+                                                        if (index >= 0 && index < keybindsTab.keybinds.length) {
+                                                            keybindsTab.keybinds[index].command = text
+                                                        }
                                                         modelData.command = text
                                                         keybindsTab.hasUnsavedChanges = true
                                                     }
@@ -730,18 +920,30 @@ Item {
                                                 }
                                             }
 
-                                            DarkActionButton {
-                                                buttonSize: 32
-                                                circular: true
-                                                iconName: "delete"
-                                                iconSize: 16
-                                                iconColor: Theme.error
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                visible: itemMouseArea.containsMouse && !keybindContent.isEditing
-                                                onClicked: {
-                                                    keybindsTab.keybinds.splice(index, 1)
-                                                    keybindsTab.hasUnsavedChanges = true
+                                        }
+
+                                        DarkActionButton {
+                                            id: deleteButton
+                                            buttonSize: 32
+                                            circular: true
+                                            iconName: "delete"
+                                            iconSize: 16
+                                            iconColor: Theme.error
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            anchors.right: parent.right
+                                            anchors.rightMargin: Theme.spacingM
+                                            visible: itemMouseArea.containsMouse && !keybindContent.isEditing
+                                            onClicked: {
+                                                // Stop editing if we were editing this item
+                                                if (keybindsTab.editingIndex === index) {
+                                                    keybindsTab.stopEditing()
                                                 }
+                                                // Mark as changed BEFORE modifying array
+                                                keybindsTab.hasUnsavedChanges = true
+                                                // Remove the item from the array
+                                                var newKeybinds = keybindsTab.keybinds.slice()
+                                                newKeybinds.splice(index, 1)
+                                                keybindsTab.keybinds = newKeybinds
                                             }
                                         }
 
@@ -841,12 +1043,12 @@ Item {
                 width: parent.width
                 spacing: Theme.spacingM
 
-                DarkIcon {
-                    name: "list"
-                    size: Theme.iconSize
-                    color: Theme.primary
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+                    DarkIcon {
+                        name: "list"
+                        size: Theme.iconSize
+                        color: Theme.primary
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
 
                 Column {
                     width: parent.width - Theme.iconSize - Theme.spacingM
@@ -940,6 +1142,26 @@ Item {
                     }
                 }
             }
+        }
+    }
+
+    FileBrowserModal {
+        id: keybindsFileBrowser
+
+        browserTitle: "Select Keybinds Config File"
+        browserIcon: "keyboard"
+        browserType: "generic"
+        fileExtensions: ["*.conf"]
+        saveMode: false
+        showHiddenFiles: true
+        
+        onFileSelected: path => {
+            var cleanPath = path.replace(/^file:\/\//, '')
+            SettingsData.keybindsPath = cleanPath
+            SettingsData.saveSettings()
+            keybindsTab.keybindsPath = cleanPath
+            loadKeybinds()
+            close()
         }
     }
 }

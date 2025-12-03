@@ -17,7 +17,7 @@ DarkModal {
     property string browserTitle: "Select File"
     property string browserIcon: "folder_open"
     property string browserType: "generic" // "wallpaper" or "profile" for last path memory
-    property bool showHiddenFiles: false
+    property bool showHiddenFiles: true
     property int selectedIndex: -1
     property bool keyboardNavigationActive: false
     property bool backButtonFocused: false
