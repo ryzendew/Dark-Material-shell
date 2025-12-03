@@ -172,7 +172,7 @@ PanelWindow {
                     anchors.leftMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     height: parent.height - 8
-                    width: Math.max(SettingsData.dockLeftWidgetAreaMinWidth, leftWidgets.implicitWidth + 16)
+                    width: SettingsData.dockWidgetsEnabled ? Math.max(SettingsData.dockLeftWidgetAreaMinWidth, leftWidgets.implicitWidth + 16) : 0
                     radius: Theme.cornerRadius
                     color: {
                         const baseColor = Theme.surfaceContainer
@@ -181,7 +181,7 @@ PanelWindow {
                     border.width: 1
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
                     z: 10 // Ensure it's on top
-                    visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
+                    visible: !SettingsData.dockExpandToScreen && SettingsData.dockWidgetsEnabled // Hide when expanding to screen or widgets disabled
                     
                     Behavior on width {
                         NumberAnimation {
@@ -236,7 +236,7 @@ PanelWindow {
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     height: parent.height - 8
-                    width: Math.max(SettingsData.dockRightWidgetAreaMinWidth, rightWidgets.implicitWidth + 16)
+                    width: SettingsData.dockWidgetsEnabled ? Math.max(SettingsData.dockRightWidgetAreaMinWidth, rightWidgets.implicitWidth + 16) : 0
                     radius: Theme.cornerRadius
                     color: {
                         const baseColor = Theme.surfaceContainer
@@ -244,7 +244,7 @@ PanelWindow {
                     }
                     border.width: 1
                     border.color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
-                    visible: !SettingsData.dockExpandToScreen // Hide when expanding to screen
+                    visible: !SettingsData.dockExpandToScreen && SettingsData.dockWidgetsEnabled // Hide when expanding to screen or widgets disabled
                     
                     Behavior on width {
                         NumberAnimation {
@@ -329,7 +329,7 @@ PanelWindow {
                             height: parent.height * 0.6
                             color: Theme.outline
                             opacity: 0.3
-                            visible: !SettingsData.dockCenterApps
+                            visible: !SettingsData.dockCenterApps && SettingsData.dockWidgetsEnabled
                         }
 
 
@@ -342,7 +342,7 @@ PanelWindow {
                             height: parent.height - 8
                             widgetList: SettingsData.dockLeftWidgetsModel
                             side: "left"
-                            visible: SettingsData.dockExpandToScreen
+                            visible: SettingsData.dockExpandToScreen && SettingsData.dockWidgetsEnabled
                             z: 2
                         }
 
@@ -354,7 +354,7 @@ PanelWindow {
                             height: parent.height * 0.6
                             color: Theme.outline
                             opacity: 0.3
-                            visible: SettingsData.dockExpandToScreen
+                            visible: SettingsData.dockExpandToScreen && SettingsData.dockWidgetsEnabled
                         }
 
                         DockWidgets {
@@ -365,7 +365,7 @@ PanelWindow {
                             height: parent.height - 8
                             widgetList: SettingsData.dockRightWidgetsModel
                             side: "right"
-                            visible: SettingsData.dockExpandToScreen
+                            visible: SettingsData.dockExpandToScreen && SettingsData.dockWidgetsEnabled
                             z: 2
                         }
 

@@ -322,14 +322,14 @@ PanelWindow {
             }
 
             Rectangle {
-                visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
+                visible: root.appData && root.appData.type === "window"
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
             Rectangle {
-                visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
+                visible: root.appData && root.appData.type === "window"
                 width: parent.width
                 height: 28
                 radius: Theme.cornerRadius
@@ -361,7 +361,7 @@ PanelWindow {
             }
 
             Repeater {
-                visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned") && root.workspaceOptionsVisible
+                visible: root.appData && root.appData.type === "window" && root.workspaceOptionsVisible
                 model: SettingsData.maxWorkspaces
                 
                 Rectangle {
@@ -429,6 +429,76 @@ PanelWindow {
 
             Rectangle {
                 visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
+                width: parent.width
+                height: 1
+                color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
+            }
+
+            Rectangle {
+                visible: root.appData && root.appData.type === "window" && CompositorService.isHyprland
+                width: parent.width
+                height: 28
+                radius: Theme.cornerRadius
+                color: floatingToggleArea.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
+
+                StyledText {
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.spacingS
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.spacingS
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: {
+                        if (!root.appData) return "Toggle Floating"
+                        const toplevel = root.getToplevelObject()
+                        if (!toplevel) return "Toggle Floating"
+                        
+                        if (CompositorService.isHyprland) {
+                            const hyprlandToplevels = Array.from(Hyprland.toplevels?.values || [])
+                            const hyprToplevel = hyprlandToplevels.find(ht => ht.wayland === toplevel)
+                            if (hyprToplevel && hyprToplevel.floating) {
+                                return "Unfloat Window"
+                            }
+                        }
+                        return "Toggle Floating"
+                    }
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: "white"
+                    font.weight: Font.Normal
+                    elide: Text.ElideRight
+                    wrapMode: Text.NoWrap
+                }
+
+                MouseArea {
+                    id: floatingToggleArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        if (root.appData) {
+                            const toplevel = root.getToplevelObject()
+                            
+                            if (toplevel && CompositorService.isHyprland) {
+                                const hyprlandToplevels = Array.from(Hyprland.toplevels?.values || [])
+                                const hyprToplevel = hyprlandToplevels.find(ht => ht.wayland === toplevel)
+                                
+                                if (hyprToplevel) {
+                                    const windowAddress = hyprToplevel.address || hyprToplevel.id
+                                    
+                                    if (windowAddress) {
+                                        const formattedAddress = windowAddress.toString().startsWith('0x') ? windowAddress : `0x${windowAddress}`
+                                        const command = `togglefloating address:${formattedAddress}`
+                                        Hyprland.dispatch(command)
+                                    }
+                                }
+                            }
+                        }
+                        root.close()
+                    }
+                }
+            }
+
+            Rectangle {
+                visible: root.appData && root.appData.type === "window" && CompositorService.isHyprland
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
@@ -503,14 +573,14 @@ PanelWindow {
             }
 
             Rectangle {
-                visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
+                visible: root.appData && root.appData.type === "window"
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Theme.outline.r, Theme.outline.g, Theme.outline.b, 0.2)
             }
 
             Rectangle {
-                visible: root.appData && (root.appData.type === "window" || root.appData.type === "pinned")
+                visible: root.appData && root.appData.type === "window"
                 width: parent.width
                 height: 28
                 radius: Theme.cornerRadius
@@ -546,17 +616,8 @@ PanelWindow {
                     }
                     
                     function getToplevelObject() {
-                        if (!root.appData || (root.appData.type !== "window" && root.appData.type !== "pinned")) {
+                        if (!root.appData || root.appData.type !== "window") {
                             return null
-                        }
-                        
-                        if (root.appData.type === "pinned" && root.appData.windows && root.appData.windows.length > 0) {
-                            for (var i = 0; i < root.appData.windows.length; i++) {
-                                if (root.appData.windows[i].toplevel && root.appData.windows[i].toplevel.activated) {
-                                    return root.appData.windows[i].toplevel
-                                }
-                            }
-                            return root.appData.windows[0].toplevel
                         }
                         
                         const sortedToplevels = CompositorService.sortedToplevels

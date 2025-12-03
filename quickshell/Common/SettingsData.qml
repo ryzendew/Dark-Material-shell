@@ -347,6 +347,7 @@ Singleton {
     property bool gtkThemingEnabled: false
     property bool qtThemingEnabled: false
     property bool showDock: true
+    property bool dockWidgetsEnabled: true
     property bool dockAutoHide: false
     property bool dockGroupApps: false
     property bool dockHideOnGames: true
@@ -2587,6 +2588,11 @@ Singleton {
 
     function setShowDock(enabled) {
         showDock = enabled
+        saveSettings()
+    }
+
+    function setDockWidgetsEnabled(enabled) {
+        dockWidgetsEnabled = enabled
         saveSettings()
     }
 

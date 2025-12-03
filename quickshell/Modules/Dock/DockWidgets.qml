@@ -438,6 +438,9 @@ Row {
     }
     
     function getWidgetEnabled(enabled) {
+        if (!SettingsData.dockWidgetsEnabled) {
+            return false
+        }
         return enabled !== false
     }
 

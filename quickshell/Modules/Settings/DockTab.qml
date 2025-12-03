@@ -50,6 +50,16 @@ Item {
                                        SettingsData.setShowDock(checked)
                                    }
                     }
+
+                    DarkToggle {
+                        width: parent.width
+                        text: "Enable Dock Widgets"
+                        description: "Show widgets on the left and right sides of the dock"
+                        checked: SettingsData.dockWidgetsEnabled
+                        onToggled: checked => {
+                                       SettingsData.setDockWidgetsEnabled(checked)
+                                   }
+                    }
                 }
             }
 
