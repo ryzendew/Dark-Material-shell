@@ -27,36 +27,73 @@ Item {
         return notoSansLoader.status === FontLoader.Ready ? notoSansLoader.name : ""
     }
 
-    property var queryCallback: null
+    // Query queue system to prevent conflicts
+    property var queryQueue: []
+    property bool queryInProgress: false
+    property var activeQueryCallback: null
+    
     Process {
         id: queryProcess
         running: false
         stdout: StdioCollector {
             onStreamFinished: {
-                if (root.queryCallback)
-                    root.queryCallback(text)
-                root.queryCallback = null
+                if (root.activeQueryCallback) {
+                    var result = (text || "").trim()
+                    root.activeQueryCallback(result)
+                    root.activeQueryCallback = null
+                }
+                root.queryInProgress = false
+                root.processNextQuery()
             }
         }
     }
 
-    function queryDefault(mime, cb) {
-        root.queryCallback = function(out) {
-            var id = (out || "").trim()
-            cb(id)
-        }
-        queryProcess.command = ["xdg-mime", "query", "default", mime]
+    function processNextQuery() {
+        if (root.queryInProgress || root.queryQueue.length === 0) return
+        
+        root.queryInProgress = true
+        var item = root.queryQueue.shift()
+        root.activeQueryCallback = item.callback
+        queryProcess.command = ["xdg-mime", "query", "default", item.mime]
         queryProcess.running = true
     }
 
-    function setDefault(mime, desktopId) {
-        var finalId = desktopId
-        if (!finalId.endsWith(".desktop")) {
-            finalId = finalId + ".desktop"
+    function queryDefault(mime, cb) {
+        if (!mime || !cb) return
+        root.queryQueue.push({mime: mime, callback: cb})
+        root.processNextQuery()
+    }
+
+    // Centralized ID normalization
+    function normalizeDesktopId(id) {
+        if (!id || typeof id !== 'string') return ""
+        var normalized = id.toLowerCase().trim()
+        if (normalized.endsWith('.desktop')) {
+            normalized = normalized.slice(0, -8)
         }
+        return normalized
+    }
+
+    function desktopIdsMatch(id1, id2) {
+        return root.normalizeDesktopId(id1) === root.normalizeDesktopId(id2)
+    }
+
+    function ensureDesktopExtension(id) {
+        if (!id) return ""
+        var normalized = id.trim()
+        if (!normalized.endsWith('.desktop')) {
+            normalized = normalized + '.desktop'
+        }
+        return normalized
+    }
+
+    function setDefault(mime, desktopId) {
+        if (!mime || !desktopId) return
         
+        var finalId = root.ensureDesktopExtension(desktopId)
+        
+        // Set via both methods for maximum compatibility
         Quickshell.execDetached(["gio", "mime", mime, finalId])
-        
         Quickshell.execDetached(["xdg-mime", "default", finalId, mime])
     }
 
@@ -82,10 +119,73 @@ Item {
         const seen = new Set()
         const out = []
         for (const a of list) {
-            const id = a.id || a.desktopId || a.filename || a.appId || a.name
-            if (!seen.has(id)) { seen.add(id); out.push(a) }
+            if (!a) continue
+            const id = root.getAppId(a)
+            const normalizedId = root.normalizeDesktopId(id)
+            if (!seen.has(normalizedId)) { 
+                seen.add(normalizedId)
+                out.push(a) 
+            }
         }
         return out
+    }
+
+    function getAppId(app) {
+        if (!app) return ""
+        return app.id || app.desktopId || app.filename || app.appId || ((app.name || "Unknown") + ".desktop")
+    }
+
+    // Improved candidate detection - checks all MIME types and combines with categories
+    function getAppsForMimeTypes(mimeTypes) {
+        if (!mimeTypes || mimeTypes.length === 0) return []
+        
+        var apps = root.allApps || []
+        var matchingApps = []
+        var seenIds = new Set()
+        
+        // First: Find apps that directly support any of the MIME types
+        for (var i = 0; i < mimeTypes.length; i++) {
+            var mime = mimeTypes[i]
+            for (var j = 0; j < apps.length; j++) {
+                var app = apps[j]
+                var appMimes = app.mimeTypes || []
+                if (appMimes.includes(mime)) {
+                    var appId = root.getAppId(app)
+                    var normalizedId = root.normalizeDesktopId(appId)
+                    if (!seenIds.has(normalizedId)) {
+                        seenIds.add(normalizedId)
+                        matchingApps.push(app)
+                    }
+                }
+            }
+        }
+        
+        // Second: For scheme handlers, also check categories
+        for (var k = 0; k < mimeTypes.length; k++) {
+            var mime = mimeTypes[k]
+            if (mime.startsWith('x-scheme-handler/')) {
+                var handler = mime.split('/')[1]
+                var categoryApps = []
+                
+                if (handler === 'http' || handler === 'https') {
+                    categoryApps = root.appsByCategory('WebBrowser')
+                } else if (handler === 'mailto') {
+                    categoryApps = root.appsByCategory('Email')
+                }
+                
+                for (var l = 0; l < categoryApps.length; l++) {
+                    var app = categoryApps[l]
+                    var appId = root.getAppId(app)
+                    var normalizedId = root.normalizeDesktopId(appId)
+                    if (!seenIds.has(normalizedId)) {
+                        seenIds.add(normalizedId)
+                        matchingApps.push(app)
+                    }
+                }
+            }
+        }
+        
+        return matchingApps
     }
 
     function displayName(app) {
@@ -195,110 +295,138 @@ Item {
                             
                             function initCandidates() {
                                 if (modelData.isTerminal) {
-                                    candidates = SettingsData.availableTerminals.map(function(term) {
+                                    candidates = (SettingsData.availableTerminals || []).map(function(term) {
                                         return { name: term, id: term, displayName: term }
                                     })
                                 } else if (modelData.isAurHelper) {
-                                    candidates = SettingsData.availableAurHelpers.map(function(helper) {
+                                    candidates = (SettingsData.availableAurHelpers || []).map(function(helper) {
                                         return { name: helper, id: helper, displayName: helper }
                                     })
                                 } else {
-                                    var apps = allApps || []
-                                    var byMime = []
-                                    for (var mi = 0; mi < (modelData.mimes || []).length; mi++) {
-                                        var m = modelData.mimes[mi]
-                                        for (var ai = 0; ai < apps.length; ai++) {
-                                            var a = apps[ai]
-                                            if ((a.mimeTypes || []).indexOf(m) !== -1) byMime.push(a)
-                                        }
+                                    // Use improved detection that checks all MIME types
+                                    var mimeTypes = modelData.mimes || []
+                                    var detectedApps = root.getAppsForMimeTypes(mimeTypes)
+                                    
+                                    // Fallback to category-based if no MIME matches
+                                    if (detectedApps.length === 0 && modelData.candidates) {
+                                        detectedApps = modelData.candidates() || []
                                     }
-                                    if (byMime.length > 0) {
-                                        candidates = uniqueApps(byMime)
-                                    } else if (modelData.candidates) {
-                                        candidates = modelData.candidates() || []
-                                    } else {
-                                        candidates = apps
-                                    }
+                                    
+                                    candidates = root.uniqueApps(detectedApps)
                                 }
                             }
                             
+                            function findAppById(desktopId) {
+                                if (!desktopId) return null
+                                
+                                var normalizedTarget = root.normalizeDesktopId(desktopId)
+                                
+                                // First check candidates
+                                for (var i = 0; i < candidates.length; i++) {
+                                    var app = candidates[i]
+                                    if (!app) continue
+                                    
+                                    // Check all possible ID fields
+                                    var idFields = [
+                                        app.id,
+                                        app.desktopId,
+                                        app.filename,
+                                        app.appId
+                                    ]
+                                    
+                                    for (var f = 0; f < idFields.length; f++) {
+                                        if (idFields[f] && root.desktopIdsMatch(idFields[f], desktopId)) {
+                                            return app
+                                        }
+                                    }
+                                    
+                                    // Also check normalized app ID
+                                    var appId = root.getAppId(app)
+                                    if (root.desktopIdsMatch(appId, desktopId)) {
+                                        return app
+                                    }
+                                }
+                                
+                                // Then check all apps
+                                for (var j = 0; j < root.allApps.length; j++) {
+                                    var app = root.allApps[j]
+                                    if (!app) continue
+                                    
+                                    // Check all possible ID fields
+                                    var idFields = [
+                                        app.id,
+                                        app.desktopId,
+                                        app.filename,
+                                        app.appId
+                                    ]
+                                    
+                                    for (var f = 0; f < idFields.length; f++) {
+                                        if (idFields[f] && root.desktopIdsMatch(idFields[f], desktopId)) {
+                                            return app
+                                        }
+                                    }
+                                    
+                                    // Also check normalized app ID
+                                    var appId = root.getAppId(app)
+                                    if (root.desktopIdsMatch(appId, desktopId)) {
+                                        return app
+                                    }
+                                }
+                                
+                                // Last resort: try DesktopEntries.heuristicLookup
+                                if (typeof DesktopEntries !== "undefined") {
+                                    var entry = DesktopEntries.heuristicLookup(desktopId)
+                                    if (entry) {
+                                        // Create a minimal app object from the entry
+                                        return {
+                                            id: entry.id || desktopId,
+                                            desktopId: entry.id || desktopId,
+                                            filename: entry.id || desktopId,
+                                            name: entry.name,
+                                            displayName: entry.name,
+                                            icon: entry.icon,
+                                            mimeTypes: entry.mimeTypes || []
+                                        }
+                                    }
+                                }
+                                
+                                return null
+                            }
+
                             function ensureCurrentAppInCandidates() {
                                 if (modelData.isTerminal || modelData.isAurHelper || !currentDesktopId) return
                                 
+                                // Check if already in candidates using normalized comparison
                                 var found = false
                                 for (var i = 0; i < candidates.length; i++) {
-                                    var appId = getAppId(candidates[i])
-                                    if (appId === currentDesktopId || normalizeId(appId) === normalizeId(currentDesktopId)) {
+                                    var appId = root.getAppId(candidates[i])
+                                    if (root.desktopIdsMatch(appId, currentDesktopId)) {
                                         found = true
                                         break
                                     }
                                 }
                                 
                                 if (!found) {
-                                    var normalizedCurrent = normalizeId(currentDesktopId)
-                                    var currentWithoutExt = normalizedCurrent
-                                    
-                                    for (var j = 0; j < allApps.length; j++) {
-                                        var app = allApps[j]
-                                        var appId = getAppId(app)
-                                        var normalizedAppId = normalizeId(appId)
-                                        
-                                        var matches = false
-                                        
-                                        if (appId === currentDesktopId || normalizedAppId === normalizedCurrent) {
-                                            matches = true
-                                        }
-                                        else if (app.filename && (app.filename === currentDesktopId || normalizeId(app.filename) === normalizedCurrent)) {
-                                            matches = true
-                                        }
-                                        else if (app.desktopId && (app.desktopId === currentDesktopId || normalizeId(app.desktopId) === normalizedCurrent)) {
-                                            matches = true
-                                        }
-                                        else if (app.id && (app.id === currentDesktopId || normalizeId(app.id) === normalizedCurrent)) {
-                                            matches = true
-                                        }
-                                        else if (appId === normalizedCurrent + ".desktop" || normalizedAppId + ".desktop" === currentDesktopId) {
-                                            matches = true
-                                        }
-                                        else if (app.name && normalizeId(app.name) === normalizedCurrent) {
-                                            matches = true
-                                        }
-                                        
-                                        if (matches) {
-                                            var newCandidates = [app]
-                                            for (var k = 0; k < candidates.length; k++) {
-                                                newCandidates.push(candidates[k])
-                                            }
-                                            candidates = newCandidates
-                                            break
-                                        }
+                                    // Find app in allApps and add to candidates
+                                    var app = findAppById(currentDesktopId)
+                                    if (app) {
+                                        // Add to beginning of candidates list
+                                        candidates = [app].concat(candidates)
                                     }
                                 }
                             }
-                            property var optionNames: (candidates || []).map(a => ((modelData.isTerminal || modelData.isAurHelper) ? a.name : displayName(a)))
+                            property var optionNames: (candidates || []).map(a => ((modelData.isTerminal || modelData.isAurHelper) ? a.name : root.displayName(a)))
                             property var optionIcons: (candidates || []).map(a => (modelData.isTerminal ? "terminal" : (modelData.isAurHelper ? "" : (a.icon || "application-x-executable"))))
                             property var nameToDesktopId: {
                                 var _ = candidates.length // Dummy access to make this reactive
                                 const m = {}
                                 for (var i = 0; i < (candidates || []).length; i++) {
                                     var a = candidates[i]
-                                    var id = ((modelData.isTerminal || modelData.isAurHelper) ? a.id : (a.id || a.desktopId || a.filename || a.appId || ((a.name || "Unknown") + ".desktop")))
-                                    var name = ((modelData.isTerminal || modelData.isAurHelper) ? a.name : displayName(a))
+                                    var id = ((modelData.isTerminal || modelData.isAurHelper) ? a.id : root.getAppId(a))
+                                    var name = ((modelData.isTerminal || modelData.isAurHelper) ? a.name : root.displayName(a))
                                     m[name] = id
                                 }
                                 return m
-                            }
-                            function normalizeId(id) {
-                                if (!id) return ""
-                                var normalized = id.toString()
-                                if (normalized.endsWith(".desktop")) {
-                                    normalized = normalized.substring(0, normalized.length - 8)
-                                }
-                                return normalized.toLowerCase()
-                            }
-                            
-                            function getAppId(app) {
-                                return app.id || app.desktopId || app.filename || app.appId || ((app.name || "Unknown") + ".desktop")
                             }
                             
                             property string currentName: {
@@ -308,68 +436,63 @@ Item {
                                 if (modelData.isAurHelper) {
                                     return SettingsData.aurHelper || ""
                                 }
-                                if (!currentDesktopId) return ""
-                                var normalizedCurrent = normalizeId(currentDesktopId)
                                 
-                                for (var i = 0; i < (candidates || []).length; i++) {
-                                    var a = candidates[i]
-                                    var appId = getAppId(a)
-                                    var normalizedAppId = normalizeId(appId)
-                                    
-                                    if (appId === currentDesktopId) {
-                                        return displayName(a)
-                                    }
-                                    
-                                    if (normalizedAppId === normalizedCurrent) {
-                                        return displayName(a)
-                                    }
-                                    
-                                    var propertiesToCheck = [a.id, a.desktopId, a.filename, a.appId]
-                                    for (var p = 0; p < propertiesToCheck.length; p++) {
-                                        var prop = propertiesToCheck[p]
-                                        if (prop && (prop === currentDesktopId || normalizeId(prop) === normalizedCurrent)) {
-                                            return displayName(a)
-                                        }
-                                        if (prop && (prop + ".desktop" === currentDesktopId || normalizeId(prop) + ".desktop" === currentDesktopId)) {
-                                            return displayName(a)
-                                        }
-                                        if (prop && prop === normalizedCurrent + ".desktop") {
-                                            return displayName(a)
-                                        }
-                                    }
-                                    
-                                    var currentBase = normalizedCurrent.split('.')[0] // Get base name before first dot
-                                    var appBase = normalizedAppId.split('.')[0]
-                                    if (currentBase && appBase && currentBase === appBase && currentBase.length > 2) {
-                                        return displayName(a)
+                                // First try to find in candidates/allApps
+                                var app = findAppById(currentDesktopId)
+                                if (app) {
+                                    return root.displayName(app)
+                                }
+                                
+                                // Fallback: Try DesktopEntries.heuristicLookup for better name resolution
+                                if (currentDesktopId && typeof DesktopEntries !== "undefined") {
+                                    var entry = DesktopEntries.heuristicLookup(currentDesktopId)
+                                    if (entry && entry.name) {
+                                        return entry.name
                                     }
                                 }
                                 
-                                var readableName = currentDesktopId.replace(".desktop", "").split('.').pop() || currentDesktopId.replace(".desktop", "")
-                                return readableName || ""
+                                // Last resort: Generate readable name from desktop ID
+                                if (currentDesktopId) {
+                                    var base = root.normalizeDesktopId(currentDesktopId)
+                                    // For IDs like "org.kde.gwenview", try to get a meaningful part
+                                    var parts = base.split('.')
+                                    // If it's a reverse domain (org.kde.app), use the last meaningful part
+                                    if (parts.length > 2) {
+                                        // Skip common prefixes like "org", "com", "io"
+                                        var skipPrefixes = ["org", "com", "io", "net", "dev"]
+                                        var meaningfulParts = parts.filter(function(p) {
+                                            return p && !skipPrefixes.includes(p.toLowerCase())
+                                        })
+                                        if (meaningfulParts.length > 0) {
+                                            // Capitalize first letter
+                                            var name = meaningfulParts[meaningfulParts.length - 1]
+                                            return name.charAt(0).toUpperCase() + name.slice(1)
+                                        }
+                                    }
+                                    // Simple case: just use the last part or the whole thing
+                                    return parts[parts.length - 1] || base
+                                }
+                                
+                                return ""
                             }
+                            
                             property string currentIcon: {
-                                if (modelData.isTerminal) {
-                                    return "terminal"
+                                if (modelData.isTerminal) return "terminal"
+                                if (modelData.isAurHelper) return ""
+                                
+                                var app = findAppById(currentDesktopId)
+                                if (app && app.icon) {
+                                    return app.icon
                                 }
-                                if (modelData.isAurHelper) {
-                                    return "" // No icon for AUR helpers
-                                }
-                                if (!currentDesktopId) return "application-x-executable"
-                                var normalizedCurrent = normalizeId(currentDesktopId)
-                                for (var i = 0; i < (candidates || []).length; i++) {
-                                    var a = candidates[i]
-                                    var appId = getAppId(a)
-                                    if (appId === currentDesktopId) {
-                                        return a.icon || "application-x-executable"
-                                    }
-                                    if (normalizeId(appId) === normalizedCurrent) {
-                                        return a.icon || "application-x-executable"
-                                    }
-                                    if (appId.includes(normalizedCurrent) || normalizedCurrent.includes(normalizeId(a.name || ""))) {
-                                        return a.icon || "application-x-executable"
+                                
+                                // Try DesktopEntries lookup for better icon support
+                                if (currentDesktopId && typeof DesktopEntries !== "undefined") {
+                                    var entry = DesktopEntries.heuristicLookup(currentDesktopId)
+                                    if (entry && entry.icon) {
+                                        return entry.icon
                                     }
                                 }
+                                
                                 return "application-x-executable"
                             }
                             
@@ -380,15 +503,25 @@ Item {
                             function refreshDefault() {
                                 if (modelData.isTerminal) {
                                     currentDesktopId = SettingsData.terminalEmulator || ""
-                                } else if (modelData.isAurHelper) {
-                                    currentDesktopId = SettingsData.aurHelper || ""
-                                } else {
-                                    var mime = modelData.mimes[0]
-                                    root.queryDefault(mime, function(id) {
-                                        currentDesktopId = id || ""
-                                        ensureCurrentAppInCandidates()
-                                    })
+                                    return
                                 }
+                                
+                                if (modelData.isAurHelper) {
+                                    currentDesktopId = SettingsData.aurHelper || ""
+                                    return
+                                }
+                                
+                                // Query first MIME type (they should all have same default)
+                                var mime = (modelData.mimes || [])[0]
+                                if (!mime) {
+                                    currentDesktopId = ""
+                                    return
+                                }
+                                
+                                root.queryDefault(mime, function(id) {
+                                    currentDesktopId = id || ""
+                                    ensureCurrentAppInCandidates()
+                                })
                             }
 
                             Component.onCompleted: {
@@ -407,6 +540,7 @@ Item {
                                 onValueChanged: (value) => {
                                     var desktopId = parent.nameToDesktopId[value] || ""
                                     if (!desktopId) return
+                                    
                                     if (modelData.isTerminal) {
                                         SettingsData.terminalEmulator = desktopId
                                         parent.currentDesktopId = desktopId
@@ -414,14 +548,22 @@ Item {
                                         SettingsData.aurHelper = desktopId
                                         parent.currentDesktopId = desktopId
                                     } else {
-                                        for (const mime of modelData.mimes) {
+                                        // Set default for all MIME types
+                                        for (const mime of (modelData.mimes || [])) {
                                             root.setDefault(mime, desktopId)
                                         }
+                                        
+                                        // Update UI immediately
                                         parent.currentDesktopId = desktopId
                                         parent.ensureCurrentAppInCandidates()
+                                        
+                                        // Verify after a delay to allow system to update
+                                        // Use nested Qt.callLater for delay effect
                                         Qt.callLater(function() {
                                             Qt.callLater(function() {
-                                                parent.refreshDefault()
+                                                Qt.callLater(function() {
+                                                    parent.refreshDefault()
+                                                })
                                             })
                                         })
                                     }
