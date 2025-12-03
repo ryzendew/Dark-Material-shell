@@ -159,34 +159,8 @@ Item {
                                 const hasMenu = delegateRoot.trayItem.menu || delegateRoot.trayItem.hasMenu
                                 console.log("[Systray] Menu check - menu:", !!delegateRoot.trayItem.menu, "hasMenu:", !!delegateRoot.trayItem.hasMenu, "hasMenu (combined):", hasMenu)
                                 if (delegateRoot.trayItem && hasMenu) {
-                                    console.log("[Systray] Menu available, isAtBottom:", root.isAtBottom)
-                                    if (root.isAtBottom) {
-                                        console.log("[Systray] Using showForTrayItem (bottom bar)")
-                                        root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
-                                    } else {
-                                        console.log("[Systray] Top bar - checking QsMenuAnchor path")
-                                        if (delegateRoot.trayItem.menu && parentWindow) {
-                                            console.log("[Systray] Using QsMenuAnchor path")
-                                            const globalPos = visualContent.mapToGlobal(visualContent.width / 2, visualContent.height / 2);
-                                            const currentScreen = parentScreen || Screen;
-                                            const screenX = currentScreen.x || 0;
-                                            const relativeX = globalPos.x - screenX;
-                                            console.log("[Systray] Global pos:", globalPos, "screenX:", screenX, "relativeX:", relativeX)
-                                            menuAnchor.menu = delegateRoot.trayItem.menu;
-                                            menuAnchor.anchor.window = parentWindow;
-                                            const barHeight = parentWindow ? parentWindow.effectiveBarHeight : 30;
-                                            menuAnchor.anchor.rect = Qt.rect(relativeX, barHeight + SettingsData.topBarSpacing, parent.width, 1);
-                                            console.log("[Systray] Opening QsMenuAnchor with rect:", menuAnchor.anchor.rect)
-                                            menuAnchor.open();
-                                            console.log("[Systray] QsMenuAnchor.open() called")
-                                        } else if (delegateRoot.trayItem.hasMenu) {
-                                            console.log("[Systray] Fallback to showForTrayItem (hasMenu but no menu object or no parentWindow)")
-                                            console.log("[Systray] parentWindow:", !!parentWindow, "hasMenu:", delegateRoot.trayItem.hasMenu)
-                                            root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
-                                        } else {
-                                            console.log("[Systray] ERROR: No menu path available!")
-                                        }
-                                    }
+                                    console.log("[Systray] Menu available, using showForTrayItem")
+                                    root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
                                 } else {
                                     console.log("[Systray] No menu available for this tray item")
                                 }
@@ -291,34 +265,8 @@ Item {
                                 const hasMenu = delegateRoot.trayItem.menu || delegateRoot.trayItem.hasMenu
                                 console.log("[Systray-Column] Menu check - menu:", !!delegateRoot.trayItem.menu, "hasMenu:", !!delegateRoot.trayItem.hasMenu, "hasMenu (combined):", hasMenu)
                                 if (delegateRoot.trayItem && hasMenu) {
-                                    console.log("[Systray-Column] Menu available, isAtBottom:", root.isAtBottom)
-                                    if (root.isAtBottom) {
-                                        console.log("[Systray-Column] Using showForTrayItem (bottom bar)")
-                                        root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
-                                    } else {
-                                        console.log("[Systray-Column] Top bar - checking QsMenuAnchor path")
-                                        if (delegateRoot.trayItem.menu && parentWindow) {
-                                            console.log("[Systray-Column] Using QsMenuAnchor path")
-                                            const globalPos = visualContent.mapToGlobal(visualContent.width / 2, visualContent.height / 2);
-                                            const currentScreen = parentScreen || Screen;
-                                            const screenX = currentScreen.x || 0;
-                                            const relativeX = globalPos.x - screenX;
-                                            console.log("[Systray-Column] Global pos:", globalPos, "screenX:", screenX, "relativeX:", relativeX)
-                                            menuAnchor.menu = delegateRoot.trayItem.menu;
-                                            menuAnchor.anchor.window = parentWindow;
-                                            const barHeight = parentWindow ? parentWindow.effectiveBarHeight : 30;
-                                            menuAnchor.anchor.rect = Qt.rect(relativeX, barHeight + SettingsData.topBarSpacing, parent.width, 1);
-                                            console.log("[Systray-Column] Opening QsMenuAnchor with rect:", menuAnchor.anchor.rect)
-                                            menuAnchor.open();
-                                            console.log("[Systray-Column] QsMenuAnchor.open() called")
-                                        } else if (delegateRoot.trayItem.hasMenu) {
-                                            console.log("[Systray-Column] Fallback to showForTrayItem (hasMenu but no menu object or no parentWindow)")
-                                            console.log("[Systray-Column] parentWindow:", !!parentWindow, "hasMenu:", delegateRoot.trayItem.hasMenu)
-                                            root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
-                                        } else {
-                                            console.log("[Systray-Column] ERROR: No menu path available!")
-                                        }
-                                    }
+                                    console.log("[Systray-Column] Menu available, using showForTrayItem")
+                                    root.showForTrayItem(delegateRoot.trayItem, visualContent, parentScreen, root.isAtBottom, root.isVertical, root.axis);
                                 } else {
                                     console.log("[Systray-Column] No menu available for this tray item")
                                 }
@@ -471,8 +419,9 @@ Item {
                             targetY = relativeY
                             console.log("[Systray-Menu] Bottom bar - targetY:", targetY, "relativeY:", relativeY)
                         } else {
-                            targetY = relativeY + menuRoot.anchorItem.height + SettingsData.darkBarSpacing + Theme.popupDistance
-                            console.log("[Systray-Menu] Top bar - targetY:", targetY, "relativeY:", relativeY)
+                            const barHeight = root.widgetHeight || root.barThickness || 30
+                            targetY = relativeY + menuRoot.anchorItem.height + Theme.spacingS
+                            console.log("[Systray-Menu] Top bar - targetY:", targetY, "relativeY:", relativeY, "iconHeight:", menuRoot.anchorItem.height)
                         }
                         anchorPos = Qt.point(relativeX + menuRoot.anchorItem.width / 2, targetY)
                         console.log("[Systray-Menu] Horizontal anchorPos:", anchorPos)

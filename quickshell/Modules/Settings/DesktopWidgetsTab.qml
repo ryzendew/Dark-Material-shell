@@ -906,6 +906,269 @@ Item {
 
             StyledRect {
                 width: parent.width
+                height: desktopDarkDashVisualSection.implicitHeight + Theme.spacingL * 2
+                radius: Theme.cornerRadius
+                color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,
+                               Theme.surfaceVariant.b, 0.3)
+                border.color: Qt.rgba(Theme.outline.r, Theme.outline.g,
+                                      Theme.outline.b, 0.2)
+                border.width: 1
+                visible: SettingsData.desktopWidgetsEnabled && SettingsData.desktopDarkDashEnabled
+                opacity: visible ? 1 : 0
+
+                Column {
+                    id: desktopDarkDashVisualSection
+
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingL
+                    spacing: Theme.spacingM
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingM
+
+                        DarkIcon {
+                            name: "tune"
+                            size: Theme.iconSize
+                            color: Theme.primary
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: Theme.spacingXS
+                            width: parent.width - Theme.iconSize - Theme.spacingM
+
+                            StyledText {
+                                text: "Desktop Dark Dash Visual Settings"
+                                font.pixelSize: Theme.fontSizeLarge
+                                color: Theme.surfaceText
+                                font.weight: Font.Medium
+                            }
+
+                            StyledText {
+                                text: "Customize transparency and shadow effects for the Desktop Dark Dash widget"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceTextMedium
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Transparency"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashTransparency * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashTransparency(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Drop Shadow Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashDropShadowOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashDropShadowOpacity(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Border Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashBorderOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashBorderOpacity(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Border Thickness"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: SettingsData.desktopDarkDashBorderThickness
+                            minimum: 0
+                            maximum: 10
+                            unit: "px"
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashBorderThickness(
+                                                          newValue)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Tab Bar Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashTabBarOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashTabBarOpacity(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Content Background Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashContentBackgroundOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashContentBackgroundOpacity(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+
+                        StyledText {
+                            text: "Desktop Dark Dash Animated Tint Opacity"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceText
+                            font.weight: Font.Medium
+                        }
+
+                        DarkSlider {
+                            width: parent.width
+                            height: 24
+                            value: Math.round(
+                                       SettingsData.desktopDarkDashAnimatedTintOpacity * 100)
+                            minimum: 0
+                            maximum: 100
+                            unit: ""
+                            showValue: true
+                            wheelEnabled: false
+                            onSliderValueChanged: newValue => {
+                                                      SettingsData.setDesktopDarkDashAnimatedTintOpacity(
+                                                          newValue / 100)
+                                                  }
+                        }
+                    }
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Theme.mediumDuration
+                            easing.type: Theme.emphasizedEasing
+                        }
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.mediumDuration
+                        easing.type: Theme.emphasizedEasing
+                    }
+                }
+            }
+
+            StyledRect {
+                width: parent.width
                 height: weatherSection.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Qt.rgba(Theme.surfaceVariant.r, Theme.surfaceVariant.g,

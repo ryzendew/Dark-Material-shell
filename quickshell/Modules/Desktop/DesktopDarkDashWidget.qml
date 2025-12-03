@@ -97,6 +97,7 @@ PanelWindow {
             color: Qt.rgba(Theme.surfaceTint.r, Theme.surfaceTint.g, Theme.surfaceTint.b, 1.0)
             radius: parent.radius
             opacity: SettingsData.desktopDarkDashAnimatedTintOpacity
+            visible: SettingsData.desktopDarkDashAnimatedTintOpacity > 0
 
             SequentialAnimation on opacity {
                 running: root.alwaysVisible && SettingsData.desktopDarkDashAnimatedTintOpacity > 0
