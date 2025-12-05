@@ -315,14 +315,15 @@ Item {
         }
 
         Loader {
-            id: keybindsLoader
+            id: configEditorLoader
 
             anchors.fill: parent
             active: root.currentIndex === 18
             visible: active
             asynchronous: true
 
-            source: "../../Modules/Settings/KeybindsTab.qml"
+            sourceComponent: ConfigEditorTab {
+            }
 
         }
 

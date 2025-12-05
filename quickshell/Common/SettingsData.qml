@@ -269,6 +269,11 @@ Singleton {
     property bool useCustomLauncherImage: false
     property string customLauncherImagePath: ""
     property string keybindsPath: ""
+    property string execsPath: ""
+    property string generalPath: ""
+    property string rulesPath: ""
+    property string envPath: ""
+    property string colorsPath: ""
     property real launcherLogoSize: 24
     property string launcherPosition: "bottom-center" // "bottom-center", "bottom-left", "bottom-right"
     property bool wallpaperDynamicTheming: true
@@ -701,6 +706,11 @@ Singleton {
                 useCustomLauncherImage = settings.useCustomLauncherImage !== undefined ? settings.useCustomLauncherImage : false
                 customLauncherImagePath = settings.customLauncherImagePath !== undefined ? settings.customLauncherImagePath : ""
                 keybindsPath = settings.keybindsPath !== undefined ? settings.keybindsPath : ""
+                execsPath = settings.execsPath !== undefined ? settings.execsPath : ""
+                generalPath = settings.generalPath !== undefined ? settings.generalPath : ""
+                rulesPath = settings.rulesPath !== undefined ? settings.rulesPath : ""
+                envPath = settings.envPath !== undefined ? settings.envPath : ""
+                colorsPath = settings.colorsPath !== undefined ? settings.colorsPath : ""
                 launcherLogoSize = settings.launcherLogoSize !== undefined ? settings.launcherLogoSize : 24
                 launcherPosition = settings.launcherPosition !== undefined ? settings.launcherPosition : "bottom-center"
                 wallpaperDynamicTheming = settings.wallpaperDynamicTheming !== undefined ? settings.wallpaperDynamicTheming : true
@@ -1003,6 +1013,11 @@ Singleton {
                                                 "useCustomLauncherImage": useCustomLauncherImage,
                                                 "customLauncherImagePath": customLauncherImagePath,
                                                 "keybindsPath": keybindsPath,
+                                                "execsPath": execsPath,
+                                                "generalPath": generalPath,
+                                                "rulesPath": rulesPath,
+                                                "envPath": envPath,
+                                                "colorsPath": colorsPath,
                                                 "launcherLogoSize": launcherLogoSize,
                                                 "launcherPosition": launcherPosition,
                                                 "wallpaperDynamicTheming": wallpaperDynamicTheming,

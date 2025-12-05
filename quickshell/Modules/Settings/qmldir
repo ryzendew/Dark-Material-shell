@@ -22,6 +22,12 @@ NetworkTab 1.0 NetworkTab.qml
 BluetoothTab 1.0 BluetoothTab.qml
 PowerTab 1.0 PowerTab.qml
 KeybindsTab 1.0 KeybindsTab.qml
+ConfigEditorTab 1.0 ConfigEditorTab.qml
+ExecsTab 1.0 ExecsTab.qml
+GeneralTab 1.0 GeneralTab.qml
+RulesTab 1.0 RulesTab.qml
+EnvTab 1.0 EnvTab.qml
+ColorsTab 1.0 ColorsTab.qml
 
 
 

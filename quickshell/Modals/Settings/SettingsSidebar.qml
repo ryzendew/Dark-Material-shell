@@ -63,8 +63,8 @@ Rectangle {
         "text": "Weather",
         "icon": "cloud"
     }, {
-        "text": "Keybinds",
-        "icon": "keyboard"
+        "text": "Config Editor",
+        "icon": "code"
     }]
 
     width: getSidebarWidth()
